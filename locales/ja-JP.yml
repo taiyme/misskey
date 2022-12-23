@@ -897,6 +897,8 @@ account: "アカウント"
 move: "移動"
 windowMaximize: "最大化"
 windowRestore: "元に戻す"
+caption: "キャプション"
+loggedInAsBot: "Botアカウントでログイン中"
 thisPostMayBeAnnoying: "この投稿は迷惑になる可能性があります。"
 
 _sensitiveMediaDetection:
