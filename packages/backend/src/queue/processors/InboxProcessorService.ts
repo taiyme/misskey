@@ -176,10 +176,13 @@ export class InboxProcessorService {
 		}
 
 		// Update stats
-		this.federatedInstanceService.registerOrFetchInstanceDoc(authUser.user.host).then(i => {
+		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
 			this.instancesRepository.update(i.id, {
 				latestRequestReceivedAt: new Date(),
 				lastCommunicatedAt: new Date(),
+				isNotResponding: false,
+			});
+			this.federatedInstanceService.updateCachePartial(host, {
 				isNotResponding: false,
 			});
 
