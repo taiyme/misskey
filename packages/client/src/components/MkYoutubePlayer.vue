@@ -6,11 +6,12 @@
 	</template>
 
 	<div class="poamfof">
-		<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
-			<div v-if="player.url" class="player">
+		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
 				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 			</div>
-		</transition>
+			<span v-else>invalid url</span>
+		</Transition>
 		<MkLoading v-if="fetching"/>
 		<MkError v-else-if="!player.url" @retry="ytFetch()"/>
 	</div>

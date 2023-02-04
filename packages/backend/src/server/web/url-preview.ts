@@ -38,6 +38,14 @@ export const urlPreviewHandler = async (ctx: Koa.Context) => {
 
 		logger.succ(`Got preview of ${url}: ${summary.title}`);
 
+		if (summary.url && !(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
+			throw new Error('unsupported schema included');
+		}
+
+		if (summary.player?.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
+			throw new Error('unsupported schema included');
+		}
+
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
 

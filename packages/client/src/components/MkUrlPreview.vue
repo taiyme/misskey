@@ -1,7 +1,8 @@
 <template>
 <template v-if="playerEnabled">
 	<div class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-		<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+		<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+		<span v-else>invalid url</span>
 	</div>
 	<div class="preview-action">
 		<MkButton :small="true" inline @click="playerEnabled = false">
