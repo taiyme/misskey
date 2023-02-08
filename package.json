@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "12.119.2",
+	"version": "12.119.2-taiyme-v1.0.0",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/taiyme/misskey.git"
 	},
 	"private": true,
 	"scripts": {
