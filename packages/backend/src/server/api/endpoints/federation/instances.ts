@@ -2,6 +2,7 @@ import config from '@/config/index.js';
 import define from '../../define.js';
 import { Instances } from '@/models/index.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape';
 
 export const meta = {
 	tags: ['federation'],
@@ -109,7 +110,7 @@ export default define(meta, paramDef, async (ps, me) => {
 	}
 
 	if (ps.host) {
-		query.andWhere('instance.host like :host', { host: '%' + ps.host.toLowerCase() + '%' });
+		query.andWhere('instance.host like :host', { host: '%' + sqlLikeEscape(ps.host.toLowerCase()) + '%' });
 	}
 
 	const instances = await query.take(ps.limit).skip(ps.offset).getMany();

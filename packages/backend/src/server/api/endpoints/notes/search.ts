@@ -7,6 +7,7 @@ import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
 import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -58,7 +59,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		}
 
 		query
-			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
+			.andWhere('note.text ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('user.avatar', 'avatar')
 			.leftJoinAndSelect('user.banner', 'banner')
