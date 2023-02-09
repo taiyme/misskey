@@ -22,7 +22,7 @@
 				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="fas fa-file-code"></i></button>
-			<button class="cjp _buttonGradate" :disabled="!textLength" @click="cjp">怪</button>
+			<button class="cjp _buttonGradate" :disabled="!canCjp" @click="cjp">怪</button>
 			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
@@ -204,6 +204,10 @@ const textLength = $computed((): number => {
 
 const maxTextLength = $computed((): number => {
 	return instance ? instance.maxNoteTextLength : 1000;
+});
+
+const canCjp = $computed((): boolean => {
+	return (1 <= textLength);
 });
 
 const canPost = $computed((): boolean => {
@@ -810,7 +814,7 @@ onMounted(() => {
 			}
 
 			> .cjp {
-				margin: 16px 0 16px 0;
+				margin: 16px 16px 16px 0;
 				padding: 0 12px;
 				line-height: 34px;
 				font-weight: bold;
@@ -818,6 +822,7 @@ onMounted(() => {
 				border-radius: 4px;
 				font-size: 0.9em;
 				background: #f44336;
+				color: #fff;
 
 				&:disabled {
 					opacity: 0.7;
