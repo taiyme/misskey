@@ -21,7 +21,7 @@ const modal = ref<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
 	modal.value.close();
-	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+	window.open(`https://github.com/taiyme/misskey/releases/tag/${version}`, '_blank');
 };
 </script>
 

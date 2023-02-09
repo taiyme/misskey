@@ -19,10 +19,15 @@
 				</div>
 				<FormSection>
 					<div class="_formLinks">
+						<FormLink to="https://github.com/taiyme/misskey" external>
+							<template #icon><i class="fas fa-code-branch"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}
+							<template #suffix>taiyme/misskey</template>
+						</FormLink>
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
 							<template #icon><i class="fas fa-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>GitHub</template>
+							<template #suffix>misskey-dev/misskey</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
 							<template #icon><i class="fas fa-language"></i></template>
