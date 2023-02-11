@@ -2602,10 +2602,10 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-mfm-js@0.23.0:
-  version "0.23.0"
-  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.23.0.tgz#1d1477761aa8259ddcac2e6882df53ed9ca5b82b"
-  integrity sha512-2Oe/YicoaP1EU2y9JB5729/PQLZK/7aAVomeJkp1h4XGP2//NMDC+DHkBbSO71U3GG086SAZM0JBB/hdPPSEXg==
+mfm-js@0.23.3:
+  version "0.23.3"
+  resolved "https://registry.yarnpkg.com/mfm-js/-/mfm-js-0.23.3.tgz#b487b809164cf26220b2c25456e1f77db7311379"
+  integrity sha512-o8scYmbey6rMUmWAlT3k3ntt6khaCLdxlmHhAWV5wTTMj2OK1atQvZfRUq0SIVm1Jig08qlZg/ps71xUqrScNA==
   dependencies:
     twemoji-parser "14.0.0"
 
