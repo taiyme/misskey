@@ -9,11 +9,11 @@
 		<FormLink v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;" @click="edit(type)">
 			{{ $t('_sfx.' + type) }}
 			<template #suffix>{{ sounds[type].type || i18n.ts.none }}</template>
-			<template #suffixIcon><i class="fas fa-chevron-down"></i></template>
+			<template #suffixIcon><i class="ti ti-chevron-down"></i></template>
 		</FormLink>
 	</FormSection>
 
-	<FormButton danger class="_formBlock" @click="reset()"><i class="fas fa-redo"></i> {{ i18n.ts.default }}</FormButton>
+	<FormButton danger class="_formBlock" @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
 </div>
 </template>
 
@@ -38,7 +38,7 @@ const masterVolume = computed({
 	},
 });
 
-const volumeIcon = computed(() => masterVolume.value === 0 ? 'fas fa-volume-mute' : 'fas fa-volume-up');
+const volumeIcon = computed(() => masterVolume.value === 0 ? 'ti ti-volume-3' : 'ti ti-volume');
 
 const sounds = ref({
 	note: ColdDeviceStorage.get('sound_note'),
@@ -130,6 +130,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.sounds,
-	icon: 'fas fa-music',
+	icon: 'ti ti-music',
 });
 </script>

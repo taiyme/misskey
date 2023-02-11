@@ -65,11 +65,11 @@ async function timetravel() {
 }
 
 const headerActions = $computed(() => list ? [{
-	icon: 'fas fa-calendar-alt',
+	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'fas fa-cog',
+	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
@@ -78,7 +78,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => list ? {
 	title: list.name,
-	icon: 'fas fa-list-ul',
+	icon: 'ti ti-list',
 } : null));
 </script>
 

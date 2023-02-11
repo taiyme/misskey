@@ -14,13 +14,13 @@ export type Fn = {
 export type Type = 'string' | 'number' | 'boolean' | 'stringArray' | null;
 
 export const literalDefs: Record<string, { out: any; category: string; icon: any; }> = {
-	text: { out: 'string', category: 'value', icon: 'fas fa-quote-right', },
-	multiLineText: { out: 'string', category: 'value', icon: 'fas fa-align-left', },
-	textList: { out: 'stringArray', category: 'value', icon: 'fas fa-list', },
-	number: { out: 'number', category: 'value', icon: 'fas fa-sort-numeric-up', },
-	ref: { out: null, category: 'value', icon: 'fas fa-magic', },
-	aiScriptVar: { out: null, category: 'value', icon: 'fas fa-magic', },
-	fn: { out: 'function', category: 'value', icon: 'fas fa-square-root-alt', },
+	text: { out: 'string', category: 'value', icon: 'ti ti-quote', },
+	multiLineText: { out: 'string', category: 'value', icon: 'ti ti-align-left', },
+	textList: { out: 'stringArray', category: 'value', icon: 'ti ti-list', },
+	number: { out: 'number', category: 'value', icon: 'ti ti-list-numbers', },
+	ref: { out: null, category: 'value', icon: 'ti ti-wand', },
+	aiScriptVar: { out: null, category: 'value', icon: 'ti ti-wand', },
+	fn: { out: 'function', category: 'value', icon: 'ti ti-math-function', },
 };
 
 export const blockDefs = [

@@ -1,13 +1,13 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="fas fa-sticky-note"></i> {{ value.title }}</template>
+	<template #header><i class="ti ti-note"></i> {{ value.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
-			<i class="fas fa-pencil-alt"></i>
+			<i class="ti ti-pencil"></i>
 		</button>
 		<button class="_button" @click="add()">
-			<i class="fas fa-plus"></i>
+			<i class="ti ti-plus"></i>
 		</button>
 	</template>
 

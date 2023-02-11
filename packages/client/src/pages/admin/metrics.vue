@@ -1,6 +1,6 @@
 <template>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="fas fa-microchip"></i> {{ $ts.cpuAndMemory }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-cpu"></i> {{ $ts.cpuAndMemory }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="cpumem"></canvas>
@@ -17,7 +17,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="fas fa-hdd"></i> {{ $ts.disk }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-database"></i> {{ $ts.disk }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="disk"></canvas>
@@ -34,7 +34,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-arrows-right-left"></i> {{ $ts.network }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="net"></canvas>

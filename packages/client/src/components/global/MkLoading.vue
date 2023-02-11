@@ -1,6 +1,6 @@
 <template>
-<div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini }]">
-	<div :class="$style.container">
+<div :class="[$style.root, { [$style.inline]: inline, [$style.colored]: colored, [$style.mini]: mini, [$style.em]: em }]">
+	<div :class="$style.container" style="opacity: 0;">
 		<svg :class="[$style.spinner, $style.bg]" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
 			<g transform="matrix(1.125,0,0,1.125,12,12)">
 				<circle cx="64" cy="64" r="64" style="fill:none;stroke:currentColor;stroke-width:21.33px;"/>
@@ -22,10 +22,12 @@ const props = withDefaults(defineProps<{
 	inline?: boolean;
 	colored?: boolean;
 	mini?: boolean;
+	em?: boolean;
 }>(), {
 	inline: false,
 	colored: true,
 	mini: false,
+	em: false,
 });
 </script>
 
@@ -60,6 +62,13 @@ const props = withDefaults(defineProps<{
 		padding: 16px;
 		--size: 32px;
 	}
+
+	&.em {
+		display: inline-block;
+		vertical-align: middle;
+		padding: 0;
+		--size: 1em;
+	}
 }
 
 .container {
@@ -67,6 +76,7 @@ const props = withDefaults(defineProps<{
 	width: var(--size);
 	height: var(--size);
 	margin: 0 auto;
+	opacity: 1 !important;
 }
 
 .spinner {

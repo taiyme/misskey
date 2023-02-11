@@ -119,6 +119,28 @@ hr {
 	background: var(--divider);
 }
 
+.ti {
+	vertical-align: -12%;
+	line-height: 1em;
+
+	&:before {
+		font-size: 128%;
+	}
+}
+
+.ti-fw {
+	display: inline-block;
+	text-align: center;
+}
+
+._indicatorCircle {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	border-radius: 100%;
+	background: currentColor;
+}
+
 ._noSelect {
 	user-select: none;
 	-webkit-user-select: none;
