@@ -35,17 +35,18 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 const code = ref('');
 const logs = ref<any[]>([]);
 
-const saved = localStorage.getItem('scratchpad');
+const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
 	code.value = saved;
 }
 
 watch(code, () => {
-	localStorage.setItem('scratchpad', code.value);
+	miLocalStorage.setItem('scratchpad', code.value);
 });
 
 async function run() {

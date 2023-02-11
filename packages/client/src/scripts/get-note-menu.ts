@@ -8,6 +8,7 @@ import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
+import { miLocalStorage } from '@/local-storage';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -190,7 +191,7 @@ export function getNoteMenu(props: {
 		props.translating.value = true;
 		const res = await os.api('notes/translate', {
 			noteId: appearNote.id,
-			targetLang: localStorage.getItem('lang') || navigator.language,
+			targetLang: miLocalStorage.getItem('lang') || navigator.language,
 		});
 		props.translating.value = false;
 		props.translation.value = res;
