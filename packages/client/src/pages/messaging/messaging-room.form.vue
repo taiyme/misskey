@@ -40,7 +40,6 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 //import { Autocomplete } from '@/scripts/autocomplete';
 import { uploadFile } from '@/scripts/upload';
-import { miLocalStorage } from '@/local-storage';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -174,7 +173,7 @@ function clear() {
 }
 
 function saveDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('message_drafts') || '{}');
+	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
 	drafts[draftKey] = {
 		updatedAt: new Date(),
@@ -185,15 +184,15 @@ function saveDraft() {
 		},
 	};
 
-	miLocalStorage.setItem('message_drafts', JSON.stringify(drafts));
+	localStorage.setItem('message_drafts', JSON.stringify(drafts));
 }
 
 function deleteDraft() {
-	const drafts = JSON.parse(miLocalStorage.getItem('message_drafts') || '{}');
+	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
 	delete drafts[draftKey];
 
-	miLocalStorage.setItem('message_drafts', JSON.stringify(drafts));
+	localStorage.setItem('message_drafts', JSON.stringify(drafts));
 }
 
 async function insertEmoji(ev: MouseEvent) {
@@ -208,7 +207,7 @@ onMounted(() => {
 	//new Autocomplete(textEl, this, { model: 'text' });
 
 	// 書きかけの投稿を復元
-	const draft = JSON.parse(miLocalStorage.getItem('message_drafts') || '{}')[draftKey];
+	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
 	if (draft) {
 		text = draft.data.text;
 		file = draft.data.file;

@@ -107,11 +107,10 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
 
-const lang = ref(miLocalStorage.getItem('lang'));
-const fontSize = ref(miLocalStorage.getItem('fontSize'));
-const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
+const lang = ref(localStorage.getItem('lang'));
+const fontSize = ref(localStorage.getItem('fontSize'));
+const useSystemFont = ref(localStorage.getItem('useSystemFont') != null);
 
 async function reloadAsk() {
 	const { canceled } = await os.confirm({
@@ -146,23 +145,23 @@ const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 
 watch(lang, () => {
-	miLocalStorage.setItem('lang', lang.value as string);
-	miLocalStorage.removeItem('locale');
+	localStorage.setItem('lang', lang.value as string);
+	localStorage.removeItem('locale');
 });
 
 watch(fontSize, () => {
 	if (fontSize.value == null) {
-		miLocalStorage.removeItem('fontSize');
+		localStorage.removeItem('fontSize');
 	} else {
-		miLocalStorage.setItem('fontSize', fontSize.value);
+		localStorage.setItem('fontSize', fontSize.value);
 	}
 });
 
 watch(useSystemFont, () => {
 	if (useSystemFont.value) {
-		miLocalStorage.setItem('useSystemFont', 't');
+		localStorage.setItem('useSystemFont', 't');
 	} else {
-		miLocalStorage.removeItem('useSystemFont');
+		localStorage.removeItem('useSystemFont');
 	}
 });
 

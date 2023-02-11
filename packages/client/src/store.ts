@@ -63,14 +63,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: [] as string[],
 	},
-	latestDonateDialogShowAt: {
-		where: 'account',
-		default: null,
-	},
-	neverShowDonateDialog: {
-		where: 'account',
-		default: false,
-	},
 
 	menu: {
 		where: 'deviceAccount',
@@ -263,7 +255,7 @@ export const defaultStore = markRaw(new Storage('base', {
 
 // TODO: 他のタブと永続化されたstateを同期
 
-const PREFIX = 'miux:' as const;
+const PREFIX = 'miux:';
 
 type Plugin = {
 	id: string;
@@ -279,7 +271,6 @@ type Plugin = {
  */
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
-import { miLocalStorage } from './local-storage';
 
 export class ColdDeviceStorage {
 	public static default = {
@@ -304,7 +295,7 @@ export class ColdDeviceStorage {
 		// TODO: indexedDBにする
 		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
 		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
-		const value = miLocalStorage.getItem(`${PREFIX}${key}`);
+		const value = localStorage.getItem(PREFIX + key);
 		if (value == null) {
 			return ColdDeviceStorage.default[key];
 		} else {
@@ -314,14 +305,14 @@ export class ColdDeviceStorage {
 
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
 		// 呼び出し側のバグ等で undefined が来ることがある
-		// undefined を文字列として miLocalStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
+		// undefined を文字列として localStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (value === undefined) {
 			console.error(`attempt to store undefined value for key '${key}'`);
 			return;
 		}
 
-		miLocalStorage.setItem(`${PREFIX}${key}`, JSON.stringify(value));
+		localStorage.setItem(PREFIX + key, JSON.stringify(value));
 
 		for (const watcher of this.watchers) {
 			if (watcher.key === key) watcher.callback(value);
@@ -359,5 +350,12 @@ export class ColdDeviceStorage {
 				ColdDeviceStorage.set(key, val);
 			},
 		};
+	}
+}
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$store: typeof defaultStore;
 	}
 }

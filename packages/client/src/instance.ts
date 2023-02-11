@@ -1,11 +1,10 @@
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api } from './os';
-import { miLocalStorage } from './local-storage';
 
 // TODO: 他のタブと永続化されたstateを同期
 
-const instanceData = miLocalStorage.getItem('instance');
+const instanceData = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
@@ -22,7 +21,7 @@ export async function fetchInstance() {
 		instance[k] = v;
 	}
 
-	miLocalStorage.setItem('instance', JSON.stringify(instance));
+	localStorage.setItem('instance', JSON.stringify(instance));
 }
 
 export const emojiCategories = computed(() => {
@@ -44,3 +43,10 @@ export const emojiTags = computed(() => {
 	}
 	return Array.from(tags);
 });
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$instance: typeof instance;
+	}
+}

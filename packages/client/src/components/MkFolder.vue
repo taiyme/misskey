@@ -24,9 +24,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import tinycolor from 'tinycolor2';
-import { miLocalStorage } from '@/local-storage';
 
-const miLocalStoragePrefix = 'ui:folder:' as const;
+const localStoragePrefix = 'ui:folder:';
 
 export default defineComponent({
 	props: {
@@ -44,13 +43,13 @@ export default defineComponent({
 	data() {
 		return {
 			bg: null,
-			showBody: (this.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`) === 't') : this.expanded,
+			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
 		};
 	},
 	watch: {
 		showBody() {
 			if (this.persistKey) {
-				miLocalStorage.setItem(`${miLocalStoragePrefix}${this.persistKey}`, this.showBody ? 't' : 'f');
+				localStorage.setItem(localStoragePrefix + this.persistKey, this.showBody ? 't' : 'f');
 			}
 		}
 	},

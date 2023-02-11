@@ -7,12 +7,9 @@ import '@/style.scss';
 //#region account indexedDB migration
 import { set } from '@/scripts/idb-proxy';
 
-{
-	const accounts = miLocalStorage.getItem('accounts');
-	if (accounts) {
-		set('accounts', JSON.parse(accounts));
-		miLocalStorage.removeItem('accounts');
-	}
+if (localStorage.getItem('accounts') != null) {
+	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	localStorage.removeItem('accounts');
 }
 //#endregion
 
@@ -41,7 +38,6 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { miLocalStorage } from './local-storage';
 
 (async () => {
 	console.info(`Misskey v${version}`);
@@ -76,19 +72,6 @@ import { miLocalStorage } from './local-storage';
 			*/
 		});
 	}
-
-	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version);
-	if (localeOutdated) {
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
-		if (res.status === 200) {
-			miLocalStorage.setItem('locale', await res.text());
-			miLocalStorage.setItem('localeVersion', version);
-			location.reload();
-		}
-	}
-	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
 	document.addEventListener('touchend', () => {}, { passive: true });
@@ -179,7 +162,7 @@ import { miLocalStorage } from './local-storage';
 	const fetchInstanceMetaPromise = fetchInstance();
 
 	fetchInstanceMetaPromise.then(() => {
-		miLocalStorage.setItem('v', instance.version);
+		localStorage.setItem('v', instance.version);
 
 		// Init service worker
 		initializeSw();
@@ -247,12 +230,12 @@ import { miLocalStorage } from './local-storage';
 	}
 
 	// クライアントが更新されたか？
-	const lastVersion = miLocalStorage.getItem('lastVersion');
+	const lastVersion = localStorage.getItem('lastVersion');
 	if (lastVersion !== version) {
-		miLocalStorage.setItem('lastVersion', version);
+		localStorage.setItem('lastVersion', version);
 
 		// テーマリビルドするため
-		miLocalStorage.removeItem('theme');
+		localStorage.removeItem('theme');
 
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
@@ -268,7 +251,7 @@ import { miLocalStorage } from './local-storage';
 	// NOTE: この処理は必ず↑のクライアント更新時処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
-	}, { immediate: miLocalStorage.getItem('theme') == null });
+	}, { immediate: localStorage.theme == null });
 
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
@@ -365,7 +348,7 @@ import { miLocalStorage } from './local-storage';
 			});
 		}
 
-		const lastUsed = miLocalStorage.getItem('lastUsed');
+		const lastUsed = localStorage.getItem('lastUsed');
 		if (lastUsed) {
 			const lastUsedDate = parseInt(lastUsed, 10);
 			// 二時間以上前なら
@@ -375,7 +358,7 @@ import { miLocalStorage } from './local-storage';
 				}));
 			}
 		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+		localStorage.setItem('lastUsed', Date.now().toString());
 
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト

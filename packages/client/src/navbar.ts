@@ -5,7 +5,6 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
 import { unisonReload } from '@/scripts/unison-reload';
-import { miLocalStorage } from './local-storage';
 
 export const navbarItemDef = reactive({
 	notifications: {
@@ -106,21 +105,21 @@ export const navbarItemDef = reactive({
 				text: i18n.ts.default,
 				active: ui === 'default' || ui === null,
 				action: () => {
-					miLocalStorage.setItem('ui', 'default');
+					localStorage.setItem('ui', 'default');
 					unisonReload();
 				},
 			}, {
 				text: i18n.ts.deck,
 				active: ui === 'deck',
 				action: () => {
-					miLocalStorage.setItem('ui', 'deck');
+					localStorage.setItem('ui', 'deck');
 					unisonReload();
 				},
 			}, {
 				text: i18n.ts.classic,
 				active: ui === 'classic',
 				action: () => {
-					miLocalStorage.setItem('ui', 'classic');
+					localStorage.setItem('ui', 'classic');
 					unisonReload();
 				},
 			}], ev.currentTarget ?? ev.target);

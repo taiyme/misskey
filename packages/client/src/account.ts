@@ -6,13 +6,12 @@ import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { miLocalStorage } from './local-storage';
 
 // TODO: 他のタブと永続化されたstateを同期
 
 type Account = misskey.entities.MeDetailed;
 
-const accountData = miLocalStorage.getItem('account');
+const accountData = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
 export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
@@ -22,7 +21,7 @@ export const iAmAdmin = $i != null && $i.isAdmin;
 
 export async function signout() {
 	waiting();
-	miLocalStorage.removeItem('account');
+	localStorage.removeItem('account');
 
 	await removeAccount($i.id);
 
@@ -114,7 +113,7 @@ export function updateAccount(accountData) {
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
-	miLocalStorage.setItem('account', JSON.stringify($i));
+	localStorage.setItem('account', JSON.stringify($i));
 }
 
 export function refreshAccount() {
@@ -125,7 +124,7 @@ export async function login(token: Account['token'], redirect?: string) {
 	waiting();
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token);
-	miLocalStorage.setItem('account', JSON.stringify(me));
+	localStorage.setItem('account', JSON.stringify(me));
 	document.cookie = `token=${token}; path=/; max-age=31536000`; // bull dashboardの認証とかで使う
 	await addAccount(me.id, token);
 
