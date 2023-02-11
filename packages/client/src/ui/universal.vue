@@ -382,12 +382,6 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 }
 
 .spacer {
-	$widgets-hide-threshold: 1090px;
-
-	height: calc(env(safe-area-inset-bottom, 0px) + 96px);
-
-	@media (min-width: ($widgets-hide-threshold + 1px)) {
-		display: none;
-	}
+	height: calc(var(--minBottomSpacing));
 }
 </style>
