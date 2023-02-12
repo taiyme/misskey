@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser } from '@/models/entities/User.js';
+import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
@@ -17,7 +17,7 @@ export class UserCacheService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		private redisSubscriber: Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -46,10 +46,10 @@ export class UserCacheService implements OnApplicationShutdown {
 				case 'userChangeModeratorState':
 				case 'remoteUserUpdated': {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
-					this.userByIdCache.set(user.id, user);
+					this.userByIdCache.set(user.id, user as CacheableUser);
 					for (const [k, v] of this.uriPersonCache.cache.entries()) {
 						if (v.value?.id === user.id) {
-							this.uriPersonCache.set(k, user);
+							this.uriPersonCache.set(k, user as CacheableUser);
 						}
 					}
 					if (this.userEntityService.isLocalUser(user)) {
@@ -68,6 +68,11 @@ export class UserCacheService implements OnApplicationShutdown {
 					break;
 			}
 		}
+	}
+
+	@bindThis
+	public findById(userId: User['id']) {
+		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }) as Promise<CacheableUser>);
 	}
 
 	@bindThis

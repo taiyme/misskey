@@ -13,6 +13,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { sanitizeUrl } from '@/misc/sanitize-url.js';
 import { UtilityService } from '../UtilityService.js';
+import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 

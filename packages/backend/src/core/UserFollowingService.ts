@@ -412,7 +412,7 @@ export class UserFollowingService {
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 	
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
 				this.queueService.deliver(follower, content, followee.inbox, false);

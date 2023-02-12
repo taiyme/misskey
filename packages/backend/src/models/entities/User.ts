@@ -239,6 +239,7 @@ export interface ILocalUser extends User {
 
 export interface IRemoteUser extends User {
 	host: string;
+	uri: string;
 }
 
 export type CacheableLocalUser = ILocalUser;
