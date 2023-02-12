@@ -308,6 +308,8 @@ searchByGoogle: "Zoeken"
 cropImage: "Afbeelding bijsnijden"
 cropImageAsk: "Bijsnijdengevraagd"
 file: "Bestanden"
+windowMaximize: "Maximaliseren"
+windowRestore: "Herstellen"
 _email:
   _follow:
     title: "volgde jou"

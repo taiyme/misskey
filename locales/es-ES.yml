@@ -894,6 +894,8 @@ navbar: "Barra de navegación"
 shuffle: "Aleatorio"
 account: "Cuentas"
 move: "Mover"
+windowMaximize: "Maximizar"
+windowRestore: "Regresar"
 _sensitiveMediaDetection:
   description: "Reduce el esfuerzo de la moderación el el servidor a través del reconocimiento automático de contenido NSFW usando 'Machine Learning'. Esto puede incrementar ligeramente la carga en el servidor."
   sensitivity: "Sensibilidad de detección"

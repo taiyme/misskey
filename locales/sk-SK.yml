@@ -889,6 +889,8 @@ activeEmailValidationDescription: "Dôkladnejšie overí e-mailovú adresu použ
 navbar: "Navigačný panel"
 account: "Účty"
 move: "Pohyb"
+windowMaximize: "Maximalizovať"
+windowRestore: "Obnoviť"
 _sensitiveMediaDetection:
   description: "Strojové učenie sa použije na automatickú detekciu citlivých médií na účely ich moderovania. Mierne sa zvýši zaťaženie servera."
   sensitivity: "Citlivosť detekcie"

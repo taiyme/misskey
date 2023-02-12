@@ -425,10 +425,10 @@ defineExpose({
 		border-radius: var(--radius);
 
 		> .header {
-			--height: 42px;
+			--height: 39px;
 
 			&.mini {
-				--height: 38px;
+				--height: 32px;
 			}
 
 			display: flex;

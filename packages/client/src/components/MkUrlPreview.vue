@@ -1,16 +1,28 @@
 <template>
-<div v-if="playerEnabled" class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-	<button class="disablePlayer" :title="i18n.ts.disablePlayer" @click="playerEnabled = false"><i class="ti ti-x"></i></button>
-	<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
-</div>
-<div v-else-if="tweetId && tweetExpanded" ref="twitter" class="twitter">
-	<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
-</div>
+<template v-if="playerEnabled">
+	<div class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
+		<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+	</div>
+	<div class="preview-action">
+		<MkButton :small="true" inline @click="playerEnabled = false">
+			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
+		</MkButton>
+	</div>
+</template>
+<template v-else-if="tweetId && tweetExpanded">
+	<div ref="twitter" class="twitter">
+		<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
+	</div>
+	<div class="preview-action">
+		<MkButton :small="true" inline @click="tweetExpanded = false">
+			<i class="ti ti-x"></i> {{ i18n.ts.close }}
+		</MkButton>
+	</div>
+</template>
 <div v-else v-size="{ max: [400, 350] }" class="mk-url-preview">
 	<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 		<component :is="self ? 'MkA' : 'a'" v-if="!fetching" class="link" :class="{ compact }" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 			<div v-if="thumbnail" class="thumbnail" :style="`background-image: url('${thumbnail}')`">
-				<button v-if="!playerEnabled && player.url" class="_button" :title="i18n.ts.enablePlayer" @click.prevent="playerEnabled = true"><i class="ti ti-player-play"></i></button>
 			</div>
 			<article>
 				<header>
@@ -24,18 +36,29 @@
 			</article>
 		</component>
 	</transition>
-	<div v-if="tweetId" class="expandTweet">
-		<a @click="tweetExpanded = true">
+	<div v-if="tweetId" class="preview-action">
+		<MkButton :small="true" inline @click="tweetExpanded = true">
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
-		</a>
+		</MkButton>
+	</div>
+	<div v-if="!playerEnabled && player.url" class="preview-action">
+		<MkButton :small="true" inline @click="playerEnabled = true">
+			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
+		</MkButton>
+		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
+			<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
+		</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue';
+import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import { url as local, lang } from '@/config';
 import { i18n } from '@/i18n';
+import * as os from '@/os';
+import { deviceKind } from '@/scripts/device-kind';
+import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -45,6 +68,9 @@ const props = withDefaults(defineProps<{
 	detail: false,
 	compact: false,
 });
+
+const MOBILE_THRESHOLD = 500;
+const isMobile = $ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 
 const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
@@ -77,7 +103,7 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 	requestUrl.hostname = 'www.youtube.com';
 }
 
-const requestLang = (lang || 'ja-JP').replace('ja-KS', 'ja-JP');
+const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
 
 requestUrl.hash = '';
 
@@ -103,6 +129,12 @@ function adjustTweetHeight(message: any) {
 	if (height) tweetHeight = height;
 }
 
+const openPlayer = (): void => {
+	os.popup(defineAsyncComponent(() => import('@/components/MkYoutubePlayer.vue')), {
+		url: requestUrl.href,
+	});
+};
+
 (window as any).addEventListener('message', adjustTweetHeight);
 
 onUnmounted(() => {
@@ -114,24 +146,6 @@ onUnmounted(() => {
 .player {
 	position: relative;
 	width: 100%;
-
-	> button {
-		position: absolute;
-		top: -1.5em;
-		right: 0;
-		font-size: 1em;
-		width: 1.5em;
-		height: 1.5em;
-		padding: 0;
-		margin: 0;
-		color: var(--fg);
-		background: rgba(128, 128, 128, 0.2);
-		opacity: 0.7;
-
-		&:hover {
-			opacity: 0.9;
-		}
-	}
 
 	> iframe {
 		height: 100%;
@@ -233,16 +247,6 @@ onUnmounted(() => {
 			justify-content: center;
 			align-items: center;
 
-			> button {
-				font-size: 3.5em;
-				opacity: 0.7;
-
-				&:hover {
-					font-size: 4em;
-					opacity: 0.9;
-				}
-			}
-
 			& + article {
 				left: 100px;
 				width: calc(100% - 100px);
@@ -301,5 +305,12 @@ onUnmounted(() => {
 			}
 		}
 	}
+}
+
+.preview-action {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	margin-top: 6px;
 }
 </style>

@@ -817,6 +817,8 @@ colored: "Colorato"
 label: "Etichetta"
 localOnly: "Soltanto locale"
 account: "Account"
+windowMaximize: "Ingrandisci"
+windowRestore: "Ripristina"
 _emailUnavailable:
   used: "Email già in uso"
   format: "Formato email non valido"

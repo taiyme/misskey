@@ -744,6 +744,8 @@ reverse: "Перевернути"
 colored: "Кольоровий"
 label: "Назва"
 localOnly: "Локально"
+windowMaximize: "Розгорнути"
+windowRestore: "Відновити"
 _ffVisibility:
   public: "Опублікувати"
 _ad:
