@@ -162,7 +162,7 @@ const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
-const isMyRenote = $i && ($i.id === note.userId);
+const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const isLong = (appearNote.cw == null && appearNote.text != null && (
 	(appearNote.text.split('\n').length > 9) ||
