@@ -9,7 +9,7 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notifications">
+<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notification-toast">
 	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" class="notification"/>
 </TransitionGroup>
 
@@ -79,7 +79,7 @@ if ($i) {
 	transform: translateX(-250px);
 }
 
-.notifications {
+.notification-toast {
 	position: fixed;
 	z-index: 3900000;
 	left: 0;
