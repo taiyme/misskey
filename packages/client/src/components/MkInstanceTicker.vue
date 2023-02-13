@@ -1,5 +1,5 @@
 <template>
-<div class="hpaizdrt" :style="bg">
+<div class="hpaizdrt" :style="tickerColor">
 	<img v-if="instance.faviconUrl" class="icon" :src="instance.faviconUrl"/>
 	<span class="name">{{ instance.name }}</span>
 </div>
@@ -25,42 +25,52 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content
 };
 
-const themeColor = instance.themeColor ?? '#777777';
+const yuvColor = (hex) => {
+	const toRgb = (hex) => {
+		const [r, g, b] = Array.from(hex.slice(1).match(/.{2}/g) || [], n => parseInt(n, 16));
+		return { r, g, b };
+	};
 
-const bg = {
-	background: `linear-gradient(90deg, ${themeColor}, ${themeColor}00)`
+	const { r, g, b } = toRgb(hex);
+	const yuv = 0.299 * r + 0.587 * g + 0.114 * b;
+
+	return (yuv > 191) ? '#2f2f2fcc' : '#ffffff';
+};
+
+const tickerBgColor = instance.themeColor ?? '#777777';
+const tickerFgColor = yuvColor(tickerBgColor);
+
+const tickerColor = {
+	'--ticker-bg': tickerBgColor,
+	'--ticker-fg': tickerFgColor,
 };
 </script>
 
 <style lang="scss" scoped>
 .hpaizdrt {
-	$height: 1.1rem;
-
-	height: $height;
-	border-radius: 4px 0 0 4px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 14px;
+	height: 100%;
 	overflow: hidden;
-	color: #fff;
-	text-shadow: /* .866 ≈ sin(60deg) */
-		1px 0 1px #000,
-		.866px .5px 1px #000,
-		.5px .866px 1px #000,
-		0 1px 1px #000,
-		-.5px .866px 1px #000,
-		-.866px .5px 1px #000,
-		-1px 0 1px #000,
-		-.866px -.5px 1px #000,
-		-.5px -.866px 1px #000,
-		0 -1px 1px #000,
-		.5px -.866px 1px #000,
-		.866px -.5px 1px #000;
+	background: var(--ticker-bg, #777777);
+	color: var(--ticker-fg, #fff);
 
 	> .icon {
-		height: 100%;
+		width: 100%;
+		height: auto;
 	}
 
 	> .name {
-		margin-left: 4px;
-		line-height: $height;
+		display: inline-block;
+		height: calc(100% - 14px);
+		line-height: 14px;
+		margin-left: 0;
+		writing-mode: vertical-lr;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
 		font-size: 0.9em;
 		vertical-align: top;
 		font-weight: bold;
