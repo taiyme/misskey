@@ -43,7 +43,7 @@
 					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
-				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
+				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance" :vertical="false"/>
 			</div>
 		</header>
 		<div class="main">
