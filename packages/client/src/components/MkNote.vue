@@ -42,7 +42,7 @@
 					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed, isLong }">
-					<div class="text">
+					<div ref="textEl" class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
@@ -61,10 +61,10 @@
 					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
-					<button v-if="isLong && collapsed" class="fade _button" @click="collapsed = false">
+					<button v-if="isLong && collapsed" class="fade _button" @click="collapsedFlag = false">
 						<span>{{ i18n.ts.showMore }}</span>
 					</button>
-					<button v-else-if="isLong && !collapsed" class="showLess _button" @click="collapsed = true">
+					<button v-else-if="isLong && !collapsed" class="showLess _button" @click="collapsedFlag = true">
 						<span>{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
@@ -156,6 +156,17 @@ const isRenote = (
 	note.poll == null
 );
 
+const textEl = ref<HTMLElement>();
+let textElHeight = $ref(0);
+onMounted(() => {
+	if (textEl.value) {
+		const resizeObserver = new ResizeObserver(() => {
+			textElHeight = textEl.value?.offsetHeight ?? 0;
+		});
+		resizeObserver.observe(textEl.value);
+	}
+});
+
 const el = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
@@ -164,16 +175,23 @@ const reactButton = ref<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
-const isLong = (appearNote.cw == null && appearNote.text != null && (
-	(appearNote.text.split('\n').length > 9) ||
-	(appearNote.text.length > 500)
-));
-const collapsed = ref(appearNote.cw == null && isLong);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const isLong = $computed(() => {
+	return !!(
+		appearNote.cw == null && 
+		appearNote.text != null && (
+			(textElHeight >= 500) ||
+			(appearNote.files.length >= 5) ||
+			(urls && urls.length >= 4)
+		)
+	);
+});
+const collapsedFlag = ref(true);
+const collapsed = $computed(() => isLong && collapsedFlag);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 
 const keymap = {
