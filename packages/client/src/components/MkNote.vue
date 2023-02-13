@@ -187,7 +187,7 @@ const isLong = $computed(() => {
 	);
 });
 const collapsedFlag = ref(true);
-const collapsed = $computed(() => isLong && collapsedFlag);
+const collapsed = $computed(() => collapsedFlag.value && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
