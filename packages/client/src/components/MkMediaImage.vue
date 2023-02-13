@@ -8,12 +8,12 @@
 		</div>
 	</div>
 </div>
-<div v-else class="gqnyydlz">
+<div v-else class="gqnyydlz" :style="defaultStore.state.darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'">
 	<a
 		:href="image.url"
 		:title="image.name"
 	>
-		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment" :title="image.comment" :cover="false"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
 		<div v-if="image.type === 'image/gif'" class="gif">GIF</div>
 	</a>
 	<button v-tooltip="$ts.hide" class="_button hide" @click="hide = true"><i class="ti ti-eye-off"></i></button>
@@ -81,6 +81,8 @@ watch(() => props.image, () => {
 	position: relative;
 	//box-shadow: 0 0 0 1px var(--divider) inset;
 	background: var(--bg);
+	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
+	background-size: 16px 16px;
 
 	> .hide {
 		display: block;
