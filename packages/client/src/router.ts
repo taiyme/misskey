@@ -178,6 +178,10 @@ export const routes = [{
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
 	}, {
+		path: '/taiyme-services',
+		name: 'taiyme',
+		component: page(() => import('./pages/settings/taiyme-services.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],

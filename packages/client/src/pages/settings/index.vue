@@ -198,6 +198,13 @@ const menuDef = computed(() => [{
 		},
 		danger: true,
 	}],
+}, {
+	items: [{
+		icon: 'ti ti-help',
+		text: 'taiyme',
+		to: '/settings/taiyme-services',
+		active: currentPage?.route.name === 'taiyme-services',
+	}],
 }]);
 
 watch($$(narrow), () => {
