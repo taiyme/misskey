@@ -1,16 +1,10 @@
 <template>
 <div class="_formRoot">
 	<FormSection>
-		<FormSplit>
-			<MkKeyValue class="_formBlock" :copy="version">
-				<template #key>{{ i18n.ts.version }}</template>
-				<template #value>{{ version }}</template>
-			</MkKeyValue>
-			<MkKeyValue class="_formBlock" copy="@taiy@mk.taiy.me">
-				<template #key>{{ i18n.ts.developer }}</template>
-				<template #value>@taiy@mk.taiy.me</template>
-			</MkKeyValue>
-		</FormSplit>
+		<MkKeyValue class="_formBlock" :copy="version">
+			<template #key>{{ i18n.ts.version }}</template>
+			<template #value>{{ version }}</template>
+		</MkKeyValue>
 	</FormSection>
 
 	<FormSection>
@@ -27,7 +21,7 @@
 			<FormLink to="https://u.taiy.me/donate" external>
 				<template #icon><i class="ti ti-pig-money"></i></template>
 				taiyに寄付
-				<template #suffix>donate</template>
+				<template #suffix>Donate</template>
 			</FormLink>
 		</div>
 	</FormSection>
@@ -75,7 +69,6 @@ import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInfo from '@/components/MkInfo.vue';
