@@ -255,6 +255,22 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	tmsIsLongEnabled: {
+		where: 'device',
+		default: true,
+	},
+	tmsIsLongTextElHeight: {
+		where: 'device',
+		default: 500,
+	},
+	tmsIsLongFilesLength: {
+		where: 'device',
+		default: 5,
+	},
+	tmsIsLongUrlsLength: {
+		where: 'device',
+		default: 4,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

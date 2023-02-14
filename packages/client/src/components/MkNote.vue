@@ -176,13 +176,17 @@ let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const tmsIsLongEnabled = defaultStore.state.tmsIsLongEnabled ?? true;
+const tmsIsLongTextElHeight = defaultStore.state.tmsIsLongTextElHeight ?? 500;
+const tmsIsLongFilesLength = defaultStore.state.tmsIsLongFilesLength ?? 5;
+const tmsIsLongUrlsLength = defaultStore.state.tmsIsLongUrlsLength ?? 4;
 const isLong = $computed(() => {
-	return !!(
+	return tmsIsLongEnabled && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(textElHeight >= 500) ||
-			(appearNote.files.length >= 5) ||
-			(urls && urls.length >= 4)
+			(textElHeight >= tmsIsLongTextElHeight) ||
+			(appearNote.files.length >= tmsIsLongFilesLength) ||
+			(urls && urls.length >= tmsIsLongUrlsLength)
 		)
 	);
 });
