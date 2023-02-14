@@ -94,7 +94,7 @@
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
+				<MkUserName :nowrap="false" :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
