@@ -60,8 +60,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 COPY .node-version .node-version
 COPY package.json ./
 COPY packages/backend/ormconfig.js ./packages/backend/
+COPY packages/backend/migration ./packages/backend/migration
+COPY packages/backend/nsfw-model ./packages/backend/nsfw-model
+COPY packages/backend/assets ./packages/backend/assets
 COPY packages/backend/package.json ./packages/backend/
 COPY packages/client/package.json ./packages/client/
+COPY packages/client/assets ./packages/client/assets
 COPY packages/sw/package.json ./packages/sw/
 COPY locales locales
 COPY scripts scripts
