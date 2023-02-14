@@ -9,6 +9,7 @@
 import { } from 'vue';
 import { instanceName } from '@/config';
 import { instance as Instance } from '@/instance';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	instance?: {
@@ -26,7 +27,7 @@ const instance = props.instance ?? {
 	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content
 };
 
-const vertical = props.vertical ?? false;
+const vertical = defaultStore.state.tmsVerticalInstanceTicker && (props.vertical ?? false);
 
 const yuvColor = (hex) => {
 	const toRgb = (hex) => {
