@@ -9,16 +9,16 @@ COPY . ./
 RUN apt-get update
 RUN apt-get install -y build-essential
 RUN git submodule update --init
-RUN yarn install
-RUN yarn build
-RUN rm -rf .git
+RUN npm i -g pnpm
+RUN pnpm install
+RUN pnpm build
+
 
 FROM node:16.15.1-bullseye-slim AS runner
 
 WORKDIR /misskey
 
-RUN apt-get update
-RUN apt-get install -y ffmpeg tini
+RUN apt-get update && apt-get install -y ffmpeg tini && npm i -g pnpm
 
 COPY --from=builder /misskey/node_modules ./node_modules
 COPY --from=builder /misskey/built ./built
