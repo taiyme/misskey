@@ -1,10 +1,35 @@
 <template>
 <div class="_formRoot">
 	<FormSection>
-		<MkKeyValue class="_formBlock" :copy="version">
-			<template #key>{{ i18n.ts.version }}</template>
-			<template #value>{{ version }}</template>
+		<FormSplit>
+			<MkKeyValue class="_formBlock" :copy="version">
+				<template #key>{{ i18n.ts.version }}</template>
+				<template #value>{{ version }}</template>
+			</MkKeyValue>
+			<MkKeyValue class="_formBlock" copy="@taiy@mk.taiy.me">
+				<template #key>{{ i18n.ts.developer }}</template>
+				<template #value>@taiy@mk.taiy.me</template>
+			</MkKeyValue>
+		</FormSplit>
+	</FormSection>
+
+	<FormSection>
+		<MkKeyValue class="_formBlock">
+			<template #key>taiyme/misskeyについて</template>
+			<template #value>taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。</template>
 		</MkKeyValue>
+		<div class="_formLinks">
+			<FormLink to="https://github.com/taiyme/misskey" external>
+				<template #icon><i class="ti ti-code"></i></template>
+				taiyme/misskeyの開発に参加
+				<template #suffix>GitHub</template>
+			</FormLink>
+			<FormLink to="https://u.taiy.me/donate" external>
+				<template #icon><i class="ti ti-pig-money"></i></template>
+				taiyに寄付
+				<template #suffix>donate</template>
+			</FormLink>
+		</div>
 	</FormSection>
 
 	<FormSection>
@@ -46,9 +71,11 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSection from '@/components/form/section.vue';
+import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInfo from '@/components/MkInfo.vue';
