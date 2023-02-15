@@ -896,6 +896,7 @@ account: "アカウント"
 move: "移動"
 windowMaximize: "最大化"
 windowRestore: "元に戻す"
+thisPostMayBeAnnoying: "この投稿は迷惑になる可能性があります。"
 
 _sensitiveMediaDetection:
   description: "機械学習を使って自動でセンシティブなメディアを検出し、モデレーションに役立てることができます。サーバーの負荷が少し増えます。"

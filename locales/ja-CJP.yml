@@ -896,6 +896,7 @@ account: "マカウソト"
 move: "移动"
 windowMaximize: "最大化"
 windowRestore: "元に戻ず"
+thisPostMayBeAnnoying: "こゐ投稿は迷惑になゑ可能性があリまず。"
 
 _sensitiveMediaDetection:
   description: "机械学习を使っこ自动て乜ソツ゚亍ィブな〆ディマを検出レ、乇デレーツ゚彐ソに役立てゑことがてきまず。サー八゛ーゐ负荷が少レ増えまず。"

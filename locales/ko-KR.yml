@@ -895,6 +895,7 @@ account: "계정"
 move: "이동"
 windowMaximize: "최대화"
 windowRestore: "복구"
+thisPostMayBeAnnoying: "이 게시물은 다른 유저에게 피해를 줄 가능성이 있습니다."
 _sensitiveMediaDetection:
   description: "기계학습을 통해 자동으로 민감한 미디어를 탐지하여, 모더레이션에 참고할 수 있도록 합니다. 서버의 부하를 약간 증가시킵니다."
   sensitivity: "탐지 민감도"
