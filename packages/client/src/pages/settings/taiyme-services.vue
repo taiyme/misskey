@@ -43,22 +43,22 @@
 			<template v-if="tmsIsLongEnabled" #suffix>有効</template>
 			<template v-else #suffix>無効</template>
 
-			<FormInput v-model="tmsIsLongTextElHeight" type="number" manual-save required class="_formBlock">
+			<FormInput v-model="tmsIsLongTextElHeight" type="number" manual-save pattern="^[0-9]+$" class="_formBlock">
 				<template #label>ノート本文の高さ</template>
 				<template #suffix>px</template>
 				<template #caption>タイムライン上のノートがこの高さを超えた場合、畳んで表示します。ピクセル単位で指定してください。</template>
 			</FormInput>
-			<FormInput v-model="tmsIsLongFilesLength" type="number" manual-save required class="_formBlock">
+			<FormInput v-model="tmsIsLongFilesLength" type="number" manual-save pattern="^[0-9]+$" class="_formBlock">
 				<template #label>添付ファイルの個数</template>
 				<template #suffix>個</template>
 				<template #caption>タイムライン上のノートの添付ファイルがこの個数を超えた場合、畳んで表示します。</template>
 			</FormInput>
-			<FormInput v-model="tmsIsLongUrlsLength" type="number" manual-save required class="_formBlock">
+			<FormInput v-model="tmsIsLongUrlsLength" type="number" manual-save pattern="^[0-9]+$" class="_formBlock">
 				<template #label>URLの個数</template>
 				<template #suffix>個</template>
 				<template #caption>タイムライン上のノートのURLがこの個数を超えた場合、畳んで表示します。</template>
 			</FormInput>
-			<FormInput v-model="tmsIsLongPollLength" type="number" manual-save required class="_formBlock">
+			<FormInput v-model="tmsIsLongPollLength" type="number" manual-save pattern="^[0-9]+$" class="_formBlock">
 				<template #label>アンケートの選択肢の個数</template>
 				<template #suffix>個</template>
 				<template #caption>タイムライン上のノートのアンケートの選択肢がこの個数を超えた場合、畳んで表示します。</template>
