@@ -339,6 +339,8 @@ function checkAnnoyingPost() {
 			text.includes('$[scale') ||
 			text.includes('$[position')
 		);
+	} else {
+		annoyingPost = false;
 	}
 }
 
