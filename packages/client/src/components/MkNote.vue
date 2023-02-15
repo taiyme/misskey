@@ -180,13 +180,15 @@ const tmsIsLongEnabled = defaultStore.state.tmsIsLongEnabled ?? true;
 const tmsIsLongTextElHeight = defaultStore.state.tmsIsLongTextElHeight ?? 500;
 const tmsIsLongFilesLength = defaultStore.state.tmsIsLongFilesLength ?? 5;
 const tmsIsLongUrlsLength = defaultStore.state.tmsIsLongUrlsLength ?? 4;
+const tmsIsLongPollLength = defaultStore.state.tmsIsLongPollLength ?? 5;
 const isLong = $computed(() => {
 	return tmsIsLongEnabled && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
 			(textElHeight >= tmsIsLongTextElHeight) ||
 			(appearNote.files.length >= tmsIsLongFilesLength) ||
-			(urls && urls.length >= tmsIsLongUrlsLength)
+			(urls && urls.length >= tmsIsLongUrlsLength) ||
+			((appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
 		)
 	);
 });
