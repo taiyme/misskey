@@ -2,8 +2,8 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
-		<div class="_formRoot">
-			<template v-if="tab === 'overview'">
+		<div class="_contents">
+			<div v-if="tab === 'overview'" class="_formRoot">
 				<FormSection>
 					<MkKeyValue class="_formBlock" :copy="version">
 						<template #key>{{ i18n.ts.version }}</template>
@@ -29,9 +29,9 @@
 						</FormLink>
 					</div>
 				</FormSection>
-			</template>
+			</div>
 
-			<template v-else-if="tab === 'settings'">
+			<div v-else-if="tab === 'settings'" class="_formRoot">
 				<FormSection>
 					<FormSwitch v-model="tmsVerticalInstanceTicker" class="_formBlock">
 						ノートのインスタンス情報を左端に表示
@@ -72,7 +72,7 @@
 						</div>
 					</FormFolder>
 				</FormSection>
-			</template>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
