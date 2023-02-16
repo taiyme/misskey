@@ -30,6 +30,14 @@
 			</FormLink>
 		</div>
 	</FormSection>
+
+	<FormSection>
+		<template #label>コントリビューター</template>
+		<div class="_formLinks">
+			<FormLink to="https://github.com/taiyme" external>@taiyme</FormLink>
+			<FormLink to="https://github.com/cffnpwr" external>@cffnpwr</FormLink>
+		</div>
+	</FormSection>
 </div>
 
 <div v-else-if="tab === 'settings'" class="_formRoot">
