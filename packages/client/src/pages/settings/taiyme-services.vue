@@ -1,7 +1,7 @@
 <template>
 <MkTab v-model="tab" style="margin-bottom: var(--margin);">
-	<option value="overview">{{ i18n.ts.overview }}</option>
-	<option value="settings">{{ i18n.ts.settings }}</option>
+	<option value="overview"><i class="ti ti-info-circle"></i> {{ i18n.ts.overview }}</option>
+	<option value="settings"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</option>
 </MkTab>
 
 <div v-if="tab === 'overview'" class="_formRoot">
@@ -41,7 +41,7 @@
 </div>
 
 <div v-else-if="tab === 'settings'" class="_formRoot">
-	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
 	<FormSection>
 		<FormSwitch v-model="tmsVerticalInstanceTicker" class="_formBlock">
@@ -83,6 +83,8 @@
 			</div>
 		</FormFolder>
 	</FormSection>
+
+	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
