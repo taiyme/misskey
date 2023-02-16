@@ -15,7 +15,7 @@
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.11.1",
-		"@tabler/icons": "^1.117.0",
+		"@tabler/icons-webfont": "^2.4.0",
 		"@vitejs/plugin-vue": "4.0.0",
 		"@vue/compiler-sfc": "3.2.45",
 		"autobind-decorator": "2.4.0",
