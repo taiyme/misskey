@@ -185,10 +185,10 @@ const isLong = $computed(() => {
 	return tmsIsLongEnabled && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(!tmsIsLongTextElHeight || (textElHeight >= tmsIsLongTextElHeight)) ||
-			(!tmsIsLongFilesLength || (appearNote.files.length >= tmsIsLongFilesLength)) ||
-			(!tmsIsLongUrlsLength || (urls && urls.length >= tmsIsLongUrlsLength)) ||
-			(!tmsIsLongPollLength || (appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
+			(!!tmsIsLongTextElHeight && (textElHeight >= tmsIsLongTextElHeight)) ||
+			(!!tmsIsLongFilesLength && (appearNote.files.length >= tmsIsLongFilesLength)) ||
+			(!!tmsIsLongUrlsLength && (urls && urls.length >= tmsIsLongUrlsLength)) ||
+			(!!tmsIsLongPollLength && (appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
 		)
 	);
 });
