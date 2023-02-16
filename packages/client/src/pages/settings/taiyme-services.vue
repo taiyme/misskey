@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><XHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="_formRoot">
 			<template v-if="tab === 'overview'">
@@ -47,28 +47,29 @@
 						<template v-if="tmsIsLongEnabled" #suffix>有効</template>
 						<template v-else #suffix>無効</template>
 
-						<MkInfo class="_formBlock">0以上の整数を指定してください。0を指定すると条件が無効になります。</MkInfo>
-
-						<FormInput v-model="tmsIsLongTextElHeight" type="number" class="_formBlock">
-							<template #label>ノート本文の高さ</template>
-							<template #suffix>px</template>
-							<template #caption>タイムライン上のノートがこの高さを超えた場合、畳んで表示します。ピクセル単位で指定してください。</template>
-						</FormInput>
-						<FormInput v-model="tmsIsLongFilesLength" type="number" class="_formBlock">
-							<template #label>添付ファイルの個数</template>
-							<template #suffix>個</template>
-							<template #caption>タイムライン上のノートの添付ファイルがこの個数を超えた場合、畳んで表示します。</template>
-						</FormInput>
-						<FormInput v-model="tmsIsLongUrlsLength" type="number" class="_formBlock">
-							<template #label>URLの個数</template>
-							<template #suffix>個</template>
-							<template #caption>タイムライン上のノートのURLがこの個数を超えた場合、畳んで表示します。</template>
-						</FormInput>
-						<FormInput v-model="tmsIsLongPollLength" type="number" class="_formBlock">
-							<template #label>アンケートの選択肢の個数</template>
-							<template #suffix>個</template>
-							<template #caption>タイムライン上のノートのアンケートの選択肢がこの個数を超えた場合、畳んで表示します。</template>
-						</FormInput>
+						<div class="_formRoot">
+							<MkInfo class="_formBlock">0以上の整数を指定してください。0を指定すると条件が無効になります。</MkInfo>
+							<FormInput v-model="tmsIsLongTextElHeight" type="number" class="_formBlock">
+								<template #label>ノート本文の高さ</template>
+								<template #suffix>px</template>
+								<template #caption>タイムライン上のノートがこの高さを超えた場合、畳んで表示します。ピクセル単位で指定してください。</template>
+							</FormInput>
+							<FormInput v-model="tmsIsLongFilesLength" type="number" class="_formBlock">
+								<template #label>添付ファイルの個数</template>
+								<template #suffix>個</template>
+								<template #caption>タイムライン上のノートの添付ファイルがこの個数を超えた場合、畳んで表示します。</template>
+							</FormInput>
+							<FormInput v-model="tmsIsLongUrlsLength" type="number" class="_formBlock">
+								<template #label>URLの個数</template>
+								<template #suffix>個</template>
+								<template #caption>タイムライン上のノートのURLがこの個数を超えた場合、畳んで表示します。</template>
+							</FormInput>
+							<FormInput v-model="tmsIsLongPollLength" type="number" class="_formBlock">
+								<template #label>アンケートの選択肢の個数</template>
+								<template #suffix>個</template>
+								<template #caption>タイムライン上のノートのアンケートの選択肢がこの個数を超えた場合、畳んで表示します。</template>
+							</FormInput>
+						</div>
 					</FormFolder>
 				</FormSection>
 			</template>
@@ -79,7 +80,6 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import XHeader from '../admin/_header_.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
@@ -92,7 +92,6 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
-import { definePageMetadata } from '@/scripts/page-metadata';
 
 let tab = $ref('overview');
 
@@ -159,9 +158,4 @@ async function save() {
 		});
 	}
 }
-
-definePageMetadata({
-	title: 'taiyme-services',
-	icon: 'ti ti-square-plus',
-});
 </script>
