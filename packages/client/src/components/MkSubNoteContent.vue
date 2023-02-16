@@ -53,7 +53,7 @@ const isLong = $computed(() => {
 	return tmsIsLongEnabled && !!(
 		props.note.cw == null && 
 		props.note.text != null && (
-			(textElHeight >= tmsIsLongTextElHeight)
+			(!tmsIsLongTextElHeight || (textElHeight >= tmsIsLongTextElHeight))
 		)
 	);
 });
