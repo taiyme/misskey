@@ -38,6 +38,11 @@
 			<FormLink to="https://github.com/cffnpwr" external>@cffnpwr</FormLink>
 		</div>
 	</FormSection>
+
+	<FormSection>
+		<template #label>支援者</template>
+		<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
+	</FormSection>
 </div>
 
 <div v-else-if="tab === 'settings'" class="_formRoot">
@@ -104,6 +109,13 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
+
+const patrons = [
+	'すえ',
+	'Midra',
+	'ゆー',
+	'こちゅだぁほ',
+];
 
 let tab = $ref('overview');
 let changed = $ref(false);
