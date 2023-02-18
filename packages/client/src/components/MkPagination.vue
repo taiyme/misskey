@@ -20,7 +20,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items"></slot>
+		<slot :items="items" :users="items.map(x => x.user).filter(x => x).filter((a, i, s) => s.findIndex(b => b.id === a.id) === i)"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="cxiknjgy _gap">
 			<MkButton v-if="!moreFetching" v-appear="($store.state.enableInfiniteScroll && !disableAutoLoad) ? fetchMore : null" class="button" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
