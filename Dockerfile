@@ -20,7 +20,7 @@ COPY packages/client/package.json ./packages/client/
 COPY packages/sw/package.json ./packages/sw/
 
 RUN corepack enable
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 COPY gulpfile.js ./gulpfile.js
 COPY locales ./locales
