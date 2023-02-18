@@ -1,4 +1,4 @@
-FROM node:18-bullseye AS builder
+FROM node:18.14.1-bullseye AS builder
 
 ARG NODE_ENV=production
 
@@ -45,7 +45,7 @@ COPY .git .git
 RUN git submodule update --init
 
 
-FROM node:18-bullseye-slim AS runner
+FROM node:18.14.1-bullseye-slim AS runner
 
 WORKDIR /misskey
 
