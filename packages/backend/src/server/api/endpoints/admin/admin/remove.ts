@@ -28,11 +28,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
 				throw new Error('user not found');
+			}
+
+			if (user.id === me.id) {
+				throw new Error('cannot remove yourself');
 			}
 
 			await this.usersRepository.update(user.id, {
