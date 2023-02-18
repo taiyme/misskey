@@ -10,20 +10,25 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="note" class="mk-reacted-users-dialog _gaps">
-			<div v-if="reactions.length === 0" class="_fullinfo">
+			<div v-if="!hasRenote && reactions.length === 0" class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 			<template v-else>
 				<div class="tabs">
+					<button v-if="hasRenote" class="tab _button" :class="{ tabActive: tab === RENOTE_TAB }" @click="tab = RENOTE_TAB">
+						<i class="ti ti-repeat"></i>
+						<span style="margin-left: 4px;">{{ note.renoteCount }}</span>
+					</button>
 					<button v-for="reaction in reactions" :key="reaction" class="tab _button" :class="{ tabActive: tab === reaction }" @click="tab = reaction">
 						<MkReactionIcon :reaction="reaction" :custom-emojis="note.emojis"/>
 						<span style="margin-left: 4px;">{{ note.reactions[reaction] }}</span>
 					</button>
 				</div>
-				<MkA v-for="user in users" :key="user.id" :to="userPage(user)">
-					<MkUserCardMini :user="user" :with-chart="false"/>
-				</MkA>
+				<div class="users">
+					<MkUserCardMiniList v-if="tab === RENOTE_TAB" :pagination="renotedUsers" :with-chart="false" :use-user-page="true"></MkUserCardMiniList>
+					<MkUserCardMiniList v-else :pagination="reactedUsers" :with-chart="false" :use-user-page="true"></MkUserCardMiniList>
+				</div>
 			</template>
 		</div>
 		<div v-else>
@@ -34,12 +39,11 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue';
+import { onMounted, computed } from 'vue';
 import * as misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { userPage } from '@/filters/user';
+import MkUserCardMiniList from '@/components/MkUserCardMiniList.vue';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 
@@ -53,27 +57,37 @@ const props = defineProps<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let note = $ref<misskey.entities.Note>();
-let tab = $ref<string>();
-let reactions = $ref<string[]>();
-let users = $ref();
+const RENOTE_TAB = Symbol('RENOTE_TAB');
+let hasRenote = $ref<boolean>(false);
 
-watch($$(tab), async () => {
-	const res = await os.api('notes/reactions', {
+let note = $ref<misskey.entities.Note>();
+let tab = $ref<typeof RENOTE_TAB | string>();
+let reactions = $ref<string[]>();
+
+const renotedUsers = {
+	endpoint: 'notes/renotes' as const,
+	limit: 30,
+	params: {
+		noteId: props.noteId,
+	},
+};
+
+const reactedUsers = {
+	endpoint: 'notes/reactions' as const,
+	limit: 30,
+	params: computed(() => ({
 		noteId: props.noteId,
 		type: tab,
-		limit: 30,
-	});
-
-	users = res.map(x => x.user);
-});
+	})),
+};
 
 onMounted(() => {
 	os.api('notes/show', {
 		noteId: props.noteId,
 	}).then((res) => {
+		hasRenote = res.renoteCount > 0;
 		reactions = Object.keys(res.reactions);
-		tab = reactions[0];
+		tab = hasRenote ? RENOTE_TAB : reactions[0];
 		note = res;
 	});
 });
