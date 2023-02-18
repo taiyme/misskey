@@ -18,11 +18,15 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
+export default define(meta, paramDef, async (ps, me) => {
 	const user = await Users.findOneBy({ id: ps.userId });
 
 	if (user == null) {
 		throw new Error('user not found');
+	}
+
+	if (user.id === me.id) {
+		throw new Error('cannot remove yourself');
 	}
 
 	await Users.update(user.id, {
