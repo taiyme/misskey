@@ -31,6 +31,9 @@ import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
+import { lookupNote } from '@/scripts/lookup-note';
+import { lookupFile } from '@/scripts/lookup-file';
+import { lookupInstance } from '@/scripts/lookup-instance';
 import { useRouter } from '@/router';
 import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
@@ -242,19 +245,19 @@ const lookup = (ev) => {
 		text: i18n.ts.note,
 		icon: 'ti ti-pencil',
 		action: () => {
-			alert('TODO');
+			lookupNote();
 		},
 	}, {
 		text: i18n.ts.file,
 		icon: 'ti ti-cloud',
 		action: () => {
-			alert('TODO');
+			lookupFile();
 		},
 	}, {
 		text: i18n.ts.instance,
 		icon: 'ti ti-planet',
 		action: () => {
-			alert('TODO');
+			lookupInstance();
 		},
 	}], ev.currentTarget ?? ev.target);
 };
