@@ -13,6 +13,7 @@
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
+							<span v-if="admin" class="admin">Administrator</span>
 						</span>
 					</div>
 				</div>
@@ -437,7 +438,7 @@ definePageMetadata(computed(() => ({
 				display: none;
 			}
 
-			> .suspended, > .silenced, > .moderator {
+			> .suspended, > .silenced, > .moderator, > .admin {
 				display: inline-block;
 				border: solid 1px;
 				border-radius: 6px;
@@ -458,6 +459,12 @@ definePageMetadata(computed(() => ({
 			> .moderator {
 				color: var(--success);
 				border-color: var(--success);
+			}
+
+			> .admin {
+				color: var(--fgOnAccent);
+				border-color: var(--accent);
+				background-color: var(--accent);
 			}
 		}
 	}
