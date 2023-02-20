@@ -1,39 +1,49 @@
 const execa = require('execa');
+const fs = require('fs');
 
 (async () => {
-	await execa('pnpm', ['run', 'clean'], {
+	await execa('pnpm', ['clean'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-	execa('pnpm', ['dlx', 'gulp', 'watch'], {
+	await execa('pnpm', ['build-pre'], {
 		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-	execa('pnpm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/backend',
+	execa('pnpm', ['exec', 'gulp', 'watch'], {
+		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-	execa('pnpm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/client',
+	execa('pnpm', ['--filter', 'backend', 'watch'], {
+		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
-	execa('pnpm', ['run', 'watch'], {
-		cwd: __dirname + '/../packages/sw',
+	execa('pnpm', ['--filter', 'client', 'watch'], {
+		cwd: __dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+
+	execa('pnpm', ['--filter', 'sw', 'watch'], {
+		cwd: __dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
 
 	const start = async () => {
 		try {
-			await execa('pnpm', ['run', 'start'], {
+			const exist = fs.existsSync(__dirname + '/../packages/backend/built/index.js');
+			if (!exist) throw new Error('not exist yet');
+
+			await execa('pnpm', ['start'], {
 				cwd: __dirname + '/../',
 				stdout: process.stdout,
 				stderr: process.stderr,
