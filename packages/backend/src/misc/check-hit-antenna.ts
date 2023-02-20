@@ -13,14 +13,14 @@ const blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 
 export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
 	if (note.visibility === 'specified') {
-		if (note.userId === antenna.userId) {
+		if (note.userId !== antenna.userId) {
 			if (note.visibleUserIds == null) return false;
 			if (!note.visibleUserIds.includes(antenna.userId)) return false;
 		}
 	}
 
 	if (note.visibility === 'followers') {
-		if (note.userId === antenna.userId) {
+		if (note.userId !== antenna.userId) {
 			const isFollowing = await Followings.count({
 				where: {
 					followerId: antenna.userId,
