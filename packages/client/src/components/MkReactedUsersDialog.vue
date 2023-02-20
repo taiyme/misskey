@@ -79,6 +79,7 @@ const reactedUsers = {
 		noteId: props.noteId,
 		type: tab,
 	})),
+	offsetMode: true,
 };
 
 onMounted(() => {

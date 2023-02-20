@@ -43,6 +43,7 @@ import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { lookupFile } from '@/scripts/lookup-file';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 let origin = $ref('local');
@@ -72,33 +73,12 @@ function clear() {
 	});
 }
 
-function show(file) {
-	os.pageWindow(`/admin/file/${file.id}`);
-}
-
-async function find() {
-	const { canceled, result: q } = await os.inputText({
-		title: i18n.ts.fileIdOrUrl,
-		allowEmpty: false,
-	});
-	if (canceled) return;
-
-	os.api('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
-		show(file);
-	}).catch(err => {
-		if (err.code === 'NO_SUCH_FILE') {
-			os.alert({
-				type: 'error',
-				text: i18n.ts.notFound,
-			});
-		}
-	});
-}
-
 const headerActions = $computed(() => [{
 	text: i18n.ts.lookup,
 	icon: 'ti ti-search',
-	handler: find,
+	handler: () => {
+		lookupFile();
+	},
 }, {
 	text: i18n.ts.clearCachedFiles,
 	icon: 'ti ti-trash',
