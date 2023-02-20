@@ -3,7 +3,7 @@ import * as os from '@/os';
 
 export async function lookupNote() {
 	const { canceled, result: q } = await os.inputText({
-		title: 'Host',
+		title: 'Note ID or URL',
 	});
 	if (canceled) return;
 

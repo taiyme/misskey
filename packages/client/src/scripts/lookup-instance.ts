@@ -12,7 +12,7 @@ export async function lookupInstance() {
 	};
 
 	const host = (result || '').trim().replace(/^https?:\/\//i, '').split('/')[0];
-	if (host) return;
+	if (!host) return;
 
 	show(host);
 }
