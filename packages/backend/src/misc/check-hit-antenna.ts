@@ -16,6 +16,33 @@ export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'No
 		return false;
 	}
 	
+	const blockings = await blockingCache.fetch(noteUser.id, () => Blockings.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
+	if (blockings.some(blocking => blocking === antenna.userId)) return false;
+
+	if (!antenna.withReplies && note.replyId != null) return false;
+
+	if (antenna.src === 'home') {
+		// TODO
+	} else if (antenna.src === 'list') {
+		const listUsers = (await UserListJoinings.findBy({
+			userListId: antenna.userListId!,
+		})).map(x => x.userId);
+		if (!listUsers.includes(note.userId)) return false;
+	} else if (antenna.src === 'group') {
+		const joining = await UserGroupJoinings.findOneByOrFail({ id: antenna.userGroupJoiningId! });
+		const groupUsers = (await UserGroupJoinings.findBy({
+			userGroupId: joining.userGroupId,
+		})).map(x => x.userId);
+		if (!groupUsers.includes(note.userId)) return false;
+	} else if (antenna.src === 'users') {
+		const accts = antenna.users.map(x => {
+			const { username, host } = Acct.parse(x);
+			return getFullApAccount(username, host).toLowerCase();
+		});
+		if (!accts.includes(getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+	}
+
+
 	const keywords = antenna.keywords
 		// Clean up
 		.map(xs => xs.filter(x => x !== ''))
