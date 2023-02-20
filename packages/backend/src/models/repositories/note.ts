@@ -190,7 +190,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 
 	async pack(
 		src: Note['id'] | Note,
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id'], isAdmin: User['isAdmin'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -290,7 +290,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 			packed.text = mfm.toString(tokens);
 		}
 
-		if (!opts.skipHide) {
+		if (!opts.skipHide && !me?.isAdmin) {
 			await hideNote(packed, meId);
 		}
 
@@ -299,7 +299,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 
 	async packMany(
 		notes: Note[],
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id'], isAdmin: User['isAdmin'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
