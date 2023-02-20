@@ -1,7 +1,7 @@
 import { Antenna } from '@/models/entities/antenna.js';
 import { Note } from '@/models/entities/note.js';
 import { User } from '@/models/entities/user.js';
-import { UserListJoinings, UserGroupJoinings, Blockings } from '@/models/index.js';
+import { UserListJoinings, UserGroupJoinings, Blockings, Followings } from '@/models/index.js';
 import { getFullApAccount } from './convert-host.js';
 import * as Acct from '@/misc/acct.js';
 import { Packed } from './schema.js';
@@ -12,12 +12,30 @@ const blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 // NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
-	if (note.visibility === 'specified') return false;
-	if (note.visibility === 'followers') return false;
+	if (note.visibility === 'specified') {
+		if (note.userId === antenna.userId) {
+			if (note.visibleUserIds == null) return false;
+			if (!note.visibleUserIds.includes(antenna.userId)) return false;
+		}
+	}
+
+	if (note.visibility === 'followers') {
+		if (note.userId === antenna.userId) {
+			const isFollowing = await Followings.count({
+				where: {
+					followerId: antenna.userId,
+					followeeId: note.userId,
+				},
+				take: 1,
+			}).then(n => n > 0);
+	
+			if (!isFollowing) return false;
+		}
+	}
 
 	// アンテナ作成者がノート作成者にブロックされていたらスキップ
 	const blockings = await blockingCache.fetch(noteUser.id, () => Blockings.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
-	if (blockings.some(blocking => blocking === antenna.userId)) return false;
+	if (blockings.includes(antenna.userId)) return false;
 
 	if (!antenna.withReplies && note.replyId != null) return false;
 
