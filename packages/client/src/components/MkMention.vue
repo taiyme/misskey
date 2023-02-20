@@ -49,6 +49,7 @@ const bgCss = bg.toRgbString();
   align-items: center;
   overflow: hidden;
   max-width: 100%;
+	box-sizing: border-box;
 
 	&.isMe {
 		color: var(--mentionMe);
