@@ -2,9 +2,9 @@
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <span v-else-if="char && useOsNativeEmojis" class="mk-emoji-native">{{ char }}</span>
-<template v-else class="mk-emoji-fallback">
-	<img v-if="useFallbackIcon" class="mk-emoji" :src="char2filePath('❓')" alt="❓" title="❓" decoding="async"/>
-	<span v-else>{{ emoji.replace('@.', '') }}</span>
+<template v-else>
+	<img v-if="useFallbackIcon" class="mk-emoji mk-emoji-fallback" :src="char2filePath('❓')" alt="❓" title="❓" decoding="async"/>
+	<span v-else class="mk-emoji-fallback">{{ emoji.replace('@.', '') }}</span>
 </template>
 </template>
 
