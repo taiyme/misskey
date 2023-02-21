@@ -94,7 +94,7 @@
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
+				<MkUserName :nowrap="false" :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
@@ -180,13 +180,15 @@ const tmsIsLongEnabled = defaultStore.state.tmsIsLongEnabled ?? true;
 const tmsIsLongTextElHeight = defaultStore.state.tmsIsLongTextElHeight ?? 500;
 const tmsIsLongFilesLength = defaultStore.state.tmsIsLongFilesLength ?? 5;
 const tmsIsLongUrlsLength = defaultStore.state.tmsIsLongUrlsLength ?? 4;
+const tmsIsLongPollLength = defaultStore.state.tmsIsLongPollLength ?? 5;
 const isLong = $computed(() => {
 	return tmsIsLongEnabled && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(textElHeight >= tmsIsLongTextElHeight) ||
-			(appearNote.files.length >= tmsIsLongFilesLength) ||
-			(urls && urls.length >= tmsIsLongUrlsLength)
+			(!!tmsIsLongTextElHeight && (textElHeight >= tmsIsLongTextElHeight)) ||
+			(!!tmsIsLongFilesLength && (appearNote.files.length >= tmsIsLongFilesLength)) ||
+			(!!tmsIsLongUrlsLength && (urls && urls.length >= tmsIsLongUrlsLength)) ||
+			(!!tmsIsLongPollLength && (appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
 		)
 	);
 });

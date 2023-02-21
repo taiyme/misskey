@@ -1,7 +1,8 @@
 <template>
 <template v-if="playerEnabled">
 	<div class="player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-		<iframe :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+		<iframe v-if="player.url?.startsWith('http://') || player.url?.startsWith('https://')" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+		<span v-else>invalid url</span>
 	</div>
 	<div class="preview-action">
 		<MkButton :small="true" inline @click="playerEnabled = false">
@@ -41,7 +42,7 @@
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
 		</MkButton>
 	</div>
-	<div v-if="!playerEnabled && player.url" class="preview-action">
+	<div v-if="!playerEnabled && (player.url?.startsWith('http://') || player.url?.startsWith('https://'))" class="preview-action">
 		<MkButton :small="true" inline @click="playerEnabled = true">
 			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 		</MkButton>
@@ -93,6 +94,7 @@ const embedId = `embed${Math.random().toString().replace(/\D/,'')}`;
 let tweetHeight = $ref(150);
 
 const requestUrl = new URL(props.url);
+if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com') {
 	const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);
@@ -103,7 +105,7 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 	requestUrl.hostname = 'www.youtube.com';
 }
 
-const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP');
+const requestLang = (lang ?? 'ja-JP').replace('ja-KS', 'ja-JP').replace('ja-CJP', 'ja-JP');
 
 requestUrl.hash = '';
 

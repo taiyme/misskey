@@ -86,6 +86,12 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-icons',
 		to: '/gallery',
 	},
+	groups: {
+		title: 'groups',
+		icon: 'ti ti-users',
+		show: computed(() => $i != null),
+		to: '/my/groups',
+	},
 	clips: {
 		title: 'clip',
 		icon: 'ti ti-paperclip',

@@ -200,7 +200,7 @@ const menuDef = computed(() => [{
 	}],
 }, {
 	items: [{
-		icon: 'ti ti-help',
+		icon: 'ti ti-square-plus',
 		text: 'taiyme',
 		to: '/settings/taiyme-services',
 		active: currentPage?.route.name === 'taiyme-services',

@@ -135,7 +135,7 @@ async function populateMyReaction(note: Note, meId: User['id'], _hint_?: {
 }
 
 export const NoteRepository = db.getRepository(Note).extend({
-	async isVisibleForMe(note: Note, meId: User['id'] | null): Promise<boolean> {
+	async isVisibleForMe(note: Note | Packed<'Note'>, meId: User['id'] | null): Promise<boolean> {
 		// This code must always be synchronized with the checks in generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
@@ -145,7 +145,12 @@ export const NoteRepository = db.getRepository(Note).extend({
 				return true;
 			} else {
 				// 指定されているかどうか
-				return note.visibleUserIds.some((id: any) => meId === id);
+				if (note.visibleUserIds != null) {
+					return note.visibleUserIds.some((id: any) => meId === id);
+				} else {
+					// 指定情報がなければfalse
+					return false;
+				}
 			}
 		}
 
@@ -190,7 +195,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 
 	async pack(
 		src: Note['id'] | Note,
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id'], isAdmin: User['isAdmin'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
@@ -290,7 +295,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 			packed.text = mfm.toString(tokens);
 		}
 
-		if (!opts.skipHide) {
+		if (!opts.skipHide && !me?.isAdmin) {
 			await hideNote(packed, meId);
 		}
 
@@ -299,7 +304,7 @@ export const NoteRepository = db.getRepository(Note).extend({
 
 	async packMany(
 		notes: Note[],
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id'], isAdmin: User['isAdmin'] } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;

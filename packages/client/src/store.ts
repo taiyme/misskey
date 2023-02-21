@@ -271,6 +271,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 4,
 	},
+	tmsIsLongPollLength: {
+		where: 'device',
+		default: 5,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

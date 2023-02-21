@@ -896,6 +896,7 @@ account: "账户"
 move: "移动"
 windowMaximize: "最大化"
 windowRestore: "还原"
+thisPostMayBeAnnoying: "这个帖子可能会让其他人感到困扰。"
 _sensitiveMediaDetection:
   description: "可以使用机器学习技术自动检测敏感媒体，以便进行审核。服务器负载将略微增加。"
   sensitivity: "检测敏感度"

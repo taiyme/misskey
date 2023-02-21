@@ -39,7 +39,8 @@
 				<button class="_buttonPrimary" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 			</div>
 		</div>
-		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+		<MkInfo v-if="hasNotSpecifiedMentions" warn class="info hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+		<MkInfo v-if="annoyingPost" warn class="info annoyingPost">{{ i18n.ts.thisPostMayBeAnnoying }}</MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
@@ -145,6 +146,7 @@ let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
+let annoyingPost = $ref(false);
 let recentHashtags = $ref(JSON.parse(localStorage.getItem('hashtags') || '[]'));
 let imeText = $ref('');
 
@@ -223,6 +225,10 @@ watch($$(visibleUsers), () => {
 }, {
 	deep: true,
 });
+
+watch($$(text), () => checkAnnoyingPost());
+watch($$(useCw), () => checkAnnoyingPost());
+watch($$(visibility), () => checkAnnoyingPost());
 
 if (props.mention) {
 	text = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
@@ -321,6 +327,20 @@ function addMissingMention() {
 				visibleUsers.push(user);
 			});
 		}
+	}
+}
+
+function checkAnnoyingPost() {
+	if (!useCw && visibility === 'public') {
+		annoyingPost = (
+			text.includes('$[x2') ||
+			text.includes('$[x3') ||
+			text.includes('$[x4') ||
+			text.includes('$[scale') ||
+			text.includes('$[position')
+		);
+	} else {
+		annoyingPost = false;
 	}
 }
 
@@ -857,8 +877,12 @@ onMounted(() => {
 			}
 		}
 
-		> .hasNotSpecifiedMentions {
-			margin: 0 20px 16px 20px;
+		> .info {
+			margin: 0 20px 8px 20px;
+
+			&:last-child {
+				margin-bottom: 16px;
+			}
 		}
 
 		> .cw,
