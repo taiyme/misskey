@@ -1,8 +1,11 @@
 <template>
 <img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async"/>
 <img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" :title="alt" decoding="async"/>
-<span v-else-if="char && useOsNativeEmojis">{{ char }}</span>
-<span v-else>{{ emoji }}</span>
+<span v-else-if="char && useOsNativeEmojis" class="mk-emoji-native">{{ char }}</span>
+<template v-else class="mk-emoji-fallback">
+	<img v-if="useFallbackIcon" class="mk-emoji" :src="char2filePath('❓')" alt="❓" title="❓" decoding="async"/>
+	<span v-else>{{ emoji.replace('@.', '') }}</span>
+</template>
 </template>
 
 <script lang="ts" setup>
@@ -19,6 +22,7 @@ const props = defineProps<{
 	noStyle?: boolean;
 	customEmojis?: CustomEmoji[];
 	isReaction?: boolean;
+	useFallbackIcon?: boolean;
 }>();
 
 const isCustom = computed(() => props.emoji.startsWith(':'));
@@ -36,6 +40,8 @@ const url = computed(() => {
 	}
 });
 const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);
+
+
 </script>
 
 <style lang="scss" scoped>
