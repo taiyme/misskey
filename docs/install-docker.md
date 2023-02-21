@@ -32,6 +32,7 @@ cp .config/docker_example.env .config/docker.env
 ご使用のインターネット環境によっては時間がかかることがあります。
 
 ```sh
+export COMPOSE_DOCKER_CLI_BUILD=1
 docker compose up -d --build
 ```
 
@@ -42,5 +43,6 @@ git stash
 git checkout taiyme-v12
 git pull
 git stash pop
+export COMPOSE_DOCKER_CLI_BUILD=1
 docker compose up -d --build
 ```
