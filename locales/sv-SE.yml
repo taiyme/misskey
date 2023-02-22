@@ -317,6 +317,7 @@ _notification:
 _deck:
   _columns:
     notifications: "Notifikationer"
+    favorites: "Favoriter"
     tl: "Tidslinje"
     list: "Listor"
     mentions: "Omnämningar"

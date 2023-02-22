@@ -724,6 +724,7 @@ _notification:
 _deck:
   _columns:
     notifications: "Notificări"
+    favorites: "Favorite"
     tl: "Cronologie"
     antenna: "Antene"
     list: "Liste"
