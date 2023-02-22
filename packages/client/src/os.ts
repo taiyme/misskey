@@ -208,6 +208,7 @@ export function alert(props: {
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	allowMfm?: boolean;
 }): Promise<void> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), props, {
@@ -222,6 +223,7 @@ export function confirm(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
+	allowMfm?: boolean;
 }): Promise<{ canceled: boolean }> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDialog.vue')), {
@@ -241,6 +243,7 @@ export function inputText(props: {
 	text?: string | null;
 	placeholder?: string | null;
 	default?: string | null;
+	allowMfm?: boolean;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
 }> {
@@ -266,6 +269,7 @@ export function inputNumber(props: {
 	text?: string | null;
 	placeholder?: string | null;
 	default?: number | null;
+	allowMfm?: boolean;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: number;
 }> {
@@ -291,6 +295,7 @@ export function inputDate(props: {
 	text?: string | null;
 	placeholder?: string | null;
 	default?: Date | null;
+	allowMfm?: boolean;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: Date;
 }> {
@@ -315,6 +320,7 @@ export function select<C = any>(props: {
 	title?: string | null;
 	text?: string | null;
 	default?: string | null;
+	allowMfm?: boolean;
 } & ({
 	items: {
 		value: C;

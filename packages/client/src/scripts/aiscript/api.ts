@@ -13,6 +13,7 @@ export function createAiScriptEnv(opts) {
 				type: type ? type.value : 'info',
 				title: title.value,
 				text: text.value,
+				allowMfm: true,
 			});
 		}),
 		'Mk:confirm': values.FN_NATIVE(async ([title, text, type]) => {
@@ -20,6 +21,7 @@ export function createAiScriptEnv(opts) {
 				type: type ? type.value : 'question',
 				title: title.value,
 				text: text.value,
+				allowMfm: true,
 			});
 			return confirm.canceled ? values.FALSE : values.TRUE;
 		}),
