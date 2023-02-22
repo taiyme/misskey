@@ -11,7 +11,7 @@
 		</template>
 
 		<template #default="{ items }">
-			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false">
+			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
 				<XNote :key="item.id" :note="item.note" :class="$style.note"/>
 			</XList>
 		</template>
@@ -48,6 +48,5 @@ const pagination = {
 <style lang="scss" module>
 .note {
 	background: var(--panel);
-	border-radius: var(--radius);
 }
 </style>
