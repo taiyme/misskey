@@ -9,6 +9,7 @@ import { query, appendQuery } from '@/prelude/url.js';
 import { Meta } from '@/models/entities/meta.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { Users, DriveFolders } from '../index.js';
+import { sanitizeUrl } from '@/misc/sanitize-url.js';
 
 type PackOptions = {
 	detail?: boolean,
@@ -132,8 +133,8 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file, false),
-			thumbnailUrl: this.getPublicUrl(file, true),
+			url: opts.self ? file.url : (sanitizeUrl(this.getPublicUrl(file, false)) ?? null),
+			thumbnailUrl: sanitizeUrl(this.getPublicUrl(file, true)) ?? null,
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
@@ -166,8 +167,8 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : this.getPublicUrl(file, false),
-			thumbnailUrl: this.getPublicUrl(file, true),
+			url: opts.self ? file.url : (sanitizeUrl(this.getPublicUrl(file, false)) ?? null),
+			thumbnailUrl: sanitizeUrl(this.getPublicUrl(file, true)) ?? null,
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
