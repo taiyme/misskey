@@ -13,10 +13,10 @@
 	</FormSection>
 
 	<FormSection>
-		<MkKeyValue class="_formBlock">
-			<template #key>taiyme/misskeyについて</template>
-			<template #value>taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。</template>
-		</MkKeyValue>
+		<template #label>taiyme/misskeyについて</template>
+		<div class="_formBlock">
+			taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。
+		</div>
 		<div class="_formLinks">
 			<FormLink to="https://github.com/taiyme/misskey" external>
 				<template #icon><i class="ti ti-code"></i></template>
@@ -32,11 +32,26 @@
 	</FormSection>
 
 	<FormSection>
+		<template #label>コラボレーター</template>
+		<div class="_formLinks">
+			<template v-for="collaborator in collaborators" :key="collaborator">
+				<FormLink :to="`https://github.com/${collaborator.acct}`" external>
+					{{ collaborator.name }}
+					<template #suffix>{{ `@${collaborator.acct}` }}</template>
+				</FormLink>
+			</template>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<template #label>コントリビューター</template>
 		<div class="_formLinks">
-			<FormLink to="https://github.com/taiyme" external>@taiyme</FormLink>
-			<FormLink to="https://github.com/cffnpwr" external>@cffnpwr</FormLink>
-			<FormLink to="https://github.com/Steve-0628" external>@Steve-0628</FormLink>
+			<template v-for="contributor in contributors" :key="contributor">
+				<FormLink :to="`https://github.com/${contributor.acct}`" external>
+					{{ contributor.name }}
+					<template #suffix>{{ `@${contributor.acct}` }}</template>
+				</FormLink>
+			</template>
 		</div>
 	</FormSection>
 
@@ -111,7 +126,34 @@ import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
 
-const patrons = [
+type Contributor = {
+	name: string;
+	acct: string;
+}
+
+const collaborators: Contributor[] = [
+	{
+		name: 'taiy',
+		acct: 'taiyme',
+	},
+	{
+		name: 'かふぇいんぱわぁ',
+		acct: 'cffnpwr',
+	},
+];
+
+const contributors: Contributor[] = [
+	{
+		name: 'すてさん',
+		acct: 'Steve-0628',
+	},
+	{
+		name: 'hyuoou',
+		acct: 'hyuoou',
+	},
+];
+
+const patrons: string[] = [
 	'すえ',
 	'Midra',
 	'ゆー',
