@@ -50,6 +50,16 @@ importers:
       '@sinonjs/fake-timers': 9.1.2
       '@swc/cli': 0.1.61
       '@swc/core': 1.3.35
+      '@swc/core-darwin-arm64': ^1.3.36
+      '@swc/core-darwin-x64': ^1.3.36
+      '@swc/core-linux-arm-gnueabihf': ^1.3.36
+      '@swc/core-linux-arm64-gnu': ^1.3.36
+      '@swc/core-linux-arm64-musl': ^1.3.36
+      '@swc/core-linux-x64-gnu': ^1.3.36
+      '@swc/core-linux-x64-musl': ^1.3.36
+      '@swc/core-win32-arm64-msvc': ^1.3.36
+      '@swc/core-win32-ia32-msvc': ^1.3.36
+      '@swc/core-win32-x64-msvc': ^1.3.36
       '@syuilo/aiscript': 0.11.1
       '@tensorflow/tfjs-node': 3.20.0
       '@types/bcryptjs': 2.4.2
@@ -309,6 +319,16 @@ importers:
       ws: 8.8.1
       xev: 3.0.2
     optionalDependencies:
+      '@swc/core-darwin-arm64': 1.3.36
+      '@swc/core-darwin-x64': 1.3.36
+      '@swc/core-linux-arm-gnueabihf': 1.3.36
+      '@swc/core-linux-arm64-gnu': 1.3.36
+      '@swc/core-linux-arm64-musl': 1.3.36
+      '@swc/core-linux-x64-gnu': 1.3.36
+      '@swc/core-linux-x64-musl': 1.3.36
+      '@swc/core-win32-arm64-msvc': 1.3.36
+      '@swc/core-win32-ia32-msvc': 1.3.36
+      '@swc/core-win32-x64-msvc': 1.3.36
       '@tensorflow/tfjs-node': 3.20.0
     devDependencies:
       '@redocly/openapi-core': 1.0.0-beta.108
@@ -390,7 +410,7 @@ importers:
       autosize: 5.0.1
       blurhash: 1.1.5
       broadcast-channel: 4.14.0
-      browser-image-resizer: git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.2
+      browser-image-resizer: github:misskey-dev/browser-image-resizer
       chart.js: 3.9.1
       chartjs-adapter-date-fns: 2.0.0
       chartjs-plugin-gradient: 0.5.1
@@ -452,7 +472,7 @@ importers:
       autosize: 5.0.1
       blurhash: 1.1.5
       broadcast-channel: 4.14.0
-      browser-image-resizer: github.com/misskey-dev/browser-image-resizer/a58834f5fe2af9f9f31ff115121aef3de6f9d416
+      browser-image-resizer: github.com/misskey-dev/browser-image-resizer/0380d12c8e736788ea7f4e6e985175521ea7b23c
       chart.js: 3.9.1
       chartjs-adapter-date-fns: 2.0.0_chart.js@3.9.1
       chartjs-plugin-gradient: 0.5.1_chart.js@3.9.1
@@ -1305,8 +1325,26 @@ packages:
     dev: false
     optional: true
 
+  /@swc/core-darwin-arm64/1.3.36:
+    resolution: {integrity: sha512-lsP+C8p9cC/Vd9uAbtxpEnM8GoJI/MMnVuXak7OlxOtDH9/oTwmAcAQTfNGNaH19d2FAIRwf+5RbXCPnxa2Zjw==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@swc/core-darwin-x64/1.3.35:
     resolution: {integrity: sha512-oOSkSGWtALovaw22lNevKD434OQTPf8X+dVPvPMrJXJpJ34dWDlFWpLntoc+arvKLNZ7LQmTuk8rR1hkrAY7cw==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@swc/core-darwin-x64/1.3.36:
+    resolution: {integrity: sha512-jaLXsozWN5xachl9fPxDMi5nbWq1rRxPAt6ISeiYB6RJk0MQKH1634pOweBBem2pUDDzwDFXFw6f22LTm/cFvA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
@@ -1323,8 +1361,26 @@ packages:
     dev: false
     optional: true
 
+  /@swc/core-linux-arm-gnueabihf/1.3.36:
+    resolution: {integrity: sha512-vcBdTHjoEpvJDbFlgto+S6VwAHzLA9GyCiuNcTU2v4KNQlFzhbO4A4PMfMCb/Z0RLJEr16tirfHdWIxjU3h8nw==}
+    engines: {node: '>=10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@swc/core-linux-arm64-gnu/1.3.35:
     resolution: {integrity: sha512-Zlv3WHa/4x2p51HSvjUWXHfSe1Gl2prqImUZJc8NZOlj75BFzVuR0auhQ+LbwvIQ3gaA1LODX9lyS9wXL3yjxA==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@swc/core-linux-arm64-gnu/1.3.36:
+    resolution: {integrity: sha512-o7f5OsvwWppJo+qIZmrGO5+XC6DPt6noecSbRHjF6o1YAcR13ETPC14k1eC9H1YbQwpyCFNVAFXyNcUbCeQyrQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -1341,8 +1397,26 @@ packages:
     dev: false
     optional: true
 
+  /@swc/core-linux-arm64-musl/1.3.36:
+    resolution: {integrity: sha512-FSHPngMi3c0fuGt9yY2Ubn5UcELi3EiPLJxBSC3X8TF9atI/WHZzK9PE9Gtn0C/LyRh4CoyOugDtSOPzGYmLQg==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@swc/core-linux-x64-gnu/1.3.35:
     resolution: {integrity: sha512-Dtxf2IbeH7XlNhP1Qt2/MvUPkpEbn7hhGfpSRs4ot8D3Vf5QEX4S/QtC1OsFWuciiYgHAT1Ybjt4xZic9DSkmA==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@swc/core-linux-x64-gnu/1.3.36:
+    resolution: {integrity: sha512-PHSsH2rek5pr3e0K09VgWAbrWK2vJhaI7MW9TPoTjyACYjcs3WwjcjQ30MghXUs2Dc/bXjWAOi9KFTjq/uCyFg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -1359,8 +1433,26 @@ packages:
     dev: false
     optional: true
 
+  /@swc/core-linux-x64-musl/1.3.36:
+    resolution: {integrity: sha512-4LfMYQHzozHCKkIcmQy83b+4SpI+mOp6sYNbXqSRz5dYvTVjegKZXe596P1U/87cK2cgR4uYvkgkgBXquaWvwQ==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@swc/core-win32-arm64-msvc/1.3.35:
     resolution: {integrity: sha512-dNGfKCUSX2M4qVyaS80Lyos0FkXyHRCvrdQ2Y4Hrg3FVokiuw3yY6fLohpUfQ5ws3n2A39dh7jGDeh34+l0sGA==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@swc/core-win32-arm64-msvc/1.3.36:
+    resolution: {integrity: sha512-7y3dDcun79TAjCyk3Iv0eOMw1X/KNQbkVyKOGqnEgq9g22F8F1FoUGKHNTzUqVdzpHeJSsHgW5PlkEkl3c/d9w==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
@@ -1377,8 +1469,26 @@ packages:
     dev: false
     optional: true
 
+  /@swc/core-win32-ia32-msvc/1.3.36:
+    resolution: {integrity: sha512-zK0VR3B4LX5hzQ+7eD+K+FkxJlJg5Lo36BeahMzQ+/i0IURpnuyFlW88sdkFkMsc2swdU6bpvxLZeIRQ3W4OUg==}
+    engines: {node: '>=10'}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /@swc/core-win32-x64-msvc/1.3.35:
     resolution: {integrity: sha512-/RvphT4WfuGfIK84Ha0dovdPrKB1bW/mc+dtdmhv2E3EGkNc5FoueNwYmXWRimxnU7X0X7IkcRhyKB4G5DeAmg==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /@swc/core-win32-x64-msvc/1.3.36:
+    resolution: {integrity: sha512-2bIjr9DhAckGiXZEvj6z2z7ECPcTimG+wD0VuQTvr+wkx46uAJKl5Kq+Zk+dd15ErL7JGUtCet1T7bf1k4FwvQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -2964,7 +3074,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6326,6 +6436,19 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects/1.15.2_debug@4.3.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2
+    dev: true
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -9053,6 +9176,7 @@ packages:
 
   /nan/2.17.0:
     resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
+    requiresBuild: true
     dev: false
 
   /nanoid/3.3.3:
@@ -13071,8 +13195,8 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  github.com/misskey-dev/browser-image-resizer/a58834f5fe2af9f9f31ff115121aef3de6f9d416:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/a58834f5fe2af9f9f31ff115121aef3de6f9d416}
+  github.com/misskey-dev/browser-image-resizer/0380d12c8e736788ea7f4e6e985175521ea7b23c:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0380d12c8e736788ea7f4e6e985175521ea7b23c}
     name: browser-image-resizer
-    version: 2.2.1-misskey.2
+    version: 2.2.1-misskey.3
     dev: false
