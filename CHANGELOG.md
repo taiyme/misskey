@@ -9,6 +9,27 @@
 You should also include the user name that made the change.
 -->
 
+## 1.0.33 (2023/02/23)
+
+- perf(server): アンテナの作成を5つに制限 @taiyme
+- refactor(client): explicit showing property for tooltips @saschanaz
+- fix: sanitize url @mei23 @syuilo
+- fix(client): 一部のダイアログがMFMとしてパースされる @taiyme
+- feat(client): チャンネルカラムとお気に入りカラムを追加 #35 @taiyme
+
+## 1.0.32 (2023/02/22)
+
+- Update pnpm 7.27.0 to 7.27.1
+- fix(client): メンションがpadding分はみ出る
+- enhance(server): アンテナ機能で投稿が適切に取得できるように @Steve-0628 @taiyme
+- test(server): isDeleted判定をやめてみる refs #31
+- enhance: docker composeでもキャッシュをダウンロードできるようにした (#32) @cffnpwr
+- enhance(client): カスタム絵文字が存在しない場合の表示 @taiyme
+- enhance: ワードミュート機能を強化 refs #33 @taiyme
+
+Docker環境で利用する方向けのドキュメントが完成しました。  
+[Docker Composeを使ったMisskey構築](./docs/install-docker.md)を参照してください。
+
 ## 1.0.31 (2023/02/20)
 
 - hotfix(client): リアクション一覧がページネーションされない問題 @taiyme

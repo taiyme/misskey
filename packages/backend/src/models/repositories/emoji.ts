@@ -1,6 +1,7 @@
 import { db } from '@/db/postgre.js';
 import { Emoji } from '@/models/entities/emoji.js';
 import { Packed } from '@/misc/schema.js';
+import { sanitizeUrl } from '@/misc/sanitize-url.js';
 
 export const EmojiRepository = db.getRepository(Emoji).extend({
 	async pack(
@@ -15,7 +16,7 @@ export const EmojiRepository = db.getRepository(Emoji).extend({
 			category: emoji.category,
 			host: emoji.host,
 			// || emoji.originalUrl してるのは後方互換性のため
-			url: emoji.publicUrl || emoji.originalUrl,
+			url: sanitizeUrl(emoji.publicUrl || emoji.originalUrl)!,
 		};
 	},
 

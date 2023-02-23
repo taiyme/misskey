@@ -82,5 +82,6 @@ _notification:
 _deck:
   _columns:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"
+    favorites: "ಮೆಚ್ಚಿನವುಗಳು"
     tl: "ಸಮಯಸಾಲು"
     mentions: "ಹೆಸರಿಸಿದ"

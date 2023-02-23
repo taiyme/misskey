@@ -727,6 +727,7 @@ _deck:
     main: "Principal"
     widgets: "Widgets"
     notifications: "Notificações"
+    favorites: "Favoritar"
     tl: "Timeline"
     antenna: "Antenas"
     list: "Listas"

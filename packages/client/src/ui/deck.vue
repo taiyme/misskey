@@ -132,9 +132,11 @@ const addColumn = async (ev) => {
 		'main',
 		'widgets',
 		'notifications',
+		'favorites',
 		'tl',
 		'antenna',
 		'list',
+		'channel',
 		'mentions',
 		'direct',
 	];

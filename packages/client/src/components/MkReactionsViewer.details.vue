@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
 			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
@@ -21,7 +21,8 @@ import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
 
-const props = defineProps<{
+defineProps<{
+	showing: boolean;
 	reaction: string;
 	users: any[]; // TODO
 	count: number;
@@ -47,6 +48,10 @@ const emit = defineEmits<{
 			width: 60px;
 			font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 			margin: 0 auto;
+		}
+
+		> .mk-emoji-fallback {
+			display: none;				
 		}
 
 		> .name {
