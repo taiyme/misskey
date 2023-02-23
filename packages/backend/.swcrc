@@ -13,9 +13,9 @@
 		"experimental": {
 			"keepImportAssertions": true
 		},
-		"baseUrl": ".",
+		"baseUrl": "src",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@src/*": ["*"]
 		},
 		"target": "es2021"
 	},
