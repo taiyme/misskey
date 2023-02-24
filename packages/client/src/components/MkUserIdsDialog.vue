@@ -44,7 +44,11 @@ const props = defineProps<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const users = props.userIds.length ? await os.api('users/show', {
+let users = $ref<misskey.entities.UserDetailed[]>([]);
+
+os.api('users/show', {
 	userIds: props.userIds,
-}) : [];
+}).then(_users => {
+	users = _users;
+});
 </script>
