@@ -1,19 +1,17 @@
-version: "3"
-
+version: '3'
 services:
   web:
     build:
       context: .
-      cache_from:
-        - ghcr.io/taiyme/misskey:buildcache
-    restart: always
+      dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
     networks:
       - internal_network
       - external_network
+    tty: true
     volumes:
-      - ./files:/misskey/files
+      - .:/workspaces:cached
       - ./.config:/misskey/.config:ro
     depends_on:
       - db
@@ -33,7 +31,7 @@ services:
     networks:
       - internal_network
     env_file:
-      - .config/docker.env
+      - ./.config/docker.env
     volumes:
       - ./db:/var/lib/postgresql/data
 
