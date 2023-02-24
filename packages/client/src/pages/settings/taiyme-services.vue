@@ -181,13 +181,11 @@ watch([
 	changed = true;
 });
 
-async function check() {
+async function check(): Promise<boolean> {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
 		if (Math.sign(x) === -1) return false;
-		if (min == null) min = -Infinity;
-		if (max == null) max = Infinity;
-		return (min <= x) && (x <= max);
+		return ((min == null ? -Infinity : min) <= x) && (x <= (max == null ? Infinity : max));
 	};
 	return (
 		isNumberInRange(tmsIsLongTextElHeight, 0) &&
@@ -197,7 +195,7 @@ async function check() {
 	);
 }
 
-async function save() {
+async function save(): Promise<void> {
 	if (await check()) {
 		defaultStore.set('tmsVerticalInstanceTicker', tmsVerticalInstanceTicker);
 		defaultStore.set('tmsIsLongEnabled', tmsIsLongEnabled);
