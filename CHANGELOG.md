@@ -9,7 +9,12 @@
 You should also include the user name that made the change.
 -->
 
-## 1.0.35 (2023/02/25)
+## 1.0.36 (2023/02/25)
+
+- feat(client): 宛先ダイアログ @taiyme
+- enhance(client): has authority @taiyme
+
+## 1.0.35 (2023/02/24)
 
 - hotfix: add chokidar to dependencies (#41) @cffnpwr
 
