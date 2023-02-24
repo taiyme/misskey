@@ -1,0 +1,10 @@
+FROM node:lts
+
+RUN apt update && apt install -y git
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/client/package.json ./packages/client/
+COPY packages/sw/package.json ./packages/sw/
+
+RUN corepack enable

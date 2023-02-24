@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 1.0.34 (2023/02/24)
+
+- カラムの見た目を他と統一 (#36) @hyuoou
+- feat: swc on windows (#37) @cffnpwr
+- feat(server): add @swc/core-android-arm64 to optional (#38) @cffnpwr
+- tms: fix types @taiyme
+- Feature/fix dev (#39) @cffnpwr
+
 ## 1.0.33 (2023/02/23)
 
 - perf(server): アンテナの作成を5つに制限 @taiyme
