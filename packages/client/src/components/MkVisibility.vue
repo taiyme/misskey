@@ -26,11 +26,11 @@ if ($i && $i.id !== props.note.userId && $i.isAdmin) {
 		os.api('users/show', {
 			userId: props.note.userId,
 		}).then(user => {
-			hasAuthority = user.isFollowing;
+			hasAuthority = !user.isFollowing;
 		});
 	}
 	if (props.note.visibility === 'specified' && props.note.visibleUserIds) {
-		hasAuthority = props.note.visibleUserIds.includes($i.id);
+		hasAuthority = !props.note.visibleUserIds.includes($i.id);
 	}
 }
 
