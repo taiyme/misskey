@@ -45,7 +45,6 @@
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@pnpm/logger": "^5.0.0",
 		"@types/gulp": "4.0.9",
 		"@types/gulp-rename": "2.0.1",
 		"@typescript-eslint/parser": "5.36.2",
