@@ -89,7 +89,8 @@ jobs:
               const filePath = path.join(directory, dirName, 'outputs.txt')
               const outputs = JSON.parse(fs.readFileSync(filePath))
 
-              tags = [...tags, ...outputs.tags]
+              if (outputs.tags !== undefined)
+                tags = [...tags, ...outputs.tags]
             }
 
             return tags
