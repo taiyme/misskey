@@ -1,0 +1,123 @@
+FROM --platform=linux/amd64 node:18.14.1-bullseye AS common
+
+ENV npm_config_arch=arm64
+
+RUN \
+	export CC="aarch64-linux-gnu-gcc" && \
+	export CXX="aarch64-linux-gnu-g++" && \
+	export AR="aarch64-linux-gnu-ar" && \
+	export RANLIB="aarch64-linux-gnu-ranlib" && \
+	export LINK="aarch64-linux-gnu-g++" && \
+	export CPP="aarch64-linux-gnu-gcc -E" && \
+	export STRIP="aarch64-linux-gnu-strip" && \
+	export OBJCOPY="aarch64-linux-gnu-objcopy" && \
+	export LD="aarch64-linux-gnu-g++" && \
+	export OBJDUMP="aarch64-linux-gnu-objdump" && \
+	export NM="aarch64-linux-gnu-nm" && \
+	export AS="aarch64-linux-gnu-as"
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt,sharing=locked \
+	apt-get update
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt,sharing=locked \
+	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu
+
+
+FROM common AS builder
+
+ARG NODE_ENV=production
+
+WORKDIR /misskey
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/client/package.json ./packages/client/
+COPY packages/sw/package.json ./packages/sw/
+
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
+
+COPY gulpfile.js ./gulpfile.js
+COPY locales ./locales
+COPY scripts ./scripts
+COPY packages/backend ./packages/backend
+COPY packages/client ./packages/client
+COPY packages/sw ./packages/sw
+
+RUN pnpm build
+
+
+FROM common AS submodule
+
+WORKDIR /misskey
+
+COPY .git .git
+
+RUN git submodule update --init
+
+
+FROM common AS ffmpeg
+
+RUN curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-arm64-static.tar.xz -o ffmpeg.tar.xz
+RUN tar Jxvf ffmpeg.tar.xz --wildcards ffmpeg-*/ffmpeg -C /ffmpeg --strip-components 1
+
+
+FROM common AS tini
+
+RUN curl -L https://github.com/krallin/tini/releases/latest/download/tini-static-arm64 -o tini
+RUN chmod +x /tini
+
+
+FROM common AS re2
+
+COPY --from=builder /misskey/packages/backend/node_modules/re2 /re2
+
+WORKDIR /re2
+
+RUN npm i
+RUN npm exec node-gyp rebuild --arch=arm64
+
+
+FROM --platform=linux/arm64 node:18.14.1-bullseye AS tfjs
+
+RUN git clone https://github.com/tensorflow/tfjs.git
+
+WORKDIR /tfjs/tfjs-node
+
+RUN corepack enable
+RUN pnpm i
+
+
+FROM --platform=linux/arm64 node:18.14.1-bullseye-slim AS runner
+
+WORKDIR /misskey
+
+RUN corepack enable
+
+COPY .node-version .node-version
+COPY package.json ./
+COPY packages/backend/ormconfig.js ./packages/backend/
+COPY packages/backend/migration ./packages/backend/migration
+COPY packages/backend/nsfw-model ./packages/backend/nsfw-model
+COPY packages/backend/assets ./packages/backend/assets
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/client/package.json ./packages/client/
+COPY packages/client/assets ./packages/client/assets
+COPY packages/sw/package.json ./packages/sw/
+COPY locales locales
+COPY scripts scripts
+COPY assets assets
+COPY --from=submodule /misskey/misskey-assets ./misskey-assets
+COPY --from=tini /tini /tini
+COPY --from=ffmpeg /ffmpeg /usr/bin/ffmpeg
+COPY --from=builder /misskey/node_modules ./node_modules
+COPY --from=builder /misskey/built ./built
+COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
+COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
+COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
+COPY --from=re2 /re2 /misskey/packages/backend/node_modules/re2
+COPY --from=tfjs /tfjs/tfjs-node /misskey/packages/backend/node_modules/@tensorflow/tfjs-node
+
+ENV NODE_ENV=production
+ENTRYPOINT ["/tini", "--"]
+CMD ["pnpm", "run", "migrateandstart"]

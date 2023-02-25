@@ -6,23 +6,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Github Container Registry
+  build_image:
+    name: Build Docker image
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
 
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
+        if: matrix.arch == 'arm64'
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -33,15 +30,90 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=ref,event=tag,enable=${{ github.event_name != 'workflow_dispatch' }}
-            type=raw,value=latest
+            type=ref,event=tag,prefix=${{ matrix.arch }}-,enable=${{ github.event_name != 'workflow_dispatch' }}
+            type=raw,value=${{ matrix.arch }}-latest
 
-      - name: Build and Push to Docker Hub
+      - name: Build image
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: Dockerfile.gha
-          push: true
-          platforms: linux/amd64,linux/arm64
+          file: Dockerfile.${{ matrix.arch }}
+          platforms: linux/${{ matrix.arch }}
           tags: ${{ steps.meta.outputs.tags }}
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+          push: false
+      
+      - name: Create outputs.txt
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const fs = require('fs')
+
+            const matrix = "${{ matrix.arch }}"
+            const tags = "${{ steps.meta.outputs.tags }}".split("\n")
+
+            const outputs = { matrix, tags }
+
+            fs.writeFileSync("${{ github.workspace }}/outputs.txt", JSON.stringify(outputs))
+
+      - name: Upload outputs.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: outputs-${{ steps.generate-unique-id.outputs.result }}
+          path: ${{ github.workspace }}/outputs.txt
+
+
+  push_to_registry:
+    name: Push Docker image to Github Container Registry
+    runs-on: ubuntu-latest
+    needs: build_image
+
+    steps:
+      - name: Download outputs.txt
+        uses: actions/download-artifact@v2
+        with:
+          path: matrix-job-outputs
+        
+      - name: Create tags
+        uses: actions/github-script@v4
+        id: create_tags
+        with:
+          result-encoding: string
+          script: |
+            const fs = require('fs')
+            const path = require('path')
+
+            const directory = path.resolve('./matrix-job-outputs')
+            let tags = []
+
+            for (const dirName of fs.readdirSync(directory)) {
+              const filePath = path.join(directory, dirName, 'outputs.txt')
+              const outputs = JSON.parse(fs.readFileSync(filePath))
+
+              if (outputs.tags !== undefined)
+                tags = [...tags, ...outputs.tags]
+            }
+
+            return tags.join("\n")
+
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=tag,enable=${{ github.event_name != 'workflow_dispatch' }}
+            type=raw,value=latest
+
+      - name: Create and push manifest images
+        uses: Noelware/docker-manifest-action@0.3.1
+        with:
+          inputs: ${{ steps.create_tags.outputs.result }}
+          images: ${{ steps.meta.outputs.tags }}
+          push: true
