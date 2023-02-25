@@ -83,7 +83,7 @@ jobs:
             const path = require('path')
 
             const directory = path.resolve('./matrix-job-outputs')
-            const tags = []
+            let tags = []
 
             for (const dirName of fs.readdirSync(directory)) {
               const filePath = path.join(directory, dirName, 'outputs.txt')
