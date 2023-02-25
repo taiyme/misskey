@@ -1,5 +1,7 @@
 FROM node:lts
 
+WORKDIR /workspace
+
 RUN apt update && apt install -y git
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
