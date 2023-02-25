@@ -2,6 +2,16 @@ FROM --platform=linux/amd64 node:18.14.1-bullseye AS common
 
 ENV npm_config_arch=arm64
 
+<<<<<<<< HEAD:Dockerfile.arm64
+========
+ENV npm_config_arch=${TARGETARCH}
+
+RUN case "$TARGETARCH" in \
+	"arm64") echo aarch64 > /target;; \
+	"amd64") echo x86-64 > /target ;; \
+	*) exit 1 ;; \
+	esac
+>>>>>>>> f38d995cb78a7a47f197f1ece0f5e76a8a41853b:Dockerfile.gha
 RUN \
 	export CC="aarch64-linux-gnu-gcc" && \
 	export CXX="aarch64-linux-gnu-g++" && \
