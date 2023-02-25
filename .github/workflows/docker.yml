@@ -30,7 +30,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=ref,event=tag,prefix=${{ matrix.arch }}-,enable=${{ github.event_name != "workflow_dispatch" }}
+            type=ref,event=tag,prefix=${{ matrix.arch }}-,enable=${{ github.event_name != 'workflow_dispatch' }}
             type=raw,value=${{ matrix.arch }}-latest
 
       - name: Build image
