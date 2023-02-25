@@ -35,13 +35,15 @@ jobs:
 
       - name: Build and push
         uses: docker/bake-action@v2
+        env:
+          NAME: ghcr.io/${{ github.repository }}
         with:
-          load: true
+          push: true
           files: .github/workflows/docker/docker-bake.hcl
       
       - name: Create and push manifest images
         uses: Noelware/docker-manifest-action@0.3.1
         with:
-          images: misskey:amd64,misskey:arm64
+          images: ghcr.io/${{ github.repository }}:amd64,ghcr.io/${{ github.repository }}:arm64
           inputs: ${{ steps.meta.outputs.tags }}
           push: true

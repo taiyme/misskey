@@ -23,6 +23,24 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu
 
 
+FROM --platform=linux/amd64 common AS re2
+
+COPY --from=builder /misskey/packages/backend/node_modules/re2 /re2
+
+WORKDIR /re2
+
+RUN npm i
+RUN npm exec node-gyp rebuild --arch=arm64
+
+
+FROM --platform=linux/amd64 common AS tfjs
+
+WORKDIR /tfjs-node
+
+RUN curl -OL https://storage.googleapis.com/tf-builds/libtensorflow_r2_7_linux_arm64.tar.gz
+RUN tar xzvf libtensorflow_r2_7_linux_arm64.tar.gz
+
+
 FROM --platform=linux/amd64 common AS builder
 
 ARG NODE_ENV=production
@@ -46,6 +64,10 @@ COPY packages/sw ./packages/sw
 
 RUN pnpm build
 
+COPY --from=re2 /re2/build/Release/re2.node /misskey/packages/backend/node_modules/re2/build/Release/re2.node
+COPY --from=tfjs /tfjs-node/lib /misskey/packages/backend/node_modules/@tensorflow/tfjs-node/deps/lib
+COPY --from=tfjs /tfjs-node/include /misskey/packages/backend/node_modules/@tensorflow/tfjs-node/deps/include
+
 
 FROM --platform=linux/amd64 common AS submodule
 
@@ -66,24 +88,6 @@ FROM --platform=linux/amd64 common AS tini
 
 RUN curl -L https://github.com/krallin/tini/releases/latest/download/tini-static-arm64 -o tini
 RUN chmod +x /tini
-
-
-FROM --platform=linux/amd64 common AS re2
-
-COPY --from=builder /misskey/packages/backend/node_modules/re2 /re2
-
-WORKDIR /re2
-
-RUN npm i
-RUN npm exec node-gyp rebuild --arch=arm64
-
-
-FROM --platform=linux/amd64 common AS tfjs
-
-WORKDIR /tfjs-node
-
-RUN curl -OL https://storage.googleapis.com/tf-builds/libtensorflow_r2_7_linux_arm64.tar.gz
-RUN tar xzvf libtensorflow_r2_7_linux_arm64.tar.gz
 
 
 FROM --platform=linux/arm64 node:18.14.1-bullseye-slim AS runner
@@ -113,9 +117,6 @@ COPY --from=builder /misskey/built ./built
 COPY --from=builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --from=builder /misskey/packages/backend/built ./packages/backend/built
 COPY --from=builder /misskey/packages/client/node_modules ./packages/client/node_modules
-COPY --from=re2 /re2/build/Release/re2.node /misskey/packages/backend/node_modules/re2/build/Release/re2.node
-COPY --from=tfjs /tfjs-node/lib /misskey/packages/backend/node_modules/@tensorflow/tfjs-node/deps/lib
-COPY --from=tfjs /tfjs-node/include /misskey/packages/backend/node_modules/@tensorflow/tfjs-node/deps/include
 
 ENV NODE_ENV=production
 ENTRYPOINT ["/tini", "--"]
