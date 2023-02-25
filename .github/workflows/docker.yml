@@ -77,7 +77,7 @@ jobs:
         uses: actions/github-script@v4
         id: create_tags
         with:
-          result-encoding: String
+          result-encoding: string
           script: |
             const fs = require('fs')
             const path = require('path')
