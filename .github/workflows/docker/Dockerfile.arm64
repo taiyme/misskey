@@ -20,17 +20,19 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	apt-get update
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
-	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu
+	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu jq
 
 
 FROM --platform=linux/amd64 common AS re2
 
-COPY --from=builder /misskey/packages/backend/node_modules/re2 /re2
-
 WORKDIR /re2
 
-RUN npm i
-RUN npm exec node-gyp rebuild --arch=arm64
+COPY packages/backend/package.json ../backend.json
+
+RUN git clone -b $(cat ../backend.json | jq -r .dependencies.re2) https://github.com/uhop/node-re2.git .
+RUN git submodule update --init
+RUN npm i --ignore-scripts
+RUN npx node-gyp rebuild --arch=arm64
 
 
 FROM --platform=linux/amd64 common AS tfjs
