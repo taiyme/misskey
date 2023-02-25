@@ -151,6 +151,10 @@ const contributors: Contributor[] = [
 		name: 'hyuoou',
 		acct: 'hyuoou',
 	},
+	{
+		name: 'わかさぎシステム',
+		acct: 'DA-TENSHI',
+	},
 ];
 
 const patrons: string[] = [
