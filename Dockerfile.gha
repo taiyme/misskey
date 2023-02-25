@@ -6,7 +6,7 @@ ENV npm_config_arch=${TARGETARCH}
 
 RUN case "$TARGETARCH" in \
 	"arm64") echo aarch64 > /target;; \
-	"amd64") echo x86_64 > /target ;; \
+	"amd64") echo x86-64 > /target ;; \
 	*) exit 1 ;; \
 	esac
 RUN \
