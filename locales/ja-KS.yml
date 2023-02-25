@@ -984,6 +984,7 @@ _registry:
   keys: "キー"
   domain: "ドメイン"
   createKey: "キーを作る"
+
 _aboutMisskey:
   about: "Misskeyはsyuiloが2014年からずっと作ってはる、オープンソースなソフトウェアや。"
   contributors: "主な貢献者"
