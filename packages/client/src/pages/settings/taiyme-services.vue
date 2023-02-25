@@ -105,6 +105,18 @@
 		</FormFolder>
 	</FormSection>
 
+	<FormSection>
+		<FormSwitch v-model="tmsPakuruEnabled" class="_formBlock">
+			「パクる」機能を有効にする
+			<template #caption>Renoteメニューに「パクる」を追加します。</template>
+		</FormSwitch>
+
+		<FormSwitch v-model="tmsNumberquoteEnabled" class="_formBlock">
+			「数字引用」機能を有効にする
+			<template #caption>Renoteメニューに「数字引用する」を追加します。</template>
+		</FormSwitch>
+	</FormSection>
+
 	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
@@ -173,6 +185,8 @@ const tmsIsLongTextElHeight = $ref(defaultStore.state.tmsIsLongTextElHeight);
 const tmsIsLongFilesLength = $ref(defaultStore.state.tmsIsLongFilesLength);
 const tmsIsLongUrlsLength = $ref(defaultStore.state.tmsIsLongUrlsLength);
 const tmsIsLongPollLength = $ref(defaultStore.state.tmsIsLongPollLength);
+const tmsPakuruEnabled = $ref(defaultStore.state.tmsPakuruEnabled);
+const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
 
 watch([
 	$$(tmsVerticalInstanceTicker),
@@ -181,6 +195,8 @@ watch([
 	$$(tmsIsLongFilesLength),
 	$$(tmsIsLongUrlsLength),
 	$$(tmsIsLongPollLength),
+	$$(tmsPakuruEnabled),
+	$$(tmsNumberquoteEnabled),
 ], () => {
 	changed = true;
 });
@@ -207,6 +223,8 @@ async function save(): Promise<void> {
 		defaultStore.set('tmsIsLongFilesLength', tmsIsLongFilesLength);
 		defaultStore.set('tmsIsLongUrlsLength', tmsIsLongUrlsLength);
 		defaultStore.set('tmsIsLongPollLength', tmsIsLongPollLength);
+		defaultStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
+		defaultStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
 
 		const { canceled } = await os.confirm({
 			type: 'info',
