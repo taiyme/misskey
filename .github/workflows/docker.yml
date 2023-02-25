@@ -40,7 +40,6 @@ jobs:
           file: Dockerfile.${{ matrix.arch }}
           platforms: linux/${{ matrix.arch }}
           tags: ${{ steps.meta.outputs.tags }}
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
           push: false
       
       - name: Create outputs.txt
