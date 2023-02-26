@@ -66,9 +66,21 @@ jobs:
             type=ref,event=tag,enable=${{ github.event_name != 'workflow_dispatch' }}
             type=raw,value=latest
       
+      - name: Convert tags
+        id: tags
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const rawTags = `${{ steps.meta.outputs.tags }}`
+            const tagList = rawTags.split("\n")
+            const tags = tagList.join(",")
+
+            return tags
+
       - name: Create and push manifest images
         uses: Noelware/docker-manifest-action@0.3.1
         with:
           images: ghcr.io/${{ github.repository }}:latest-amd64,ghcr.io/${{ github.repository }}:latest-arm64
-          inputs: ${{ steps.meta.outputs.tags }}
+          inputs: ${{ steps.tags.outputs.result }}
           push: true
