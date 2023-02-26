@@ -1,13 +1,13 @@
 {
 	"name": "misskey",
-	"version": "12.119.2-taiyme-v1.0.36",
+	"version": "12.119.2-taiyme-v1.0.39",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/taiyme/misskey.git"
 	},
 	"private": true,
-	"packageManager": "pnpm@7.27.1",
+	"packageManager": "pnpm@7.28.0",
 	"workspaces": [
 		"packages/client",
 		"packages/backend",

@@ -9,6 +9,20 @@
 You should also include the user name that made the change.
 -->
 
+## 1.0.39 (2023/02/26)
+
+- hotfix(client): tms: numberquote/_nqadd
+
+## 1.0.38 (2023/02/26)
+
+- **feat(client): tms: パクる・数字引用** @taiyme
+- Update pnpm 7.27.1 to 7.28.0
+
+## 1.0.37 (2023/02/26)
+
+- Update ja-KS.yml (#43) @DA-TENSHI
+- enhance: Github ActionsでのDockerイメージのビルドの高速化 (#44) @cffnpwr
+
 ## 1.0.36 (2023/02/25)
 
 - feat(client): 宛先ダイアログ @taiyme
