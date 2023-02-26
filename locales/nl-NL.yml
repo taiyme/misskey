@@ -384,6 +384,7 @@ _notification:
 _deck:
   _columns:
     notifications: "Meldingen"
+    favorites: "Toevoegen aan favorieten"
     tl: "Tijdlijn"
     list: "Lijsten"
     mentions: "Vermeldingen"

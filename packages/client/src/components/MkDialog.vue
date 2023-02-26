@@ -12,8 +12,14 @@
 			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
 		</div>
-		<header v-if="title"><Mfm :text="title"/></header>
-		<div v-if="text" class="body"><Mfm :text="text"/></div>
+		<header v-if="title">
+			<Mfm v-if="allowMfm" :text="title"/>
+			<span v-else>{{ title }}</span>
+		</header>
+		<div v-if="text" class="body">
+			<Mfm v-if="allowMfm" :text="text"/>
+			<span v-else>{{ text }}</span>
+		</div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
@@ -82,11 +88,13 @@ const props = withDefaults(defineProps<{
 	showOkButton?: boolean;
 	showCancelButton?: boolean;
 	cancelableByBgClick?: boolean;
+	allowMfm?: boolean;
 }>(), {
 	type: 'info',
 	showOkButton: true,
 	showCancelButton: false,
 	cancelableByBgClick: true,
+	allowMfm: false,
 });
 
 const emit = defineEmits<{

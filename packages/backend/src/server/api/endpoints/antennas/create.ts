@@ -23,6 +23,12 @@ export const meta = {
 			code: 'NO_SUCH_USER_GROUP',
 			id: 'aa3c0b9a-8cae-47c0-92ac-202ce5906682',
 		},
+
+		tooManyAntennas: {
+			message: 'You cannot create antenna any more.',
+			code: 'TOO_MANY_ANTENNAS',
+			id: 'faf47050-e8b5-438c-913c-db2b1576fde4',
+		},
 	},
 
 	res: {
@@ -62,6 +68,14 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
+	const currentAntennasCount = await Antennas.countBy({
+		userId: user.id,
+	});
+	// TODO: ロール機能を移植したらRolePolicies.antennaLimitを参照する
+	if ((!user.isAdmin && !user.isModerator) && currentAntennasCount > 5) {
+		throw new ApiError(meta.errors.tooManyAntennas);
+	}
+
 	let userList;
 	let userGroupJoining;
 

@@ -136,7 +136,7 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-let note = $ref(JSON.parse(JSON.stringify(props.note)));
+let note = $ref<misskey.entities.Note>(JSON.parse(JSON.stringify(props.note)));
 
 // plugin
 if (noteViewInterruptors.length > 0) {

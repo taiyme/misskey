@@ -60,6 +60,10 @@ export async function exportCustomEmojis(job: Bull.Job, done: () => void): Promi
 	});
 
 	for (const emoji of customEmojis) {
+		if (!/^[a-zA-Z0-9_]+$/.test(emoji.name)) {
+			logger.error(`invalid emoji name: ${emoji.name}`);
+			continue;
+		}
 		const ext = mime.extension(emoji.type);
 		const fileName = emoji.name + (ext ? '.' + ext : '');
 		const emojiPath = path + '/' + fileName;

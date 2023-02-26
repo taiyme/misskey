@@ -9,4 +9,5 @@ misskey-assets/
 **/node_modules
 
 Dockerfile
-docker-compose.yml
+Dockerfile.*
+docker-compose.*

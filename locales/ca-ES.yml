@@ -193,6 +193,7 @@ _notification:
 _deck:
   _columns:
     notifications: "Notificacions"
+    favorites: "Favorits"
     tl: "Línia de temps"
     list: "Llistes"
     mentions: "Mencions"

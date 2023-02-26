@@ -1,5 +1,5 @@
 <template>
-<MkEmoji :emoji="reaction" :custom-emojis="customEmojis || []" :is-reaction="true" :normal="true" :no-style="noStyle"/>
+<MkEmoji :emoji="reaction" :custom-emojis="customEmojis || []" :is-reaction="true" :normal="true" :no-style="noStyle" :use-fallback-icon="useFallbackIcon"/>
 </template>
 
 <script lang="ts" setup>
@@ -9,5 +9,6 @@ const props = defineProps<{
 	reaction: string;
 	customEmojis?: any[]; // TODO
 	noStyle?: boolean;
+	useFallbackIcon?: boolean;
 }>();
 </script>

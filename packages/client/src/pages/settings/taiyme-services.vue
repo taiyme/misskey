@@ -13,10 +13,10 @@
 	</FormSection>
 
 	<FormSection>
-		<MkKeyValue class="_formBlock">
-			<template #key>taiyme/misskeyについて</template>
-			<template #value>taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。</template>
-		</MkKeyValue>
+		<template #label>taiyme/misskeyについて</template>
+		<div class="_formBlock">
+			taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。
+		</div>
 		<div class="_formLinks">
 			<FormLink to="https://github.com/taiyme/misskey" external>
 				<template #icon><i class="ti ti-code"></i></template>
@@ -32,10 +32,26 @@
 	</FormSection>
 
 	<FormSection>
+		<template #label>コラボレーター</template>
+		<div class="_formLinks">
+			<template v-for="collaborator in collaborators" :key="collaborator">
+				<FormLink :to="`https://github.com/${collaborator.acct}`" external>
+					{{ collaborator.name }}
+					<template #suffix>{{ `@${collaborator.acct}` }}</template>
+				</FormLink>
+			</template>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<template #label>コントリビューター</template>
 		<div class="_formLinks">
-			<FormLink to="https://github.com/taiyme" external>@taiyme</FormLink>
-			<FormLink to="https://github.com/cffnpwr" external>@cffnpwr</FormLink>
+			<template v-for="contributor in contributors" :key="contributor">
+				<FormLink :to="`https://github.com/${contributor.acct}`" external>
+					{{ contributor.name }}
+					<template #suffix>{{ `@${contributor.acct}` }}</template>
+				</FormLink>
+			</template>
 		</div>
 	</FormSection>
 
@@ -89,6 +105,18 @@
 		</FormFolder>
 	</FormSection>
 
+	<FormSection>
+		<FormSwitch v-model="tmsPakuruEnabled" class="_formBlock">
+			「パクる」機能を有効にする
+			<template #caption>Renoteメニューに「パクる」を追加します。</template>
+		</FormSwitch>
+
+		<FormSwitch v-model="tmsNumberquoteEnabled" class="_formBlock">
+			「数字引用」機能を有効にする
+			<template #caption>Renoteメニューに「数字引用する」を追加します。</template>
+		</FormSwitch>
+	</FormSection>
+
 	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
@@ -110,7 +138,38 @@ import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
 
-const patrons = [
+type Contributor = {
+	name: string;
+	acct: string;
+}
+
+const collaborators: Contributor[] = [
+	{
+		name: 'taiy',
+		acct: 'taiyme',
+	},
+	{
+		name: 'かふぇいんぱわぁ',
+		acct: 'cffnpwr',
+	},
+];
+
+const contributors: Contributor[] = [
+	{
+		name: 'すてさん',
+		acct: 'Steve-0628',
+	},
+	{
+		name: 'hyuoou',
+		acct: 'hyuoou',
+	},
+	{
+		name: 'わかさぎシステム',
+		acct: 'DA-TENSHI',
+	},
+];
+
+const patrons: string[] = [
 	'すえ',
 	'Midra',
 	'ゆー',
@@ -126,6 +185,8 @@ const tmsIsLongTextElHeight = $ref(defaultStore.state.tmsIsLongTextElHeight);
 const tmsIsLongFilesLength = $ref(defaultStore.state.tmsIsLongFilesLength);
 const tmsIsLongUrlsLength = $ref(defaultStore.state.tmsIsLongUrlsLength);
 const tmsIsLongPollLength = $ref(defaultStore.state.tmsIsLongPollLength);
+const tmsPakuruEnabled = $ref(defaultStore.state.tmsPakuruEnabled);
+const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
 
 watch([
 	$$(tmsVerticalInstanceTicker),
@@ -134,17 +195,17 @@ watch([
 	$$(tmsIsLongFilesLength),
 	$$(tmsIsLongUrlsLength),
 	$$(tmsIsLongPollLength),
+	$$(tmsPakuruEnabled),
+	$$(tmsNumberquoteEnabled),
 ], () => {
 	changed = true;
 });
 
-async function check() {
+async function check(): Promise<boolean> {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
 		if (Math.sign(x) === -1) return false;
-		if (min == null) min = -Infinity;
-		if (max == null) max = Infinity;
-		return (min <= x) && (x <= max);
+		return ((min == null ? -Infinity : min) <= x) && (x <= (max == null ? Infinity : max));
 	};
 	return (
 		isNumberInRange(tmsIsLongTextElHeight, 0) &&
@@ -154,7 +215,7 @@ async function check() {
 	);
 }
 
-async function save() {
+async function save(): Promise<void> {
 	if (await check()) {
 		defaultStore.set('tmsVerticalInstanceTicker', tmsVerticalInstanceTicker);
 		defaultStore.set('tmsIsLongEnabled', tmsIsLongEnabled);
@@ -162,6 +223,8 @@ async function save() {
 		defaultStore.set('tmsIsLongFilesLength', tmsIsLongFilesLength);
 		defaultStore.set('tmsIsLongUrlsLength', tmsIsLongUrlsLength);
 		defaultStore.set('tmsIsLongPollLength', tmsIsLongPollLength);
+		defaultStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
+		defaultStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
 
 		const { canceled } = await os.confirm({
 			type: 'info',

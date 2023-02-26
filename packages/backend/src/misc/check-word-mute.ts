@@ -4,19 +4,37 @@ import { User } from '@/models/entities/user.js';
 
 type NoteLike = {
 	userId: Note['userId'];
+	cw: Note['cw'];
 	text: Note['text'];
+	reply: NoteLike | null;
+	renote: NoteLike | null;
 };
 
 type UserLike = {
 	id: User['id'];
 };
 
+// ワードミュート (ハード)
 export async function checkWordMute(note: NoteLike, me: UserLike | null | undefined, mutedWords: Array<string | string[]>): Promise<boolean> {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+		const text = [
+			// 自分自身を除く返信
+			...(note.reply && note.reply.userId !== me?.id) ? [
+				note.reply?.cw ?? '',
+				note.reply?.text ?? '',
+			] : [],
+			// 自分自身を除く投稿
+			note.cw ?? '',
+			note.text ?? '',
+			// 自分自身を除くRN
+			...(note.renote && note.renote.userId !== me?.id) ? [
+				note.renote?.cw ?? '',
+				note.renote?.text ?? '',
+			] : [],
+		].filter(x => x).join('\n').trim();
 
 		if (text === '') return false;
 

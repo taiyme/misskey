@@ -2,7 +2,10 @@ version: "3"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      cache_from:
+        - ghcr.io/taiyme/misskey:buildcache
     restart: always
     ports:
       - 3000:3000
@@ -12,6 +15,9 @@ services:
     volumes:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro
+    depends_on:
+      - db
+      - redis
 
   redis:
     restart: always
