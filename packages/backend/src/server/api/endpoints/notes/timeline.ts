@@ -48,12 +48,10 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const hasFollowing = (await Followings.count({
-		where: {
-			followerId: user.id,
-		},
-		take: 1,
-	})) !== 0;
+	const followees = await Followings.createQueryBuilder('following')
+		.select('following.followeeId')
+		.where('following.followerId = :followerId', { followerId: user.id })
+		.getMany();
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
@@ -70,11 +68,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	if (hasFollowing) {
-		const followees = await Followings.createQueryBuilder('following')
-				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: user.id })
-				.getMany();
+	if (followees.length > 0) {
 		const meOrFolloweeIds = [user.id, ...followees.map(f => f.followeeId)];
 
 		query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
