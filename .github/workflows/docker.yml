@@ -72,7 +72,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const rawTags = "${{ steps.meta.outputs.tags }}"
+            const rawTags = `${{ steps.meta.outputs.tags }}`
             const tagList = rawTags.split("\n")
             const tags = tagList.join(",")
 
