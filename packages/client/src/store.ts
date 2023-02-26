@@ -275,6 +275,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 5,
 	},
+	tmsRenoteCollapsedEnabled: {
+		where: 'device',
+		default: false,
+	},
 	tmsPakuruEnabled: {
 		where: 'device',
 		default: false,

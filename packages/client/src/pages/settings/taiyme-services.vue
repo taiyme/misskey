@@ -103,6 +103,11 @@
 				</FormInput>
 			</div>
 		</FormFolder>
+
+		<FormSwitch v-model="tmsRenoteCollapsedEnabled" class="_formBlock">
+			一度見たノートのRenoteを畳む
+			<template #caption>タイムライン上の一度見たノートのRenoteを畳んで表示します。本文をクリックすると展開します。</template>
+		</FormSwitch>
 	</FormSection>
 
 	<FormSection>
@@ -185,6 +190,7 @@ const tmsIsLongTextElHeight = $ref(defaultStore.state.tmsIsLongTextElHeight);
 const tmsIsLongFilesLength = $ref(defaultStore.state.tmsIsLongFilesLength);
 const tmsIsLongUrlsLength = $ref(defaultStore.state.tmsIsLongUrlsLength);
 const tmsIsLongPollLength = $ref(defaultStore.state.tmsIsLongPollLength);
+const tmsRenoteCollapsedEnabled = $ref(defaultStore.state.tmsRenoteCollapsedEnabled);
 const tmsPakuruEnabled = $ref(defaultStore.state.tmsPakuruEnabled);
 const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
 
@@ -195,6 +201,7 @@ watch([
 	$$(tmsIsLongFilesLength),
 	$$(tmsIsLongUrlsLength),
 	$$(tmsIsLongPollLength),
+	$$(tmsRenoteCollapsedEnabled),
 	$$(tmsPakuruEnabled),
 	$$(tmsNumberquoteEnabled),
 ], () => {
@@ -223,6 +230,7 @@ async function save(): Promise<void> {
 		defaultStore.set('tmsIsLongFilesLength', tmsIsLongFilesLength);
 		defaultStore.set('tmsIsLongUrlsLength', tmsIsLongUrlsLength);
 		defaultStore.set('tmsIsLongPollLength', tmsIsLongPollLength);
+		defaultStore.set('tmsRenoteCollapsedEnabled', tmsRenoteCollapsedEnabled);
 		defaultStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
 		defaultStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
 
