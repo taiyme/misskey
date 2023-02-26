@@ -31,7 +31,11 @@
 			<MkVisibility :note="note"/>
 		</div>
 	</div>
-	<article class="article" @contextmenu.stop="onContextmenu">
+	<div v-if="renoteCollapsed" class="collapsed-renote">
+		<MkAvatar class="avatar" :user="appearNote.user"/>
+		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" class="text" @click="renoteCollapsed = false"/>
+	</div>
+	<article v-else class="article" @contextmenu.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
@@ -128,6 +132,8 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
+import { getNoteSummary } from '@/scripts/get-note-summary';
+import { shownNoteIds } from '@/os';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -199,6 +205,9 @@ const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
+let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+
+shownNoteIds.add(appearNote.id);
 
 const keymap = {
 	'r': () => reply(true),
@@ -399,7 +408,6 @@ function readPromo() {
 			width: 28px;
 			height: 28px;
 			margin: 0 8px 0 0;
-			border-radius: 6px;
 		}
 
 		> i {
@@ -434,6 +442,36 @@ function readPromo() {
 
 	> .renote + .article {
 		padding-top: 8px;
+	}
+
+	> .collapsed-renote {
+		display: flex;
+		align-items: center;
+		line-height: 28px;
+		white-space: pre;
+		padding: 0 32px 18px;
+
+		> .avatar {
+			flex-shrink: 0;
+			display: inline-block;
+			width: 28px;
+			height: 28px;
+			margin: 0 8px 0 0;
+		}
+
+		> .text {
+			overflow: hidden;
+			flex-shrink: 1;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-size: 90%;
+			opacity: 0.7;
+			cursor: pointer;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
 	}
 
 	> .article {
@@ -615,6 +653,11 @@ function readPromo() {
 
 		> .info {
 			padding: 8px 16px 0 16px;
+		}
+
+		> .collapsed-renote {
+			padding: 0 16px 9px;
+			margin-top: 4px;
 		}
 
 		> .article {
