@@ -97,7 +97,7 @@ async function makeParams(_note: Note): Promise<PostData> {
 function _nqadd(text: PostData['text']): PostData['text'] {
 	if (!text) return '1';
 	if (text.endsWith('</center>')) return `${text}\n1`;
-	if (!/\-?\d+$/.test(text)) return `${text}1`;
+	if (!/\-?\d+$/.test(text)) return `${text}2`;
 	return text.replace(/\-?\d+$/, (n => (Number(n) + 1).toString(10)));
 }
 

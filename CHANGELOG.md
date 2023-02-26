@@ -9,6 +9,10 @@
 You should also include the user name that made the change.
 -->
 
+## 1.0.39 (2023/02/26)
+
+- hotfix(client): tms: numberquote/_nqadd
+
 ## 1.0.38 (2023/02/26)
 
 - **feat(client): tms: パクる・数字引用** @taiyme
