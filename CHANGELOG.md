@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 1.0.40 (2023/02/27)
+
+- fix: 複数のタグを持たせるとGithub Actionsがコケるのを修正 (#45) @cffnpwr
+- Hotfix: GitHub actions build amd64 (#46) @cffnpwr
+- enhance(client): tms: 一度見たノートのRenoteを畳む (#48) @taiyme
+
 ## 1.0.39 (2023/02/26)
 
 - hotfix(client): tms: numberquote/_nqadd
