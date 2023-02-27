@@ -4,7 +4,7 @@ module.exports = {
 		project: ['./tsconfig.eslint.json'],
 	},
 	extends: [
-		'../shared/.eslintrc.js',
+		'../shared/.eslintrc.cjs',
 	],
 	rules: {
 		'import/order': ['warn', {

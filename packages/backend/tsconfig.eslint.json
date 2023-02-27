@@ -5,5 +5,5 @@
 		"allowJs": true
 	},
 	"extends": "./tsconfig.json",
-	"include": ["src/*", "ormconfig.js", "match.mjs", ".eslintrc.cjs"]
+	"include": ["./src/**/*.ts", "ormconfig.js", "match.mjs", ".eslintrc.cjs"]
 }
