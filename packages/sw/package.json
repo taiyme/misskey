@@ -8,11 +8,11 @@
 	},
 	"resolutions": {},
 	"dependencies": {
-		"esbuild": "^0.14.13",
-		"idb-keyval": "^6.0.3",
-		"misskey-js": "0.0.14"
+		"esbuild": "^0.17.10",
+		"idb-keyval": "^6.2.0",
+		"misskey-js": "0.0.15"
 	},
 	"devDependencies": {
-		"eslint": "^8.2.0"
+		"eslint": "^8.35.0"
 	}
 }
