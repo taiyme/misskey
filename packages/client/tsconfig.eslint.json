@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"noEmit": true
+	},
+	"extends": "./tsconfig.json",
+	"include": [
+		"src/**/*",
+		"src/**/*.vue",
+		"vite.config.ts",
+		"vite.json5.ts",
+		".eslintrc.cjs"
+	]
+}

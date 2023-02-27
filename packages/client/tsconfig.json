@@ -31,5 +31,5 @@
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
-	"include": [".eslintrc.js", "./**/*.ts", "./**/*.vue"]
+	"include": ["./**/*.ts", "./**/*.vue"]
 }
