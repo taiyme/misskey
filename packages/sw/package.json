@@ -1,10 +1,11 @@
 {
 	"name": "sw",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"watch": "node build.js watch",
 		"build": "node build.js",
-		"lint": "eslint --quiet src/**/*.{ts}"
+		"lint": "eslint --quiet src/**/*.ts"
 	},
 	"resolutions": {},
 	"dependencies": {

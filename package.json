@@ -13,6 +13,7 @@
 		"packages/backend",
 		"packages/sw"
 	],
+	"type": "module",
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
@@ -23,7 +24,7 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"gulp": "pnpm exec gulp build",
 		"watch": "pnpm dev",
-		"dev": "node ./scripts/dev.js",
+		"dev": "NODE_ENV=developement node ./scripts/dev.js",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
