@@ -3,10 +3,12 @@ module.exports = {
 	env: {
 		"node": false
 	},
+	parser: "@typescript-eslint/parser",
 	parserOptions: {
-		"parser": "@typescript-eslint/parser",
 		tsconfigRootDir: __dirname,
-		//project: ['./tsconfig.json'],
+		ecmaVersion: 2017,
+		sourceType: 'module',
+		project: ['./tsconfig.eslint.json'],
 	},
 	extends: [
 		//"../shared/.eslintrc.js",
@@ -19,4 +21,4 @@ module.exports = {
 		"_ENV_": false,
 		"_PERF_PREFIX_": false,
 	}
-}
+};

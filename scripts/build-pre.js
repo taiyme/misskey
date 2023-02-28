@@ -1,5 +1,5 @@
-const fs = require('fs');
-const meta = require('../package.json');
+import { mkdirSync, writeFileSync } from 'fs';
+import * as meta from '../package.json' assert { type: "json" };
 
-fs.mkdirSync(__dirname + '/../built', { recursive: true });
-fs.writeFileSync(__dirname + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+mkdirSync(import.meta.url + '/../built', { recursive: true });
+writeFileSync(import.meta.url + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');

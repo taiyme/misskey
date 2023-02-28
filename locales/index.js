@@ -2,8 +2,11 @@
  * Languages Loader
  */
 
-const fs = require('fs');
-const yaml = require('js-yaml');
+import { readFileSync } from 'fs';
+import { load } from 'js-yaml';
+
+import path from 'path';
+import url from 'url';
 
 const merge = (...args) => args.reduce((a, c) => ({
 	...a,
@@ -51,10 +54,11 @@ const primaries = {
 // 何故か文字列にバックスペース文字が混入することがあり、YAMLが壊れるので取り除く
 const clean = (text) => text.replace(new RegExp(String.fromCodePoint(0x08), 'g'), '');
 
-const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(`${__dirname}/${c}.yml`, 'utf-8'))) || {}, a), {});
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const locales = languages.reduce((a, c) => (a[c] = load(clean(readFileSync(`${__dirname}/${c}.yml`, 'utf-8'))) || {}, a), {});
 
-module.exports = Object.entries(locales)
-	.reduce((a, [k ,v]) => (a[k] = (() => {
+export default Object.entries(locales)
+	.reduce((a, [k, v]) => (a[k] = (() => {
 		const [lang] = k.split('-');
 		switch (k) {
 			case 'ja-JP': return v;

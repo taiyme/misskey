@@ -1,8 +1,8 @@
-const fs = require('fs');
+import { rmSync } from 'fs';
 
 (async () => {
-	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
-	fs.rmSync(__dirname + '/../packages/client/built', { recursive: true, force: true });
-	fs.rmSync(__dirname + '/../packages/sw/built', { recursive: true, force: true });
-	fs.rmSync(__dirname + '/../built', { recursive: true, force: true });
+	rmSync(import.meta.url + '/../packages/backend/built', { recursive: true, force: true });
+	rmSync(import.meta.url + '/../packages/client/built', { recursive: true, force: true });
+	rmSync(import.meta.url + '/../packages/sw/built', { recursive: true, force: true });
+	rmSync(import.meta.url + '/../built', { recursive: true, force: true });
 })();

@@ -25,24 +25,13 @@
 		"rootDir": "./src",
 		"baseUrl": "./",
 		"paths": {
-			"@/*": [
-				"./src/*"
-			]
+			"@/*": ["./src/*"]
 		},
 		"outDir": "./built",
-		"types": [
-			"node"
-		],
-		"typeRoots": [
-			"./node_modules/@types",
-			"./src/@types"
-		],
-		"lib": [
-			"esnext"
-		]
+		"types": ["node"],
+		"typeRoots": ["./node_modules/@types", "./src/@types"],
+		"lib": ["esnext"]
 	},
 	"compileOnSave": false,
-	"include": [
-		"./src/**/*.ts"
-	],
+	"include": ["./src/**/*.ts"]
 }

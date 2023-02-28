@@ -1,8 +1,11 @@
-const execa = require('execa');
-const fs = require('fs');
-const task = require('tasuku');
+import { execa } from 'execa';
+import { existsSync } from 'fs';
+import task from 'tasuku';
+import path from 'path';
+import url from 'url';
 
 (async () => {
+	const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 	const logs = ['', '', '', ''];
 
 	await task.group(task => [
@@ -110,7 +113,7 @@ const task = require('tasuku');
 
 	const start = async () => {
 		try {
-			const exist = fs.existsSync(__dirname + '/../packages/backend/built/index.js');
+			const exist = existsSync(__dirname + '/../packages/backend/built/index.js');
 			if (!exist) throw new Error('not exist yet');
 
 			await execa('pnpm', ['start'], {
@@ -126,49 +129,3 @@ const task = require('tasuku');
 
 	await start();
 })();
-
-
-
-
-// 	// execa('pnpm', ['exec', 'gulp', 'watch'], {
-// 	// 	cwd: __dirname + '/../',
-// 	// 	stdout: process.stdout,
-// 	// 	stderr: process.stderr,
-// 	// });
-
-// 	execa('pnpm', ['--filter', 'backend', 'watch'], {
-// 		cwd: __dirname + '/../',
-// 		// stdout: process.stdout,
-// 		// stderr: process.stderr,
-// 	});
-
-// 	// execa('pnpm', ['--filter', 'client', 'watch'], {
-// 	// 	cwd: __dirname + '/../',
-// 	// 	stdout: process.stdout,
-// 	// 	stderr: process.stderr,
-// 	// });
-
-// 	// execa('pnpm', ['--filter', 'sw', 'watch'], {
-// 	// 	cwd: __dirname + '/../',
-// 	// 	stdout: process.stdout,
-// 	// 	stderr: process.stderr,
-// 	// });
-
-// 	// const start = async () => {
-// 	// 	try {
-// 	// 		const exist = fs.existsSync(__dirname + '/../packages/backend/built/index.js');
-// 	// 		if (!exist) throw new Error('not exist yet');
-
-// 	// 		await execa('pnpm', ['start'], {
-// 	// 			cwd: __dirname + '/../',
-// 	// 			stdout: process.stdout,
-// 	// 			stderr: process.stderr,
-// 	// 		});
-// 	// 	} catch (e) {
-// 	// 		await new Promise(resolve => setTimeout(resolve, 3000));
-// 	// 		start();
-// 	// 	}
-// 	// };
-
-// 	// start();
-// })();
