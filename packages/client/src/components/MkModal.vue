@@ -81,6 +81,10 @@ const close = () => {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
+
+	if (type === 'drawer' && window.location.hash === '#modal')
+		history.back();
+
 	emit('close');
 };
 
@@ -214,6 +218,17 @@ const align = () => {
 
 const onOpened = () => {
 	emit('opened');
+
+	if (type === 'drawer') {
+		window.addEventListener('popstate', () => {
+			if (window.location.hash !== '#modal') {
+				close();
+				return;
+			}
+		});
+
+		history.pushState(null, '', '#modal');
+	}
 
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content!.children[0];
