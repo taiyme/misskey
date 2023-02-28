@@ -63,7 +63,7 @@
 		"vite": "4.1.4",
 		"vue": "3.2.47",
 		"vue-prism-editor": "2.0.0-alpha.2",
-		"vuedraggable": "4.0.1"
+		"vuedraggable": "4.1.0"
 	},
 	"devDependencies": {
 		"@types/escape-regexp": "0.0.1",
