@@ -163,8 +163,8 @@ const props = withDefaults(defineProps<{
 	white-space: pre-wrap;
 
 	&.nowrap {
-		white-space: pre !important;
-		word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
+		white-space: pre;
+		word-wrap: normal; // https://codeday.me/jp/qa/20190424/690106.html
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
