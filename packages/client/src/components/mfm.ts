@@ -165,7 +165,11 @@ export default defineComponent({
 								token.props.args.emoji ? 'emoji' :
 								token.props.args.math ? 'math' :
 								null;
-							if (family) style = `font-family: ${family};`;
+							if (family) {
+								return h('span', {
+									class: `mfm-ff-${family}`,
+								}, genEl(token.children));
+							}
 							break;
 						}
 						case 'blur': {
