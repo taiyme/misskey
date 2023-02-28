@@ -39,7 +39,6 @@ const url = computed(() => {
 });
 const alt = computed(() => customEmoji.value ? `:${customEmoji.value.name}:` : char.value);
 
-
 </script>
 
 <style lang="scss" scoped>

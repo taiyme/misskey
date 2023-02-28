@@ -7,7 +7,7 @@
 		</div>
 	</template>
 
-	<template #default="{ items, users }">
+	<template #default="{ users }">
 		<div class="mk-user-card-mini-list" :class="{ links: props.useUserPage }">
 			<template v-for="user in users" :key="user.id">
 				<MkA v-if="props.useUserPage" :to="userPage(user)">
