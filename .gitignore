@@ -8,6 +8,7 @@
 # Node.js
 node_modules
 report.*.json
+.pnpm-store
 
 # Cypress
 cypress/screenshots

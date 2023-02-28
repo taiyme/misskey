@@ -1,12 +1,12 @@
 import * as http from 'node:http';
+import { EventEmitter } from 'events';
 import * as websocket from 'websocket';
 
-import MainStreamConnection from './stream/index.js';
-import { ParsedUrlQuery } from 'querystring';
-import authenticate from './authenticate.js';
-import { EventEmitter } from 'events';
-import { subsdcriber as redisClient } from '../../db/redis.js';
+import qs from 'qs';
 import { Users } from '@/models/index.js';
+import { subsdcriber as redisClient } from '../../db/redis.js';
+import MainStreamConnection from './stream/index.js';
+import authenticate from './authenticate.js';
 
 export const initializeStreamingServer = (server: http.Server) => {
 	// Init websocket server
@@ -15,7 +15,7 @@ export const initializeStreamingServer = (server: http.Server) => {
 	});
 
 	ws.on('request', async (request) => {
-		const q = request.resourceURL.query as ParsedUrlQuery;
+		const q = qs.parse(request.resourceURL.query as string);
 
 		// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
 		// コネクション切断するなりエラーメッセージ返すなりする

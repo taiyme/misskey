@@ -324,7 +324,7 @@ export const UserRepository = db.getRepository(User).extend({
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ?  sanitizeUrl(DriveFiles.getPublicUrl(user.banner, false)) : null,
+				bannerUrl: user.banner ? sanitizeUrl(DriveFiles.getPublicUrl(user.banner, false)) : null,
 				bannerBlurhash: user.banner?.blurhash || null,
 				bannerColor: null, // 後方互換性のため
 				isLocked: user.isLocked,
