@@ -1,8 +1,9 @@
 <template>
-<MkWindow ref="window"
-	:initial-width="null"
-	:initial-height="null"
-	:can-resize="false"
+<MkWindow
+	ref="window"
+	:initial-width="300"
+	:initial-height="290"
+	:can-resize="true"
 	:mini="true"
 	:front="true"
 	@closed="emit('closed')"
