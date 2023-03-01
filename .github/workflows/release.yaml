@@ -130,6 +130,16 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge
+        
+      - name: Checkout release branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
+
       - name: Get changelog title
         id: get_changelog_title
         run: echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
@@ -163,22 +173,6 @@ jobs:
           git config user.email github-actions[bot]@users.noreply.github.com
           git add .
           git commit --author=. -m "update CHANGELOG.md"
-          git push
-
-      - name: merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge
-        
-      - name: Checkout release branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.base_ref }}
-
-      - name: Commit and Push
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
           git tag "${{ needs.update_version.outputs.version }}"
           git push --tags
 
