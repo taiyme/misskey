@@ -1,5 +1,9 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import * as meta from '../package.json' assert { type: "json" };
+import path from 'path';
+import url from 'url';
 
-mkdirSync(import.meta.url + '/../built', { recursive: true });
-writeFileSync(import.meta.url + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+
+mkdirSync(__dirname + '/../built', { recursive: true });
+writeFileSync(__dirname + '/../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
