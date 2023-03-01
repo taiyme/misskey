@@ -139,7 +139,7 @@ jobs:
         id: get_changelog
         run: |
           echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
-          echo "changelog_body=${{ github.event.pull_request.body }}" >> $GITHUB_OUTPUT
+          echo "changelog_body=${{ toJSON(github.event.pull_request.body) }}" >> $GITHUB_OUTPUT
 
       - name: Add new changelog
         uses: actions/github-script@v6
