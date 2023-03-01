@@ -163,7 +163,7 @@ jobs:
           git config user.email github-actions[bot]@users.noreply.github.com
           git add .
           git commit --author=. -m "${{ steps.get_changelog.outputs.changelog_title }}"
-          git tag "${{ steps.get_changelog.outputs.changelog_title }}"
+          git tag "${{ needs.update_version.outputs.version }}"
           git push --tags
 
       - name: Release
