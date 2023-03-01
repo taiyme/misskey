@@ -130,16 +130,6 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge
-        
-      - name: Checkout release branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.base_ref }}
-
       - name: Get changelog title
         id: get_changelog_title
         run: echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
@@ -166,6 +156,16 @@ jobs:
             const newChangelog = chnagelogArray.join('')
 
             fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog)
+
+      - name: merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge
+        
+      - name: Checkout release branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
 
       - name: Commit and Push
         run: |
