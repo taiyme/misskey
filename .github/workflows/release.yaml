@@ -157,6 +157,14 @@ jobs:
 
             fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog)
 
+      - name: Commit and Push
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit --author=. -m "update CHANGELOG.md"
+          git push
+
       - name: merge PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
