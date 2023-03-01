@@ -15,12 +15,8 @@ RUN \
 	export OBJDUMP="aarch64-linux-gnu-objdump" && \
 	export NM="aarch64-linux-gnu-nm" && \
 	export AS="aarch64-linux-gnu-as"
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-	--mount=type=cache,target=/var/lib/apt,sharing=locked \
-	apt-get update
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-	--mount=type=cache,target=/var/lib/apt,sharing=locked \
-	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu jq
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu jq
 
 
 FROM --platform=linux/amd64 common AS re2
