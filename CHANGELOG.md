@@ -9,16 +9,12 @@
 You should also include the user name that made the change.
 -->
 
-## 12.119.2-taiyme-v1.0.51 (2023/03/01)
+## 12.119.2-taiyme-v1.0.41 (2023/03/01)
 
-多分これで動く
-寝れるぞおおおおおおおおおおお
-
-## 12.119.2-taiyme-v1.0.50 (2023/03/01)
-
-早く寝たい
-くぁｗせｄｒｆｔｇｙふじこｌｐ
-にゃあああああああああああああん
+- feat: upgrade dependencies (#54) @cffnpwr @taiyme
+- enhance(mfm): fn.font className @taiyme
+- fix: 謎のfile:ディレクトリができる現象を修正 (#60) @cffnpwr
+- GitHub Actionsによるリリースの自動化 (#62) @cffnpwr
 
 ## 1.0.40 (2023/02/27)
 
