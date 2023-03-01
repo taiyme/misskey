@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.50 (2023/03/01)
+
+早く寝たい
+くぁｗせｄｒｆｔｇｙふじこｌｐ
+にゃあああああああああああああん
+
 ## 1.0.40 (2023/02/27)
 
 - fix: 複数のタグを持たせるとGithub Actionsがコケるのを修正 (#45) @cffnpwr
