@@ -82,7 +82,7 @@ const close = () => {
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
 
-	if (type === 'drawer' && window.location.hash === '#modal')
+	if (type !== 'popup' && window.location.hash === '#modal')
 		history.back();
 
 	emit('close');
@@ -219,7 +219,7 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
-	if (type === 'drawer') {
+	if (type !== 'popup') {
 		window.addEventListener('popstate', () => {
 			if (window.location.hash !== '#modal') {
 				close();
