@@ -169,5 +169,5 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{steps.get_changelog.output.changelog_title}}
+          tag_name: ${{ needs.update_version.outputs.version }}
           body: ${{ steps.get_changelog.outputs.changelog_body }}
