@@ -148,7 +148,7 @@ jobs:
           script: |
             const fs = require('fs')
 
-            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md')
+            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString()
 
             const changelogSplit = changelog.split('-->\n\n##')
             const changelogAdded = "## ${{ steps.get_changelog.outputs.changelog_title }}\n\n${{ steps.get_changelog.outputs.changelog_body }}\n\n"
