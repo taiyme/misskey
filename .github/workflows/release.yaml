@@ -54,8 +54,8 @@ jobs:
     steps:
       - name: Check if updates are needed
         if: |
-          needs.get_diff.outputs.package_diff == '0'
-          needs.get_diff.outputs.compose_diff == '0'
+          ${{ needs.get_diff.outputs.package_diff == '0' }}
+          ${{ needs.get_diff.outputs.compose_diff == '0' }}
         run: exit 0
 
       - name: Checkout
