@@ -36,7 +36,7 @@ jobs:
           fetch-depth: 0
 
       - name: Get release branch
-        run: git fetch ${{ github.base_ref }} --depth 1
+        run: git fetch origin ${{ github.base_ref }} --depth 1
 
       - name: Get  diff
         id: get_diff
