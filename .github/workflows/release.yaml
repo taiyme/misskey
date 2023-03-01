@@ -5,7 +5,6 @@ on:
       - release
     types:
       - labeled
-      - unlabeled
 
 jobs:
   check_label:
@@ -134,7 +133,7 @@ jobs:
       - name: merge PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.url }} --merge
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge
 
       - name: Get changelog
         id: get_changelog
