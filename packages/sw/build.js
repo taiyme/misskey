@@ -1,12 +1,17 @@
-const esbuild = require('esbuild');
-const locales = require('../../locales');
-const meta = require('../../package.json');
+import { build as _build } from 'esbuild';
+import locales from '../../locales/index.js';
+import meta from '../../package.json' assert { type: "json" };
+
+import path from 'path';
+import url from 'url';
+
 const watch = process.argv[2]?.includes('watch');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 console.log('Starting SW building...');
 
-esbuild.build({
-	entryPoints: [ `${__dirname}/src/sw.ts` ],
+_build({
+	entryPoints: [`${__dirname}/src/sw.ts`],
 	bundle: true,
 	format: 'esm',
 	treeShaking: true,
@@ -22,15 +27,18 @@ esbuild.build({
 		_VERSION_: JSON.stringify(meta.version),
 		_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
 		_ENV_: JSON.stringify(process.env.NODE_ENV),
-		_DEV_: process.env.NODE_ENV !== 'production',
+		_DEV_: JSON.stringify(process.env.NODE_ENV !== 'production'),
 		_PERF_PREFIX_: JSON.stringify('Misskey:'),
 	},
-	watch: watch ? {
-		onRebuild(error, result) {
-      if (error) console.error('SW: watch build failed:', error);
-      else console.log('SW: watch build succeeded:', result);
+	plugins: [{
+		name: 'on-end',
+		setup(build) {
+			build.onEnd((result) => {
+				if (result.errors) console.error('SW: watch build failed:', result.errors);
+				else console.log('SW: watch build succeeded:', result);
+			});
 		},
-	} : false,
+	}],
 }).then(result => {
 	if (watch) console.log('watching...');
 	else console.log('done,', JSON.stringify(result));

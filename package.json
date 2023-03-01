@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "12.119.2-taiyme-v1.0.40",
+	"version": "12.119.2-taiyme-v1.0.41",
 	"codename": "indigo",
 	"repository": {
 		"type": "git",
@@ -13,6 +13,7 @@
 		"packages/backend",
 		"packages/sw"
 	],
+	"type": "module",
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
@@ -23,7 +24,7 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"gulp": "pnpm exec gulp build",
 		"watch": "pnpm dev",
-		"dev": "node ./scripts/dev.js",
+		"dev": "NODE_ENV=developement node ./scripts/dev.js",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
@@ -36,22 +37,22 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"dependencies": {
-		"execa": "5.1.1",
+		"execa": "7.0.0",
 		"gulp": "4.0.2",
 		"gulp-cssnano": "2.1.3",
 		"gulp-rename": "2.0.0",
-		"gulp-replace": "1.1.3",
+		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0"
 	},
 	"devDependencies": {
-		"@types/gulp": "4.0.9",
+		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.36.2",
+		"@typescript-eslint/parser": "5.53.0",
 		"cross-env": "7.0.3",
-		"cypress": "10.7.0",
-		"start-server-and-test": "1.14.0",
+		"cypress": "12.7.0",
+		"start-server-and-test": "1.15.4",
 		"tasuku": "^2.0.1",
-		"typescript": "4.8.3"
+		"typescript": "4.9.5"
 	}
 }

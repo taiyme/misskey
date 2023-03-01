@@ -72,7 +72,7 @@ function wrap(url: string | null) {
 		return `${config.url}/proxy/preview.webp?${query({
 			url,
 			preview: '1'
-		})}`
+		})}`;
 	}
 
 	if (url.match(/^data:/)) {

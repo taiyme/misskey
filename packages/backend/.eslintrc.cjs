@@ -1,10 +1,10 @@
 module.exports = {
 	parserOptions: {
 		tsconfigRootDir: __dirname,
-		project: ['./tsconfig.json'],
+		project: ['./tsconfig.eslint.json'],
 	},
 	extends: [
-		'../shared/.eslintrc.js',
+		'../shared/.eslintrc.cjs',
 	],
 	rules: {
 		'import/order': ['warn', {
@@ -13,20 +13,20 @@ module.exports = {
 				{
 					'pattern': '@/**',
 					'group': 'external',
-					'position': 'after'
-				}
+					'position': 'after',
+				},
 			],
 		}],
 		'no-restricted-globals': [
 			'error',
 			{
 				'name': '__dirname',
-				'message': 'Not in ESModule. Use `import.meta.url` instead.'
+				'message': 'Not in ESModule. Use `import.meta.url` instead.',
 			},
 			{
 				'name': '__filename',
-				'message': 'Not in ESModule. Use `import.meta.url` instead.'
-			}
-	]
+				'message': 'Not in ESModule. Use `import.meta.url` instead.',
+			},
+		],
 	},
 };
