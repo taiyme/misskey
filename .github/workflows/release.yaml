@@ -17,10 +17,7 @@ jobs:
         run: exit 1
 
       - name: Throw an error if PR has no release tags
-        if: |
-          ${{ !contains(github.event.pull_request.labels.*.name, 'release-patch') }}
-          ${{ !contains(github.event.pull_request.labels.*.name, 'release-minor') }}
-          ${{ !contains(github.event.pull_request.labels.*.name, 'release-major') }}
+        if: github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch'
         run: |
           echo "::error::PR has no release tags!! (release-major, release-minor, release-patch)"
           exit 1
@@ -53,9 +50,7 @@ jobs:
       version: ${{ steps.version.outputs.result }}
     steps:
       - name: Check if updates are needed
-        if: |
-          ${{ needs.get_diff.outputs.package_diff == '0' }}
-          ${{ needs.get_diff.outputs.compose_diff == '0' }}
+        if: needs.get_diff.outputs.package_diff == '0' && needs.get_diff.outputs.compose_diff == '0'
         run: exit 0
 
       - name: Checkout
