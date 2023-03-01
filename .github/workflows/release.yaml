@@ -18,9 +18,9 @@ jobs:
 
       - name: Throw an error if PR has no release tags
         if: |
-          !contains(github.event.pull_request.labels.*.name, 'release-patch')
-          !contains(github.event.pull_request.labels.*.name, 'release-minor')
-          !contains(github.event.pull_request.labels.*.name, 'release-major')
+          ${{ !contains(github.event.pull_request.labels.*.name, 'release-patch') }}
+          ${{ !contains(github.event.pull_request.labels.*.name, 'release-minor') }}
+          ${{ !contains(github.event.pull_request.labels.*.name, 'release-major') }}
         run: |
           echo "::error::PR has no release tags!! (release-major, release-minor, release-patch)"
           exit 1
