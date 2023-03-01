@@ -1,7 +1,7 @@
 version: "3"
 services:
   web:
-    image: ghcr.io/cffnpwr/misskey-taiy:12.119.2-taiyme-v1.0.49
+    image: ghcr.io/cffnpwr/misskey-taiy:12.119.2-taiyme-v1.0.50
     restart: always
     ports:
       - 3000:3000
