@@ -135,11 +135,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge ${{ github.event.pull_request.number }} --merge
 
-      - name: Get changelog
-        id: get_changelog
-        run: |
-          echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
-          echo "changelog_body=${{ toJSON(github.event.pull_request.body) }}" >> $GITHUB_OUTPUT
+      - name: Get changelog title
+        id: get_changelog_title
+        run: echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
+
+      - name: Get changelog body
+        id: get_changelog_body
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: return `${{ github.event.pull_request.body }}`
 
       - name: Add new changelog
         uses: actions/github-script@v6
@@ -151,7 +156,7 @@ jobs:
             const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString()
 
             const changelogSplit = changelog.split('-->\n\n##')
-            const changelogAdded = "## ${{ steps.get_changelog.outputs.changelog_title }}\n\n${{ steps.get_changelog.outputs.changelog_body }}\n\n"
+            const changelogAdded = "## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n"
             const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]]
             const newChangelog = chnagelogArray.join('')
 
@@ -162,7 +167,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
           git add .
-          git commit --author=. -m "${{ steps.get_changelog.outputs.changelog_title }}"
+          git commit --author=. -m "${{ steps.get_changelog_title.outputs.changelog_title }}"
           git tag "${{ needs.update_version.outputs.version }}"
           git push --tags
 
@@ -170,4 +175,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.update_version.outputs.version }}
-          body: ${{ steps.get_changelog.outputs.changelog_body }}
+          body: ${{ steps.get_changelog_body.outputs.result }}
