@@ -51,7 +51,7 @@ jobs:
       version: ${{ steps.version.outputs.result }}
     steps:
       - name: Check if updates are needed
-        if: needs.get_diff.outputs.package_diff == '0' && needs.get_diff.outputs.compose_diff == '0'
+        if: needs.get_diff.outputs.package_diff != '0' && needs.get_diff.outputs.compose_diff != '0'
         run: exit 0
 
       - name: Checkout
@@ -70,29 +70,29 @@ jobs:
             const json = JSON.parse(fs.readFileSync('${{ github.workspace }}/package.json'))
             let version = json.version
 
-            if (${{ needs.get_diff.outputs.package_diff != '0' }}) {
-              const isPatch = ${{ contains(github.event.pull_request.labels.*.name, 'release-patch') }}
-              const isMinor = ${{ contains(github.event.pull_request.labels.*.name, 'release-minor') }}
-              const isMajor = ${{ contains(github.event.pull_request.labels.*.name, 'release-major') }}
+            if (${{ needs.get_diff.outputs.package_diff == '0' }}) {
+              const isPatch = ${{ github.event.label.name == 'release-patch' }}
+              const isMinor = ${{ github.event.label.name == 'release-minor' }}
+              const isMajor = ${{ github.event.label.name == 'release-major' }}
 
               const versionSplit = version.split('-taiyme-v')
               const versionMMP = versionSplit[1].split('.')
 
               if (isPatch)
-                versionMMP[2] += 1
+                  versionMMP[2] = Number(versionMMP[2]) + 1;
 
-              if (isMinor){
-                versionMMP[1] += 1
-                versionMMP[2] = 0
+              if (isMinor) {
+                  versionMMP[1] = Number(versionMMP[1]) + 1;
+                  versionMMP[2] = 0;
               }
-              
+
               if (isMajor) {
-                versionMMP[0] += 1
-                versionMMP[1] = 0
-                versionMMP[2] = 0
+                  versionMMP[0] = Number(versionMMP[0]) + 1;
+                  versionMMP[1] = 0;
+                  versionMMP[2] = 0;
               }
 
-              versionSplit = versionMMP.join('.')
+              versionSplit[1] = versionMMP.join('.');
               version = versionSplit.join('-taiyme-v')
               json.version = version
               fs.writeFileSync('${{ github.workspace }}/package.json', JSON.stringify(json, null, '\t'))
@@ -101,9 +101,9 @@ jobs:
             return version
 
       - name: Update docker-compose.yml
-        if: needs.get_diff.outputs.compose_diff != '0'
+        if: needs.get_diff.outputs.compose_diff == '0'
         run: |
-          yq -r eval '.services.web.image = "gchr.io/${{ github.repository }}:${{ steps.version.outputs.result }}"' -i "${{ github.workspace }}/docker-compose.yml"
+          yq -r eval '.services.web.image = "ghcr.io/${{ github.repository }}:${{ steps.version.outputs.result }}"' -i "${{ github.workspace }}/docker-compose.yml"
 
       - name: Commit and Push
         run: |
