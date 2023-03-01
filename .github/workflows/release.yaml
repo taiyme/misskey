@@ -161,7 +161,7 @@ jobs:
             const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString()
 
             const changelogSplit = changelog.split('-->\n\n##')
-            const changelogAdded = "## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n"
+            const changelogAdded = `## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n`
             const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]]
             const newChangelog = chnagelogArray.join('')
 
