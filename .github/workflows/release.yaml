@@ -172,7 +172,7 @@ jobs:
           git add .
           git commit --author=. -m "update CHANGELOG.md"
           git tag "${{ needs.update_version.outputs.version }}"
-          git push --tags
+          git push --follow-tags
 
       - name: Release
         uses: softprops/action-gh-release@v1
