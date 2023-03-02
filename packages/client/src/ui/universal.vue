@@ -1,59 +1,51 @@
 <template>
-	<div class="dkgtipfy" :class="{ wallpaper }">
-		<XSidebar v-if="!isMobile" class="sidebar" />
+<div class="dkgtipfy" :class="{ wallpaper }">
+	<XSidebar v-if="!isMobile" class="sidebar"/>
 
-		<MkStickyContainer class="contents">
-			<template #header>
-				<XStatusBars :class="$style.statusbars" />
-			</template>
-			<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-				<div :class="$style.content">
-					<RouterView />
-				</div>
-				<div :class="$style.spacer"></div>
-			</main>
-		</MkStickyContainer>
+	<MkStickyContainer class="contents">
+		<template #header>
+			<XStatusBars :class="$style.statusbars"/>
+		</template>
+		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
+			<div :class="$style.content">
+				<RouterView/>
+			</div>
+			<div :class="$style.spacer"></div>
+		</main>
+	</MkStickyContainer>
 
-		<div v-if="isDesktop" ref="widgetsEl" class="widgets">
-			<XWidgets @mounted="attachSticky" />
-		</div>
-
-		<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="openWidgets()"><i
-				class="ti ti-apps"></i></button>
-
-		<div v-if="isMobile" class="buttons">
-			<button class="button nav _button" @click="openDrawerMenu()"><i class="icon ti ti-menu-2"></i><span
-					v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
-			<button class="button home _button"
-				@click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i
-					class="icon ti ti-home"></i></button>
-			<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i
-					class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i
-						class="_indicatorCircle"></i></span></button>
-			<button class="button widget _button" @click="openWidgets()"><i class="icon ti ti-apps"></i></button>
-			<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
-		</div>
-
-		<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
-			<div v-if="drawerMenuShowing" class="menuDrawer-back _modalBg" @click="closeDrawerMenu()"
-				@touchstart.passive="closeDrawerMenu()"></div>
-		</transition>
-
-		<transition :name="$store.state.animation ? 'menuDrawer' : ''">
-			<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer" />
-		</transition>
-
-		<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
-			<div v-if="widgetsShowing" class="widgetsDrawer-back _modalBg" @click="closeWidgets()"
-				@touchstart.passive="closeWidgets()"></div>
-		</transition>
-
-		<transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
-			<XWidgets v-if="widgetsShowing" class="widgetsDrawer" />
-		</transition>
-
-		<XCommon />
+	<div v-if="isDesktop" ref="widgetsEl" class="widgets">
+		<XWidgets @mounted="attachSticky"/>
 	</div>
+
+	<button v-if="!isDesktop && !isMobile" class="widgetButton _button" @click="openWidgets()"><i class="ti ti-apps"></i></button>
+
+	<div v-if="isMobile" class="buttons">
+		<button class="button nav _button" @click="openDrawerMenu()"><i class="icon ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i class="icon ti ti-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
+		<button class="button widget _button" @click="openWidgets()"><i class="icon ti ti-apps"></i></button>
+		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
+	</div>
+
+	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
+		<div v-if="drawerMenuShowing" class="menuDrawer-back _modalBg" @click="closeDrawerMenu()" @touchstart.passive="closeDrawerMenu()"></div>
+	</transition>
+
+	<transition :name="$store.state.animation ? 'menuDrawer' : ''">
+		<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer"/>
+	</transition>
+
+	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
+		<div v-if="widgetsShowing" class="widgetsDrawer-back _modalBg" @click="closeWidgets()" @touchstart.passive="closeWidgets()"></div>
+	</transition>
+
+	<transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
+		<XWidgets v-if="widgetsShowing" class="widgetsDrawer"/>
+	</transition>
+
+	<XCommon/>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -71,6 +63,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { pushHash } from '@/scripts/tms/url-hash';
+
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -112,11 +105,13 @@ mainRouter.on('change', (ctx) => {
 
 	console.log(prevURL, newURL, ctx);
 
-	if (prevURL !== newURL)
-		if (!(ctx.path.endsWith('widgets') || ctx.path.endsWith('menu')))
+	if (prevURL !== newURL) {
+		if (!(ctx.path.endsWith('widgets') || ctx.path.endsWith('menu'))) {
 			drawerMenuShowing = false;
-		else
+		} else {
 			closeDrawerMenu();
+		}
+	}
 });
 
 document.documentElement.style.overflowY = 'scroll';
@@ -156,8 +151,9 @@ const openWidgets = (): void => {
 };
 
 const closeWidgets = (): void => {
-	if (window.location.hash.endsWith('widgets'))
+	if (window.location.hash.endsWith('widgets')) {
 		history.back();
+	}
 
 	widgetsShowing = false;
 };
@@ -176,8 +172,9 @@ const openDrawerMenu = (): void => {
 };
 
 const closeDrawerMenu = (): void => {
-	if (window.location.hash.endsWith('menu'))
+	if (window.location.hash.endsWith('menu')) {
 		history.back();
+	}
 
 	drawerMenuShowing = false;
 };
@@ -189,9 +186,11 @@ const onContextmenu = (ev) => {
 			return isLink(el.parentElement);
 		}
 	};
+
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
 	if (window.getSelection()?.toString() !== '') return;
+
 	const path = mainRouter.getCurrentPath();
 	os.contextMenu([{
 		type: 'label',
@@ -282,17 +281,17 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		//backdrop-filter: var(--blur, blur(4px));
 	}
 
-	>.sidebar {
+	> .sidebar {
 		border-right: solid 0.5px var(--divider);
 	}
 
-	>.contents {
+	> .contents {
 		width: 100%;
 		min-width: 0;
 		background: var(--bg);
 	}
 
-	>.widgets {
+	> .widgets {
 		padding: 0 var(--margin);
 		border-left: solid 0.5px var(--divider);
 		background: var(--bg);
@@ -302,7 +301,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		}
 	}
 
-	>.widgetButton {
+	> .widgetButton {
 		display: block;
 		position: fixed;
 		z-index: 1000;
@@ -316,11 +315,11 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		background: var(--panel);
 	}
 
-	>.widgetsDrawer-back {
+	> .widgetsDrawer-back {
 		z-index: 1001;
 	}
 
-	>.widgetsDrawer {
+	> .widgetsDrawer {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -334,7 +333,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		background: var(--bg);
 	}
 
-	>.buttons {
+	> .buttons {
 		position: fixed;
 		z-index: 1000;
 		bottom: 0;
@@ -350,7 +349,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 		background-color: var(--header);
 		border-top: solid 0.5px var(--divider);
 
-		>.button {
+		> .button {
 			position: relative;
 			padding: 0;
 			aspect-ratio: 1;
@@ -382,7 +381,7 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				}
 			}
 
-			>.indicator {
+			> .indicator {
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -391,18 +390,18 @@ const wallpaper = localStorage.getItem('wallpaper') != null;
 				animation: blink 1s infinite;
 			}
 
-			>.icon {
+			> .icon {
 				font-size: 18px;
 				vertical-align: middle;
 			}
 		}
 	}
 
-	>.menuDrawer-back {
+	> .menuDrawer-back {
 		z-index: 1001;
 	}
 
-	>.menuDrawer {
+	> .menuDrawer {
 		position: fixed;
 		top: 0;
 		left: 0;
