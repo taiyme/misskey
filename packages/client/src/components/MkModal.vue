@@ -1,19 +1,37 @@
 <template>
-	<transition
-		:name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''"
-		:duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')"
-		@after-enter="onOpened">
-		<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise"
-			:class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }"
-			:style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-			<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }"
-				@click="onBgClick" @contextmenu.prevent.stop="() => { }"></div>
-			<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }"
-				@click.self="onBgClick">
-				<slot :max-height="maxHeight" :type="type"></slot>
-			</div>
+<transition
+	:name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''"
+	:duration="$store.state.animation ? 200 : 0"
+	appear
+	@after-leave="emit('closed')"
+	@enter="emit('opening')"
+	@after-enter="onOpened"
+>
+	<div
+		v-show="manualShowing != null ? manualShowing : showing"
+		v-hotkey.global="keymap"
+		class="qzhlnise"
+		:class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }"
+		:style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }"
+	>
+		<div
+			class="bg _modalBg"
+			:class="{ transparent: transparentBg && (type === 'popup') }"
+			:style="{ zIndex }"
+			@click="onBgClick"
+			@contextmenu.prevent.stop="() => {}"
+		></div>
+		<div
+			ref="content"
+			class="content"
+			:class="{ fixed, top: type === 'dialog:top' }"
+			:style="{ zIndex }"
+			@click.self="onBgClick"
+		>
+			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
-	</transition>
+	</div>
+</transition>
 </template>
 
 <script lang="ts" setup>
@@ -277,25 +295,23 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.modal-enter-active,
-.modal-leave-active {
-	>.bg {
+.modal-enter-active, .modal-leave-active {
+	> .bg {
 		transition: opacity 0.2s !important;
 	}
 
-	>.content {
+	> .content {
 		transform-origin: var(--transformOrigin);
 		transition: opacity 0.2s, transform 0.2s !important;
 	}
 }
 
-.modal-enter-from,
-.modal-leave-to {
-	>.bg {
+.modal-enter-from, .modal-leave-to {
+	> .bg {
 		opacity: 0;
 	}
 
-	>.content {
+	> .content {
 		pointer-events: none;
 		opacity: 0;
 		transform-origin: var(--transformOrigin);
@@ -303,25 +319,23 @@ defineExpose({
 	}
 }
 
-.modal-popup-enter-active,
-.modal-popup-leave-active {
-	>.bg {
+.modal-popup-enter-active, .modal-popup-leave-active {
+	> .bg {
 		transition: opacity 0.2s !important;
 	}
 
-	>.content {
+	> .content {
 		transform-origin: var(--transformOrigin);
 		transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.2s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
 
-.modal-popup-enter-from,
-.modal-popup-leave-to {
-	>.bg {
+.modal-popup-enter-from, .modal-popup-leave-to {
+	> .bg {
 		opacity: 0;
 	}
 
-	>.content {
+	> .content {
 		pointer-events: none;
 		opacity: 0;
 		transform-origin: var(--transformOrigin);
@@ -330,39 +344,38 @@ defineExpose({
 }
 
 .modal-drawer-enter-active {
-	>.bg {
+	> .bg {
 		transition: opacity 0.2s !important;
 	}
 
-	>.content {
-		transition: transform 0.2s cubic-bezier(0, .5, 0, 1) !important;
+	> .content {
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
 
 .modal-drawer-leave-active {
-	>.bg {
+	> .bg {
 		transition: opacity 0.2s !important;
 	}
 
-	>.content {
-		transition: transform 0.2s cubic-bezier(0, .5, 0, 1) !important;
+	> .content {
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
 
-.modal-drawer-enter-from,
-.modal-drawer-leave-to {
-	>.bg {
+.modal-drawer-enter-from, .modal-drawer-leave-to {
+	> .bg {
 		opacity: 0;
 	}
 
-	>.content {
+	> .content {
 		pointer-events: none;
 		transform: translateY(100%);
 	}
 }
 
 .qzhlnise {
-	>.bg {
+	> .bg {
 		&.transparent {
 			background: transparent;
 			-webkit-backdrop-filter: none;
@@ -371,7 +384,7 @@ defineExpose({
 	}
 
 	&.dialog {
-		>.content {
+		> .content {
 			position: fixed;
 			top: 0;
 			bottom: 0;
@@ -404,7 +417,7 @@ defineExpose({
 	}
 
 	&.popup {
-		>.content {
+		> .content {
 			position: absolute;
 
 			&.fixed {
@@ -421,7 +434,7 @@ defineExpose({
 		height: 100%;
 		overflow: clip;
 
-		>.content {
+		> .content {
 			position: fixed;
 			bottom: 0;
 			left: 0;
