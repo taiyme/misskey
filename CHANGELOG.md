@@ -1,7 +1,9 @@
 <!--
-## 12.x.x (unreleased)
+## 1.0.x (unreleased)
 
 ### Improvements
+- feat: 検索画面の統合 (Khsmty)
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
 
 ### Bugfixes
 - 
