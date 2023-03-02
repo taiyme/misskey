@@ -120,6 +120,27 @@
 			「数字引用」機能を有効にする
 			<template #caption>Renoteメニューに「数字引用する」を追加します。</template>
 		</FormSwitch>
+
+		<FormSwitch v-model="tmsImanonashiEnabled" class="_formBlock">
+			「いまのなし」機能を有効にする
+			<template #caption>消せ消せ消せ消せ消せ</template>
+		</FormSwitch>
+		<FormFolder>
+			<template #label>削除する条件</template>
+			<template v-if="tmsImanonashiEnabled" #suffix>有効</template>
+			<template v-else #suffix>無効</template>
+
+			<div class="_formRoot">
+				<FormTextarea v-model="tmsImanonashiWords" class="_formBlock">
+					<template #label>単語</template>
+					<template #caption>スペースで区切るとAND指定になり、改行で区切るとOR指定になります。<br>キーワードをスラッシュで囲むと正規表現になります。</template>
+				</FormTextarea>
+				<FormSwitch v-model="tmsImanonashiConfirmEnabled" class="_formBlock">
+					削除を確認する
+					<template #caption>ノートを削除するときに確認します。</template>
+				</FormSwitch>
+			</div>
+		</FormFolder>
 	</FormSection>
 
 	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -131,6 +152,7 @@ import { watch } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
+import FormTextarea from '@/components/form/textarea.vue';
 import FormSection from '@/components/form/section.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -139,6 +161,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
+import { renderWords, parseWords, checkWords } from '@/scripts/words';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
@@ -193,6 +216,9 @@ const tmsIsLongPollLength = $ref(defaultStore.state.tmsIsLongPollLength);
 const tmsRenoteCollapsedEnabled = $ref(defaultStore.state.tmsRenoteCollapsedEnabled);
 const tmsPakuruEnabled = $ref(defaultStore.state.tmsPakuruEnabled);
 const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
+const tmsImanonashiEnabled = $ref(defaultStore.state.tmsImanonashiEnabled);
+const tmsImanonashiWords = $ref(renderWords(defaultStore.state.tmsImanonashiWords));
+const tmsImanonashiConfirmEnabled = $ref(defaultStore.state.tmsImanonashiConfirmEnabled);
 
 watch([
 	$$(tmsVerticalInstanceTicker),
@@ -204,6 +230,9 @@ watch([
 	$$(tmsRenoteCollapsedEnabled),
 	$$(tmsPakuruEnabled),
 	$$(tmsNumberquoteEnabled),
+	$$(tmsImanonashiEnabled),
+	$$(tmsImanonashiWords),
+	$$(tmsImanonashiConfirmEnabled),
 ], () => {
 	changed = true;
 });
@@ -218,7 +247,8 @@ async function check(): Promise<boolean> {
 		isNumberInRange(tmsIsLongTextElHeight, 0) &&
 		isNumberInRange(tmsIsLongFilesLength, 0) &&
 		isNumberInRange(tmsIsLongUrlsLength, 0) &&
-		isNumberInRange(tmsIsLongPollLength, 0)
+		isNumberInRange(tmsIsLongPollLength, 0) &&
+		checkWords(tmsImanonashiWords)
 	);
 }
 
@@ -233,6 +263,9 @@ async function save(): Promise<void> {
 		defaultStore.set('tmsRenoteCollapsedEnabled', tmsRenoteCollapsedEnabled);
 		defaultStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
 		defaultStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
+		defaultStore.set('tmsImanonashiEnabled', tmsImanonashiEnabled);
+		defaultStore.set('tmsImanonashiWords', parseWords(tmsImanonashiWords));
+		defaultStore.set('tmsImanonashiConfirmEnabled', tmsImanonashiConfirmEnabled);
 
 		const { canceled } = await os.confirm({
 			type: 'info',
