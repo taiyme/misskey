@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.42 (2023/03/03)
+
+- fix: CHANGELOG.mdの変更をマージ後に行なうように修正 (https://github.com/taiyme/misskey/pull/65) @cffnpwr
+- Hotfix: arm64 docker image (https://github.com/taiyme/misskey/pull/66) @cffnpwr
+- Feature: photo drawer swipe (https://github.com/taiyme/misskey/pull/68) @cffnpwr
+
 ## 12.119.2-taiyme-v1.0.41 (2023/03/01)
 
 - feat: upgrade dependencies (#54) @cffnpwr @taiyme
