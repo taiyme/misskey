@@ -86,10 +86,15 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
-				<FormSwitch v-if="user.host == null && $i.isAdmin && (admin || !user.isModerator)" v-model="admin" class="_formBlock" @update:modelValue="toggleAdmin">{{ i18n.ts.administrator }}</FormSwitch>
-				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+				<FormSelect v-if="user.host == null && $i.isAdmin" v-model="userState" class="_formBlock" @update:modelValue="selectUserState">
+					<option value="admin">{{ i18n.ts.administrator }}</option>
+					<option value="moderator">{{ i18n.ts.moderator }}</option>
+					<option value="users">{{ i18n.ts.users }}</option>
+				</FormSelect>
+				<template v-if="userState === 'users'">
+					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
+					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+				</template>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div class="_formBlock">
 					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
@@ -160,6 +165,7 @@ import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
+import FormSelect from '@/components/form/select.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/MkButton.vue';
@@ -198,6 +204,7 @@ let silenced = $ref(false);
 let suspended = $ref(false);
 let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
+let userState: 'admin' | 'moderator' | 'users' = $ref('users');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -224,6 +231,9 @@ function createFetcher() {
 			suspended = info.isSuspended;
 			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 			moderationNote = info.moderationNote;
+			userState = user.host == null ? (
+				admin ? 'admin' : moderator ? 'moderator' : 'users'
+			) : 'users';
 
 			watch($$(moderationNote), async () => {
 				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
@@ -259,6 +269,30 @@ async function resetPassword() {
 	});
 }
 
+async function selectUserState(v) {
+	const userId = user.id;
+
+	switch (v) {
+		case 'admin': {
+			if (moderator) await os.api('admin/moderators/remove', { userId });
+			if (!admin) await os.api('admin/admin/add', { userId });
+			break;
+		}
+		case 'moderator': {
+			if (admin) await os.api('admin/admin/remove', { userId });
+			if (!moderator) await os.api('admin/moderators/add', { userId });
+			break;
+		}
+		case 'users': {
+			if (moderator) await os.api('admin/moderators/remove', { userId });
+			if (admin) await os.api('admin/admin/remove', { userId });
+			break;
+		}
+	}
+
+	await refreshUser();
+}
+
 async function toggleSilence(v) {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -283,16 +317,6 @@ async function toggleSuspend(v) {
 		await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.id });
 		await refreshUser();
 	}
-}
-
-async function toggleModerator(v) {
-	await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: user.id });
-	await refreshUser();
-}
-
-async function toggleAdmin(v) {
-	await os.api(v ? 'admin/admin/add' : 'admin/admin/remove', { userId: user.id });
-	await refreshUser();
 }
 
 async function deleteAllFiles() {
