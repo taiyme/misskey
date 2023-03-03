@@ -107,16 +107,11 @@ const menuIndicated = computed(() => {
 });
 
 mainRouter.on('change', (ctx) => {
-	const prevURL = ctx.beforePath.replace(/[#\?].*$/, '');
-	const newURL = ctx.path.replace(/[#\?].*$/, '');
-
-	console.log(prevURL, newURL, ctx);
+	const prevURL = ctx.beforePath.replace(/#.*$/, '');
+	const newURL = ctx.path.replace(/#.*$/, '');
 
 	if (prevURL !== newURL)
-		if (!(ctx.path.endsWith('widgets') || ctx.path.endsWith('menu')))
-			drawerMenuShowing = false;
-		else
-			closeDrawerMenu();
+		drawerMenuShowing = false;
 });
 
 document.documentElement.style.overflowY = 'scroll';
@@ -145,7 +140,7 @@ onMounted(() => {
 const openWidgets = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('widgets')) {
-			closeWidgets();
+			widgetsShowing = false;
 			return;
 		}
 	});
@@ -165,7 +160,7 @@ const closeWidgets = (): void => {
 const openDrawerMenu = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('menu')) {
-			closeDrawerMenu();
+			drawerMenuShowing = false;
 			return;
 		}
 	});

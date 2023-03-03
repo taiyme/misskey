@@ -213,7 +213,7 @@ const onOpened = () => {
 
 	if (type !== 'popup') {
 		window.addEventListener('popstate', () => {
-			if (!window.location.hash.endsWith(type)) {
+			if (!window.location.hash.endsWith(type) && !window.location.hash) {
 				close();
 				return;
 			}
