@@ -41,7 +41,7 @@ jobs:
         id: get_diff
         run: |
           echo "package_diff=$(git diff origin/${{ github.base_ref }} HEAD --relative "./package.json" | grep "^+.\+version" | wc -l)" >> $GITHUB_OUTPUT
-          echo "compose_diff=$(git diff origin/${{ github.base_ref }} HEAD --relative "./docker-compose.yml" | grep "^+.\+image" | wc -l)" >> $GITHUB_OUTPUT
+          echo "compose_diff=$(git diff origin/${{ github.base_ref }} HEAD --relative "./docker-compose.yml" | grep "^+.\+image: ghcr.io/${{ github.repository }}" | wc -l)" >> $GITHUB_OUTPUT
 
   update_version:
     name: Update version
