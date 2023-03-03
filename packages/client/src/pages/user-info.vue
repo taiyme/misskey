@@ -271,26 +271,42 @@ async function resetPassword() {
 
 async function selectUserState(v) {
 	const userId = user.id;
+	let rejected = $ref(false);
+	const reject = () => {
+		rejected = true;
+	};
 
 	switch (v) {
 		case 'admin': {
-			if (moderator) await os.api('admin/moderators/remove', { userId });
-			if (!admin) await os.api('admin/admin/add', { userId });
+			if (!rejected && moderator) await os.api('admin/moderators/remove', { userId }).catch(reject);
+			if (!rejected && !admin) await os.api('admin/admin/add', { userId }).catch(reject);
 			break;
 		}
 		case 'moderator': {
-			if (admin) await os.api('admin/admin/remove', { userId });
-			if (!moderator) await os.api('admin/moderators/add', { userId });
+			if (!rejected && admin) await os.api('admin/admin/remove', { userId }).catch(reject);
+			if (!rejected && !moderator) await os.api('admin/moderators/add', { userId }).catch(reject);
 			break;
 		}
 		case 'users': {
-			if (moderator) await os.api('admin/moderators/remove', { userId });
-			if (admin) await os.api('admin/admin/remove', { userId });
+			if (!rejected && moderator) await os.api('admin/moderators/remove', { userId }).catch(reject);
+			if (!rejected && admin) await os.api('admin/admin/remove', { userId }).catch(reject);
 			break;
 		}
 	}
 
-	await refreshUser();
+	if (rejected) {
+		const reqState = userState;
+		userState = user.host == null ? (
+			admin ? 'admin' : moderator ? 'moderator' : 'users'
+		) : 'users';
+
+		await os.alert({
+			type: 'error',
+			text: `rejected:\n${userState} -> ${reqState}`,
+		});
+	} else {
+		await refreshUser();
+	}
 }
 
 async function toggleSilence(v) {
