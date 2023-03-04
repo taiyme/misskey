@@ -241,7 +241,7 @@ const close = () => {
 	showing = false;
 
 	if (type !== 'popup' && window.location.hash.endsWith(type))
-		history.back();
+		window.location.hash = '';
 
 	emit('close');
 };

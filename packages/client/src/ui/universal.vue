@@ -152,7 +152,7 @@ const openWidgets = (): void => {
 
 const closeWidgets = (): void => {
 	if (window.location.hash.endsWith('widgets'))
-		history.back();
+		window.location.hash = '';
 
 	widgetsShowing = false;
 };
@@ -172,7 +172,7 @@ const openDrawerMenu = (): void => {
 
 const closeDrawerMenu = (): void => {
 	if (window.location.hash.endsWith('menu'))
-		history.back();
+		window.location.hash = '';
 
 	drawerMenuShowing = false;
 };
