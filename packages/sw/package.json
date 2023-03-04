@@ -9,7 +9,7 @@
 	},
 	"resolutions": {},
 	"dependencies": {
-		"esbuild": "^0.17.10",
+		"esbuild": "^0.17.11",
 		"idb-keyval": "^6.2.0",
 		"misskey-js": "0.0.15"
 	},
