@@ -139,6 +139,10 @@
 					削除を確認する
 					<template #caption>ノートを削除するときに確認します。</template>
 				</FormSwitch>
+				<FormSwitch v-model="tmsImanonashiDeleteEnabled" class="_formBlock">
+					いまのなしも削除する
+					<template #caption>ノートを削除するときに、同時にいまのなしも削除します。</template>
+				</FormSwitch>
 			</div>
 		</FormFolder>
 	</FormSection>
@@ -161,10 +165,10 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
-import { renderWords, parseWords, checkWords } from '@/scripts/words';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { defaultStore } from '@/store';
+import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
 type Contributor = {
 	name: string;
@@ -219,6 +223,7 @@ const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
 const tmsImanonashiEnabled = $ref(defaultStore.state.tmsImanonashiEnabled);
 const tmsImanonashiWords = $ref(renderWords(defaultStore.state.tmsImanonashiWords));
 const tmsImanonashiConfirmEnabled = $ref(defaultStore.state.tmsImanonashiConfirmEnabled);
+const tmsImanonashiDeleteEnabled = $ref(defaultStore.state.tmsImanonashiDeleteEnabled);
 
 watch([
 	$$(tmsVerticalInstanceTicker),
@@ -233,6 +238,7 @@ watch([
 	$$(tmsImanonashiEnabled),
 	$$(tmsImanonashiWords),
 	$$(tmsImanonashiConfirmEnabled),
+	$$(tmsImanonashiDeleteEnabled),
 ], () => {
 	changed = true;
 });
@@ -266,6 +272,7 @@ async function save(): Promise<void> {
 		defaultStore.set('tmsImanonashiEnabled', tmsImanonashiEnabled);
 		defaultStore.set('tmsImanonashiWords', parseWords(tmsImanonashiWords));
 		defaultStore.set('tmsImanonashiConfirmEnabled', tmsImanonashiConfirmEnabled);
+		defaultStore.set('tmsImanonashiDeleteEnabled', tmsImanonashiDeleteEnabled);
 
 		const { canceled } = await os.confirm({
 			type: 'info',
