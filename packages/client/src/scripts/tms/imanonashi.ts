@@ -1,10 +1,15 @@
+import * as misskey from 'misskey-js';
+import * as os from '@/os';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { getNoteSummary } from '@/scripts/get-note-summary';
 
 type NoteLike = {
 	text?: string | null;
+  id: string;
 }
 
-export const isImanonashi = ({ text }: NoteLike): boolean => {
+const checkImanonashi = ({ text }: misskey.entities.Note): boolean => {
 	if (!text) return false;
 
 	const words = defaultStore.state.tmsImanonashiWords;
@@ -33,4 +38,39 @@ export const isImanonashi = ({ text }: NoteLike): boolean => {
 			}
 		}
 	});
+};
+
+const fetchPrevNote = async ({ id: untilId, userId }: misskey.entities.Note): Promise<misskey.entities.Note | null> => {
+	return await os.api('users/notes', { userId, untilId, limit: 1 }).then(notes => notes[0] ?? null).catch(() => null);
+};
+
+const deleteNote = async ({ id: noteId }: misskey.entities.Note): Promise<void> => {
+	os.api('notes/delete', { noteId });
+};
+
+export const imanonashi = async (note: misskey.entities.Note): Promise<void> => {
+	if (!defaultStore.state.tmsImanonashiEnabled) return;
+	if (!checkImanonashi(note)) return;
+
+	const prev = await fetchPrevNote(note);
+	if (!prev) {
+		os.alert({
+			type: 'error',
+			text: i18n.ts.noNotes,
+		});
+		return;
+	}
+
+	const notes = defaultStore.state.tmsImanonashiDeleteEnabled ? [note, prev] : [prev];
+	const flag = defaultStore.state.tmsImanonashiConfirmEnabled
+		? await os.confirm({
+			type: 'warning',
+			text: `${i18n.ts.noteDeleteConfirm}\n\n${notes.map(getNoteSummary).map(sum => sum.replace(/^/gm, '> ')).join('\n\n')}`,
+			allowMfm: true,
+		}).then(({ canceled }) => !canceled)
+		: true;
+
+	if (!flag) return;
+
+	notes.forEach(deleteNote);
 };
