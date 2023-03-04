@@ -64,7 +64,7 @@ export const imanonashi = async (note: misskey.entities.Note): Promise<void> => 
 
 	if (!flag) return;
 
-	notes.reduce((prom, { id: noteId }) => prom.then(async () => {
+	notes.slice().reverse().reduce((prom, { id: noteId }) => prom.then(async () => {
 		await os.api('notes/delete', { noteId });
 	}), Promise.resolve());
 };
