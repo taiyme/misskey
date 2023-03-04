@@ -4,13 +4,9 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 
-type NoteLike = {
-	text?: string | null;
-  id: string;
-}
-
-const checkImanonashi = ({ text }: misskey.entities.Note): boolean => {
-	if (!text) return false;
+const checkImanonashi = (note: misskey.entities.Note): boolean => {
+	const { text, cw, fileIds, renoteId, replyId, poll } = note;
+	if (!text || cw != null || fileIds.length || renoteId || replyId || poll) return false;
 
 	const words = defaultStore.state.tmsImanonashiWords;
 	if (words.length === 0) return false;
@@ -44,10 +40,6 @@ const fetchPrevNote = async ({ id: untilId, userId }: misskey.entities.Note): Pr
 	return await os.api('users/notes', { userId, untilId, limit: 1 }).then(notes => notes[0] ?? null).catch(() => null);
 };
 
-const deleteNote = async ({ id: noteId }: misskey.entities.Note): Promise<void> => {
-	os.api('notes/delete', { noteId });
-};
-
 export const imanonashi = async (note: misskey.entities.Note): Promise<void> => {
 	if (!defaultStore.state.tmsImanonashiEnabled) return;
 	if (!checkImanonashi(note)) return;
@@ -72,5 +64,7 @@ export const imanonashi = async (note: misskey.entities.Note): Promise<void> => 
 
 	if (!flag) return;
 
-	notes.forEach(deleteNote);
+	notes.reduce((prom, { id: noteId }) => prom.then(async () => {
+		await os.api('notes/delete', { noteId });
+	}), Promise.resolve());
 };

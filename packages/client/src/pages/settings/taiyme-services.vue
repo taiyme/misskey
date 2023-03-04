@@ -120,7 +120,9 @@
 			「数字引用」機能を有効にする
 			<template #caption>Renoteメニューに「数字引用する」を追加します。</template>
 		</FormSwitch>
+	</FormSection>
 
+	<FormSection>
 		<FormSwitch v-model="tmsImanonashiEnabled" class="_formBlock">
 			「いまのなし」機能を有効にする
 			<template #caption>消せ消せ消せ消せ消せ</template>
