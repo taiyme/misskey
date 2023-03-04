@@ -1,29 +1,37 @@
 FROM --platform=linux/amd64 node:18.14.1-bullseye AS common
 
-ENV npm_config_arch=arm64
-
-RUN \
-	export CC="aarch64-linux-gnu-gcc" && \
-	export CXX="aarch64-linux-gnu-g++" && \
-	export AR="aarch64-linux-gnu-ar" && \
-	export RANLIB="aarch64-linux-gnu-ranlib" && \
-	export LINK="aarch64-linux-gnu-g++" && \
-	export CPP="aarch64-linux-gnu-gcc -E" && \
-	export STRIP="aarch64-linux-gnu-strip" && \
-	export OBJCOPY="aarch64-linux-gnu-objcopy" && \
-	export LD="aarch64-linux-gnu-g++" && \
-	export OBJDUMP="aarch64-linux-gnu-objdump" && \
-	export NM="aarch64-linux-gnu-nm" && \
-	export AS="aarch64-linux-gnu-as"
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-	--mount=type=cache,target=/var/lib/apt,sharing=locked \
-	apt-get update
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-	--mount=type=cache,target=/var/lib/apt,sharing=locked \
-	apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu jq
+ENV npm_config_arch=arm64 \
+	CC="aarch64-linux-gnu-gcc" \
+	CXX="aarch64-linux-gnu-g++" \
+	AR="aarch64-linux-gnu-ar" \
+	RANLIB="aarch64-linux-gnu-ranlib" \
+	LINK="aarch64-linux-gnu-g++" \
+	CPP="aarch64-linux-gnu-gcc -E" \
+	STRIP="aarch64-linux-gnu-strip" \
+	OBJCOPY="aarch64-linux-gnu-objcopy" \
+	LD="aarch64-linux-gnu-g++" \
+	OBJDUMP="aarch64-linux-gnu-objdump" \
+	NM="aarch64-linux-gnu-nm" \
+	AS="aarch64-linux-gnu-as"
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential g++-aarch64-linux-gnu jq
 
 
 FROM --platform=linux/amd64 common AS re2
+
+ENV npm_config_arch=arm64 \
+	CC="aarch64-linux-gnu-gcc" \
+	CXX="aarch64-linux-gnu-g++" \
+	AR="aarch64-linux-gnu-ar" \
+	RANLIB="aarch64-linux-gnu-ranlib" \
+	LINK="aarch64-linux-gnu-g++" \
+	CPP="aarch64-linux-gnu-gcc -E" \
+	STRIP="aarch64-linux-gnu-strip" \
+	OBJCOPY="aarch64-linux-gnu-objcopy" \
+	LD="aarch64-linux-gnu-g++" \
+	OBJDUMP="aarch64-linux-gnu-objdump" \
+	NM="aarch64-linux-gnu-nm" \
+	AS="aarch64-linux-gnu-as"
 
 WORKDIR /re2
 
