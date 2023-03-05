@@ -19,4 +19,4 @@ export const popHash = (hashStr: string): {
 	};
 };
 
-export const trimHash = (): void => history.replaceState(null, '', `${location.pathname}${location.search}`);
+export const trimHash = (): void => history.pushState(null, '', `${location.pathname}${location.search}`);
