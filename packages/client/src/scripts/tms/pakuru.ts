@@ -74,10 +74,10 @@ const fixMentionsHost = (note: Note): Note => {
 		return mfm.toString(nodes);
 	};
 
-	const text = note.text && _fix(note.text, note.user.host);
-	const cw = note.cw && _fix(note.cw, note.user.host);
+	if (note.text != null) note.text = _fix(note.text, note.user.host);
+	if (note.cw != null) note.cw = _fix(note.cw, note.user.host);
 
-	return { ...note, text, cw };
+	return note;
 };
 
 async function makeParams(_note: Note): Promise<PostData> {
