@@ -287,6 +287,22 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	tmsImanonashiEnabled: {
+		where: 'device',
+		default: false,
+	},
+	tmsImanonashiWords: {
+		where: 'device',
+		default: ['/^いまのなし$/'] as (string | string[])[],
+	},
+	tmsImanonashiConfirmEnabled: {
+		where: 'device',
+		default: true,
+	},
+	tmsImanonashiDeleteEnabled: {
+		where: 'device',
+		default: false,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
