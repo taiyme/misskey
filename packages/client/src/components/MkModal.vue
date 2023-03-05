@@ -40,7 +40,7 @@ import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
 import { deviceKind } from '@/scripts/device-kind';
-import { pushHash } from '@/scripts/tms/url-hash';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -259,7 +259,7 @@ const close = () => {
 	showing = false;
 
 	if (type !== 'popup' && window.location.hash.endsWith(type)) {
-		window.location.hash = '';
+		trimHash();
 	}
 
 	emit('close');
