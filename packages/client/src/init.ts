@@ -42,6 +42,11 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 (async () => {
 	console.info(`Misskey v${version}`);
 
+	const [{ type: entryType }] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+	if (entryType === 'reload') {
+		window.location.hash = '';
+	}
+
 	if (_DEV_) {
 		console.warn('Development mode!!!');
 

@@ -140,7 +140,7 @@ onMounted(() => {
 const openWidgets = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('widgets')) {
-			closeWidgets();
+			widgetsShowing = false;
 			return;
 		}
 	});
@@ -152,7 +152,7 @@ const openWidgets = (): void => {
 
 const closeWidgets = (): void => {
 	if (window.location.hash.endsWith('widgets')) {
-		history.back();
+		window.location.hash = '';
 	}
 
 	widgetsShowing = false;
@@ -161,7 +161,7 @@ const closeWidgets = (): void => {
 const openDrawerMenu = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('menu')) {
-			closeDrawerMenu();
+			drawerMenuShowing = false;
 			return;
 		}
 	});
@@ -173,7 +173,7 @@ const openDrawerMenu = (): void => {
 
 const closeDrawerMenu = (): void => {
 	if (window.location.hash.endsWith('menu')) {
-		history.back();
+		window.location.hash = '';
 	}
 
 	drawerMenuShowing = false;
