@@ -1,4 +1,5 @@
 import * as misskey from 'misskey-js';
+import * as mfm from 'mfm-js';
 import { v4 as uuid } from 'uuid';
 import * as os from '@/os';
 import { $i } from '@/account';
@@ -56,6 +57,29 @@ async function uploadFiles(_files: DriveFile[]): Promise<DriveFile[]> {
 	return Promise.all(_files.map(_file => uploadFile(_file)));
 }
 
+const fixMentionsHost = (note: Note): Note => {
+	if (note.user.host == null) return note;
+
+	const _fix = (text: string, host: string): string => {
+		const nodes = mfm.parse(text);
+		mfm.inspect(nodes, node => {
+			if (node.type === 'mention') {
+				if (node.props.host == null) {
+					node.props.host = host;
+					node.props.acct = `${node.props.acct}@${host}`;
+				}
+			}
+		});
+
+		return mfm.toString(nodes);
+	};
+
+	const text = note.text && _fix(note.text, note.user.host);
+	const cw = note.cw && _fix(note.cw, note.user.host);
+
+	return { ...note, text, cw };
+};
+
 async function makeParams(_note: Note): Promise<PostData> {
 	const isRenote = (
 		_note.renote != null &&
@@ -64,7 +88,7 @@ async function makeParams(_note: Note): Promise<PostData> {
 		_note.poll == null
 	);
 
-	const note = isRenote ? (_note.renote as Note) : _note;
+	const note = fixMentionsHost(isRenote ? (_note.renote as Note) : _note);
 	const { text, cw, localOnly, visibility, files, replyId, renoteId, channelId } = note;
 
 	const visibleUserIds = [...new Set(note.visibleUserIds || [])];
@@ -101,12 +125,16 @@ function _nqadd(text: PostData['text']): PostData['text'] {
 	return text.replace(/\-?\d+$/, (n => (Number(n) + 1).toString(10)));
 }
 
-export async function pakuru(note: Note): Promise<void> {
-	os.api('notes/create', await makeParams(note));
+export async function pakuru(note: Note): Promise<{
+	createdNote: Note;
+}> {
+	return os.api('notes/create', await makeParams(note));
 }
 
-export async function numberquote(note: Note): Promise<void> {
-	os.api('notes/create', await makeParams(note).then(params => {
+export async function numberquote(note: Note): Promise<{
+	createdNote: Note;
+}> {
+	return os.api('notes/create', await makeParams(note).then(params => {
 		params.text = _nqadd(params.text);
 		return params;
 	}));
