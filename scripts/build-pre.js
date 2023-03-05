@@ -1,5 +1,5 @@
 import { mkdirSync, writeFileSync } from 'fs';
-import * as meta from '../package.json' assert { type: "json" };
+import meta from '../package.json' assert { type: "json" };
 import path from 'path';
 import url from 'url';
 
