@@ -1,6 +1,5 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
 export const postFormActions = [];
 export const userActions = [];
@@ -248,58 +247,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: 5,
 	},
 	aiChanMode: {
-		where: 'device',
-		default: false,
-	},
-	tmsVerticalInstanceTicker: {
-		where: 'device',
-		default: true,
-	},
-	tmsIsLongEnabled: {
-		where: 'device',
-		default: true,
-	},
-	tmsIsLongTextElHeight: {
-		where: 'device',
-		default: 500,
-	},
-	tmsIsLongFilesLength: {
-		where: 'device',
-		default: 5,
-	},
-	tmsIsLongUrlsLength: {
-		where: 'device',
-		default: 4,
-	},
-	tmsIsLongPollLength: {
-		where: 'device',
-		default: 5,
-	},
-	tmsRenoteCollapsedEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsPakuruEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsNumberquoteEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsImanonashiEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsImanonashiWords: {
-		where: 'device',
-		default: ['/^いまのなし$/'] as (string | string[])[],
-	},
-	tmsImanonashiConfirmEnabled: {
-		where: 'device',
-		default: true,
-	},
-	tmsImanonashiDeleteEnabled: {
 		where: 'device',
 		default: false,
 	},
