@@ -9,6 +9,10 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.44 (2023/03/05)
+
+- hotfix: misskeyのバージョン表示が変わらない問題を修正 (#78) @cffnpwr 
+
 ## 12.119.2-taiyme-v1.0.43 (2023/03/05)
 
 - enhance(client): モデレーション画面のスイッチトグルをプルダウンにする @taiyme
