@@ -18,3 +18,5 @@ export const popHash = (hashStr: string): {
 		newHash: hashArray.join('-'),
 	};
 };
+
+export const trimHash = (): void => history.replaceState(null, '', `${location.pathname}${location.search}`);

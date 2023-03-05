@@ -62,7 +62,7 @@ import { $i } from '@/account';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
-import { pushHash } from '@/scripts/tms/url-hash';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -152,7 +152,7 @@ const openWidgets = (): void => {
 
 const closeWidgets = (): void => {
 	if (window.location.hash.endsWith('widgets')) {
-		window.location.hash = '';
+		trimHash();
 	}
 
 	widgetsShowing = false;
@@ -173,7 +173,7 @@ const openDrawerMenu = (): void => {
 
 const closeDrawerMenu = (): void => {
 	if (window.location.hash.endsWith('menu')) {
-		window.location.hash = '';
+		trimHash();
 	}
 
 	drawerMenuShowing = false;
