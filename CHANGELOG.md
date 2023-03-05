@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.43 (2023/03/05)
+
+- enhance(client): モデレーション画面のスイッチトグルをプルダウンにする @taiyme
+- enhance(server): アンテナの検索対象にCWを追加 @taiyme
+- fix: 何故かバージョンが下がった依存関係を修正 (#74) @cffnpwr
+- fix: 検索画面が開かないバグを修正 @cffnpwr
+- **feat(client): tms: いまのなし (#75)** @taiyme
+
 ## 12.119.2-taiyme-v1.0.42 (2023/03/03)
 
 - fix: CHANGELOG.mdの変更をマージ後に行なうように修正 (https://github.com/taiyme/misskey/pull/65) @cffnpwr
