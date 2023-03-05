@@ -90,6 +90,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
+import { imanonashi } from '@/scripts/tms/imanonashi';
 
 const modal = inject('modal');
 
@@ -607,7 +608,7 @@ async function post() {
 	}
 
 	posting = true;
-	os.api('notes/create', postData, token).then(() => {
+	os.api('notes/create', postData, token).then(({ createdNote }) => {
 		clear();
 		nextTick(() => {
 			deleteDraft();
@@ -619,6 +620,8 @@ async function post() {
 			}
 			posting = false;
 			postAccount = null;
+
+			imanonashi(createdNote);
 		});
 	}).catch(err => {
 		posting = false;

@@ -62,7 +62,7 @@ import { $i } from '@/account';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
-import { pushHash } from '@/scripts/tms/url-hash';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -140,7 +140,7 @@ onMounted(() => {
 const openWidgets = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('widgets')) {
-			closeWidgets();
+			widgetsShowing = false;
 			return;
 		}
 	});
@@ -152,7 +152,7 @@ const openWidgets = (): void => {
 
 const closeWidgets = (): void => {
 	if (window.location.hash.endsWith('widgets')) {
-		history.back();
+		trimHash();
 	}
 
 	widgetsShowing = false;
@@ -161,7 +161,7 @@ const closeWidgets = (): void => {
 const openDrawerMenu = (): void => {
 	window.addEventListener('popstate', () => {
 		if (!window.location.hash.endsWith('menu')) {
-			closeDrawerMenu();
+			drawerMenuShowing = false;
 			return;
 		}
 	});
@@ -173,7 +173,7 @@ const openDrawerMenu = (): void => {
 
 const closeDrawerMenu = (): void => {
 	if (window.location.hash.endsWith('menu')) {
-		history.back();
+		trimHash();
 	}
 
 	drawerMenuShowing = false;
