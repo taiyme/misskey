@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.45 (2023/03/05)
+
+- fix: dockerイメージのビルドの際に明示的にブランチを指定 (#80) @cffnpwr
+- fix(client): tms: レートリミット対策 @taiyme
+
 ## 12.119.2-taiyme-v1.0.44 (2023/03/05)
 
 - hotfix: misskeyのバージョン表示が変わらない問題を修正 (#78) @cffnpwr 
