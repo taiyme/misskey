@@ -199,8 +199,8 @@ import { tmsStore } from '@/tms/store';
 import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
 type Contributor = {
-  name: string;
-  acct: string;
+	name: string;
+	acct: string;
 };
 
 const collaborators: Contributor[] = [
@@ -277,10 +277,10 @@ async function check(): Promise<boolean> {
 	};
 	return (
 		isNumberInRange(tmsIsLongTextElHeight, 0) &&
-    isNumberInRange(tmsIsLongFilesLength, 0) &&
-    isNumberInRange(tmsIsLongUrlsLength, 0) &&
-    isNumberInRange(tmsIsLongPollLength, 0) &&
-    checkWords(tmsImanonashiWords)
+		isNumberInRange(tmsIsLongFilesLength, 0) &&
+		isNumberInRange(tmsIsLongUrlsLength, 0) &&
+		isNumberInRange(tmsIsLongPollLength, 0) &&
+		checkWords(tmsImanonashiWords)
 	);
 }
 
