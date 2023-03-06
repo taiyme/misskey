@@ -61,23 +61,30 @@ const fixMentionsHost = (note: Note): Note => {
 	if (note.user.host == null) return note;
 
 	const _fix = (text: string, host: string): string => {
-		const nodes = mfm.parse(text);
-		mfm.inspect(nodes, node => {
+		const tokens = mfm.parse(text);
+		const mentionNode = (node: mfm.MfmNode): void => {
 			if (node.type === 'mention') {
 				if (node.props.host == null) {
 					node.props.host = host;
 					node.props.acct = `${node.props.acct}@${host}`;
 				}
 			}
-		});
-
-		return mfm.toString(nodes);
+			if (node.children) {
+				for (const child of node.children) {
+					mentionNode(child);
+				}
+			}
+		};
+		for (const node of tokens) {
+			mentionNode(node);
+		}
+		return mfm.toString(tokens);
 	};
 
-	if (note.text != null) note.text = _fix(note.text, note.user.host);
-	if (note.cw != null) note.cw = _fix(note.cw, note.user.host);
+	const text = note.text && _fix(note.text, note.user.host);
+	const cw = note.cw && _fix(note.cw, note.user.host);
 
-	return note;
+	return { ...note, text, cw };
 };
 
 async function makeParams(_note: Note): Promise<PostData> {
