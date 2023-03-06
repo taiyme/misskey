@@ -22,11 +22,9 @@ const props = defineProps<{
 
 // if no instance data is given, this is for the local instance
 const instance = props.instance ?? {
-	faviconUrl: Instance.iconUrl || Instance.iconUrl || '/favicon.ico',
+	faviconUrl: Instance.iconUrl || Instance.faviconUrl || '/favicon.ico',
 	name: instanceName,
-	themeColor: (
-		document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement
-	).content,
+	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content,
 };
 
 const vertical =
