@@ -234,19 +234,19 @@ const patrons: string[] = ['すえ', 'Midra', 'ゆー', 'こちゅだぁほ'];
 let tab = $ref('overview');
 let changed = $ref(false);
 
-const tmsVerticalInstanceTicker = $ref(tmsStore.state.tmsVerticalInstanceTicker);
-const tmsIsLongEnabled = $ref(tmsStore.state.tmsIsLong.enabled);
-const tmsIsLongTextElHeight = $ref(tmsStore.state.tmsIsLong.textElHeight);
-const tmsIsLongFilesLength = $ref(tmsStore.state.tmsIsLong.filesLength);
-const tmsIsLongUrlsLength = $ref(tmsStore.state.tmsIsLong.urlsLength);
-const tmsIsLongPollLength = $ref(tmsStore.state.tmsIsLong.pollLength);
-const tmsRenoteCollapsedEnabled = $ref(tmsStore.state.tmsRenoteCollapsedEnabled);
-const tmsPakuruEnabled = $ref(tmsStore.state.tmsPakuruEnabled);
-const tmsNumberquoteEnabled = $ref(tmsStore.state.tmsNumberquoteEnabled);
-const tmsImanonashiEnabled = $ref(tmsStore.state.tmsImanonashi.enabled);
-const tmsImanonashiWords = $ref(renderWords(tmsStore.state.tmsImanonashi.words));
-const tmsImanonashiConfirmEnabled = $ref(tmsStore.state.tmsImanonashi.confirm);
-const tmsImanonashiDeleteEnabled = $ref(tmsStore.state.tmsImanonashi.delete);
+const tmsVerticalInstanceTicker = $ref(tmsStore.state.verticalInstanceTicker);
+const tmsIsLongEnabled = $ref(tmsStore.state.isLongEnabled);
+const tmsIsLongTextElHeight = $ref(tmsStore.state.isLongTextElHeight);
+const tmsIsLongFilesLength = $ref(tmsStore.state.isLongFilesLength);
+const tmsIsLongUrlsLength = $ref(tmsStore.state.isLongUrlsLength);
+const tmsIsLongPollLength = $ref(tmsStore.state.isLongPollLength);
+const tmsRenoteCollapsedEnabled = $ref(tmsStore.state.renoteCollapsedEnabled);
+const tmsPakuruEnabled = $ref(tmsStore.state.pakuruEnabled);
+const tmsNumberquoteEnabled = $ref(tmsStore.state.numberquoteEnabled);
+const tmsImanonashiEnabled = $ref(tmsStore.state.imanonashiEnabled);
+const tmsImanonashiWords = $ref(renderWords(tmsStore.state.imanonashiWords));
+const tmsImanonashiConfirmEnabled = $ref(tmsStore.state.imanonashiConfirmEnabled);
+const tmsImanonashiDeleteEnabled = $ref(tmsStore.state.imanonashiDeleteEnabled);
 
 watch(
 	[
@@ -286,23 +286,19 @@ async function check(): Promise<boolean> {
 
 async function save(): Promise<void> {
 	if (await check()) {
-		tmsStore.set('tmsVerticalInstanceTicker', tmsVerticalInstanceTicker);
-		tmsStore.set('tmsIsLong', {
-			enabled: tmsIsLongEnabled,
-			textElHeight: tmsIsLongTextElHeight,
-			filesLength: tmsIsLongFilesLength,
-			urlsLength: tmsIsLongUrlsLength,
-			pollLength: tmsIsLongPollLength,
-		});
-		tmsStore.set('tmsRenoteCollapsedEnabled', tmsRenoteCollapsedEnabled);
-		tmsStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
-		tmsStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
-		tmsStore.set('tmsImanonashi', {
-			enabled: tmsImanonashiEnabled,
-			words: parseWords(tmsImanonashiWords),
-			confirm: tmsImanonashiConfirmEnabled,
-			delete: tmsImanonashiDeleteEnabled,
-		});
+		tmsStore.set('verticalInstanceTicker', tmsVerticalInstanceTicker);
+		tmsStore.set('isLongEnabled', tmsIsLongEnabled);
+		tmsStore.set('isLongTextElHeight', tmsIsLongTextElHeight);
+		tmsStore.set('isLongFilesLength', tmsIsLongFilesLength);
+		tmsStore.set('isLongUrlsLength', tmsIsLongUrlsLength);
+		tmsStore.set('isLongPollLength', tmsIsLongPollLength);
+		tmsStore.set('renoteCollapsedEnabled', tmsRenoteCollapsedEnabled);
+		tmsStore.set('pakuruEnabled', tmsPakuruEnabled);
+		tmsStore.set('numberquoteEnabled', tmsNumberquoteEnabled);
+		tmsStore.set('imanonashiEnabled', tmsImanonashiEnabled);
+		tmsStore.set('imanonashiWords', parseWords(tmsImanonashiWords));
+		tmsStore.set('imanonashiConfirmEnabled', tmsImanonashiConfirmEnabled);
+		tmsStore.set('imanonashiDeleteEnabled', tmsImanonashiDeleteEnabled);
 
 		const { canceled } = await os.confirm({
 			type: 'info',

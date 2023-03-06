@@ -25,13 +25,13 @@
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="ti ti-repeat"></i>
-		<I18n :src="i18n.ts.renotedBy" tag="span">
+		<i18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
-		</I18n>
+		</i18n>
 		<div class="info">
 			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
 				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
@@ -189,7 +189,7 @@
 	</article>
 </div>
 <div v-else class="muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+	<i18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA
 				v-user-preview="appearNote.userId"
@@ -199,7 +199,7 @@
 				<MkUserName :nowrap="false" :user="appearNote.user"/>
 			</MkA>
 		</template>
-	</I18n>
+	</i18n>
 </div>
 </template>
 
@@ -282,11 +282,11 @@ let appearNote = $computed(() =>
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const tmsIsLongEnabled = tmsStore.state.tmsIsLong.enabled;
-const tmsIsLongTextElHeight = tmsStore.state.tmsIsLong.textElHeight;
-const tmsIsLongFilesLength = tmsStore.state.tmsIsLong.filesLength;
-const tmsIsLongUrlsLength = tmsStore.state.tmsIsLong.urlsLength;
-const tmsIsLongPollLength = tmsStore.state.tmsIsLong.pollLength;
+const tmsIsLongEnabled = tmsStore.state.isLongEnabled;
+const tmsIsLongTextElHeight = tmsStore.state.isLongTextElHeight;
+const tmsIsLongFilesLength = tmsStore.state.isLongFilesLength;
+const tmsIsLongUrlsLength = tmsStore.state.isLongUrlsLength;
+const tmsIsLongPollLength = tmsStore.state.isLongPollLength;
 const isLong = $computed(() => {
 	return (
 		tmsIsLongEnabled &&
@@ -311,7 +311,7 @@ const showTicker =
 	defaultStore.state.instanceTicker === 'always' ||
 	(defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 let renoteCollapsed = $ref(
-	tmsStore.state.tmsRenoteCollapsedEnabled &&
+	tmsStore.state.renoteCollapsedEnabled &&
 		isRenote &&
 		(($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)),
 );

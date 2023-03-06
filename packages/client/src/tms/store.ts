@@ -1,54 +1,57 @@
 import { markRaw } from 'vue';
 import { Storage } from '@/pizzax';
 
-type TmsIsLong = {
-	enabled: boolean,
-	textElHeight: number,
-	filesLength: number,
-	urlsLength: number,
-	pollLength: number,
-}
-type TmsImanonashi = {
-	enabled: boolean,
-	words: (string | string[])[],
-	confirm: boolean,
-	delete: boolean,
-}
-
 export const tmsStore = markRaw(new Storage('tms', {
-	tmsVerticalInstanceTicker: {
-		where: 'account',
+	verticalInstanceTicker: {
+		where: 'device',
 		default: true,
 	},
-	tmsIsLong: {
-		where: 'account',
-		default: {
-			enabled: true,
-			textElHeight: 500,
-			filesLength: 5,
-			urlsLength: 4,
-			pollLength: 5,
-		} as TmsIsLong,
+	isLongEnabled: {
+		where: 'device',
+		default: true,
 	},
-	tmsRenoteCollapsedEnabled: {
-		where: 'account',
+	isLongTextElHeight: {
+		where: 'device',
+		default: 500,
+	},
+	isLongFilesLength: {
+		where: 'device',
+		default: 5,
+	},
+	isLongUrlsLength: {
+		where: 'device',
+		default: 4,
+	},
+	isLongPollLength: {
+		where: 'device',
+		default: 5,
+	},
+	renoteCollapsedEnabled: {
+		where: 'device',
 		default: false,
 	},
-	tmsPakuruEnabled: {
-		where: 'account',
+	pakuruEnabled: {
+		where: 'device',
 		default: false,
 	},
-	tmsNumberquoteEnabled: {
-		where: 'account',
+	numberquoteEnabled: {
+		where: 'device',
 		default: false,
 	},
-	tmsImanonashi: {
-		where: 'account',
-		default: {
-			enabled: false,
-			words: ['/^いまのなし$/'],
-			confirm: true,
-			delete: false,
-		} as TmsImanonashi,
+	imanonashiEnabled: {
+		where: 'device',
+		default: false,
+	},
+	imanonashiWords: {
+		where: 'device',
+		default: ['/^いまのなし$/'] as (string | string[])[],
+	},
+	imanonashiConfirmEnabled: {
+		where: 'device',
+		default: true,
+	},
+	imanonashiDeleteEnabled: {
+		where: 'device',
+		default: false,
 	},
 }));

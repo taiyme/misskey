@@ -22,7 +22,7 @@ const props = defineProps<{
 
 // if no instance data is given, this is for the local instance
 const instance = props.instance ?? {
-	faviconUrl: Instance.iconUrl || Instance.faviconUrl || '/favicon.ico',
+	faviconUrl: Instance.iconUrl || Instance.iconUrl || '/favicon.ico',
 	name: instanceName,
 	themeColor: (
 		document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement
@@ -30,7 +30,7 @@ const instance = props.instance ?? {
 };
 
 const vertical =
-	tmsStore.state.tmsVerticalInstanceTicker && (props.vertical || false);
+	tmsStore.state.verticalInstanceTicker && (props.vertical || false);
 
 const yuvColor = (hex) => {
 	const toRgb = (hex) => {

@@ -8,7 +8,7 @@ const checkImanonashi = (note: misskey.entities.Note): boolean => {
 	const { text, cw, fileIds, renoteId, replyId, poll } = note;
 	if (!text || cw != null || fileIds.length || renoteId || replyId || poll) return false;
 
-	const words = tmsStore.state.tmsImanonashi.words;
+	const words = tmsStore.state.imanonashiWords;
 	if (words.length === 0) return false;
 
 	return words.some(filter => {
@@ -41,7 +41,7 @@ const fetchPrevNote = async ({ id: untilId, userId }: misskey.entities.Note): Pr
 };
 
 export const imanonashi = async (note: misskey.entities.Note): Promise<void> => {
-	if (!tmsStore.state.tmsImanonashi.enabled) return;
+	if (!tmsStore.state.imanonashiEnabled) return;
 	if (!checkImanonashi(note)) return;
 
 	const prev = await fetchPrevNote(note);
@@ -53,8 +53,8 @@ export const imanonashi = async (note: misskey.entities.Note): Promise<void> => 
 		return;
 	}
 
-	const notes = tmsStore.state.tmsImanonashi.delete ? [note, prev] : [prev];
-	const flag = tmsStore.state.tmsImanonashi.confirm
+	const notes = tmsStore.state.imanonashiDeleteEnabled ? [note, prev] : [prev];
+	const flag = tmsStore.state.imanonashiConfirmEnabled
 		? await os.confirm({
 			type: 'warning',
 			text: `${i18n.ts.noteDeleteConfirm}\n\n${notes.map(getNoteSummary).map(sum => sum.replace(/^/gm, '> ')).join('\n\n')}`,
