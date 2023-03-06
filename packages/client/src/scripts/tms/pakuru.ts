@@ -5,6 +5,7 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { stream } from '@/stream';
 import { defaultStore } from '@/store';
+import { deepClone } from '@/scripts/clone';
 
 type DriveFile = misskey.entities.DriveFile & { comment?: string | null };
 
@@ -95,7 +96,7 @@ async function makeParams(_note: Note): Promise<PostData> {
 		_note.poll == null
 	);
 
-	const note = fixMentionsHost(isRenote ? (_note.renote as Note) : _note);
+	const note = fixMentionsHost(deepClone(isRenote ? (_note.renote as Note) : _note));
 	const { text, cw, localOnly, visibility, files, replyId, renoteId, channelId } = note;
 
 	const visibleUserIds = [...new Set(note.visibleUserIds || [])];
