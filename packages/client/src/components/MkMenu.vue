@@ -111,11 +111,11 @@ watch(() => props.items, () => {
 	immediate: true,
 });
 
-let childMenu = $ref<MenuItem[] | null>();
-let childTarget = $ref<HTMLElement | null>();
+let childMenu = ref<MenuItem[] | null>();
+let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
-	childMenu = null;
+	childMenu.value = null;
 	childShowingItem = null;
 }
 
@@ -140,13 +140,31 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
+let childrenCache = new WeakMap();
 async function showChildren(item: MenuItem, ev: MouseEvent) {
+	const children = ref([]);
+	if (childrenCache.has(item)) {
+		children.value = childrenCache.get(item);
+	} else {
+		if (typeof item.children === 'function') {
+			children.value = [{
+				type: 'pending',
+			}];
+			item.children().then(x => {
+				children.value = x;
+				childrenCache.set(item, x);
+			});
+		} else {
+			children.value = item.children;
+		}
+	}
+
 	if (props.asDrawer) {
-		os.popupMenu(item.children, ev.currentTarget ?? ev.target);
+		os.popupMenu(children, ev.currentTarget ?? ev.target);
 		close();
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = item.children;
+		childMenu = children;
 		childShowingItem = item;
 	}
 }
