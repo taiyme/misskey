@@ -1,11 +1,7 @@
 version: "3"
-
 services:
   web:
-    build:
-      context: .
-      cache_from:
-        - ghcr.io/taiyme/misskey:buildcache
+    image: ghcr.io/taiyme/misskey:12.119.2-taiyme-v1.0.46
     restart: always
     ports:
       - 3000:3000
@@ -18,7 +14,6 @@ services:
     depends_on:
       - db
       - redis
-
   redis:
     restart: always
     image: redis:4.0-alpine
@@ -26,7 +21,6 @@ services:
       - internal_network
     volumes:
       - ./redis:/data
-
   db:
     restart: always
     image: postgres:12.2-alpine
@@ -36,7 +30,6 @@ services:
       - .config/docker.env
     volumes:
       - ./db:/var/lib/postgresql/data
-
 networks:
   internal_network:
     internal: true

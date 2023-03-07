@@ -38,9 +38,15 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { trimHash } from '@/scripts/tms/url-hash';
 
 (async () => {
 	console.info(`Misskey v${version}`);
+
+	const [{ type: entryType }] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
+	if (entryType === 'reload') {
+		trimHash();
+	}
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');

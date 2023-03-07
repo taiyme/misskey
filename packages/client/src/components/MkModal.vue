@@ -1,8 +1,33 @@
 <template>
-<transition :name="$store.state.animation ? (type === 'drawer') ? 'modal-drawer' : (type === 'popup') ? 'modal-popup' : 'modal' : ''" :duration="$store.state.animation ? 200 : 0" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened">
-	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" class="qzhlnise" :class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div class="bg _modalBg" :class="{ transparent: transparentBg && (type === 'popup') }" :style="{ zIndex }" @click="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
-		<div ref="content" class="content" :class="{ fixed, top: type === 'dialog:top' }" :style="{ zIndex }" @click.self="onBgClick">
+<transition
+	:name="transitionName"
+	:duration="transitionDuration"
+	appear
+	@after-leave="emit('closed')"
+	@enter="emit('opening')"
+	@after-enter="onOpened"
+>
+	<div
+		v-show="manualShowing != null ? manualShowing : showing"
+		v-hotkey.global="keymap"
+		class="qzhlnise"
+		:class="{ drawer: type === 'drawer', dialog: type === 'dialog' || type === 'dialog:top', popup: type === 'popup' }"
+		:style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }"
+	>
+		<div
+			class="bg _modalBg"
+			:class="{ transparent: transparentBg && (type === 'popup') }"
+			:style="{ zIndex }"
+			@click="onBgClick"
+			@contextmenu.prevent.stop="() => {}"
+		></div>
+		<div
+			ref="content"
+			class="content"
+			:class="{ fixed, top: type === 'dialog:top' }"
+			:style="{ zIndex }"
+			@click.self="onBgClick"
+		>
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
 	</div>
@@ -15,6 +40,7 @@ import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
 import { deviceKind } from '@/scripts/device-kind';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -74,20 +100,26 @@ const type = $computed(() => {
 		return props.preferType!;
 	}
 });
+let transitionName = $computed((() =>
+	defaultStore.state.animation
+		? (type === 'drawer')
+			? 'modal-drawer'
+			: (type === 'popup')
+				? 'modal-popup'
+				: 'modal'
+		: ''
+));
+let transitionDuration = $computed((() =>
+	transitionName === 'modal-popup'
+		? 100
+		: transitionName === 'modal'
+			? 200
+			: transitionName === 'modal-drawer'
+				? 200
+				: 0
+));
 
 let contentClicking = false;
-
-const close = () => {
-	// eslint-disable-next-line vue/no-mutating-props
-	if (props.src) props.src.style.pointerEvents = 'auto';
-	showing = false;
-	emit('close');
-};
-
-const onBgClick = () => {
-	if (contentClicking) return;
-	emit('click');
-};
 
 if (type === 'drawer') {
 	maxHeight = window.innerHeight / 1.5;
@@ -98,6 +130,7 @@ const keymap = {
 };
 
 const MARGIN = 16;
+const SCROLLBAR_THICKNESS = 16;
 
 const align = () => {
 	if (props.src == null) return;
@@ -135,15 +168,15 @@ const align = () => {
 
 	if (fixed) {
 		// 画面から横にはみ出る場合
-		if (left + width > window.innerWidth) {
-			left = window.innerWidth - width;
+		if (left + width > (window.innerWidth - SCROLLBAR_THICKNESS)) {
+			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width;
 		}
 
-		const underSpace = (window.innerHeight - MARGIN) - top;
+		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - top;
 		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
-		if (top + height > (window.innerHeight - MARGIN)) {
+		if (top + height > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight = underSpace;
@@ -152,22 +185,22 @@ const align = () => {
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
-				top = (window.innerHeight - MARGIN) - height;
+				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height;
 			}
 		} else {
 			maxHeight = underSpace;
 		}
 	} else {
 		// 画面から横にはみ出る場合
-		if (left + width - window.pageXOffset > window.innerWidth) {
-			left = window.innerWidth - width + window.pageXOffset - 1;
+		if (left + width - window.pageXOffset > (window.innerWidth - SCROLLBAR_THICKNESS)) {
+			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset - 1;
 		}
 
-		const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
+		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - (top - window.pageYOffset);
 		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
-		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
+		if (top + height - window.pageYOffset > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight = underSpace;
@@ -176,7 +209,7 @@ const align = () => {
 					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
 			} else {
-				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
+				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height + window.pageYOffset - 1;
 			}
 		} else {
 			maxHeight = underSpace;
@@ -215,6 +248,17 @@ const align = () => {
 const onOpened = () => {
 	emit('opened');
 
+	if (type !== 'popup') {
+		window.addEventListener('popstate', () => {
+			if (!window.location.hash.endsWith(type) && !window.location.hash) {
+				close();
+				return;
+			}
+		});
+
+		history.pushState(null, '', pushHash(window.location.hash, type));
+	}
+
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content!.children[0];
 	el.addEventListener('mousedown', ev => {
@@ -228,6 +272,23 @@ const onOpened = () => {
 	}, { passive: true });
 };
 
+const close = () => {
+	// eslint-disable-next-line vue/no-mutating-props
+	if (props.src) props.src.style.pointerEvents = 'auto';
+	showing = false;
+
+	if (type !== 'popup' && window.location.hash.endsWith(type)) {
+		trimHash();
+	}
+
+	emit('close');
+};
+
+const onBgClick = () => {
+	if (contentClicking) return;
+	emit('click');
+};
+
 onMounted(() => {
 	watch(() => props.src, async () => {
 		if (props.src) {
@@ -237,7 +298,7 @@ onMounted(() => {
 		fixed = (type === 'drawer') || (getFixedContainer(props.src) != null);
 
 		await nextTick();
-		
+
 		align();
 	}, { immediate: true });
 
@@ -264,6 +325,7 @@ defineExpose({
 		transition: opacity 0.2s, transform 0.2s !important;
 	}
 }
+
 .modal-enter-from, .modal-leave-to {
 	> .bg {
 		opacity: 0;
@@ -279,14 +341,15 @@ defineExpose({
 
 .modal-popup-enter-active, .modal-popup-leave-active {
 	> .bg {
-		transition: opacity 0.2s !important;
+		transition: opacity 0.1s !important;
 	}
 
 	> .content {
 		transform-origin: var(--transformOrigin);
-		transition: opacity 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.2s cubic-bezier(0, 0, 0.2, 1) !important;
+		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
+
 .modal-popup-enter-from, .modal-popup-leave-to {
 	> .bg {
 		opacity: 0;
@@ -306,18 +369,20 @@ defineExpose({
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
+
 .modal-drawer-leave-active {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
+
 .modal-drawer-enter-from, .modal-drawer-leave-to {
 	> .bg {
 		opacity: 0;
@@ -348,15 +413,15 @@ defineExpose({
 			margin: auto;
 			padding: 32px;
 			// TODO: mask-imageはiOSだとやたら重い。なんとかしたい
-			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
-			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
+			-webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32px, rgba(0, 0, 0, 1) calc(100% - 32px), rgba(0, 0, 0, 0) 100%);
+			mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 32px, rgba(0, 0, 0, 1) calc(100% - 32px), rgba(0, 0, 0, 0) 100%);
 			overflow: auto;
 			display: flex;
 
 			@media (max-width: 500px) {
 				padding: 16px;
-				-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
-				mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
+				-webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 16px, rgba(0, 0, 0, 1) calc(100% - 16px), rgba(0, 0, 0, 0) 100%);
+				mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 16px, rgba(0, 0, 0, 1) calc(100% - 16px), rgba(0, 0, 0, 0) 100%);
 			}
 
 			> ::v-deep(*) {

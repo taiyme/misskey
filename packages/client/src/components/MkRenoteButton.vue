@@ -17,7 +17,7 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { i18n } from '@/i18n';
-import { pakuru, numberquote } from '@/scripts/pakuru';
+import { pakuru, numberquote } from '@/scripts/tms/pakuru';
 import { defaultStore } from '@/store';
 
 const props = defineProps<{
