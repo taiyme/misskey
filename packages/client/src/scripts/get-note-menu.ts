@@ -8,6 +8,7 @@ import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
+import { getUserMenu } from '@/scripts/get-user-menu';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -280,6 +281,15 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-pin',
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
+			} : undefined,
+			appearNote.userId !== $i.id ? {
+				type: 'parent',
+				icon: 'ti ti-user',
+				text: i18n.ts.user,
+				children: async () => {
+					const user = await os.api('users/show', { userId: appearNote.userId });
+					return getUserMenu(user);
+				},
 			} : undefined,
 			/*
 		...($i.isModerator || $i.isAdmin ? [
