@@ -1,11 +1,10 @@
 import Koa from 'koa';
 import { fetchMeta } from '@/misc/fetch-meta.js';
+import { deepClone } from '@/misc/clone.js';
 import manifest from './manifest.json' assert { type: 'json' };
 
 export const manifestHandler = async (ctx: Koa.Context) => {
-	// TODO
-	//const res = structuredClone(manifest);
-	const res = JSON.parse(JSON.stringify(manifest));
+	const res = deepClone(manifest);
 
 	const instance = await fetchMeta(true);
 

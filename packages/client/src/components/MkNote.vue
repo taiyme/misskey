@@ -133,6 +133,7 @@ import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { getNoteSummary } from '@/scripts/get-note-summary';
+import { deepClone } from '@/scripts/clone';
 import { shownNoteIds } from '@/os';
 
 const props = defineProps<{
@@ -142,12 +143,12 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-let note = $ref<misskey.entities.Note>(JSON.parse(JSON.stringify(props.note)));
+let note = $ref<misskey.entities.Note>(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result = JSON.parse(JSON.stringify(note));
+		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
 			result = await interruptor.handler(result);
 		}
