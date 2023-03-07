@@ -9,6 +9,20 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.46 (2023/03/07)
+
+- fix(backend): block delivery @atsu1125 @taiyme
+- fix(backend): Set correct access control of admin/drive/files @CyberRex0
+- fix(client): チャートのツールチップが画面に残ることがあるのを修正
+- enhance(client): fixMentionsHost @taiyme
+- perf: deepClone @syuilo
+- [Fix] fixed an typo in error message @daima3629
+- enhance(client): make possible to reload page of window @syuilo
+- fix(client): チャンネル一覧が最大5個までしか表示されない @taiyme
+- enhance(client): ノートメニューからユーザーメニューを開けるように @syuilo
+- enhance(client): improve clip menu ux @syuilo
+- chore(client): tweak modal/contextmenu position calculation @syuilo
+
 ## 12.119.2-taiyme-v1.0.45 (2023/03/05)
 
 - fix: dockerイメージのビルドの際に明示的にブランチを指定 (#80) @cffnpwr
