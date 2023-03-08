@@ -208,6 +208,8 @@ const patrons: string[] = [
 	'Midra',
 	'ゆー',
 	'こちゅだぁほ',
+	'xyzzy',
+	'ふれすと',
 ];
 
 let tab = $ref('overview');
