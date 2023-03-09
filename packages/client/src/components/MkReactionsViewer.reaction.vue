@@ -17,9 +17,11 @@ import { computed, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	reaction: string;
@@ -32,7 +34,7 @@ const buttonRef = ref<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
-const toggleReaction = () => {
+const toggleReaction = (): void => {
 	if (!canToggle.value) return;
 
 	const oldReaction = props.note.myReaction;
@@ -55,18 +57,25 @@ const toggleReaction = () => {
 	}
 };
 
-const anime = () => {
+const reactAnime = (): void => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
-	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+	const el = buttonRef.value;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + 16;
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+	}
 };
 
 watch(() => props.count, (newCount, oldCount) => {
-	if (oldCount < newCount) anime();
+	if (oldCount < newCount) reactAnime();
 });
 
 onMounted(() => {
-	if (!props.isInitial) anime();
+	if (!props.isInitial) reactAnime();
 });
 
 useTooltip(buttonRef, async (showing) => {
