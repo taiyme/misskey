@@ -1,4 +1,4 @@
-import MkRippleEffect from '@/components/MkMkRippleEffect.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { popup } from '@/os';
 
 export default {
