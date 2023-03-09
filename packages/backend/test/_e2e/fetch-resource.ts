@@ -15,6 +15,7 @@ const UNSPECIFIED = '*/*';
 const AP = 'application/activity+json; charset=utf-8';
 const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
+const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Fetch resource', () => {
 	let p: childProcess.ChildProcess;
@@ -54,16 +55,17 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.type, HTML);
 		});
 
-		it('GET api-doc', async () => {
+		test('GET api-doc', async () => {
 			const res = await simpleGet('/api-doc');
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, HTML);
+			// fastify-static gives charset=UTF-8 instead of utf-8 and that's okay
+			assert.strictEqual(res.type?.toLowerCase(), HTML);
 		});
 
-		it('GET api.json', async () => {
+		test('GET api.json', async () => {
 			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, JSON);
+			assert.strictEqual(res.type, JSON_UTF8);
 		});
 
 		it('Validate api.json', async () => {
@@ -80,7 +82,13 @@ describe('Fetch resource', () => {
 			assert.strictEqual(result.problems.length, 0);
 		});
 
-		it('GET favicon.ico', async () => {
+		test('GET api-console (client page)', async () => {
+			const res = await simpleGet('/api-console');
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, HTML);
+		});
+
+		test('GET favicon.ico', async () => {
 			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, 'image/x-icon');

@@ -184,11 +184,6 @@ export class ClientServerService {
 		//#region static assets
 
 		fastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
-		});
-
-		fastify.register(fastifyStatic, {
 			root: staticAssets,
 			prefix: '/static-assets/',
 			maxAge: ms('7 days'),

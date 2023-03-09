@@ -1,20 +1,21 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import * as http from 'node:http';
+import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import Fastify from 'fastify';
+import fastifyStatic from '@fastify/static';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
 import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -23,7 +24,9 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { MediaProxyServerService } from './MediaProxyServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
-import { bindThis } from '@/decorators.js';
+import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+
+const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
 @Injectable()
 export class ServerService {
@@ -41,6 +44,7 @@ export class ServerService {
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
+		private openApiServerService: OpenApiServerService,
 		private streamingApiServerService: StreamingApiServerService,
 		private activityPubServerService: ActivityPubServerService,
 		private wellKnownServerService: WellKnownServerService,
@@ -70,9 +74,17 @@ export class ServerService {
 			});
 		}
 
+		// Register non-serving static server so that the child services can use reply.sendFile.
+		// `root` here is just a placeholder and each call must use its own `rootPath`.
+		fastify.register(fastifyStatic, {
+			root: _dirname,
+			serve: false,
+		});
+
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.fileServerService.createServer, { prefix: '/files' });
 		fastify.register(this.mediaProxyServerService.createServer, { prefix: '/proxy' });
+		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
