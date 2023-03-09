@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.root" :style="{ zIndex, top: `${y - 64}px`, left: `${x - 64}px` }">
 	<span :class="[$style.text, { [$style.up]: up }]">
-		<MkReactionIcon class="icon" :reaction="reaction"/>
+		<MkReactionIcon class="icon" :reaction="reaction" :custom-emojis="emojis"/>
 	</span>
 </div>
 </template>
@@ -13,6 +13,10 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
 withDefaults(defineProps<{
 	reaction: string;
+	emojis: {
+		name: string;
+		url: string;
+	}[];
 	x: number;
 	y: number;
 }>(), {

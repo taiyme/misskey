@@ -66,7 +66,7 @@ const reactAnime = (): void => {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + 16;
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(MkReactionEffect, { reaction: props.reaction, x, y }, {}, 'end');
+		os.popup(MkReactionEffect, { reaction: props.reaction, emojis: props.note.emojis, x, y }, {}, 'end');
 	}
 };
 
