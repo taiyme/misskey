@@ -35,13 +35,13 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-function getReactionName(reaction: string): string {
+const getReactionName = (reaction: string): string => {
 	const trimLocal = reaction.replace('@.', '');
 	if (trimLocal.startsWith(':')) {
 		return trimLocal;
 	}
 	return getEmojiName(reaction) ?? reaction;
-}
+};
 </script>
 
 <style lang="scss" scoped>
