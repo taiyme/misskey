@@ -89,9 +89,18 @@ import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
-mainRouter.navHook = (path, flag): boolean => {
-	if (flag === 'forcePage') return false;
-	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+const isNoMainColumn = (): boolean => !deckStore.state.columns.some(x => x.type === 'main');
+
+if (isNoMainColumn()) {
+	const path = mainRouter.getCurrentPath();
+	if (new URL(path || '/', location.origin).pathname !== '/') {
+		os.pageWindow(path);
+	}
+}
+
+mainRouter.navHook = (path: string, flag: unknown): boolean => {
+	const noMainColumn = isNoMainColumn();
+	if (flag === 'forcePage' && !noMainColumn) return false;
 	if (deckStore.state.navWindow || noMainColumn) {
 		os.pageWindow(path);
 		return true;
