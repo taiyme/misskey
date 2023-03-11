@@ -2,7 +2,6 @@
 <button
 	v-if="count > 0"
 	ref="buttonRef"
-	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
 	@click="menu"
@@ -40,7 +39,7 @@ const menu = (): void => {
 		reaction: props.reaction,
 		note: props.note,
 		canToggle: canToggle,
-		menuButton: buttonRef,
+		reactButton: buttonRef,
 	});
 };
 

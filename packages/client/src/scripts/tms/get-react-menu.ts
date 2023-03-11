@@ -2,6 +2,7 @@ import { Ref } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { getEmojiName } from '@/scripts/emojilist';
 import { MenuItem } from '@/types/menu';
@@ -14,18 +15,26 @@ const deleteReaction = ({ noteId }: { noteId: string }): Promise<null> => {
 	return os.api('notes/reactions/delete', { noteId });
 };
 
+const rippleEffect = (el: HTMLElement | null | undefined): void => {
+	if (!el) return;
+	const rect = el.getBoundingClientRect();
+	const x = rect.left + (el.offsetWidth / 2);
+	const y = rect.top + (el.offsetHeight / 2);
+	os.popup(MkRippleEffect, { x, y }, {}, 'end');
+};
+
 export const getReactMenu = ({
 	reaction,
 	note,
 	canToggle,
-	menuButton,
+	reactButton,
 }: {
 	reaction: string;
 	note: misskey.entities.Note;
 	canToggle: Ref<boolean>;
-	menuButton: Ref<HTMLElement | undefined>;
+	reactButton: Ref<HTMLElement | undefined>;
 }): void => {
-	if (!menuButton.value) return;
+	if (!reactButton.value) return;
 
 	const isCustomEmoji = reaction.startsWith(':');
 	const emojiName = isCustomEmoji ? reaction : getEmojiName(reaction) ?? reaction;
@@ -45,6 +54,8 @@ export const getReactMenu = ({
 				text: i18n.ts._tms.react,
 				icon: 'ti ti-plus',
 				action: (): void => {
+					rippleEffect(reactButton.value);
+
 					if (note.myReaction) {
 						deleteReaction({ noteId }).then(() => createReaction({ noteId, reaction }));
 					} else {
@@ -57,6 +68,8 @@ export const getReactMenu = ({
 				text: i18n.ts._tms.unreact,
 				icon: 'ti ti-minus',
 				action: (): void => {
+					rippleEffect(reactButton.value);
+
 					if (note.myReaction) {
 						deleteReaction({ noteId });
 					}
@@ -74,5 +87,5 @@ export const getReactMenu = ({
 		},
 	});
 
-	os.popupMenu(menu, menuButton.value);
+	os.popupMenu(menu, reactButton.value);
 };
