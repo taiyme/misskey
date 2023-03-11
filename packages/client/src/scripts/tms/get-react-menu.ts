@@ -3,7 +3,6 @@ import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import MkReactedUsersDialog from '@/components/MkReactedUsersDialog.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { getEmojiName } from '@/scripts/emojilist';
 import { MenuItem } from '@/types/menu';
