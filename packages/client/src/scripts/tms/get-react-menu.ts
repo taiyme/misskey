@@ -15,6 +15,14 @@ const deleteReaction = ({ noteId }: { noteId: string }): Promise<null> => {
 	return os.api('notes/reactions/delete', { noteId });
 };
 
+const getReactionName = (reaction: string): string => {
+	const trimLocal = reaction.replace('@.', '');
+	if (trimLocal.startsWith(':')) {
+		return trimLocal;
+	}
+	return getEmojiName(reaction) ?? reaction;
+};
+
 const rippleEffect = (el: HTMLElement | null | undefined): void => {
 	if (!el) return;
 	const rect = el.getBoundingClientRect();
@@ -36,14 +44,13 @@ export const getReactMenu = ({
 }): void => {
 	if (!reactButton.value) return;
 
-	const isCustomEmoji = reaction.startsWith(':');
-	const emojiName = isCustomEmoji ? reaction : getEmojiName(reaction) ?? reaction;
+	const reactionName = getReactionName(reaction);
 
 	const menu: MenuItem[] = [];
 
 	menu.push({
 		type: 'label',
-		text: emojiName,
+		text: reactionName,
 	});
 
 	if (canToggle.value) {
@@ -82,7 +89,7 @@ export const getReactMenu = ({
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',
 		action: (): void => {
-			copyToClipboard(isCustomEmoji ? emojiName : reaction);
+			copyToClipboard(reaction.startsWith(':') ? reactionName : reaction);
 			os.success();
 		},
 	});
