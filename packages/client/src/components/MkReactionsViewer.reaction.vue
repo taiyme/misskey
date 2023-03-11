@@ -4,7 +4,7 @@
 	ref="buttonRef"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
-	@click="menu"
+	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
 	<span class="count">{{ count }}</span>
@@ -21,7 +21,7 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
-import { getReactMenu } from '@/scripts/tms/get-react-menu';
+import { getReactMenu, toggleReact } from '@/scripts/tms/get-react-menu';
 
 const props = defineProps<{
 	reaction: string;
@@ -33,14 +33,20 @@ const props = defineProps<{
 const buttonRef = ref<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
+const useReactMenu = computed(() => true);
 
-const menu = (): void => {
-	getReactMenu({
+const react = (): void => {
+	const param = {
 		reaction: props.reaction,
 		note: props.note,
 		canToggle: canToggle,
 		reactButton: buttonRef,
-	});
+	};
+	if (useReactMenu.value) {
+		getReactMenu(param);
+	} else {
+		toggleReact(param);
+	}
 };
 
 const reactAnime = (): void => {

@@ -7,6 +7,13 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { getEmojiName } from '@/scripts/emojilist';
 import { MenuItem } from '@/types/menu';
 
+type ReactProps = {
+	reaction: string;
+	note: misskey.entities.Note;
+	canToggle: Ref<boolean>;
+	reactButton: Ref<HTMLElement | undefined>;
+};
+
 const createReaction = ({ noteId, reaction }: { noteId: string, reaction: string }): Promise<null> => {
 	return os.api('notes/reactions/create', { noteId, reaction });
 };
@@ -38,17 +45,7 @@ const rippleEffect = (el: HTMLElement | null | undefined): void => {
 	os.popup(MkRippleEffect, { x, y }, {}, 'end');
 };
 
-export const getReactMenu = ({
-	reaction,
-	note,
-	canToggle,
-	reactButton,
-}: {
-	reaction: string;
-	note: misskey.entities.Note;
-	canToggle: Ref<boolean>;
-	reactButton: Ref<HTMLElement | undefined>;
-}): void => {
+export const getReactMenu = ({ reaction, note, canToggle, reactButton }: ReactProps): void => {
 	if (!reactButton.value) return;
 
 	const reactionName = getReactionName(reaction);
@@ -113,4 +110,24 @@ export const getReactMenu = ({
 	});
 
 	os.popupMenu(menu, reactButton.value);
+};
+
+export const toggleReact = ({ reaction, note, canToggle, reactButton }: ReactProps): void => {
+	if (!canToggle.value) return;
+	if (!reactButton.value) return;
+
+	const noteId = note.id;
+	const oldReaction = note.myReaction;
+
+	rippleEffect(reactButton.value);
+
+	if (oldReaction) {
+		deleteReaction({ noteId }).then(() => {
+			if (oldReaction !== reaction) {
+				createReaction({ noteId, reaction });
+			}
+		});
+	} else {
+		createReaction({ noteId, reaction });
+	}
 };
