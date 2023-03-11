@@ -70,6 +70,13 @@
 			<template #caption>タイムライン上のインスタンス情報を左端に表示します。</template>
 		</FormSwitch>
 
+		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
+			リアクションメニューを有効にする
+			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
+		</FormSwitch>
+	</FormSection>
+
+	<FormSection>
 		<FormSwitch v-model="tmsIsLongEnabled" class="_formBlock">
 			ノートを畳む
 			<template #caption>タイムライン上のノートが特定の条件の場合、畳んで表示します。無効にすると常に展開して表示します。</template>
@@ -216,6 +223,7 @@ let tab = $ref('overview');
 let changed = $ref(false);
 
 const tmsVerticalInstanceTicker = $ref(defaultStore.state.tmsVerticalInstanceTicker);
+const tmsUseReactionMenu = $ref(defaultStore.state.tmsUseReactionMenu);
 const tmsIsLongEnabled = $ref(defaultStore.state.tmsIsLongEnabled);
 const tmsIsLongTextElHeight = $ref(defaultStore.state.tmsIsLongTextElHeight);
 const tmsIsLongFilesLength = $ref(defaultStore.state.tmsIsLongFilesLength);
@@ -231,6 +239,7 @@ const tmsImanonashiDeleteEnabled = $ref(defaultStore.state.tmsImanonashiDeleteEn
 
 watch([
 	$$(tmsVerticalInstanceTicker),
+	$$(tmsUseReactionMenu),
 	$$(tmsIsLongEnabled),
 	$$(tmsIsLongTextElHeight),
 	$$(tmsIsLongFilesLength),
@@ -265,6 +274,7 @@ async function check(): Promise<boolean> {
 async function save(): Promise<void> {
 	if (await check()) {
 		defaultStore.set('tmsVerticalInstanceTicker', tmsVerticalInstanceTicker);
+		defaultStore.set('tmsUseReactionMenu', tmsUseReactionMenu);
 		defaultStore.set('tmsIsLongEnabled', tmsIsLongEnabled);
 		defaultStore.set('tmsIsLongTextElHeight', tmsIsLongTextElHeight);
 		defaultStore.set('tmsIsLongFilesLength', tmsIsLongFilesLength);

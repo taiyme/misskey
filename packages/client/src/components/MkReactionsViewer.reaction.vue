@@ -33,7 +33,6 @@ const props = defineProps<{
 const buttonRef = ref<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
-const useReactMenu = computed(() => true);
 
 const react = (): void => {
 	const param = {
@@ -42,7 +41,7 @@ const react = (): void => {
 		canToggle: canToggle,
 		reactButton: buttonRef,
 	};
-	if (useReactMenu.value) {
+	if (defaultStore.state.tmsUseReactionMenu) {
 		getReactMenu(param);
 	} else {
 		toggleReact(param);
