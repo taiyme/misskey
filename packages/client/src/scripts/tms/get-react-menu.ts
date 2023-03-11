@@ -48,6 +48,7 @@ const rippleEffect = (el: HTMLElement | null | undefined): void => {
 export const getReactMenu = ({ reaction, note, canToggle, reactButton }: ReactProps): void => {
 	if (!reactButton.value) return;
 
+	const noteId = note.id;
 	const reactionName = getReactionName(reaction);
 
 	const menu: MenuItem[] = [];
@@ -58,8 +59,6 @@ export const getReactMenu = ({ reaction, note, canToggle, reactButton }: ReactPr
 	});
 
 	if (canToggle.value) {
-		const noteId = note.id;
-
 		if (note.myReaction !== reaction) {
 			menu.push({
 				text: i18n.ts._tms.react,
@@ -103,7 +102,7 @@ export const getReactMenu = ({ reaction, note, canToggle, reactButton }: ReactPr
 		icon: 'ti ti-info-circle',
 		action: (): void => {
 			showReactions({
-				noteId: note.id,
+				noteId,
 				initialTab: reaction,
 			});
 		},
