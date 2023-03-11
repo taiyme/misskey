@@ -1,13 +1,9 @@
 <template>
-<template v-if="errored">
-	<img v-if="useFallbackIcon" class="mk-emoji mk-emoji-fallback" src="/static-assets/emoji-unknown.png" alt="unknown" title="unknown" decoding="async"/>
-	<span v-else class="mk-emoji-fallback">{{ emoji.replace('@.', '') }}</span>
-</template>
-<template v-else>
-	<img v-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
-	<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle" @error="errored = true" @load="errored = false"/>
-	<span v-else-if="char && useOsNativeEmojis" class="mk-emoji-native" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
-</template>
+<img v-if="errored && useFallbackIcon" class="mk-emoji mk-emoji-fallback" src="/static-assets/emoji-unknown.png" alt="unknown" title="unknown" decoding="async"/>
+<span v-else-if="errored" class="mk-emoji-fallback">{{ emoji.replace('@.', '') }}</span>
+<img v-else-if="customEmoji" class="mk-emoji custom" :class="{ normal, noStyle }" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
+<img v-else-if="char && !useOsNativeEmojis" class="mk-emoji" :src="url" :alt="alt" decoding="async" @pointerenter="computeTitle" @error="errored = true" @load="errored = false"/>
+<span v-else-if="char && useOsNativeEmojis" class="mk-emoji-native" :alt="alt" @pointerenter="computeTitle">{{ char }}</span>
 </template>
 
 <script lang="ts" setup>
