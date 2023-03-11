@@ -1,8 +1,9 @@
-import { Ref } from 'vue';
+import { defineAsyncComponent, Ref } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import MkReactedUsersDialog from '@/components/MkReactedUsersDialog.vue';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { getEmojiName } from '@/scripts/emojilist';
 import { MenuItem } from '@/types/menu';
@@ -21,6 +22,13 @@ const getReactionName = (reaction: string): string => {
 		return trimLocal;
 	}
 	return getEmojiName(reaction) ?? reaction;
+};
+
+const showReactions = ({ noteId, initialTab }: {
+	noteId: string;
+	initialTab?: string | null;
+}): void => {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), { noteId, initialTab }, {}, 'closed');
 };
 
 const rippleEffect = (el: HTMLElement | null | undefined): void => {
@@ -91,6 +99,17 @@ export const getReactMenu = ({
 		action: (): void => {
 			copyToClipboard(reaction.startsWith(':') ? reactionName : reaction);
 			os.success();
+		},
+	});
+
+	menu.push({
+		text: i18n.ts.details,
+		icon: 'ti ti-info-circle',
+		action: (): void => {
+			showReactions({
+				noteId: note.id,
+				initialTab: reaction,
+			});
 		},
 	});
 
