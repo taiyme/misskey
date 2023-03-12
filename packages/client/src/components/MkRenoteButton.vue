@@ -29,7 +29,7 @@ const props = defineProps<{
 const buttonRef = ref<HTMLElement>();
 
 const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i?.id);
-const canPakuru = computed(() => tmsStore.state.pakuruEnabled || tmsStore.state.numberquoteEnabled);
+const canPakuru = computed(() => tmsStore.state.usePakuru || tmsStore.state.useNumberquote);
 
 const renoteAnime = (): void => {
 	const el = buttonRef.value;
@@ -90,7 +90,7 @@ const renote = (viaKeyboard = false): void => {
 	];
 
 	const pakuruMenu = [
-		tmsStore.state.pakuruEnabled ? {
+		tmsStore.state.usePakuru ? {
 			text: 'パクる',
 			icon: 'ti ti-swipe',
 			action: (): void => {
@@ -98,7 +98,7 @@ const renote = (viaKeyboard = false): void => {
 				pakuru(props.note);
 			},
 		} : undefined,
-		tmsStore.state.numberquoteEnabled ? {
+		tmsStore.state.useNumberquote ? {
 			text: '数字引用する',
 			icon: 'ti ti-exposure-plus-1',
 			action: (): void => {
