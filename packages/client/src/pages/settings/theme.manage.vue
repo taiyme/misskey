@@ -33,7 +33,7 @@ import FormSelect from '@/components/form/select.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/MkButton.vue';
 import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import * as os from '@/os';
 import { getThemes, removeTheme } from '@/theme-store';
 import { i18n } from '@/i18n';
@@ -56,7 +56,7 @@ const selectedThemeCode = computed(() => {
 });
 
 function copyThemeCode() {
-	copyToClipboard(selectedThemeCode.value);
+	copyText(selectedThemeCode.value);
 	os.success();
 }
 

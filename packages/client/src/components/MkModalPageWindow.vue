@@ -24,7 +24,7 @@
 import { ComputedRef, provide } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { popout as _popout } from '@/scripts/popout';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
 import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
@@ -86,7 +86,7 @@ const contextmenu = $computed(() => {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyToClipboard(pageUrl);
+			copyText(pageUrl);
 		},
 	}];
 });

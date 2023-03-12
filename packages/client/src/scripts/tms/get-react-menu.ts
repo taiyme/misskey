@@ -3,7 +3,7 @@ import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { getEmojiName } from '@/scripts/emojilist';
 import { MenuItem } from '@/types/menu';
 
@@ -92,7 +92,7 @@ export const getReactMenu = ({ reaction, note, canToggle, reactButton }: ReactPr
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',
 		action: (): void => {
-			copyToClipboard(reaction.startsWith(':') ? reactionName : reaction);
+			copyText(reaction.startsWith(':') ? reactionName : reaction);
 			os.success();
 		},
 	});

@@ -2,7 +2,7 @@ import * as Acct from 'misskey-js/built/acct';
 import { defineAsyncComponent } from 'vue';
 import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { host } from '@/config';
 import * as os from '@/os';
 import { userActions } from '@/store';
@@ -157,7 +157,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host || host}`);
+			copyText(`@${user.username}@${user.host || host}`);
 		},
 	}, {
 		icon: 'ti ti-info-circle',

@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
@@ -161,7 +161,7 @@ function toggleSensitive() {
 }
 
 function copyUrl() {
-	copyToClipboard(props.file.url);
+	copyText(props.file.url);
 	os.success();
 }
 /*
