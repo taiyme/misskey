@@ -6,6 +6,10 @@ export const tmsStore = markRaw(new Storage('tms', {
 		where: 'device',
 		default: true,
 	},
+	useReactionMenu: {
+		where: 'device',
+		default: true,
+	},
 	isLongEnabled: {
 		where: 'device',
 		default: true,
