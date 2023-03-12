@@ -3,59 +3,59 @@ import { Storage } from '@/pizzax';
 
 export const tmsStore = markRaw(new Storage('tms', {
 	verticalInstanceTicker: {
-		where: 'device',
+		where: 'account',
 		default: true,
 	},
 	useReactionMenu: {
-		where: 'device',
+		where: 'account',
 		default: true,
 	},
-	isLongEnabled: {
-		where: 'device',
+	collapseNote: {
+		where: 'account',
 		default: true,
 	},
-	isLongTextElHeight: {
-		where: 'device',
+	collapseNoteHeight: {
+		where: 'account',
 		default: 500,
 	},
-	isLongFilesLength: {
-		where: 'device',
+	collapseNoteFile: {
+		where: 'account',
 		default: 5,
 	},
-	isLongUrlsLength: {
-		where: 'device',
+	collapseNoteUrl: {
+		where: 'account',
 		default: 4,
 	},
-	isLongPollLength: {
-		where: 'device',
+	collapseNotePoll: {
+		where: 'account',
 		default: 5,
 	},
-	renoteCollapsedEnabled: {
-		where: 'device',
+	collapseRenote: {
+		where: 'account',
 		default: false,
 	},
-	pakuruEnabled: {
-		where: 'device',
+	usePakuru: {
+		where: 'account',
 		default: false,
 	},
-	numberquoteEnabled: {
-		where: 'device',
+	useNumberquote: {
+		where: 'account',
 		default: false,
 	},
-	imanonashiEnabled: {
-		where: 'device',
+	useImanonashi: {
+		where: 'account',
 		default: false,
 	},
 	imanonashiWords: {
-		where: 'device',
+		where: 'account',
 		default: ['/^いまのなし$/'] as (string | string[])[],
 	},
-	imanonashiConfirmEnabled: {
-		where: 'device',
+	imanonashiConfirm: {
+		where: 'account',
 		default: true,
 	},
-	imanonashiDeleteEnabled: {
-		where: 'device',
+	imanonashiItself: {
+		where: 'account',
 		default: false,
 	},
 }));
