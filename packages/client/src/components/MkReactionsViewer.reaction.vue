@@ -2,10 +2,9 @@
 <button
 	v-if="count > 0"
 	ref="buttonRef"
-	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
-	@click="toggleReaction()"
+	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
 	<span class="count">{{ count }}</span>
@@ -22,6 +21,7 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { getReactMenu, toggleReact } from '@/scripts/tms/get-react-menu';
 
 const props = defineProps<{
 	reaction: string;
@@ -32,28 +32,19 @@ const props = defineProps<{
 
 const buttonRef = ref<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
 
-const toggleReaction = (): void => {
-	if (!canToggle.value) return;
-
-	const oldReaction = props.note.myReaction;
-	if (oldReaction) {
-		os.api('notes/reactions/delete', {
-			noteId: props.note.id,
-		}).then(() => {
-			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
-					noteId: props.note.id,
-					reaction: props.reaction,
-				});
-			}
-		});
+const react = (): void => {
+	const param = {
+		reaction: props.reaction,
+		note: props.note,
+		canToggle: canToggle,
+		reactButton: buttonRef,
+	};
+	if (defaultStore.state.tmsUseReactionMenu) {
+		getReactMenu(param);
 	} else {
-		os.api('notes/reactions/create', {
-			noteId: props.note.id,
-			reaction: props.reaction,
-		});
+		toggleReact(param);
 	}
 };
 

@@ -255,6 +255,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	tmsUseReactionMenu: {
+		where: 'device',
+		default: true,
+	},
 	tmsIsLongEnabled: {
 		where: 'device',
 		default: true,

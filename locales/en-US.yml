@@ -1749,3 +1749,7 @@ _deck:
     channel: "Channel"
     mentions: "Mentions"
     direct: "Direct notes"
+
+_tms:
+  react: "React"
+  unreact: "Unreact"

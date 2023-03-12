@@ -53,6 +53,7 @@ const emit = defineEmits<{
 
 const props = defineProps<{
 	noteId: misskey.entities.Note['id'];
+	initialTab?: string | null;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -88,7 +89,13 @@ onMounted(() => {
 	}).then((res) => {
 		hasRenote = res.renoteCount > 0;
 		reactions = Object.keys(res.reactions);
-		tab = hasRenote ? RENOTE_TAB : reactions[0];
+		if (typeof props.initialTab === 'string') {
+			tab = props.initialTab;
+		} else if (hasRenote && props.initialTab === null) {
+			tab = RENOTE_TAB;
+		} else {
+			tab = hasRenote ? RENOTE_TAB : reactions[0];
+		}
 		note = res;
 	});
 });

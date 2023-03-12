@@ -11,3 +11,26 @@ export type UnicodeEmojiDef = {
 import _emojilist from '../emojilist.json';
 
 export const emojilist = _emojilist as UnicodeEmojiDef[];
+
+const _indexByChar = new Map<string, number>();
+const _charGroupByCategory = new Map<string, string[]>();
+emojilist.forEach((emo, i) => {
+	_indexByChar.set(emo.char, i);
+
+	if (_charGroupByCategory.has(emo.category)) {
+		_charGroupByCategory.get(emo.category)?.push(emo.char);
+	} else {
+		_charGroupByCategory.set(emo.category, [emo.char]);
+	}
+});
+
+export const emojiCharByCategory = _charGroupByCategory;
+
+export const getEmojiName = (char: string): string | undefined => {
+	const idx = _indexByChar.get(char);
+	if (typeof idx === 'undefined') {
+		return undefined;
+	} else {
+		return emojilist[idx].name;
+	}
+};
