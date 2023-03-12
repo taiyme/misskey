@@ -50,7 +50,7 @@ const deleteNotes = async ([...notes]: misskey.entities.Note[]): Promise<void> =
 };
 
 export const imanonashi = async (note: misskey.entities.Note): Promise<void> => {
-	if (!tmsStore.state.imanonashiEnabled) return;
+	if (!tmsStore.state.useImanonashi) return;
 	if (!checkImanonashi(note)) return;
 
 	const prev = await fetchPrevNote(note);
@@ -62,8 +62,8 @@ export const imanonashi = async (note: misskey.entities.Note): Promise<void> => 
 		return;
 	}
 
-	const notes = tmsStore.state.imanonashiDeleteEnabled ? [note, prev] : [prev];
-	const flag = tmsStore.state.imanonashiConfirmEnabled
+	const notes = tmsStore.state.imanonashiItself ? [note, prev] : [prev];
+	const flag = tmsStore.state.imanonashiConfirm
 		? await os.confirm({
 			type: 'warning',
 			text: `${i18n.ts.noteDeleteConfirm}\n\n${notes.map(getNoteSummary).map(sum => sum.replace(/^/gm, '> ')).join('\n\n')}`,
