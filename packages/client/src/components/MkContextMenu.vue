@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from './types/menu.vue';
+import { MenuItem } from '@/types/menu';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
 

@@ -30,7 +30,10 @@
 </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
+import { defaultStore } from '@/store';
+
 export type Tab = {
 	key: string;
 	title: string;
@@ -41,11 +44,6 @@ export type Tab = {
 	iconOnly: true;
 	iccn: string;
 };
-</script>
-
-<script lang="ts" setup>
-import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
-import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];

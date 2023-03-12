@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, reactive, ref, computed } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/form/select.vue';
 import MkButton from '@/components/MkButton.vue';

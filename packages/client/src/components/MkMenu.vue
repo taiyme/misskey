@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';

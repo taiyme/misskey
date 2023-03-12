@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { } from 'vue';
 import * as os from '@/os';
 import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
