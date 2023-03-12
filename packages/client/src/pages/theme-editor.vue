@@ -87,7 +87,6 @@ import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { addTheme } from '@/theme-store';
 import { i18n } from '@/i18n';
-import { useLeaveGuard } from '@/scripts/use-leave-guard';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const bgColors = [
@@ -125,9 +124,6 @@ let theme = $ref<Partial<Theme>>({
 });
 let description = $ref<string | null>(null);
 let themeCode = $ref<string | null>(null);
-let changed = $ref(false);
-
-useLeaveGuard($$(changed));
 
 function showPreview() {
 	os.pageWindow('/preview');
@@ -162,7 +158,6 @@ function setFgColor(color) {
 function apply() {
 	themeCode = JSON5.stringify(theme, null, '\t');
 	applyTheme(theme, false);
-	changed = true;
 }
 
 function applyThemeCode() {
@@ -199,7 +194,6 @@ async function saveAs() {
 	} else {
 		ColdDeviceStorage.set('lightTheme', theme);
 	}
-	changed = false;
 	os.alert({
 		type: 'success',
 		text: i18n.t('_theme.installed', { name: theme.name }),
