@@ -13,7 +13,7 @@
   id-denylist violation when setting it. This is causing about 60+ lint issues.
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
-import { onMounted, ref, watch, PropType, onUnmounted } from 'vue';
+import { onMounted, ref, watch, PropType } from 'vue';
 import {
 	Chart,
 	ArcElement,

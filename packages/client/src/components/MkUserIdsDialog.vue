@@ -15,7 +15,7 @@
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 			<template v-else>
-				<MkA v-for="user in users" :key="user" :to="userPage(user)">
+				<MkA v-for="user in users" :key="user.id" :to="userPage(user)">
 					<MkUserCardMini class="user" :user="user" :with-chart="false"/>
 				</MkA>
 			</template>

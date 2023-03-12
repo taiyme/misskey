@@ -38,7 +38,7 @@
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
-				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
+				<FormSplit v-for="(record, i) in fields" :key="i" :min-width="250" class="_formBlock">
 					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>
@@ -69,7 +69,6 @@ import FormSelect from '@/components/form/select.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';

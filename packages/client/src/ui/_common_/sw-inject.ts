@@ -1,7 +1,6 @@
-import { inject } from 'vue';
+import { } from 'vue';
 import { post } from '@/os';
 import { $i, login } from '@/account';
-import { defaultStore } from '@/store';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { mainRouter } from '@/router';
 

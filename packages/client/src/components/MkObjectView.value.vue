@@ -6,13 +6,13 @@
 	<div v-else-if="typeof value === 'number'" class="number">{{ number(value) }}</div>
 	<div v-else-if="isArray(value) && isEmpty(value)" class="array empty">[]</div>
 	<div v-else-if="isArray(value)" class="array">
-		<div v-for="i in value.length" class="element">
+		<div v-for="i in value.length" :key="i" class="element">
 			{{ i }}: <XValue :value="value[i - 1]" collapsed/>
 		</div>
 	</div>
 	<div v-else-if="isObject(value) && isEmpty(value)" class="object empty">{}</div>
 	<div v-else-if="isObject(value)" class="object">
-		<div v-for="k in Object.keys(value)" class="kv">
+		<div v-for="k in Object.keys(value)" :key="k" class="kv">
 			<button class="toggle _button" :class="{ visible: collapsable(value[k]) }" @click="collapsed[k] = !collapsed[k]">{{ collapsed[k] ? '+' : '-' }}</button>
 			<div class="k">{{ k }}:</div>
 			<div v-if="collapsed[k]" class="v">
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import number from '@/filters/number';
 
 export default defineComponent({

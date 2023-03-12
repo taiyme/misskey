@@ -7,18 +7,18 @@
 				:parent-folder="folder"
 				@move="move"
 				@upload="upload"
-				@removeFile="removeFile"
-				@removeFolder="removeFolder"
+				@remove-file="removeFile"
+				@remove-folder="removeFolder"
 			/>
-			<template v-for="f in hierarchyFolders">
+			<template v-for="f in hierarchyFolders" :key="f.id">
 				<span class="separator"><i class="ti ti-chevron-right"></i></span>
 				<XNavFolder
 					:folder="f"
 					:parent-folder="folder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 				/>
 			</template>
 			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
@@ -48,13 +48,14 @@
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
+				<div v-for="_ in 16" class="padding"></div>
 				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
@@ -71,7 +72,8 @@
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
+				<div v-for="_ in 16" class="padding"></div>
 				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
@@ -88,7 +90,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';

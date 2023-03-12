@@ -1,4 +1,4 @@
-import { Ref } from 'vue';
+import { } from 'vue';
 
 export function calcPopupPosition(el: HTMLElement, props: {
 	anchorElement: HTMLElement | null;

@@ -111,7 +111,7 @@
 			<div class="container tagCloud">
 				<div class="body">
 					<MkTagCloud v-if="activeInstances">
-						<li v-for="instance in activeInstances">
+						<li v-for="instance in activeInstances" :key="instance.id">
 							<a @click.prevent="onInstanceClick(instance)">
 								<img style="width: 32px;" :src="instance.iconUrl">
 							</a>
@@ -159,15 +159,13 @@ import {
 } from 'chart.js';
 import { enUS } from 'date-fns/locale';
 import tinycolor from 'tinycolor2';
-import MagicGrid from 'magic-grid';
-import XMetrics from './metrics.vue';
 import XFederation from './overview.federation.vue';
 import XQueueChart from './overview.queue-chart.vue';
 import XUser from './overview.user.vue';
 import XPie from './overview.pie.vue';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkTagCloud from '@/components/MkTagCloud.vue';
-import { version, url } from '@/config';
+import { version } from '@/config';
 import number from '@/filters/number';
 import * as os from '@/os';
 import { stream } from '@/stream';

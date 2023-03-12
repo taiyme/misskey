@@ -6,17 +6,16 @@
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			<a v-for="item in items" :key="item.link" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { ref, watch } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
 

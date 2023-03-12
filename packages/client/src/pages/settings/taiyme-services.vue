@@ -34,7 +34,7 @@
 	<FormSection>
 		<template #label>コラボレーター</template>
 		<div class="_formLinks">
-			<template v-for="collaborator in collaborators" :key="collaborator">
+			<template v-for="collaborator in collaborators" :key="collaborator.name">
 				<FormLink :to="`https://github.com/${collaborator.acct}`" external>
 					{{ collaborator.name }}
 					<template #suffix>{{ `@${collaborator.acct}` }}</template>
@@ -46,7 +46,7 @@
 	<FormSection>
 		<template #label>コントリビューター</template>
 		<div class="_formLinks">
-			<template v-for="contributor in contributors" :key="contributor">
+			<template v-for="contributor in contributors" :key="contributor.name">
 				<FormLink :to="`https://github.com/${contributor.acct}`" external>
 					{{ contributor.name }}
 					<template #suffix>{{ `@${contributor.acct}` }}</template>

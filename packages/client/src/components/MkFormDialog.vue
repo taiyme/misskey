@@ -16,7 +16,7 @@
 
 	<MkSpacer :margin-min="20" :margin-max="32">
 		<div class="xkpnjxcv _formRoot">
-			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
+			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
 				<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
@@ -35,11 +35,11 @@
 				</FormSwitch>
 				<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
-					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="item_ in form[item].enum" :key="item_.value" :value="item_.value">{{ item_.label }}</option>
 				</FormSelect>
 				<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
-					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
+					<option v-for="item_ in form[item].options" :key="item_.value" :value="item_.value">{{ item_.label }}</option>
 				</FormRadios>
 				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>

@@ -4,6 +4,10 @@
 
 import '@/style.scss';
 
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
+import { compareVersions } from 'compare-versions';
+import JSON5 from 'json5';
+
 //#region account indexedDB migration
 import { set } from '@/scripts/idb-proxy';
 
@@ -13,14 +17,10 @@ if (localStorage.getItem('accounts') != null) {
 }
 //#endregion
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import { compareVersions } from 'compare-versions';
-import JSON5 from 'json5';
-
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host, updateLocale } from '@/config';
+import { version, ui, lang, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, updateI18n } from '@/i18n';

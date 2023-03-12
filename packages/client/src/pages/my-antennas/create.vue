@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { } from 'vue';
 import XAntenna from './editor.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

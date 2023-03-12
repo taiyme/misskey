@@ -1,10 +1,10 @@
 <template>
 <div class="rrevdjwu" :class="{ grid }">
-	<div v-for="group in def" class="group">
+	<div v-for="group in def" :key="JSON.stringify(group)" class="group">
 		<div v-if="group.title" class="title">{{ group.title }}</div>
 
 		<div class="items">
-			<template v-for="(item, i) in group.items">
+			<template v-for="(item, i) in group.items" :key="JSON.stringify(item)">
 				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
 					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, unref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {
