@@ -7,7 +7,7 @@
 		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
-		<template v-for="(item, i) in items2">
+		<template v-for="(item, i) in items2" :key="item ? JSON.stringify(item) : 'divider'">
 			<div v-if="item === null" class="divider"></div>
 			<span v-else-if="item.type === 'label'" class="label item">
 				<span>{{ item.text }}</span>

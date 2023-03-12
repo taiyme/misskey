@@ -25,11 +25,11 @@
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
-				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+				<option v-for="item in select.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 			</template>
 			<template v-else>
-				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
-					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
+				<optgroup v-for="groupedItem in select.groupedItems" :key="groupedItem.label" :label="groupedItem.label">
+					<option v-for="item in groupedItem.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 				</optgroup>
 			</template>
 		</MkSelect>

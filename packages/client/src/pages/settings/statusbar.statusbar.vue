@@ -60,7 +60,7 @@
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
 		<FormSelect v-model="statusbar.props.userListId" class="_formBlock">
 			<template #label>{{ i18n.ts.userList }}</template>
-			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
+			<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 		</FormSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>

@@ -111,7 +111,7 @@
 			<div class="container tagCloud">
 				<div class="body">
 					<MkTagCloud v-if="activeInstances">
-						<li v-for="instance in activeInstances">
+						<li v-for="instance in activeInstances" :key="instance.id">
 							<a @click.prevent="onInstanceClick(instance)">
 								<img style="width: 32px;" :src="instance.iconUrl">
 							</a>

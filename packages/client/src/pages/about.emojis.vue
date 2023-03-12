@@ -7,7 +7,7 @@
 
 		<!-- たくさんあると邪魔
 		<div class="tags">
-			<span class="tag _button" v-for="tag in tags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
+			<span class="tag _button" v-for="tag in tags" :key="tag" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
 		</div>
 		-->
 	</div>

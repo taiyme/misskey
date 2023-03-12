@@ -38,7 +38,7 @@
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
-				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
+				<FormSplit v-for="(record, i) in fields" :key="i" :min-width="250" class="_formBlock">
 					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>

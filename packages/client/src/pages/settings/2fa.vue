@@ -11,7 +11,7 @@
 			<h2 class="heading">{{ i18n.ts.securityKey }}</h2>
 			<p>{{ i18n.ts._2fa.securityKeyInfo }}</p>
 			<div class="key-list">
-				<div v-for="key in $i.securityKeysList" class="key">
+				<div v-for="key in $i.securityKeysList" :key="key.id" class="key">
 					<h3>{{ key.name }}</h3>
 					<div class="last-used">{{ i18n.ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
 					<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>

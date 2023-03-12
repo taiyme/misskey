@@ -6,7 +6,7 @@
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			<a v-for="item in items" :key="item.link" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
 </MkContainer>

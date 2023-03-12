@@ -18,7 +18,7 @@
 		<FormSection v-if="keys">
 			<template #label>{{ i18n.ts.keys }}</template>
 			<div class="_formLinks">
-				<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
+				<FormLink v-for="key in keys" :key="key[0]" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 			</div>
 		</FormSection>
 	</MkSpacer>

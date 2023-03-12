@@ -1,7 +1,7 @@
 <template>
 <div class="civpbkhh">
 	<div ref="scroll" class="scrollbox" v-bind:class="{ scroll: isScrolling }">
-		<div v-for="note in notes" class="note">
+		<div v-for="note in notes" :key="note.id" class="note">
 			<div class="content _panel">
 				<div class="body">
 					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>

@@ -7,7 +7,7 @@
 	<div class="main">
 		<XStatusBars class="statusbars"/>
 		<div ref="columnsEl" class="columns" :class="deckStore.reactiveState.columnAlign.value" @contextmenu.self.prevent="onContextmenu">
-			<template v-for="ids in layout">
+			<template v-for="ids in layout" :key="ids.join('-')">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
