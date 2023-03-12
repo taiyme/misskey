@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="uqshojas">
-			<div v-for="ad in ads" class="_panel _formRoot ad">
+			<div v-for="ad in ads" :key="ad.id" class="_panel _formRoot ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url" class="_formBlock">
 					<template #label>URL</template>

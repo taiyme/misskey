@@ -8,6 +8,7 @@ import { Users, Relays } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { Cache } from '@/misc/cache.js';
 import { Relay } from '@/models/entities/relay.js';
+import { deepClone } from '@/misc/clone.js';
 import { createSystemUser } from './create-system-user.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
@@ -88,9 +89,7 @@ export async function deliverToRelays(user: { id: User['id']; host: null; }, act
 	}));
 	if (relays.length === 0) return;
 
-	// TODO
-	//const copy = structuredClone(activity);
-	const copy = JSON.parse(JSON.stringify(activity));
+	const copy = deepClone(activity);
 	if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 
 	const signed = await attachLdSignature(copy, user);

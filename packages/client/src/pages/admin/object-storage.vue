@@ -75,7 +75,6 @@ import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormSplit from '@/components/form/split.vue';
-import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';

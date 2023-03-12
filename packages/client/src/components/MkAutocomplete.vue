@@ -1,7 +1,7 @@
 <template>
 <div ref="rootEl" class="swhvrteh _popup _shadow" :style="{ zIndex }" @contextmenu.prevent="() => {}">
 	<ol v-if="type === 'user'" ref="suggests" class="users">
-		<li v-for="user in users" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
+		<li v-for="user in users" :key="user.id" tabindex="-1" class="user" @click="complete(type, user)" @keydown="onKeydown">
 			<img class="avatar" :src="user.avatarUrl"/>
 			<span class="name">
 				<MkUserName :key="user.id" :user="user"/>
@@ -11,12 +11,12 @@
 		<li tabindex="-1" class="choose" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
 	<ol v-else-if="hashtags.length > 0" ref="suggests" class="hashtags">
-		<li v-for="hashtag in hashtags" tabindex="-1" @click="complete(type, hashtag)" @keydown="onKeydown">
+		<li v-for="hashtag in hashtags" :key="hashtag" tabindex="-1" @click="complete(type, hashtag)" @keydown="onKeydown">
 			<span class="name">{{ hashtag }}</span>
 		</li>
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" class="emojis">
-		<li v-for="emoji in emojis" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
+		<li v-for="emoji in emojis" :key="emoji.emoji" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
 			<span v-if="emoji.isCustomEmoji" class="emoji"><img :src="defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(emoji.url) : emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else-if="!defaultStore.state.useOsNativeEmojis" class="emoji"><img :src="emoji.url" :alt="emoji.emoji"/></span>
 			<span v-else class="emoji">{{ emoji.emoji }}</span>
@@ -26,7 +26,7 @@
 		</li>
 	</ol>
 	<ol v-else-if="mfmTags.length > 0" ref="suggests" class="mfmTags">
-		<li v-for="tag in mfmTags" tabindex="-1" @click="complete(type, tag)" @keydown="onKeydown">
+		<li v-for="tag in mfmTags" :key="tag" tabindex="-1" @click="complete(type, tag)" @keydown="onKeydown">
 			<span class="tag">{{ tag }}</span>
 		</li>
 	</ol>

@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue';
+import { } from 'vue';
 import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
@@ -62,7 +62,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyToClipboard(`${url}${props.to}`);
+			copyText(`${url}${props.to}`);
 		},
 	}], ev);
 }

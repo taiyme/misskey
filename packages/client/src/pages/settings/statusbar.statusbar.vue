@@ -60,7 +60,7 @@
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
 		<FormSelect v-model="statusbar.props.userListId" class="_formBlock">
 			<template #label>{{ i18n.ts.userList }}</template>
-			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
+			<option v-for="list in userLists" :key="list.id" :value="list.id">{{ list.name }}</option>
 		</FormSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save class="_formBlock" type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
@@ -81,23 +81,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { reactive, watch } from 'vue';
 import FormSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormButton from '@/components/MkButton.vue';
 import FormRange from '@/components/form/range.vue';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { deepClone } from '@/scripts/clone';
 
 const props = defineProps<{
 	_id: string;
 	userLists: any[] | null;
 }>();
 
-const statusbar = reactive(JSON.parse(JSON.stringify(defaultStore.state.statusbars.find(x => x.id === props._id))));
+const statusbar = reactive(deepClone(defaultStore.state.statusbars.find(x => x.id === props._id)!));
 
 watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
@@ -128,8 +128,8 @@ watch(statusbar, save);
 
 async function save() {
 	const i = defaultStore.state.statusbars.findIndex(x => x.id === props._id);
-	const statusbars = JSON.parse(JSON.stringify(defaultStore.state.statusbars));
-	statusbars[i] = JSON.parse(JSON.stringify(statusbar));
+	const statusbars = deepClone(defaultStore.state.statusbars);
+	statusbars[i] = deepClone(statusbar);
 	defaultStore.set('statusbars', statusbars);
 }
 

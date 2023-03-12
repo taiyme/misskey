@@ -1,30 +1,30 @@
 <template>
-	<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
-		<div class="container">
-			<div class="fullwidth top-caption">
-				<div class="mk-dialog">
-					<header>
-						<Mfm v-if="title" class="title" :text="title"/>
-						<span class="text-count" :class="{ over: remainingLength < 0 }">{{ remainingLength }}</span>
-					</header>
-					<textarea v-model="inputValue" autofocus :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
-					<div v-if="(showOkButton || showCancelButton)" class="buttons">
-						<MkButton inline primary :disabled="remainingLength < 0" @click="ok">{{ $ts.ok }}</MkButton>
-						<MkButton inline @click="cancel" >{{ $ts.cancel }}</MkButton>
-					</div>
+<MkModal ref="modal" @click="done(true)" @closed="$emit('closed')">
+	<div class="container">
+		<div class="fullwidth top-caption">
+			<div class="mk-dialog">
+				<header>
+					<Mfm v-if="title" class="title" :text="title"/>
+					<span class="text-count" :class="{ over: remainingLength < 0 }">{{ remainingLength }}</span>
+				</header>
+				<textarea v-model="inputValue" autofocus :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
+				<div v-if="(showOkButton || showCancelButton)" class="buttons">
+					<MkButton inline primary :disabled="remainingLength < 0" @click="ok">{{ $ts.ok }}</MkButton>
+					<MkButton inline @click="cancel">{{ $ts.cancel }}</MkButton>
 				</div>
 			</div>
-			<div class="hdrwpsaf fullwidth">
-				<header>{{ image.name }}</header>
-				<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
-				<footer>
-					<span>{{ image.type }}</span>
-					<span>{{ bytes(image.size) }}</span>
-					<span v-if="image.properties && image.properties.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
-				</footer>
-			</div>
 		</div>
-	</MkModal>
+		<div class="hdrwpsaf fullwidth">
+			<header>{{ image.name }}</header>
+			<img :src="image.url" :alt="image.comment" :title="image.comment" @click="$refs.modal.close()"/>
+			<footer>
+				<span>{{ image.type }}</span>
+				<span>{{ bytes(image.size) }}</span>
+				<span v-if="image.properties && image.properties.width">{{ number(image.properties.width) }}px × {{ number(image.properties.height) }}px</span>
+			</footer>
+		</div>
+	</div>
+</MkModal>
 </template>
 
 <script lang="ts">

@@ -56,7 +56,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import XDraggable from 'vuedraggable';
-import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/MkButton.vue';
@@ -66,8 +65,9 @@ import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { deepClone } from '@/scripts/clone';
 
-let reactions = $ref(JSON.parse(JSON.stringify(defaultStore.state.reactions)));
+let reactions = $ref(deepClone(defaultStore.state.reactions));
 
 const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
@@ -101,7 +101,7 @@ async function setDefault() {
 	});
 	if (canceled) return;
 
-	reactions = JSON.parse(JSON.stringify(defaultStore.def.reactions.default));
+	reactions = deepClone(defaultStore.def.reactions.default);
 }
 
 function chooseEmoji(ev: MouseEvent) {

@@ -1748,3 +1748,7 @@ _deck:
     channel: "채널"
     mentions: "받은 멘션"
     direct: "다이렉트"
+
+_tms:
+  react: "리액션하기"
+  unreact: "리액션 취소"

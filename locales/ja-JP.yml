@@ -1810,3 +1810,7 @@ _deck:
     channel: "チャンネル"
     mentions: "あなた宛て"
     direct: "ダイレクト"
+
+_tms:
+  react: "リアクションする"
+  unreact: "リアクションを解除"

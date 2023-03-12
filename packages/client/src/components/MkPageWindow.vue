@@ -18,23 +18,22 @@
 	</template>
 
 	<div class="yrolvcoq" :style="{ background: pageMetadata?.value?.bg }">
-		<RouterView :router="router"/>
+		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </XWindow>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, inject, provide } from 'vue';
+import { ComputedRef, provide } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import XWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
-import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
-import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const props = defineProps<{
 	initialPath: string;
@@ -66,6 +65,10 @@ const buttonsLeft = $computed(() => {
 });
 const buttonsRight = $computed(() => {
 	const buttons = [{
+		icon: 'ti ti-reload',
+		title: i18n.ts.reload,
+		onClick: reload,
+	}, {
 		icon: 'ti ti-player-eject',
 		title: i18n.ts.showInPage,
 		onClick: expand,
@@ -73,6 +76,7 @@ const buttonsRight = $computed(() => {
 
 	return buttons;
 });
+let reloadCount = $ref(0);
 
 router.addListener('push', ctx => {
 	history.push({ path: ctx.path, key: ctx.key });
@@ -104,13 +108,17 @@ const contextmenu = $computed(() => ([{
 	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
-		copyToClipboard(url + router.getCurrentPath());
+		copyText(url + router.getCurrentPath());
 	},
 }]));
 
 function back() {
 	history.pop();
 	router.replace(history[history.length - 1].path, history[history.length - 1].key);
+}
+
+function reload() {
+	reloadCount++;
 }
 
 function close() {

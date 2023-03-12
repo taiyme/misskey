@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<{
 });
 
 const copy_ = () => {
-	copyToClipboard(props.copy);
+	copyText(props.copy);
 	os.success();
 };
 </script>

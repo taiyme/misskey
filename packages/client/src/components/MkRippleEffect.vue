@@ -22,11 +22,11 @@
 			/>
 		</circle>
 		<g fill="none" fill-rule="evenodd">
-			<circle v-for="(particle, i) in particles" :key="i" :fill="particle.color">
+			<circle v-for="(ptl, i) in particles" :key="i" :fill="ptl.color">
 				<animate
 					attributeName="r"
 					begin="0s" dur="0.8s"
-					:values="`${particle.size}; 0`"
+					:values="`${ptl.size}; 0`"
 					calcMode="spline"
 					keyTimes="0; 1"
 					keySplines="0.165, 0.84, 0.44, 1"
@@ -35,7 +35,7 @@
 				<animate
 					attributeName="cx"
 					begin="0s" dur="0.8s"
-					:values="`${particle.xA}; ${particle.xB}`"
+					:values="`${ptl.xA}; ${ptl.xB}`"
 					calcMode="spline"
 					keyTimes="0; 1"
 					keySplines="0.3, 0.61, 0.355, 1"
@@ -44,7 +44,7 @@
 				<animate
 					attributeName="cy"
 					begin="0s" dur="0.8s"
-					:values="`${particle.yA}; ${particle.yB}`"
+					:values="`${ptl.yA}; ${ptl.yB}`"
 					calcMode="spline"
 					keyTimes="0; 1"
 					keySplines="0.3, 0.61, 0.355, 1"
@@ -72,7 +72,14 @@ const emit = defineEmits<{
 	(ev: 'end'): void;
 }>();
 
-const particles = [];
+const particles = [] as {
+	size: number;
+	xA: number;
+	yA: number;
+	xB: number;
+	yB: number;
+	color: string;
+}[];
 const origin = 64;
 const colors = ['#FF1493', '#00FFFF', '#FFE202'];
 const zIndex = os.claimZIndex('high');

@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, defineAsyncComponent, PropType } from 'vue';
 import { IfBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
-import { defineComponent, defineAsyncComponent, PropType } from 'vue';
 
 export default defineComponent({
 	components: {

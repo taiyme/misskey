@@ -76,6 +76,7 @@ import XNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
 import XPollEditor from '@/components/MkPollEditor.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { host, url } from '@/config';
 import { erase, unique } from '@/scripts/array';
 import { extractMentions } from '@/scripts/extract-mentions';
@@ -90,6 +91,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
+import { deepClone } from '@/scripts/clone';
 import { imanonashi } from '@/scripts/tms/imanonashi';
 
 const modal = inject('modal');
@@ -574,7 +576,17 @@ function deleteDraft() {
 	localStorage.setItem('drafts', JSON.stringify(draftData));
 }
 
-async function post() {
+async function post(ev?: MouseEvent) {
+	if (ev) {
+		const el = ev.currentTarget ?? ev.target;
+		if (el instanceof HTMLElement) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
+			os.popup(MkRippleEffect, { x, y }, {}, 'end');
+		}
+	}
+
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
@@ -596,7 +608,7 @@ async function post() {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(JSON.parse(JSON.stringify(postData)));
+			postData = await interruptor.handler(deepClone(postData));
 		}
 	}
 

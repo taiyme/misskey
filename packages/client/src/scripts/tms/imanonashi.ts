@@ -40,6 +40,15 @@ const fetchPrevNote = async ({ id: untilId, userId }: misskey.entities.Note): Pr
 	return await os.api('users/notes', { userId, untilId, limit: 1 }).then(notes => notes[0] ?? null).catch(() => null);
 };
 
+const deleteNotes = async ([...notes]: misskey.entities.Note[]): Promise<void> => {
+	const sleep = (ms: number): Promise<void> => new Promise(r => window.setTimeout(r, ms));
+
+	notes.reduce((prom, { id: noteId }, i) => prom.then(async () => {
+		if (i) await sleep(2000);
+		await os.api('notes/delete', { noteId });
+	}), Promise.resolve());
+};
+
 export const imanonashi = async (note: misskey.entities.Note): Promise<void> => {
 	if (!tmsStore.state.imanonashiEnabled) return;
 	if (!checkImanonashi(note)) return;
@@ -64,7 +73,5 @@ export const imanonashi = async (note: misskey.entities.Note): Promise<void> => 
 
 	if (!flag) return;
 
-	notes.slice().reverse().reduce((prom, { id: noteId }) => prom.then(async () => {
-		await os.api('notes/delete', { noteId });
-	}), Promise.resolve());
+	deleteNotes([...notes].reverse());
 };

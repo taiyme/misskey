@@ -65,7 +65,7 @@
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojilist.filter(e => e.category === category).map(e => e.char)" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -81,9 +81,9 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { emojilist, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
-import Ripple from '@/components/MkRipple.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
@@ -290,7 +290,7 @@ function chosen(emoji: any, ev?: MouseEvent) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(Ripple, { x, y }, {}, 'end');
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
 	}
 
 	const key = getKey(emoji);

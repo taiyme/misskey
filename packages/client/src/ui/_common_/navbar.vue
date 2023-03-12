@@ -11,7 +11,7 @@
 			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
-			<template v-for="item in menu">
+			<template v-for="item in menu" :key="item">
 				<div v-if="item === '-'" class="divider"></div>
 				<component
 					:is="navbarItemDef[item].to ? 'MkA' : 'button'"

@@ -107,7 +107,6 @@ import XHeader from './_header_.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';

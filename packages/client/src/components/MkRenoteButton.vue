@@ -1,5 +1,5 @@
 <template>
-<button ref="buttonRef" class="eddddedb _button" :class="{ canRenote }" @click="renote()">
+<button ref="buttonRef" class="eddddedb _button" :class="{ canRenote, canPakuru }" @click="renote()">
 	<template v-if="canRenote">
 		<i class="ti ti-repeat"></i>
 		<p v-if="count > 0" class="count">{{ count }}</p>
@@ -12,6 +12,7 @@
 import { computed, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkUsersTooltip.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
 import { $i } from '@/account';
@@ -27,8 +28,18 @@ const props = defineProps<{
 
 const buttonRef = ref<HTMLElement>();
 
-const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i.id);
+const canRenote = computed(() => ['public', 'home'].includes(props.note.visibility) || props.note.userId === $i?.id);
 const canPakuru = computed(() => tmsStore.state.pakuruEnabled || tmsStore.state.numberquoteEnabled);
+
+const renoteAnime = (): void => {
+	const el = buttonRef.value;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+	}
+};
 
 useTooltip(buttonRef, async (showing) => {
 	if (!canRenote.value) return;
@@ -50,7 +61,7 @@ useTooltip(buttonRef, async (showing) => {
 	}, {}, 'closed');
 });
 
-const renote = (viaKeyboard = false) => {
+const renote = (viaKeyboard = false): void => {
 	if (!canRenote.value && !canPakuru.value) return;
 
 	pleaseLogin();
@@ -59,7 +70,9 @@ const renote = (viaKeyboard = false) => {
 		{
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
-			action: () => {
+			action: (): void => {
+				renoteAnime();
+
 				os.api('notes/create', {
 					renoteId: props.note.id,
 				});
@@ -68,7 +81,7 @@ const renote = (viaKeyboard = false) => {
 		{
 			text: i18n.ts.quote,
 			icon: 'ti ti-quote',
-			action: () => {
+			action: (): void => {
 				os.post({
 					renote: props.note,
 				});
@@ -80,12 +93,18 @@ const renote = (viaKeyboard = false) => {
 		tmsStore.state.pakuruEnabled ? {
 			text: 'パクる',
 			icon: 'ti ti-swipe',
-			action: () => pakuru(props.note),
+			action: (): void => {
+				renoteAnime();
+				pakuru(props.note);
+			},
 		} : undefined,
 		tmsStore.state.numberquoteEnabled ? {
 			text: '数字引用する',
 			icon: 'ti ti-exposure-plus-1',
-			action: () => numberquote(props.note),
+			action: (): void => {
+				renoteAnime();
+				numberquote(props.note);
+			},
 		} : undefined,
 	];
 
@@ -108,6 +127,10 @@ const renote = (viaKeyboard = false) => {
 	border-radius: 4px;
 
 	&:not(.canRenote) {
+		cursor: default;
+	}
+
+	&:not(.canPakuru) {
 		cursor: default;
 	}
 

@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events';
+import { deepClone } from '@/scripts/clone';
 
 export type Theme = {
 	id: string;
@@ -60,7 +61,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	const colorSchema = theme.base === 'dark' ? 'dark' : 'light';
 
 	// Deep copy
-	const _theme = JSON.parse(JSON.stringify(theme));
+	const _theme = deepClone(theme);
 
 	if (_theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === _theme.base);

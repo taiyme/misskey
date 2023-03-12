@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import {
 	Chart,
 	ArcElement,
@@ -21,8 +21,6 @@ import {
 	SubTitle,
 	Filler,
 } from 'chart.js';
-import number from '@/filters/number';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 

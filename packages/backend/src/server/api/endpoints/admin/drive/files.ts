@@ -5,7 +5,7 @@ import { makePaginationQuery } from '../../../common/make-pagination-query.js';
 export const meta = {
 	tags: ['admin'],
 
-	requireCredential: false,
+	requireCredential: true,
 	requireModerator: true,
 
 	res: {

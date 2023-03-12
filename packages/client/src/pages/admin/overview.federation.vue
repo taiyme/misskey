@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { ref } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';

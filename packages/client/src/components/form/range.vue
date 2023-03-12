@@ -7,7 +7,7 @@
 				<div class="highlight" :style="{ width: (steppedRawValue * 100) + '%' }"></div>
 			</div>
 			<div v-if="steps && showTicks" class="ticks">
-				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
+				<div v-for="i in (steps + 1)" :key="i" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
 			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
 		</div>

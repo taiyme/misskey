@@ -91,10 +91,8 @@
 					<option value="moderator">{{ i18n.ts.moderator }}</option>
 					<option value="users">{{ i18n.ts.users }}</option>
 				</FormSelect>
-				<template v-if="userState === 'users'">
-					<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-					<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
-				</template>
+				<FormSwitch v-if="silenced || ['moderator', 'users'].includes(userState)" v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
+				<FormSwitch v-if="suspended || userState === 'users'" v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div class="_formBlock">
 					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
@@ -134,9 +132,9 @@
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
 					<div class="selects">
-						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+						<FormSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
 							<option value="per-user-notes">{{ i18n.ts.notes }}</option>
-						</MkSelect>
+						</FormSelect>
 					</div>
 					<div class="charts">
 						<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
@@ -170,16 +168,12 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
-import number from '@/filters/number';
-import bytes from '@/filters/bytes';
 import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
