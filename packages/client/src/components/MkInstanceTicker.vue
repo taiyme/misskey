@@ -24,15 +24,18 @@ const props = defineProps<{
 const instance = props.instance ?? {
 	faviconUrl: Instance.iconUrl || Instance.faviconUrl || '/favicon.ico',
 	name: instanceName,
-	themeColor: (document.querySelector('meta[name="theme-color-orig"]') as HTMLMetaElement)?.content,
+	themeColor: document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content,
 };
 
-const vertical =
-	tmsStore.state.verticalInstanceTicker && (props.vertical || false);
+const vertical = tmsStore.state.verticalInstanceTicker && (props.vertical || false);
 
-const yuvColor = (hex) => {
-	const toRgb = (hex) => {
-		const [r, g, b] = Array.from(hex.slice(1).match(/.{2}/g) || [], (n) => parseInt(n, 16));
+const yuvColor = (hex: string): string => {
+	const toRgb = (hex_: string): {
+		r: number;
+		g: number;
+		b: number;
+	} => {
+		const [r, g, b] = Array.from(hex_.slice(1).match(/.{2}/g) || [], (n) => parseInt(n, 16));
 		return { r, g, b };
 	};
 
