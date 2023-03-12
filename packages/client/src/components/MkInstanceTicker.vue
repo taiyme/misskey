@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import {} from 'vue';
+import { } from 'vue';
 import { instanceName } from '@/config';
 import { instance as Instance } from '@/instance';
 import { tmsStore } from '@/tms/store';
@@ -32,9 +32,7 @@ const vertical =
 
 const yuvColor = (hex) => {
 	const toRgb = (hex) => {
-		const [r, g, b] = Array.from(hex.slice(1).match(/.{2}/g) || [], (n) =>
-			parseInt(n, 16),
-		);
+		const [r, g, b] = Array.from(hex.slice(1).match(/.{2}/g) || [], (n) => parseInt(n, 16));
 		return { r, g, b };
 	};
 
