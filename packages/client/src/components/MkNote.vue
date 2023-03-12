@@ -184,19 +184,19 @@ let appearNote = $computed(() => isRenote ? (note.renote as misskey.entities.Not
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const tmsIsLongEnabled = tmsStore.state.isLongEnabled;
-const tmsIsLongTextElHeight = tmsStore.state.isLongTextElHeight;
-const tmsIsLongFilesLength = tmsStore.state.isLongFilesLength;
-const tmsIsLongUrlsLength = tmsStore.state.isLongUrlsLength;
-const tmsIsLongPollLength = tmsStore.state.isLongPollLength;
+const tmsCollapseNote = tmsStore.state.collapseNote;
+const tmsCollapseNoteHeight = tmsStore.state.collapseNoteHeight;
+const tmsCollapseNoteFile = tmsStore.state.collapseNoteFile;
+const tmsCollapseNoteUrl = tmsStore.state.collapseNoteUrl;
+const tmsCollapseNotePoll = tmsStore.state.collapseNotePoll;
 const isLong = $computed(() => {
-	return tmsIsLongEnabled && !!(
+	return tmsCollapseNote && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(!!tmsIsLongTextElHeight && (textElHeight >= tmsIsLongTextElHeight)) ||
-			(!!tmsIsLongFilesLength && (appearNote.files.length >= tmsIsLongFilesLength)) ||
-			(!!tmsIsLongUrlsLength && (urls && urls.length >= tmsIsLongUrlsLength)) ||
-			(!!tmsIsLongPollLength && (appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
+			(!!tmsCollapseNoteHeight && (textElHeight >= tmsCollapseNoteHeight)) ||
+			(!!tmsCollapseNoteFile && (appearNote.files.length >= tmsCollapseNoteFile)) ||
+			(!!tmsCollapseNoteUrl && (urls && urls.length >= tmsCollapseNoteUrl)) ||
+			(!!tmsCollapseNotePoll && (appearNote.poll?.choices.length ?? 0) >= tmsCollapseNotePoll)
 		)
 	);
 });
@@ -207,7 +207,7 @@ const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
 const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-let renoteCollapsed = $ref(tmsStore.state.renoteCollapsedEnabled && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
+let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
 
 shownNoteIds.add(appearNote.id);
 
