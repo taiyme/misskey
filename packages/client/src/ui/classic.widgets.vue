@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+import { defineComponent } from 'vue';
 import XWidgets from '@/components/MkWidgets.vue';
 
 export default defineComponent({
