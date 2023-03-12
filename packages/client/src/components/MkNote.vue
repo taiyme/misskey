@@ -135,6 +135,7 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { deepClone } from '@/scripts/clone';
 import { shownNoteIds } from '@/os';
+import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -179,23 +180,23 @@ const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? (note.renote as misskey.entities.Note) : note);
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const tmsIsLongEnabled = defaultStore.state.tmsIsLongEnabled ?? true;
-const tmsIsLongTextElHeight = defaultStore.state.tmsIsLongTextElHeight ?? 500;
-const tmsIsLongFilesLength = defaultStore.state.tmsIsLongFilesLength ?? 5;
-const tmsIsLongUrlsLength = defaultStore.state.tmsIsLongUrlsLength ?? 4;
-const tmsIsLongPollLength = defaultStore.state.tmsIsLongPollLength ?? 5;
+const tmsCollapseNote = tmsStore.state.collapseNote;
+const tmsCollapseNoteHeight = tmsStore.state.collapseNoteHeight;
+const tmsCollapseNoteFile = tmsStore.state.collapseNoteFile;
+const tmsCollapseNoteUrl = tmsStore.state.collapseNoteUrl;
+const tmsCollapseNotePoll = tmsStore.state.collapseNotePoll;
 const isLong = $computed(() => {
-	return tmsIsLongEnabled && !!(
+	return tmsCollapseNote && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(!!tmsIsLongTextElHeight && (textElHeight >= tmsIsLongTextElHeight)) ||
-			(!!tmsIsLongFilesLength && (appearNote.files.length >= tmsIsLongFilesLength)) ||
-			(!!tmsIsLongUrlsLength && (urls && urls.length >= tmsIsLongUrlsLength)) ||
-			(!!tmsIsLongPollLength && (appearNote.poll?.choices.length ?? 0) >= tmsIsLongPollLength)
+			(!!tmsCollapseNoteHeight && (textElHeight >= tmsCollapseNoteHeight)) ||
+			(!!tmsCollapseNoteFile && (appearNote.files.length >= tmsCollapseNoteFile)) ||
+			(!!tmsCollapseNoteUrl && (urls && urls.length >= tmsCollapseNoteUrl)) ||
+			(!!tmsCollapseNotePoll && (appearNote.poll?.choices.length ?? 0) >= tmsCollapseNotePoll)
 		)
 	);
 });
@@ -205,8 +206,8 @@ const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-let renoteCollapsed = $ref(defaultStore.state.tmsRenoteCollapsedEnabled && isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
+let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
 
 shownNoteIds.add(appearNote.id);
 
@@ -274,12 +275,12 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
+	os.popupMenu(getNoteMenu({ note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
 }
@@ -339,7 +340,7 @@ function readPromo() {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-  //contain-intrinsic-size: 0 128px;
+	//contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;

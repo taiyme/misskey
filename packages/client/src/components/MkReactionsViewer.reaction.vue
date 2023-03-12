@@ -21,6 +21,7 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { tmsStore } from '@/tms/store';
 import { getReactMenu, toggleReact } from '@/scripts/tms/get-react-menu';
 
 const props = defineProps<{
@@ -41,7 +42,7 @@ const react = (): void => {
 		canToggle: canToggle,
 		reactButton: buttonRef,
 	};
-	if (defaultStore.state.tmsUseReactionMenu) {
+	if (tmsStore.state.useReactionMenu) {
 		getReactMenu(param);
 	} else {
 		toggleReact(param);

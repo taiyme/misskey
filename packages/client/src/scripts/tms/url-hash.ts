@@ -1,7 +1,7 @@
 export const pushHash = (baseHash: string, additionalHash: string): string => {
-	if (baseHash.startsWith('#')) return baseHash + '-' + additionalHash;
+	if (baseHash.startsWith('#')) return `${baseHash}-${additionalHash}`;
 
-	return '#' + additionalHash;
+	return `#${additionalHash}`;
 };
 
 export const popHash = (hashStr: string): {
