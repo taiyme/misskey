@@ -132,9 +132,9 @@
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
 					<div class="selects">
-						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+						<FormSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
 							<option value="per-user-notes">{{ i18n.ts.notes }}</option>
-						</MkSelect>
+						</FormSelect>
 					</div>
 					<div class="charts">
 						<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
@@ -168,16 +168,12 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
-import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
-import number from '@/filters/number';
-import bytes from '@/filters/bytes';
 import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
