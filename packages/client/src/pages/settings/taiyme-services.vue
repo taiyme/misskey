@@ -62,14 +62,6 @@
 <div v-else-if="tab === 'settings'" class="_formRoot">
 	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
-	<FormSection v-if="!migrated">
-		<template #label>設定の移行</template>
-		<div class="_formBlock">v1.0.46以前の設定はここから復元することができます。移行すると現在の設定は全て失われ、以前の設定で上書きされます。</div>
-		<MkInfo warn class="_formBlock">設定の移行はアカウントごとに一度のみ可能です。</MkInfo>
-		<MkButton class="_formBlock" primary full @click="migration">設定を移行する</MkButton>
-		<button class="_textButton" type="button" @click="doNotMigrate">非表示にする</button>
-	</FormSection>
-
 	<FormSection>
 		<FormSwitch v-model="tmsVerticalInstanceTicker" class="_formBlock">
 			ノートのインスタンス情報を左端に表示
@@ -186,7 +178,6 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { tmsStore } from '@/tms/store';
-import { tmsMigration, tmsMigrationCheck } from '@/scripts/tms/tms-migrate';
 import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
 type Contributor = {
@@ -231,7 +222,6 @@ const patrons: string[] = [
 
 let tab = $ref('overview');
 let changed = $ref(false);
-let migrated = $ref(tmsMigrationCheck());
 
 const tmsVerticalInstanceTicker = $ref(tmsStore.state.verticalInstanceTicker);
 const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
@@ -269,32 +259,6 @@ watch(
 		changed = true;
 	},
 );
-
-const migration = async (): Promise<void> => {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		title: '設定を移行しますか？',
-		text: '現在の設定は全て失われ、以前の設定で上書きされます。',
-	});
-
-	if (canceled) return;
-
-	migrated = true;
-	os.promiseDialog(tmsMigration(), unisonReload);
-};
-
-const doNotMigrate = async (): Promise<void> => {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		title: '非表示にしますか？',
-		text: 'このデバイスでは移行することができなくなります。',
-	});
-
-	if (canceled) return;
-
-	migrated = true;
-	tmsStore.set('doNotMigrate', true);
-};
 
 const check = async (): Promise<boolean> => {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {

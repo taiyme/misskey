@@ -2,14 +2,6 @@ import { markRaw } from 'vue';
 import { Storage } from '@/pizzax';
 
 export const tmsStore = markRaw(new Storage('tms', {
-	doNotMigrate: {
-		where: 'device',
-		default: false,
-	},
-	migrated: {
-		where: 'account',
-		default: false,
-	},
 	verticalInstanceTicker: {
 		where: 'account',
 		default: true,
