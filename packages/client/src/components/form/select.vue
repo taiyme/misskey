@@ -18,7 +18,7 @@
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
+		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down"></i></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
@@ -56,7 +56,6 @@ const slots = useSlots();
 const { modelValue, autofocus } = toRefs(props);
 const v = ref(modelValue.value);
 const focused = ref(false);
-const opening = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
 const filled = computed(() => v.value !== '' && v.value != null);
@@ -120,7 +119,6 @@ onMounted(() => {
 
 const onClick = (ev: MouseEvent) => {
 	focused.value = true;
-	opening.value = true;
 
 	const menu = [];
 	let options = slots.default!();
@@ -160,9 +158,6 @@ const onClick = (ev: MouseEvent) => {
 
 	os.popupMenu(menu, container.value, {
 		width: container.value.offsetWidth,
-		onClosing: () => {
-			opening.value = false;
-		},
 	}).then(() => {
 		focused.value = false;
 	});
@@ -280,14 +275,5 @@ const onClick = (ev: MouseEvent) => {
 			}
 		}
 	}
-}
-</style>
-
-<style lang="scss" module>
-.chevron {
-	transition: transform 0.5s ease;
-}
-.chevronOpening {
-	transform: rotateX(180deg);
 }
 </style>
