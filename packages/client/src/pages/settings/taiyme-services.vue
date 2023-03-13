@@ -64,7 +64,7 @@
 
 	<FormSection v-if="!migrated">
 		<template #label>設定の移行</template>
-		<div class="_formBlock">v1.0.46以前の設定はここから復元することができます。移行すると現在の設定は上書きされます。</div>
+		<div class="_formBlock">v1.0.46以前の設定はここから復元することができます。移行すると現在の設定は全て失われ、以前の設定で上書きされます。</div>
 		<MkInfo warn class="_formBlock">設定の移行はアカウントごとに一度のみ可能です。</MkInfo>
 		<MkButton class="_formBlock" primary full @click="migration">設定を移行する</MkButton>
 		<button class="_textButton" type="button" @click="doNotMigrate">非表示にする</button>
@@ -280,8 +280,7 @@ const migration = async (): Promise<void> => {
 	if (canceled) return;
 
 	migrated = true;
-	tmsMigration();
-	unisonReload();
+	os.promiseDialog(tmsMigration(), unisonReload);
 };
 
 const doNotMigrate = async (): Promise<void> => {
@@ -295,7 +294,6 @@ const doNotMigrate = async (): Promise<void> => {
 
 	migrated = true;
 	tmsStore.set('doNotMigrate', true);
-	unisonReload();
 };
 
 const check = async (): Promise<boolean> => {
