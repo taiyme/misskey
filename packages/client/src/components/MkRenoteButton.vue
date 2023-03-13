@@ -91,7 +91,7 @@ const renote = (viaKeyboard = false): void => {
 
 	const pakuruMenu = [
 		tmsStore.state.usePakuru ? {
-			text: 'パクる',
+			text: i18n.ts._tms.pakuru,
 			icon: 'ti ti-swipe',
 			action: (): void => {
 				renoteAnime();
@@ -99,7 +99,7 @@ const renote = (viaKeyboard = false): void => {
 			},
 		} : undefined,
 		tmsStore.state.useNumberquote ? {
-			text: '数字引用する',
+			text: i18n.ts._tms.numberquote,
 			icon: 'ti ti-exposure-plus-1',
 			action: (): void => {
 				renoteAnime();

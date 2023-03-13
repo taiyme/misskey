@@ -1753,3 +1753,5 @@ _deck:
 _tms:
   react: "React"
   unreact: "Unreact"
+  pakuru: "Pakuru"
+  numberquote: "Numberquote"

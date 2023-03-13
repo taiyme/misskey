@@ -1814,3 +1814,5 @@ _deck:
 _tms:
   react: "リアクションする"
   unreact: "リアクションやめる"
+  pakuru: "パクる"
+  numberquote: "数字引用する"
