@@ -62,6 +62,14 @@
 <div v-else-if="tab === 'settings'" class="_formRoot">
 	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
+	<FormSection v-if="!migrated">
+		<template #label>設定の移行</template>
+		<div class="_formBlock">v1.0.46以前の設定はここから復元することができます。移行すると現在の設定は上書きされます。</div>
+		<MkInfo warn class="_formBlock">設定の移行はアカウントごとに一度のみ可能です。</MkInfo>
+		<MkButton class="_formBlock" primary full @click="migration">設定を移行する</MkButton>
+		<button class="_textButton" type="button" @click="doNotMigrate">非表示にする</button>
+	</FormSection>
+
 	<FormSection>
 		<FormSwitch v-model="tmsVerticalInstanceTicker" class="_formBlock">
 			ノートのインスタンス情報を左端に表示
@@ -154,7 +162,10 @@
 		</FormFolder>
 	</FormSection>
 
-	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<FormSection>
+		<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<template #caption>設定の同期は有効です。</template>
+	</FormSection>
 </div>
 </template>
 
@@ -175,6 +186,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
 import { tmsStore } from '@/tms/store';
+import { tmsMigration, tmsMigrationCheck } from '@/scripts/tms/tms-migrate';
 import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
 type Contributor = {
@@ -219,6 +231,7 @@ const patrons: string[] = [
 
 let tab = $ref('overview');
 let changed = $ref(false);
+let migrated = $ref(tmsMigrationCheck());
 
 const tmsVerticalInstanceTicker = $ref(tmsStore.state.verticalInstanceTicker);
 const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
@@ -257,7 +270,35 @@ watch(
 	},
 );
 
-async function check(): Promise<boolean> {
+const migration = async (): Promise<void> => {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: '設定を移行しますか？',
+		text: '現在の設定は全て失われ、以前の設定で上書きされます。',
+	});
+
+	if (canceled) return;
+
+	migrated = true;
+	tmsMigration();
+	unisonReload();
+};
+
+const doNotMigrate = async (): Promise<void> => {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: '非表示にしますか？',
+		text: 'このデバイスでは移行することができなくなります。',
+	});
+
+	if (canceled) return;
+
+	migrated = true;
+	tmsStore.set('doNotMigrate', true);
+	unisonReload();
+};
+
+const check = async (): Promise<boolean> => {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
 		if (Math.sign(x) === -1) return false;
@@ -270,9 +311,9 @@ async function check(): Promise<boolean> {
 		isNumberInRange(tmsCollapseNotePoll, 0) &&
 		checkWords(tmsImanonashiWords)
 	);
-}
+};
 
-async function save(): Promise<void> {
+const save = async (): Promise<void> => {
 	if (await check()) {
 		tmsStore.set('verticalInstanceTicker', tmsVerticalInstanceTicker);
 		tmsStore.set('useReactionMenu', tmsUseReactionMenu);
@@ -302,5 +343,5 @@ async function save(): Promise<void> {
 			type: 'error',
 		});
 	}
-}
+};
 </script>
