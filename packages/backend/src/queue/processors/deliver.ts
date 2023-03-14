@@ -83,6 +83,16 @@ export default async (job: Bull.Job<DeliverJobData>) => {
 		if (res instanceof StatusError) {
 			// 4xx
 			if (res.isClientError) {
+				// 配送先が410 Goneで応答した場合は配送停止
+				if (job.data.isSharedInbox && res.statusCode === 410) {
+					registerOrFetchInstanceDoc(host).then(i => {
+						Instances.update(i.id, {
+							isSuspended: true,
+						});
+					});
+					return `${host} is gone`;
+				}
+
 				// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
 				// 何回再送しても成功することはないということなのでエラーにはしないでおく
 				return `${res.statusCode} ${res.statusMessage}`;

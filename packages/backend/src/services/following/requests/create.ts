@@ -58,6 +58,6 @@ export default async function(follower: { id: User['id']; host: User['host']; ur
 
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderFollow(follower, followee));
-		deliver(follower, content, followee.inbox);
+		deliver(follower, content, followee.inbox, false);
 	}
 }

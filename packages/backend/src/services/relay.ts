@@ -37,7 +37,7 @@ export async function addRelay(inbox: string) {
 	const relayActor = await getRelayActor();
 	const follow = await renderFollowRelay(relay, relayActor);
 	const activity = renderActivity(follow);
-	deliver(relayActor, activity, relay.inbox);
+	deliver(relayActor, activity, relay.inbox, false);
 
 	return relay;
 }
@@ -55,7 +55,7 @@ export async function removeRelay(inbox: string) {
 	const follow = renderFollowRelay(relay, relayActor);
 	const undo = renderUndo(follow, relayActor);
 	const activity = renderActivity(undo);
-	deliver(relayActor, activity, relay.inbox);
+	deliver(relayActor, activity, relay.inbox, false);
 
 	await Relays.delete(relay.id);
 }
@@ -95,6 +95,6 @@ export async function deliverToRelays(user: { id: User['id']; host: null; }, act
 	const signed = await attachLdSignature(copy, user);
 
 	for (const relay of relays) {
-		deliver(user, signed, relay.inbox);
+		deliver(user, signed, relay.inbox, false);
 	}
 }

@@ -22,7 +22,7 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 
 	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		const content = renderActivity(renderAccept(renderFollow(follower, followee, request.requestId!), followee));
-		deliver(followee, content, follower.inbox);
+		deliver(followee, content, follower.inbox, false);
 	}
 
 	Users.pack(followee.id, followee, {
