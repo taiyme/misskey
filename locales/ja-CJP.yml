@@ -1369,6 +1369,8 @@ _visibility:
   specifiedDescription: "指定レだユーザーゐみに公开"
   localOnly: "当地ゐみ"
   localOnlyDescription: "刂乇ー卜ユーザーには非公开"
+  disableFederation: "连合なレ"
+  disableFederationDescription: "他亻ソヌタソヌへゐ配信を行いま乜ん"
 
 _postForm:
   replyPlaceholder: "こゐノー卜に返信..."

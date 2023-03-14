@@ -33,8 +33,8 @@
 		<button key="localOnly" class="_button localOnly" :class="{ active: localOnly }" data-index="5" @click="localOnly = !localOnly">
 			<div><i class="ti ti-world-off"></i></div>
 			<div>
-				<span>{{ i18n.ts._visibility.localOnly }}</span>
-				<span>{{ i18n.ts._visibility.localOnlyDescription }}</span>
+				<span>{{ i18n.ts._visibility.disableFederation }}</span>
+				<span>{{ i18n.ts._visibility.disableFederationDescription }}</span>
 			</div>
 			<div><i :class="localOnly ? 'ti ti-toggle-right' : 'ti ti-toggle-left'"></i></div>
 		</button>

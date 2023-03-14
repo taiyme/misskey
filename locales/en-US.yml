@@ -1333,6 +1333,8 @@ _visibility:
   specifiedDescription: "Make visible for specified users only"
   localOnly: "Local only"
   localOnlyDescription: "Not visible to remote users"
+  disableFederation: "Unfederated"
+  disableFederationDescription: "Don't transmit to other instances"
 _postForm:
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."

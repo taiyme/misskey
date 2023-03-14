@@ -1331,6 +1331,8 @@ _visibility:
   specifiedDescription: "지정한 유저에게만 공개"
   localOnly: "로컬에만"
   localOnlyDescription: "리모트 유저에게 보이지 않기"
+  disableFederation: "연합에 보내지 않기"
+  disableFederationDescription: "다른 서버로 보내지 않습니다"
 _postForm:
   replyPlaceholder: "이 노트에 답글..."
   quotePlaceholder: "이 노트를 인용..."
