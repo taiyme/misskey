@@ -9,6 +9,27 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.47 (2023/03/14)
+
+- Update pnpm v7.28.0 -> v7.29.1
+- Update: ローカルのみ -> 連合なし @taiyme
+- fix: koa/routerのバージョンを9.0.1から上げるとURL内のパラメータを正しく読み取れない (#94) @cffnpwr
+- chore(client): tweak user-info.vue @taiyme
+- enhance(client): MkPageHeaderをv13仕様にする (#87) @taiyme @tamaina
+- リアクション履歴が公開なら、ログインしていなくても表示できるように @m-hayabusa @taiyme
+- enhance(client): rippleエフェクト/reactエフェクト @taiyme
+- enhance(frontend): デッキUIのカラムにリロードボタンを追加 @taiyme
+- enhance(frontend): メインカラムが無い場合の挙動を調整 @taiyme
+- enhance(frontend): tms: リアクションメニュー (#92) @taiyme
+- taiyme-servicesの設定をmisskey本体の設定から分離して端末間で同期するようにした (#85) @cffnpwr @taiyme
+- enhance(frontend): モバイル表示の公開範囲ピッカーを見やすくする @taiyme
+- enhance(backend): 配送先が410 Goneで応答した場合は自動で配送を停止するように (#96) @Steve-0628 @CyberRex0
+- refactor(frontend): Use Clipboard API @taiyme
+- refactor/perf(frontend): 未使用のimportを削除 / v-bind:keyを記述 (#93) @taiyme
+- refactor(frontend): fix types I18nObject @taiyme
+- refactor(frontend): fix types, use arrow functions @taiyme
+- refactor(frontend): parseObject / parseArray (wrapper function for JSON.parse) @taiyme
+
 ## 12.119.2-taiyme-v1.0.46 (2023/03/07)
 
 - fix(backend): block delivery @atsu1125 @taiyme
