@@ -142,10 +142,10 @@ export async function deliverReadActivity(user: { id: User['id']; host: null; },
 
 	if (contents.length > 1) {
 		const collection = orderedCollection(null, contents.length, undefined, undefined, contents);
-		deliver(user, renderActivity(collection), recipient.inbox);
+		deliver(user, renderActivity(collection), recipient.inbox, false);
 	} else {
 		for (const content of contents) {
-			deliver(user, renderActivity(content), recipient.inbox);
+			deliver(user, renderActivity(content), recipient.inbox, false);
 		}
 	}
 }

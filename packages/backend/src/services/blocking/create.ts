@@ -36,7 +36,7 @@ export default async function(blocker: User, blockee: User) {
 
 	if (Users.isLocalUser(blocker) && Users.isRemoteUser(blockee)) {
 		const content = renderActivity(renderBlock(blocking));
-		deliver(blocker, content, blockee.inbox);
+		deliver(blocker, content, blockee.inbox, false);
 	}
 }
 
@@ -80,13 +80,13 @@ async function cancelRequest(follower: User, followee: User) {
 	// リモートにフォローリクエストをしていたらUndoFollow送信
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
-		deliver(follower, content, followee.inbox);
+		deliver(follower, content, followee.inbox, false);
 	}
 
 	// リモートからフォローリクエストを受けていたらReject送信
 	if (Users.isRemoteUser(follower) && Users.isLocalUser(followee)) {
 		const content = renderActivity(renderReject(renderFollow(follower, followee, request.requestId!), followee));
-		deliver(followee, content, follower.inbox);
+		deliver(followee, content, follower.inbox, false);
 	}
 }
 
@@ -127,13 +127,13 @@ async function unFollow(follower: User, followee: User) {
 	// リモートにフォローをしていたらUndoFollow送信
 	if (Users.isLocalUser(follower) && Users.isRemoteUser(followee)) {
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
-		deliver(follower, content, followee.inbox);
+		deliver(follower, content, followee.inbox, false);
 	}
 
 	// リモートからフォローをされていたらRejectFollow送信
 	if (Users.isLocalUser(followee) && Users.isRemoteUser(follower)) {
 		const content = renderActivity(renderReject(renderFollow(follower, followee), followee));
-		deliver(followee, content, follower.inbox);
+		deliver(followee, content, follower.inbox, false);
 	}
 }
 

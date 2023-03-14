@@ -12,7 +12,7 @@ export default async function(followee: { id: User['id']; host: User['host']; ur
 		const content = renderActivity(renderUndo(renderFollow(follower, followee), follower));
 
 		if (Users.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
-			deliver(follower, content, followee.inbox);
+			deliver(follower, content, followee.inbox, false);
 		}
 	}
 
