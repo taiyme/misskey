@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkTextarea :model-value="value" @update:modelValue="updateValue($event)">
+	<MkTextarea :model-value="value" @update:model-value="updateValue($event)">
 		<template #label>{{ hpml.interpolate(block.text) }}</template>
 	</MkTextarea>
 </div>
@@ -9,9 +9,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
-import * as os from '@/os';
 import { Hpml } from '@/scripts/hpml/evaluator';
-import { HpmlTextInput } from '@/scripts/hpml';
 import { TextInputVarBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({

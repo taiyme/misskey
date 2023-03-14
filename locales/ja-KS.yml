@@ -1369,6 +1369,8 @@ _visibility:
   specifiedDescription: "選んだユーザーのみに公開するで"
   localOnly: "ローカルのみ"
   localOnlyDescription: "リモートユーザーには非公開にするで"
+  disableFederation: "連合なし"
+  disableFederationDescription: "他インスタンスへは送らんとくわ"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
@@ -1810,3 +1812,9 @@ _deck:
     channel: "チャンネル"
     mentions: "あんた宛て"
     direct: "ダイレクト"
+
+_tms:
+  react: "リアクションする"
+  unreact: "リアクションやめる"
+  pakuru: "パクる"
+  numberquote: "数字引用する"

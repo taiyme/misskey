@@ -14,9 +14,7 @@
 
 	<FormSection>
 		<template #label>taiyme/misskeyについて</template>
-		<div class="_formBlock">
-			taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。
-		</div>
+		<div class="_formBlock">taiyme/misskeyは、taiyによって無償でメンテナンスされています。<br>継続して提供するためにも、開発のサポートや寄付をお願いします。</div>
 		<div class="_formLinks">
 			<FormLink to="https://github.com/taiyme/misskey" external>
 				<template #icon><i class="ti ti-code"></i></template>
@@ -34,7 +32,7 @@
 	<FormSection>
 		<template #label>コラボレーター</template>
 		<div class="_formLinks">
-			<template v-for="collaborator in collaborators" :key="collaborator">
+			<template v-for="collaborator in collaborators" :key="collaborator.name">
 				<FormLink :to="`https://github.com/${collaborator.acct}`" external>
 					{{ collaborator.name }}
 					<template #suffix>{{ `@${collaborator.acct}` }}</template>
@@ -46,7 +44,7 @@
 	<FormSection>
 		<template #label>コントリビューター</template>
 		<div class="_formLinks">
-			<template v-for="contributor in contributors" :key="contributor">
+			<template v-for="contributor in contributors" :key="contributor.name">
 				<FormLink :to="`https://github.com/${contributor.acct}`" external>
 					{{ contributor.name }}
 					<template #suffix>{{ `@${contributor.acct}` }}</template>
@@ -70,33 +68,40 @@
 			<template #caption>タイムライン上のインスタンス情報を左端に表示します。</template>
 		</FormSwitch>
 
-		<FormSwitch v-model="tmsIsLongEnabled" class="_formBlock">
+		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
+			リアクションメニューを有効にする
+			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
+		</FormSwitch>
+	</FormSection>
+
+	<FormSection>
+		<FormSwitch v-model="tmsCollapseNote" class="_formBlock">
 			ノートを畳む
 			<template #caption>タイムライン上のノートが特定の条件の場合、畳んで表示します。無効にすると常に展開して表示します。</template>
 		</FormSwitch>
 		<FormFolder>
 			<template #label>ノートを畳む条件</template>
-			<template v-if="tmsIsLongEnabled" #suffix>有効</template>
+			<template v-if="tmsCollapseNote" #suffix>有効</template>
 			<template v-else #suffix>無効</template>
 
 			<div class="_formRoot">
 				<MkInfo class="_formBlock">0以上の整数を指定してください。0を指定すると条件が無効になります。</MkInfo>
-				<FormInput v-model="tmsIsLongTextElHeight" type="number" class="_formBlock">
+				<FormInput v-model="tmsCollapseNoteHeight" type="number" class="_formBlock">
 					<template #label>ノート本文の高さ</template>
 					<template #suffix>px</template>
 					<template #caption>タイムライン上のノートがこの高さを超えた場合、畳んで表示します。ピクセル単位で指定してください。</template>
 				</FormInput>
-				<FormInput v-model="tmsIsLongFilesLength" type="number" class="_formBlock">
+				<FormInput v-model="tmsCollapseNoteFile" type="number" class="_formBlock">
 					<template #label>添付ファイルの個数</template>
 					<template #suffix>個</template>
 					<template #caption>タイムライン上のノートの添付ファイルがこの個数を超えた場合、畳んで表示します。</template>
 				</FormInput>
-				<FormInput v-model="tmsIsLongUrlsLength" type="number" class="_formBlock">
+				<FormInput v-model="tmsCollapseNoteUrl" type="number" class="_formBlock">
 					<template #label>URLの個数</template>
 					<template #suffix>個</template>
 					<template #caption>タイムライン上のノートのURLがこの個数を超えた場合、畳んで表示します。</template>
 				</FormInput>
-				<FormInput v-model="tmsIsLongPollLength" type="number" class="_formBlock">
+				<FormInput v-model="tmsCollapseNotePoll" type="number" class="_formBlock">
 					<template #label>アンケートの選択肢の個数</template>
 					<template #suffix>個</template>
 					<template #caption>タイムライン上のノートのアンケートの選択肢がこの個数を超えた場合、畳んで表示します。</template>
@@ -104,32 +109,32 @@
 			</div>
 		</FormFolder>
 
-		<FormSwitch v-model="tmsRenoteCollapsedEnabled" class="_formBlock">
+		<FormSwitch v-model="tmsCollapseRenote" class="_formBlock">
 			一度見たノートのRenoteを畳む
 			<template #caption>タイムライン上の一度見たノートのRenoteを畳んで表示します。本文をクリックすると展開します。</template>
 		</FormSwitch>
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch v-model="tmsPakuruEnabled" class="_formBlock">
+		<FormSwitch v-model="tmsUsePakuru" class="_formBlock">
 			「パクる」機能を有効にする
 			<template #caption>Renoteメニューに「パクる」を追加します。</template>
 		</FormSwitch>
 
-		<FormSwitch v-model="tmsNumberquoteEnabled" class="_formBlock">
+		<FormSwitch v-model="tmsUseNumberquote" class="_formBlock">
 			「数字引用」機能を有効にする
 			<template #caption>Renoteメニューに「数字引用する」を追加します。</template>
 		</FormSwitch>
 	</FormSection>
 
 	<FormSection>
-		<FormSwitch v-model="tmsImanonashiEnabled" class="_formBlock">
+		<FormSwitch v-model="tmsUseImanonashi" class="_formBlock">
 			「いまのなし」機能を有効にする
 			<template #caption>消せ消せ消せ消せ消せ</template>
 		</FormSwitch>
 		<FormFolder>
 			<template #label>削除する条件</template>
-			<template v-if="tmsImanonashiEnabled" #suffix>有効</template>
+			<template v-if="tmsUseImanonashi" #suffix>有効</template>
 			<template v-else #suffix>無効</template>
 
 			<div class="_formRoot">
@@ -137,11 +142,11 @@
 					<template #label>単語</template>
 					<template #caption>スペースで区切るとAND指定になり、改行で区切るとOR指定になります。<br>キーワードをスラッシュで囲むと正規表現になります。</template>
 				</FormTextarea>
-				<FormSwitch v-model="tmsImanonashiConfirmEnabled" class="_formBlock">
+				<FormSwitch v-model="tmsImanonashiConfirm" class="_formBlock">
 					削除を確認する
 					<template #caption>ノートを削除するときに確認します。</template>
 				</FormSwitch>
-				<FormSwitch v-model="tmsImanonashiDeleteEnabled" class="_formBlock">
+				<FormSwitch v-model="tmsImanonashiItself" class="_formBlock">
 					いまのなしも削除する
 					<template #caption>ノートを削除するときに、同時にいまのなしも削除します。</template>
 				</FormSwitch>
@@ -149,7 +154,10 @@
 		</FormFolder>
 	</FormSection>
 
-	<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<FormSection>
+		<MkButton class="_formBlock" primary :disabled="!changed" @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<template #caption>設定の同期は有効です。</template>
+	</FormSection>
 </div>
 </template>
 
@@ -169,13 +177,13 @@ import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
-import { defaultStore } from '@/store';
+import { tmsStore } from '@/tms/store';
 import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
 type Contributor = {
 	name: string;
 	acct: string;
-}
+};
 
 const collaborators: Contributor[] = [
 	{
@@ -201,6 +209,10 @@ const contributors: Contributor[] = [
 		name: 'わかさぎシステム',
 		acct: 'DA-TENSHI',
 	},
+	{
+		name: 'CyberRex',
+		acct: 'CyberRex0',
+	},
 ];
 
 const patrons: string[] = [
@@ -208,73 +220,81 @@ const patrons: string[] = [
 	'Midra',
 	'ゆー',
 	'こちゅだぁほ',
+	'xyzzy',
+	'ふれすと',
 ];
 
 let tab = $ref('overview');
 let changed = $ref(false);
 
-const tmsVerticalInstanceTicker = $ref(defaultStore.state.tmsVerticalInstanceTicker);
-const tmsIsLongEnabled = $ref(defaultStore.state.tmsIsLongEnabled);
-const tmsIsLongTextElHeight = $ref(defaultStore.state.tmsIsLongTextElHeight);
-const tmsIsLongFilesLength = $ref(defaultStore.state.tmsIsLongFilesLength);
-const tmsIsLongUrlsLength = $ref(defaultStore.state.tmsIsLongUrlsLength);
-const tmsIsLongPollLength = $ref(defaultStore.state.tmsIsLongPollLength);
-const tmsRenoteCollapsedEnabled = $ref(defaultStore.state.tmsRenoteCollapsedEnabled);
-const tmsPakuruEnabled = $ref(defaultStore.state.tmsPakuruEnabled);
-const tmsNumberquoteEnabled = $ref(defaultStore.state.tmsNumberquoteEnabled);
-const tmsImanonashiEnabled = $ref(defaultStore.state.tmsImanonashiEnabled);
-const tmsImanonashiWords = $ref(renderWords(defaultStore.state.tmsImanonashiWords));
-const tmsImanonashiConfirmEnabled = $ref(defaultStore.state.tmsImanonashiConfirmEnabled);
-const tmsImanonashiDeleteEnabled = $ref(defaultStore.state.tmsImanonashiDeleteEnabled);
+const tmsVerticalInstanceTicker = $ref(tmsStore.state.verticalInstanceTicker);
+const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
+const tmsCollapseNote = $ref(tmsStore.state.collapseNote);
+const tmsCollapseNoteHeight = $ref(tmsStore.state.collapseNoteHeight);
+const tmsCollapseNoteFile = $ref(tmsStore.state.collapseNoteFile);
+const tmsCollapseNoteUrl = $ref(tmsStore.state.collapseNoteUrl);
+const tmsCollapseNotePoll = $ref(tmsStore.state.collapseNotePoll);
+const tmsCollapseRenote = $ref(tmsStore.state.collapseRenote);
+const tmsUsePakuru = $ref(tmsStore.state.usePakuru);
+const tmsUseNumberquote = $ref(tmsStore.state.useNumberquote);
+const tmsUseImanonashi = $ref(tmsStore.state.useImanonashi);
+const tmsImanonashiWords = $ref(renderWords(tmsStore.state.imanonashiWords));
+const tmsImanonashiConfirm = $ref(tmsStore.state.imanonashiConfirm);
+const tmsImanonashiItself = $ref(tmsStore.state.imanonashiItself);
 
-watch([
-	$$(tmsVerticalInstanceTicker),
-	$$(tmsIsLongEnabled),
-	$$(tmsIsLongTextElHeight),
-	$$(tmsIsLongFilesLength),
-	$$(tmsIsLongUrlsLength),
-	$$(tmsIsLongPollLength),
-	$$(tmsRenoteCollapsedEnabled),
-	$$(tmsPakuruEnabled),
-	$$(tmsNumberquoteEnabled),
-	$$(tmsImanonashiEnabled),
-	$$(tmsImanonashiWords),
-	$$(tmsImanonashiConfirmEnabled),
-	$$(tmsImanonashiDeleteEnabled),
-], () => {
-	changed = true;
-});
+watch(
+	[
+		$$(tmsVerticalInstanceTicker),
+		$$(tmsUseReactionMenu),
+		$$(tmsCollapseNote),
+		$$(tmsCollapseNoteHeight),
+		$$(tmsCollapseNoteFile),
+		$$(tmsCollapseNoteUrl),
+		$$(tmsCollapseNotePoll),
+		$$(tmsCollapseRenote),
+		$$(tmsUsePakuru),
+		$$(tmsUseNumberquote),
+		$$(tmsUseImanonashi),
+		$$(tmsImanonashiWords),
+		$$(tmsImanonashiConfirm),
+		$$(tmsImanonashiItself),
+	],
+	() => {
+		changed = true;
+	},
+);
 
-async function check(): Promise<boolean> {
+const check = async (): Promise<boolean> => {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
 		if (Math.sign(x) === -1) return false;
-		return ((min == null ? -Infinity : min) <= x) && (x <= (max == null ? Infinity : max));
+		return (min == null ? -Infinity : min) <= x && x <= (max == null ? Infinity : max);
 	};
 	return (
-		isNumberInRange(tmsIsLongTextElHeight, 0) &&
-		isNumberInRange(tmsIsLongFilesLength, 0) &&
-		isNumberInRange(tmsIsLongUrlsLength, 0) &&
-		isNumberInRange(tmsIsLongPollLength, 0) &&
+		isNumberInRange(tmsCollapseNoteHeight, 0) &&
+		isNumberInRange(tmsCollapseNoteFile, 0) &&
+		isNumberInRange(tmsCollapseNoteUrl, 0) &&
+		isNumberInRange(tmsCollapseNotePoll, 0) &&
 		checkWords(tmsImanonashiWords)
 	);
-}
+};
 
-async function save(): Promise<void> {
+const save = async (): Promise<void> => {
 	if (await check()) {
-		defaultStore.set('tmsVerticalInstanceTicker', tmsVerticalInstanceTicker);
-		defaultStore.set('tmsIsLongEnabled', tmsIsLongEnabled);
-		defaultStore.set('tmsIsLongTextElHeight', tmsIsLongTextElHeight);
-		defaultStore.set('tmsIsLongFilesLength', tmsIsLongFilesLength);
-		defaultStore.set('tmsIsLongUrlsLength', tmsIsLongUrlsLength);
-		defaultStore.set('tmsIsLongPollLength', tmsIsLongPollLength);
-		defaultStore.set('tmsRenoteCollapsedEnabled', tmsRenoteCollapsedEnabled);
-		defaultStore.set('tmsPakuruEnabled', tmsPakuruEnabled);
-		defaultStore.set('tmsNumberquoteEnabled', tmsNumberquoteEnabled);
-		defaultStore.set('tmsImanonashiEnabled', tmsImanonashiEnabled);
-		defaultStore.set('tmsImanonashiWords', parseWords(tmsImanonashiWords));
-		defaultStore.set('tmsImanonashiConfirmEnabled', tmsImanonashiConfirmEnabled);
-		defaultStore.set('tmsImanonashiDeleteEnabled', tmsImanonashiDeleteEnabled);
+		tmsStore.set('verticalInstanceTicker', tmsVerticalInstanceTicker);
+		tmsStore.set('useReactionMenu', tmsUseReactionMenu);
+		tmsStore.set('collapseNote', tmsCollapseNote);
+		tmsStore.set('collapseNoteHeight', tmsCollapseNoteHeight);
+		tmsStore.set('collapseNoteFile', tmsCollapseNoteFile);
+		tmsStore.set('collapseNoteUrl', tmsCollapseNoteUrl);
+		tmsStore.set('collapseNotePoll', tmsCollapseNotePoll);
+		tmsStore.set('collapseRenote', tmsCollapseRenote);
+		tmsStore.set('usePakuru', tmsUsePakuru);
+		tmsStore.set('useNumberquote', tmsUseNumberquote);
+		tmsStore.set('useImanonashi', tmsUseImanonashi);
+		tmsStore.set('imanonashiWords', parseWords(tmsImanonashiWords));
+		tmsStore.set('imanonashiConfirm', tmsImanonashiConfirm);
+		tmsStore.set('imanonashiItself', tmsImanonashiItself);
 
 		const { canceled } = await os.confirm({
 			type: 'info',
@@ -289,5 +309,5 @@ async function save(): Promise<void> {
 			type: 'error',
 		});
 	}
-}
+};
 </script>

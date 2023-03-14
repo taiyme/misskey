@@ -1,4 +1,4 @@
-import * as misskey from 'misskey-js';
+import { DriveFile, Note as Note_ } from 'misskey-js/built/entities';
 import * as mfm from 'mfm-js';
 import { v4 as uuid } from 'uuid';
 import * as os from '@/os';
@@ -7,38 +7,49 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { deepClone } from '@/scripts/clone';
 
-type DriveFile = misskey.entities.DriveFile & { comment?: string | null };
+type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<RequiredNotNull<Pick<T, K>>>;
+type RequiredNotNull<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
+};
 
-type Note = misskey.entities.Note & { channelId?: string | null };
+type PostDataBase = Partial<{
+	text: string | null;
+	visibility: 'public' | 'home' | 'followers' | 'specified';
+	visibleUserIds: string[];
+	cw: string | null;
+	localOnly: boolean;
+	noExtractMentions: boolean;
+	noExtractHashtags: boolean;
+	noExtractEmojis: boolean;
+	fileIds: string[];
+	replyId: string | null;
+	renoteId: string | null;
+	channelId: string | null;
+	poll: {
+		choices: string[];
+		multiple?: boolean;
+		expiresAt?: number | null;
+		expiredAfter?: number | null;
+	} | null;
+}>;
 
-type Poll = {
-	choices: string[];
-	multiple: boolean;
-	expiresAt?: number | null;
-	expiredAfter?: number | null;
-}
+type PostData = (
+	| SomeRequired<PostDataBase, 'text'>
+	| SomeRequired<PostDataBase, 'fileIds'>
+	| SomeRequired<PostDataBase, 'poll'>
+	| SomeRequired<PostDataBase, 'renoteId'>
+);
 
-type PostData = {
-	text?: string | null;
-	cw?: string | null;
-	localOnly?: boolean;
-	visibility?: 'public' | 'home' | 'followers' | 'specified';
-	visibleUserIds?: string[];
-	fileIds?: string[];
-	replyId?: string | null;
-	renoteId?: string | null;
-	channelId?: string | null;
-	poll?: Poll | null;
-}
+type Note = Note_ & { channelId?: string | null };
 
-async function uploadFile(_file: DriveFile): Promise<DriveFile> {
+const uploadFile = async (_file: DriveFile): Promise<DriveFile> => {
 	return new Promise((res) => {
 		const marker = uuid();
 
 		const connection = stream.useChannel('main');
 		connection.on('urlUploadFinished', urlResponse => {
 			if (urlResponse.marker === marker) {
-				res(urlResponse.file as DriveFile);
+				res(urlResponse.file);
 				connection.dispose();
 			}
 		});
@@ -52,11 +63,11 @@ async function uploadFile(_file: DriveFile): Promise<DriveFile> {
 			force: true,
 		});
 	});
-}
+};
 
-async function uploadFiles(_files: DriveFile[]): Promise<DriveFile[]> {
+const uploadFiles = async (_files: DriveFile[]): Promise<DriveFile[]> => {
 	return Promise.all(_files.map(_file => uploadFile(_file)));
-}
+};
 
 const fixMentionsHost = (note: Note): Note => {
 	if (note.user.host == null) return note;
@@ -88,62 +99,75 @@ const fixMentionsHost = (note: Note): Note => {
 	return { ...note, text, cw };
 };
 
-async function makeParams(_note: Note): Promise<PostData> {
-	const isRenote = (
-		_note.renote != null &&
-		_note.text == null &&
-		_note.fileIds.length === 0 &&
-		_note.poll == null
+const isPureRenote = (note: Note): note is SomeRequired<Note, 'renote' | 'renoteId'> => {
+	return (
+		note.renote != null &&
+		note.text == null &&
+		note.fileIds.length === 0 &&
+		note.poll == null
 	);
+};
 
-	const note = fixMentionsHost(deepClone(isRenote ? (_note.renote as Note) : _note));
-	const { text, cw, localOnly, visibility, files, replyId, renoteId, channelId } = note;
+const makeVisibleUserIds = ({ visibility, visibleUserIds, userId }: Note): PostData['visibleUserIds'] => {
+	const ids = new Set(visibleUserIds);
+	if (visibility === 'specified') ids.add(userId);
+	return Array.from(ids);
+};
 
-	const visibleUserIds = [...new Set(note.visibleUserIds || [])];
-	if (visibility === 'specified' && !visibleUserIds.includes(note.userId)) {
-		visibleUserIds.push(note.userId);
-	}
+const makeFileIds = async ({ files, fileIds, userId }: Note): Promise<PostData['fileIds']> => {
+	if ($i?.id === userId) return fileIds;
+	return (await uploadFiles(files)).map(file => file.id);
+};
 
-	const _poll = note.poll;
-	const poll: Poll | null = _poll ? ({} as Poll) : null;
-	if (poll && _poll) {
-		poll.choices = _poll.choices.map(choice => choice.text);
-		poll.multiple = !!_poll.multiple;
+const makePoll = ({ poll, createdAt }: Note): PostData['poll'] => {
+	if (poll == null) return null;
 
-		if (_poll.expiresAt) {
-			poll.expiredAfter = new Date(_poll.expiresAt).getTime() - new Date(note.createdAt).getTime();
-		}
-	}
+	const choices = poll.choices.map(choice => choice.text);
+	const multiple = poll.multiple;
+	const expiredAfter = poll.expiresAt && Date.parse(poll.expiresAt) - Date.parse(createdAt) || null;
 
-	const fileIds = $i?.id === note.userId ? note.fileIds : (await uploadFiles(files)).map(file => file.id);
+	return { choices, multiple, expiredAfter };
+};
+
+const makeParams = async (_note: Note): Promise<PostData> => {
+	const note = fixMentionsHost(deepClone(isPureRenote(_note) ? _note.renote : _note));
+	const { text, cw, localOnly, visibility, replyId, renoteId, channelId } = note;
+
+	const visibleUserIds = makeVisibleUserIds(note);
+	const fileIds = await makeFileIds(note);
+	const poll = makePoll(note);
 
 	const params: PostData = { text, cw, localOnly, visibility, visibleUserIds, fileIds, replyId, renoteId, channelId, poll };
 
-	return Object.fromEntries(Object.entries(params).filter(([,v]) => {
-		if (v == null) return false;
-		if (Array.isArray(v)) return !!v.length;
-		return true;
-	}));
-}
+	for (const k in params) {
+		if (Object.prototype.hasOwnProperty.call(params, k)) {
+			const v = params[k] as unknown;
+			if (v == null) delete params[k];
+			if (Array.isArray(v) && v.length === 0) delete params[k];
+		}
+	}
 
-function _nqadd(text: PostData['text']): PostData['text'] {
+	return params;
+};
+
+const _nqadd = (text: PostData['text']): PostData['text'] => {
 	if (!text) return '1';
 	if (text.endsWith('</center>')) return `${text}\n1`;
 	if (!/\-?\d+$/.test(text)) return `${text}2`;
 	return text.replace(/\-?\d+$/, (n => (Number(n) + 1).toString(10)));
-}
+};
 
-export async function pakuru(note: Note): Promise<{
+export const pakuru = async (note: Note): Promise<{
 	createdNote: Note;
-}> {
+}> => {
 	return os.api('notes/create', await makeParams(note));
-}
+};
 
-export async function numberquote(note: Note): Promise<{
+export const numberquote = async (note: Note): Promise<{
 	createdNote: Note;
-}> {
+}> => {
 	return os.api('notes/create', await makeParams(note).then(params => {
-		params.text = _nqadd(params.text);
-		return params;
+		const text = _nqadd(params.text);
+		return { ...params, text };
 	}));
-}
+};

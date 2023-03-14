@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent } from 'vue';
+import { } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/MkButton.vue';

@@ -39,8 +39,6 @@ import { onScrollTop, isTopVisible, getScrollPosition, getScrollContainer } from
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
-const SECOND_FETCH_LIMIT = 30;
-
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
 	limit: number;
@@ -59,6 +57,8 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 	offsetMode?: boolean;
 };
+
+const SECOND_FETCH_LIMIT = 30;
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;

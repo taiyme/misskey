@@ -20,13 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
+import { ref } from 'vue';
 import * as misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
-import { getNoteSummary } from '@/scripts/get-note-summary';
-import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';

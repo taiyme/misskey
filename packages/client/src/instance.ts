@@ -1,6 +1,7 @@
 import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api } from './os';
+import { parseObject } from '@/scripts/tms/parse';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -8,7 +9,7 @@ const instanceData = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData ? JSON.parse(instanceData) : {
+export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData ? parseObject<Misskey.entities.InstanceMetadata>(instanceData) : {
 	// TODO: set default values
 });
 

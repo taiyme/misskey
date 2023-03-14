@@ -4,7 +4,7 @@
 	<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 	<i v-else-if="note.visibility === 'specified'" class="ti ti-mail" @click="showRecipients"></i>
 </span>
-<span v-if="note.localOnly" :class="$style.localOnly" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+<span v-if="note.localOnly" :class="$style.localOnly" :title="i18n.ts._visibility.disableFederation"><i class="ti ti-world-off"></i></span>
 <span v-if="hasAuthority" :class="$style.hasAuthority"><i class="ti ti-eye-check"></i></span>
 </template>
 

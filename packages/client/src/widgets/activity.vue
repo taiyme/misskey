@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 import { GetFormResultType } from '@/scripts/form';

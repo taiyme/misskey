@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, watch } from 'vue';
+import { computed, watch } from 'vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';

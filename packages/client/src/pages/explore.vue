@@ -36,11 +36,8 @@ import XUsers from './explore.users.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/form/input.vue';
 import MkRadios from '@/components/form/radios.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 import XUserList from '@/components/MkUserList.vue';
 
 const props = defineProps<{

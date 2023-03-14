@@ -1,7 +1,7 @@
 import autobind from 'autobind-decorator';
-import { Type, envVarsDef, PageVar } from '.';
 import { Expr, isLiteralValue, Variable } from './expr';
 import { funcDefs } from './lib';
+import { Type, envVarsDef, PageVar } from '.';
 
 type TypeError = {
 	arg: number;

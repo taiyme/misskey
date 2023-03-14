@@ -99,7 +99,7 @@ async function deliverReject(followee: Local, follower: Remote) {
 	});
 
 	const content = renderActivity(renderReject(renderFollow(follower, followee, request?.requestId || undefined), followee));
-	deliver(followee, content, follower.inbox);
+	deliver(followee, content, follower.inbox, false);
 }
 
 /**

@@ -5,7 +5,7 @@
 			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
 			</MkA>
-			<template v-for="item in menu">
+			<template v-for="item in menu" :key="item">
 				<div v-if="item === '-'" class="divider"></div>
 				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="$ts[navbarItemDef[item].title]" class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 					<i class="ti-fw" :class="navbarItemDef[item].icon"></i>

@@ -11,14 +11,14 @@
 			<h2 class="heading">{{ i18n.ts.securityKey }}</h2>
 			<p>{{ i18n.ts._2fa.securityKeyInfo }}</p>
 			<div class="key-list">
-				<div v-for="key in $i.securityKeysList" class="key">
+				<div v-for="key in $i.securityKeysList" :key="key.id" class="key">
 					<h3>{{ key.name }}</h3>
 					<div class="last-used">{{ i18n.ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
 					<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
 				</div>
 			</div>
 
-			<MkSwitch v-if="$i.securityKeysList.length > 0" v-model="usePasswordLessLogin" @update:modelValue="updatePasswordLessLogin">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
+			<MkSwitch v-if="$i.securityKeysList.length > 0" v-model="usePasswordLessLogin" @update:model-value="updatePasswordLessLogin">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
 
 			<MkInfo v-if="registration && registration.error" warn>{{ i18n.ts.error }} {{ registration.error }}</MkInfo>
 			<MkButton v-if="!registration || registration.error" @click="addSecurityKey">{{ i18n.ts._2fa.registerKey }}</MkButton>

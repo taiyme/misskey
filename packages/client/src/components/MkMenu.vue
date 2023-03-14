@@ -7,7 +7,7 @@
 		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"
 		@contextmenu.self="e => e.preventDefault()"
 	>
-		<template v-for="(item, i) in items2">
+		<template v-for="(item, i) in items2" :key="item ? JSON.stringify(item) : 'divider'">
 			<div v-if="item === null" class="divider"></div>
 			<span v-else-if="item.type === 'label'" class="label item">
 				<span>{{ item.text }}</span>
@@ -33,7 +33,7 @@
 			<span v-else-if="item.type === 'switch'" :tabindex="i" class="item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<FormSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</FormSwitch>
 			</span>
-			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @mouseenter="showChildren(item, $event)">
+			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button item parent" :class="{ childShowing: childShowingItem === item }" @click="onParentClicked(item, $event)" @mouseenter.passive="onParentMouseEnter(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="item.icon"></i>
 				<span>{{ item.text }}</span>
 				<span class="caret"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -56,12 +56,13 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import FormSwitch from '@/components/form/switch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { isTouchUsing } from '@/scripts/touch';
 
 const XChild = defineAsyncComponent(() => import('./MkMenu.child.vue'));
 
@@ -168,6 +169,14 @@ async function showChildren(item: MenuItem, ev: MouseEvent) {
 		childShowingItem = item;
 	}
 }
+
+const onParentClicked = (item: MenuItem, ev: MouseEvent): void => {
+	if (isTouchUsing) showChildren(item, ev);
+};
+
+const onParentMouseEnter = (item: MenuItem, ev: MouseEvent): void => {
+	if (!isTouchUsing) showChildren(item, ev);
+};
 
 function clicked(fn: MenuAction, ev: MouseEvent) {
 	fn(ev);

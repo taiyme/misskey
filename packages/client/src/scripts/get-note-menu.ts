@@ -1,11 +1,10 @@
-import { defineAsyncComponent, Ref, inject } from 'vue';
+import { defineAsyncComponent, Ref } from 'vue';
 import * as misskey from 'misskey-js';
-import { pleaseLogin } from './please-login';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import * as os from '@/os';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
 import { getUserMenu } from '@/scripts/get-user-menu';
@@ -74,12 +73,12 @@ export function getNoteMenu(props: {
 	}
 
 	function copyContent(): void {
-		copyToClipboard(appearNote.text);
+		copyText(appearNote.text);
 		os.success();
 	}
 
 	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
+		copyText(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 

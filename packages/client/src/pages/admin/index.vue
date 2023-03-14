@@ -23,11 +23,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
+import { onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
@@ -35,7 +34,7 @@ import { lookupNote } from '@/scripts/lookup-note';
 import { lookupFile } from '@/scripts/lookup-file';
 import { lookupInstance } from '@/scripts/lookup-instance';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

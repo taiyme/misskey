@@ -2,10 +2,9 @@
 <button
 	v-if="count > 0"
 	ref="buttonRef"
-	v-ripple="canToggle"
 	class="hkzvhatu _button"
 	:class="{ reacted: note.myReaction == reaction, canToggle }"
-	@click="toggleReaction()"
+	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
 	<span class="count">{{ count }}</span>
@@ -17,9 +16,13 @@ import { computed, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
+import { tmsStore } from '@/tms/store';
+import { getReactMenu, toggleReact } from '@/scripts/tms/get-react-menu';
 
 const props = defineProps<{
 	reaction: string;
@@ -30,43 +33,41 @@ const props = defineProps<{
 
 const buttonRef = ref<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
 
-const toggleReaction = () => {
-	if (!canToggle.value) return;
-
-	const oldReaction = props.note.myReaction;
-	if (oldReaction) {
-		os.api('notes/reactions/delete', {
-			noteId: props.note.id,
-		}).then(() => {
-			if (oldReaction !== props.reaction) {
-				os.api('notes/reactions/create', {
-					noteId: props.note.id,
-					reaction: props.reaction,
-				});
-			}
-		});
+const react = (): void => {
+	const param = {
+		reaction: props.reaction,
+		note: props.note,
+		canToggle: canToggle,
+		reactButton: buttonRef,
+	};
+	if (tmsStore.state.useReactionMenu) {
+		getReactMenu(param);
 	} else {
-		os.api('notes/reactions/create', {
-			noteId: props.note.id,
-			reaction: props.reaction,
-		});
+		toggleReact(param);
 	}
 };
 
-const anime = () => {
+const reactAnime = (): void => {
 	if (document.hidden) return;
+	if (!defaultStore.state.animation) return;
 
-	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
+	const el = buttonRef.value;
+	if (el) {
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + 16;
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkReactionEffect, { reaction: props.reaction, emojis: props.note.emojis, x, y }, {}, 'end');
+	}
 };
 
 watch(() => props.count, (newCount, oldCount) => {
-	if (oldCount < newCount) anime();
+	if (oldCount < newCount) reactAnime();
 });
 
 onMounted(() => {
-	if (!props.isInitial) anime();
+	if (!props.isInitial) reactAnime();
 });
 
 useTooltip(buttonRef, async (showing) => {

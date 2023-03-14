@@ -23,7 +23,7 @@
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
 		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';

@@ -40,6 +40,7 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 //import { Autocomplete } from '@/scripts/autocomplete';
 import { uploadFile } from '@/scripts/upload';
+import { parseObject } from '@/scripts/tms/parse';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -117,7 +118,7 @@ function onDrop(ev: DragEvent): void {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		file = JSON.parse(driveFile);
+		file = parseObject<Misskey.entities.DriveFile>(driveFile);
 		ev.preventDefault();
 	}
 	//#endregion
@@ -172,11 +173,19 @@ function clear() {
 	deleteDraft();
 }
 
+type DraftData = {
+	updatedAt: string;
+	data: {
+		text: typeof text;
+		file: typeof file;
+	};
+};
+
 function saveDraft() {
-	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
 
 	drafts[draftKey] = {
-		updatedAt: new Date(),
+		updatedAt: new Date().toJSON(),
 		// eslint-disable-next-line id-denylist
 		data: {
 			text: text,
@@ -188,7 +197,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
+	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
 
 	delete drafts[draftKey];
 
@@ -207,7 +216,7 @@ onMounted(() => {
 	//new Autocomplete(textEl, this, { model: 'text' });
 
 	// 書きかけの投稿を復元
-	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
+	const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('message_drafts'))[draftKey];
 	if (draft) {
 		text = draft.data.text;
 		file = draft.data.file;

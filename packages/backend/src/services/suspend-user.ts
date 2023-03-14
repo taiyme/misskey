@@ -31,7 +31,7 @@ export async function doPostSuspend(user: { id: User['id']; host: User['host'] }
 		}
 
 		for (const inbox of queue) {
-			deliver(user, content, inbox);
+			deliver(user, content, inbox, true);
 		}
 	}
 }

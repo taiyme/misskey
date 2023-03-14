@@ -1,14 +1,13 @@
 <template>
 <div>
 	<div>{{ hpml.interpolate(block.title) }}</div>
-	<MkRadio v-for="item in block.values" :key="item" :modelValue="value" :value="item" @update:modelValue="updateValue($event)">{{ item }}</MkRadio>
+	<MkRadio v-for="item in block.values" :key="item" :model-value="value" :value="item" @update:model-value="updateValue($event)">{{ item }}</MkRadio>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkRadio from '../form/radio.vue';
-import * as os from '@/os';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { RadioButtonVarBlock } from '@/scripts/hpml/block';
 

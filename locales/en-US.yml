@@ -1333,6 +1333,8 @@ _visibility:
   specifiedDescription: "Make visible for specified users only"
   localOnly: "Local only"
   localOnlyDescription: "Not visible to remote users"
+  disableFederation: "Unfederated"
+  disableFederationDescription: "Don't transmit to other instances"
 _postForm:
   replyPlaceholder: "Reply to this note..."
   quotePlaceholder: "Quote this note..."
@@ -1749,3 +1751,9 @@ _deck:
     channel: "Channel"
     mentions: "Mentions"
     direct: "Direct notes"
+
+_tms:
+  react: "React"
+  unreact: "Unreact"
+  pakuru: "Pakuru"
+  numberquote: "Numberquote"
