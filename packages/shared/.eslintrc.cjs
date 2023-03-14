@@ -71,6 +71,10 @@ module.exports = {
 		'@typescript-eslint/no-misused-promises': ['error', {
 			'checksVoidReturn': false,
 		}],
+		'@typescript-eslint/no-unused-vars': ['warn', {
+			'argsIgnorePattern': '^_',
+			'destructuredArrayIgnorePattern': '^_',
+		}],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
 		'import/order': ['warn', {
