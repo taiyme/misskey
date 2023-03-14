@@ -44,7 +44,7 @@
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
@@ -92,6 +92,7 @@ import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
+import { parseObject, parseArray } from '@/scripts/tms/parse';
 import { imanonashi } from '@/scripts/tms/imanonashi';
 
 const modal = inject('modal');
@@ -103,7 +104,7 @@ const props = withDefaults(defineProps<{
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: typeof misskey.noteVisibilities;
+	initialVisibility?: 'public' | 'home' | 'followers' | 'specified';
 	initialFiles?: misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
@@ -140,17 +141,14 @@ let useCw = $ref(false);
 let showPreview = $ref(false);
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
-let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
-let visibleUsers = $ref([]);
-if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(pushVisibleUser);
-}
+let visibility = $ref<'public' | 'home' | 'followers' | 'specified'>(props.initialVisibility ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility);
+let visibleUsers = $ref<misskey.entities.User[]>([]);
 let autocomplete = $ref(null);
 let draghover = $ref(false);
-let quoteId = $ref(null);
+let quoteId: string | null = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
 let annoyingPost = $ref(false);
-let recentHashtags = $ref(JSON.parse(localStorage.getItem('hashtags') || '[]'));
+let recentHashtags = $ref(parseArray<string[]>(localStorage.getItem('hashtags')));
 let imeText = $ref('');
 
 const typing = throttle(3000, () => {
@@ -233,12 +231,32 @@ watch($$(text), () => checkAnnoyingPost());
 watch($$(useCw), () => checkAnnoyingPost());
 watch($$(visibility), () => checkAnnoyingPost());
 
+const pushVisibleUser = (user: misskey.entities.User): void => {
+	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
+		visibleUsers.push(user);
+	}
+};
+
+const addVisibleUser = (): void => {
+	os.selectUser().then(user => {
+		pushVisibleUser(user);
+	});
+};
+
+const removeVisibleUser = (user: misskey.entities.User): void => {
+	visibleUsers = erase(user, visibleUsers);
+};
+
+if (props.initialVisibleUsers) {
+	props.initialVisibleUsers.forEach(pushVisibleUser);
+}
+
 if (props.mention) {
 	text = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
 	text += ' ';
 }
 
-if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
+if (props.reply && (props.reply.user.username !== $i?.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
 	text = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
 }
 
@@ -254,7 +272,7 @@ if (props.reply && props.reply.text != null) {
 				`@${x.username}@${toASCII(otherHost)}`;
 
 		// 自分は除外
-		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+		if ($i?.username === x.username && (x.host == null || x.host === host)) continue;
 
 		// 重複は除外
 		if (text.includes(`${mention} `)) continue;
@@ -273,12 +291,12 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 	visibility = props.reply.visibility;
 	if (props.reply.visibility === 'specified') {
 		os.api('users/show', {
-			userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
+			userIds: props.reply.visibleUserIds?.filter(uid => uid !== $i?.id && uid !== props.reply?.userId) ?? [],
 		}).then(users => {
 			users.forEach(pushVisibleUser);
 		});
 
-		if (props.reply.userId !== $i.id) {
+		if (props.reply.userId !== $i?.id) {
 			os.api('users/show', { userId: props.reply.userId }).then(user => {
 				pushVisibleUser(user);
 			});
@@ -297,7 +315,7 @@ if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
 	cw = props.reply.cw;
 }
 
-function watchForDraft() {
+const watchForDraft = (): void => {
 	watch($$(text), () => saveDraft());
 	watch($$(useCw), () => saveDraft());
 	watch($$(cw), () => saveDraft());
@@ -305,9 +323,9 @@ function watchForDraft() {
 	watch($$(files), () => saveDraft(), { deep: true });
 	watch($$(visibility), () => saveDraft());
 	watch($$(localOnly), () => saveDraft());
-}
+};
 
-function checkMissingMention() {
+const checkMissingMention = (): void => {
 	if (visibility === 'specified') {
 		const ast = mfm.parse(text);
 
@@ -319,21 +337,21 @@ function checkMissingMention() {
 		}
 		hasNotSpecifiedMentions = false;
 	}
-}
+};
 
-function addMissingMention() {
+const addMissingMention = (): void => {
 	const ast = mfm.parse(text);
 
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.some(u => (u.username === x.username) && (u.host === x.host))) {
-			os.api('users/show', { username: x.username, host: x.host }).then(user => {
+			os.api('users/show', { username: x.username, host: x.host ?? undefined }).then(user => {
 				visibleUsers.push(user);
 			});
 		}
 	}
-}
+};
 
-function checkAnnoyingPost() {
+const checkAnnoyingPost = (): void => {
 	if (!useCw && visibility === 'public') {
 		annoyingPost = (
 			text.includes('$[x2') ||
@@ -345,9 +363,9 @@ function checkAnnoyingPost() {
 	} else {
 		annoyingPost = false;
 	}
-}
+};
 
-function togglePoll() {
+const togglePoll = (): void => {
 	if (poll) {
 		poll = null;
 	} else {
@@ -358,50 +376,50 @@ function togglePoll() {
 			expiredAfter: null,
 		};
 	}
-}
+};
 
-function addTag(tag: string) {
+const addTag = (tag: string): void => {
 	insertTextAtCursor(textareaEl, ` #${tag} `);
-}
+};
 
-function focus() {
+const focus = (): void => {
 	if (textareaEl) {
 		textareaEl.focus();
 		textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
 	}
-}
+};
 
-function chooseFileFrom(ev) {
+const chooseFileFrom = (ev: MouseEvent): void => {
 	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.push(file);
 		}
 	});
-}
+};
 
-function detachFile(id) {
+const detachFile = (id: string): void => {
 	files = files.filter(x => x.id !== id);
-}
+};
 
-function updateFiles(_files) {
+const updateFiles = (_files: misskey.entities.DriveFile[]): void => {
 	files = _files;
-}
+};
 
-function updateFileSensitive(file, sensitive) {
+const updateFileSensitive = (file: misskey.entities.DriveFile, sensitive: boolean): void => {
 	files[files.findIndex(x => x.id === file.id)].isSensitive = sensitive;
-}
+};
 
-function updateFileName(file, name) {
+const updateFileName = (file: misskey.entities.DriveFile, name: string): void => {
 	files[files.findIndex(x => x.id === file.id)].name = name;
-}
+};
 
-function upload(file: File, name?: string) {
+const upload = (file: File, name?: string): void => {
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
-}
+};
 
-function setVisibility() {
+const setVisibility = (): void => {
 	if (props.channel) {
 		// TODO: information dialog
 		return;
@@ -412,73 +430,60 @@ function setVisibility() {
 		currentLocalOnly: localOnly,
 		src: visibilityButton,
 	}, {
-		changeVisibility: v => {
+		changeVisibility: (v: typeof visibility) => {
 			visibility = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('visibility', visibility);
 			}
 		},
-		changeLocalOnly: v => {
+		changeLocalOnly: (v: typeof localOnly) => {
 			localOnly = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('localOnly', localOnly);
 			}
 		},
 	}, 'closed');
-}
+};
 
-function pushVisibleUser(user) {
-	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
-		visibleUsers.push(user);
-	}
-}
-
-function addVisibleUser() {
-	os.selectUser().then(user => {
-		pushVisibleUser(user);
-	});
-}
-
-function removeVisibleUser(user) {
-	visibleUsers = erase(user, visibleUsers);
-}
-
-function clear() {
+const clear = (): void => {
 	text = '';
 	files = [];
 	poll = null;
 	quoteId = null;
-}
+};
 
-function onKeydown(ev: KeyboardEvent) {
+const onKeydown = (ev: KeyboardEvent): void => {
 	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
 	if (ev.which === 27) emit('esc');
 	typing();
-}
+};
 
-function onCompositionUpdate(ev: CompositionEvent) {
+const onCompositionUpdate = (ev: CompositionEvent): void => {
 	imeText = ev.data;
 	typing();
-}
+};
 
-function onCompositionEnd(ev: CompositionEvent) {
+const onCompositionEnd = (_ev: CompositionEvent): void => {
 	imeText = '';
-}
+};
 
-async function onPaste(ev: ClipboardEvent) {
-	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
-		if (item.kind === 'file') {
-			const file = item.getAsFile();
-			const lio = file.name.lastIndexOf('.');
-			const ext = lio >= 0 ? file.name.slice(lio) : '';
-			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
-			upload(file, formatted);
-		}
-	}
+const onPaste = async (ev: ClipboardEvent): Promise<void> => {
+	if (!ev.clipboardData) return;
+
+	Array.from(ev.clipboardData.items, (item, i) => {
+		if (item.kind !== 'file') return;
+		const file = item.getAsFile();
+		if (!file) return;
+		const lio = file.name.lastIndexOf('.');
+		const ext = lio >= 0 ? file.name.slice(lio) : '';
+		const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+		upload(file, formatted);
+	});
 
 	const paste = ev.clipboardData.getData('text');
+	const path = url + '/notes/';
 
-	if (!props.renote && !quoteId && paste.startsWith(url + '/notes/')) {
+	if (!props.renote && !quoteId && paste.startsWith(path)) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -490,13 +495,13 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			quoteId = paste.substr(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
+			quoteId = paste.slice((url + '/notes/').length).split(/[\/\?#]/, 1)[0] || null;
 		});
 	}
-}
+};
 
-function onDragover(ev) {
-	if (!ev.dataTransfer.items[0]) return;
+const onDragover = (ev: DragEvent): void => {
+	if (!ev.dataTransfer?.items[0]) return;
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
 	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 	if (isFile || isDriveFile) {
@@ -519,17 +524,18 @@ function onDragover(ev) {
 				break;
 		}
 	}
-}
+};
 
-function onDragenter(ev) {
+const onDragenter = (_ev: DragEvent): void => {
 	draghover = true;
-}
+};
 
-function onDragleave(ev) {
+const onDragleave = (_ev: DragEvent): void => {
 	draghover = false;
-}
+};
 
-function onDrop(ev): void {
+const onDrop = (ev: DragEvent): void => {
+	if (!ev.dataTransfer) return;
 	draghover = false;
 
 	// ファイルだったら
@@ -541,19 +547,32 @@ function onDrop(ev): void {
 
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
+	if (driveFile) {
+		const file = parseObject<misskey.entities.DriveFile>(driveFile);
 		files.push(file);
 		ev.preventDefault();
 	}
 	//#endregion
-}
+};
 
-function saveDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
+type DraftData = {
+	updatedAt: string;
+	data: {
+		text: typeof text;
+		useCw: typeof useCw;
+		cw: typeof cw;
+		visibility: typeof visibility;
+		localOnly: typeof localOnly;
+		files: typeof files;
+		poll: typeof poll;
+	};
+};
+
+const saveDraft = (): void => {
+	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
 
 	draftData[draftKey] = {
-		updatedAt: new Date(),
+		updatedAt: new Date().toJSON(),
 		data: {
 			text: text,
 			useCw: useCw,
@@ -566,17 +585,17 @@ function saveDraft() {
 	};
 
 	localStorage.setItem('drafts', JSON.stringify(draftData));
-}
+};
 
-function deleteDraft() {
-	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
+const deleteDraft = (): void => {
+	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
 
 	delete draftData[draftKey];
 
 	localStorage.setItem('drafts', JSON.stringify(draftData));
-}
+};
 
-async function post(ev?: MouseEvent) {
+const post = async (ev?: MouseEvent): Promise<void> => {
 	if (ev) {
 		const el = ev.currentTarget ?? ev.target;
 		if (el instanceof HTMLElement) {
@@ -616,7 +635,7 @@ async function post(ev?: MouseEvent) {
 
 	if (postAccount) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount?.id)?.token;
 	}
 
 	posting = true;
@@ -627,7 +646,7 @@ async function post(ev?: MouseEvent) {
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
-				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
+				const history = parseArray<string[]>(localStorage.getItem('hashtags'));
 				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
@@ -642,51 +661,55 @@ async function post(ev?: MouseEvent) {
 			text: err.message + '\n' + (err as any).id,
 		});
 	});
-}
+};
 
-function cancel() {
+const cancel = (): void => {
 	emit('cancel');
-}
+};
 
-function insertMention() {
+const insertMention = (): void => {
 	os.selectUser().then(user => {
 		insertTextAtCursor(textareaEl, '@' + Acct.toString(user) + ' ');
 	});
-}
+};
 
-async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
-}
+const insertEmoji = async (ev: MouseEvent): Promise<void> => {
+	const el = ev.currentTarget ?? ev.target;
+	if (!(el instanceof HTMLElement)) return;
+	os.openEmojiPicker(el, {}, textareaEl);
+};
 
-function showActions(ev) {
+const showActions = (ev: MouseEvent): void => {
+	const el = ev.currentTarget ?? ev.target;
+	if (!(el instanceof HTMLElement)) return;
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
-		action: () => {
+		action: (): void => {
 			action.handler({
 				text: text,
 			}, (key, value) => {
 				if (key === 'text') { text = value; }
 			});
 		},
-	})), ev.currentTarget ?? ev.target);
-}
+	})), el);
+};
 
 let postAccount = $ref<misskey.entities.UserDetailed | null>(null);
 
-function openAccountMenu(ev: MouseEvent) {
+const openAccountMenu = (ev: MouseEvent): void => {
 	openAccountMenu_({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
-		active: postAccount != null ? postAccount.id : $i.id,
+		active: postAccount != null ? postAccount.id : $i?.id,
 		onChoose: (account) => {
-			if (account.id === $i.id) {
+			if (account.id === $i?.id) {
 				postAccount = null;
 			} else {
 				postAccount = account;
 			}
 		},
 	}, ev);
-}
+};
 
 onMounted(() => {
 	if (props.autofocus) {
@@ -705,7 +728,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
+			const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('drafts'))[draftKey];
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;

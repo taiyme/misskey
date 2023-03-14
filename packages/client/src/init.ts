@@ -7,12 +7,13 @@ import '@/style.scss';
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { compareVersions } from 'compare-versions';
 import JSON5 from 'json5';
+import { parseObject } from '@/scripts/tms/parse';
 
 //#region account indexedDB migration
 import { set } from '@/scripts/idb-proxy';
 
 if (localStorage.getItem('accounts') != null) {
-	set('accounts', JSON.parse(localStorage.getItem('accounts')));
+	set('accounts', parseObject(localStorage.getItem('accounts')));
 	localStorage.removeItem('accounts');
 }
 //#endregion
@@ -86,7 +87,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
 		if (res.status === 200) {
 			const newLocale = await res.text();
-			const parsedNewLocale = (JSON.parse(newLocale) as I18nObject);
+			const parsedNewLocale = parseObject<I18nObject>(newLocale);
 			localStorage.setItem('locale', newLocale);
 			localStorage.setItem('localeVersion', version);
 			updateLocale(parsedNewLocale);

@@ -43,6 +43,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { parseObject } from '@/scripts/tms/parse';
 const { t, ts } = i18n;
 
 useCssModule();
@@ -222,7 +223,7 @@ function loadFile(): void {
 
 		let profile: Profile;
 		try {
-			profile = JSON.parse(await file.text()) as unknown as Profile;
+			profile = parseObject<Profile>(await file.text());
 			validate(profile);
 		} catch (err) {
 			return os.alert({

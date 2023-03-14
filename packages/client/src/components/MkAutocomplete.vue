@@ -45,6 +45,7 @@ import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
+import { parseArray } from '@/scripts/tms/parse';
 
 type EmojiDef = {
 	emoji: string;
@@ -187,7 +188,7 @@ function exec() {
 		const cache = sessionStorage.getItem(cacheKey);
 
 		if (cache) {
-			users.value = JSON.parse(cache);
+			users.value = parseArray<any[]>(cache);
 			fetching.value = false;
 		} else {
 			os.api('users/search-by-username-and-host', {
@@ -203,14 +204,13 @@ function exec() {
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
-			hashtags.value = JSON.parse(localStorage.getItem('hashtags') || '[]');
+			hashtags.value = parseArray<any[]>(localStorage.getItem('hashtags'));
 			fetching.value = false;
 		} else {
 			const cacheKey = `autocomplete:hashtag:${props.q}`;
 			const cache = sessionStorage.getItem(cacheKey);
 			if (cache) {
-				const hashtags = JSON.parse(cache);
-				hashtags.value = hashtags;
+				hashtags.value = parseArray<any[]>(cache);
 				fetching.value = false;
 			} else {
 				os.api('hashtags/search', {

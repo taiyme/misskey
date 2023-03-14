@@ -101,6 +101,7 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { uploadFile, uploads } from '@/scripts/upload';
+import { parseObject } from '@/scripts/tms/parse';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -230,7 +231,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
+		const file = parseObject<Misskey.entities.DriveFile>(driveFile);
 		if (files.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);
 		os.api('drive/files/update', {
@@ -243,7 +244,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 	if (driveFolder != null && driveFolder !== '') {
-		const droppedFolder = JSON.parse(driveFolder);
+		const droppedFolder = parseObject<Misskey.entities.DriveFolder>(driveFolder);
 
 		// 移動先が自分自身ならreject
 		if (folder.value && droppedFolder.id === folder.value.id) return false;
