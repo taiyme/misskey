@@ -209,6 +209,10 @@ const contributors: Contributor[] = [
 		name: 'わかさぎシステム',
 		acct: 'DA-TENSHI',
 	},
+	{
+		name: 'CyberRex',
+		acct: 'CyberRex0',
+	},
 ];
 
 const patrons: string[] = [
