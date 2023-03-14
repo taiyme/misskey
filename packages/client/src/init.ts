@@ -23,7 +23,7 @@ import components from '@/components';
 import { version, ui, lang, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { i18n, updateI18n } from '@/i18n';
+import { i18n, updateI18n, I18nObject } from '@/i18n';
 import { confirm, alert, post, popup, toast } from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
@@ -86,7 +86,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
 		if (res.status === 200) {
 			const newLocale = await res.text();
-			const parsedNewLocale = JSON.parse(newLocale);
+			const parsedNewLocale = (JSON.parse(newLocale) as I18nObject);
 			localStorage.setItem('locale', newLocale);
 			localStorage.setItem('localeVersion', version);
 			updateLocale(parsedNewLocale);
