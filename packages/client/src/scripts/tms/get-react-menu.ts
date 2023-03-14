@@ -1,5 +1,5 @@
 import { defineAsyncComponent, Ref } from 'vue';
-import * as misskey from 'misskey-js';
+import { Note } from 'misskey-js/built/entities';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -9,7 +9,7 @@ import { MenuItem } from '@/types/menu';
 
 type ReactProps = {
 	reaction: string;
-	note: misskey.entities.Note;
+	note: Note;
 	canToggle: Ref<boolean>;
 	reactButton: Ref<HTMLElement | undefined>;
 };
