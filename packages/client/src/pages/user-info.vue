@@ -86,13 +86,13 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSelect v-if="user.host == null && $i.isAdmin" v-model="userState" class="_formBlock" @update:modelValue="selectUserState">
+				<FormSelect v-if="user.host == null && $i.isAdmin" v-model="userState" class="_formBlock" @update:model-value="selectUserState">
 					<option value="admin">{{ i18n.ts.administrator }}</option>
 					<option value="moderator">{{ i18n.ts.moderator }}</option>
 					<option value="users">{{ i18n.ts.users }}</option>
 				</FormSelect>
-				<FormSwitch v-if="silenced || ['moderator', 'users'].includes(userState)" v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-if="suspended || userState === 'users'" v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+				<FormSwitch v-if="silenced || ['moderator', 'users'].includes(userState)" v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
+				<FormSwitch v-if="suspended || userState === 'users'" v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div class="_formBlock">
 					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>

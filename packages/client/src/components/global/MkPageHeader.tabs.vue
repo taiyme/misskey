@@ -2,7 +2,7 @@
 <div ref="el" :class="$style.tabs" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
 		<button
-			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
+			v-for="t in tabs" :key="t.key" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.no-delay="t.title"
 			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
 			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
 		>
@@ -62,14 +62,14 @@ const el = shallowRef<HTMLElement | null>(null);
 const tabRefs: Record<string, HTMLElement | null> = {};
 const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 
-function onTabMousedown(tab: Tab, ev: MouseEvent): void {
+const onTabMousedown = (tab: Tab, _ev: MouseEvent): void => {
 	// ユーザビリティの観点からmousedown時にはonClickは呼ばない
 	if (tab.key) {
 		emit('update:tab', tab.key);
 	}
-}
+};
 
-function onTabClick(t: Tab, ev: MouseEvent): void {
+const onTabClick = (t: Tab, ev: MouseEvent): void => {
 	emit('tabClick', t.key);
 
 	if (t.onClick) {
@@ -81,9 +81,9 @@ function onTabClick(t: Tab, ev: MouseEvent): void {
 	if (t.key) {
 		emit('update:tab', t.key);
 	}
-}
+};
 
-function renderTab() {
+const renderTab = (): void => {
 	const tabEl = props.tab ? tabRefs[props.tab] : undefined;
 	if (tabEl && tabHighlightEl.value && tabHighlightEl.value.parentElement) {
 		// offsetWidth や offsetLeft は少数を丸めてしまうため getBoundingClientRect を使う必要がある
@@ -93,9 +93,9 @@ function renderTab() {
 		tabHighlightEl.value.style.width = rect.width + 'px';
 		tabHighlightEl.value.style.left = (rect.left - parentRect.left + tabHighlightEl.value.parentElement.scrollLeft) + 'px';
 	}
-}
+};
 
-function onTabWheel(ev: WheelEvent) {
+const onTabWheel = (ev: WheelEvent): boolean => {
 	if (ev.deltaY !== 0 && ev.deltaX === 0) {
 		ev.preventDefault();
 		ev.stopPropagation();
@@ -105,11 +105,11 @@ function onTabWheel(ev: WheelEvent) {
 		});
 	}
 	return false;
-}
+};
 
 let entering = false;
 
-async function enter(el: HTMLElement) {
+const enter = async(el: HTMLElement): Promise<void> => {
 	entering = true;
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = '0';
@@ -122,26 +122,26 @@ async function enter(el: HTMLElement) {
 	});
 
 	setTimeout(renderTab, 170);
-}
-function afterEnter(el: HTMLElement) {
+};
+const afterEnter = (_el: HTMLElement): void => {
 	//el.style.width = '';
-}
-async function leave(el: HTMLElement) {
+};
+const leave = async (el: HTMLElement): Promise<void> => {
 	const elementWidth = el.getBoundingClientRect().width;
 	el.style.width = elementWidth + 'px';
 	el.style.paddingLeft = '';
 	el.offsetWidth; // force reflow
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
-}
-function afterLeave(el: HTMLElement) {
+};
+const afterLeave = (el: HTMLElement): void => {
 	el.style.width = '';
-}
+};
 
 let ro2: ResizeObserver | null;
 
 onMounted(() => {
-	watch([() => props.tab, () => props.tabs], () => {
+	watch([(): string | undefined => props.tab, (): Tab[] => props.tabs], () => {
 		nextTick(() => {
 			if (entering) return;
 			renderTab();
@@ -151,7 +151,7 @@ onMounted(() => {
 	});
 
 	if (props.rootEl) {
-		ro2 = new ResizeObserver((entries, observer) => {
+		ro2 = new ResizeObserver((_entries, _observer) => {
 			if (document.body.contains(el.value as HTMLElement)) {
 				nextTick(() => renderTab());
 			}

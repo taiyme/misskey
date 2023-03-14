@@ -14,13 +14,13 @@
 		{{ multiple ? ((type === 'file') ? i18n.ts.selectFiles : i18n.ts.selectFolders) : ((type === 'file') ? i18n.ts.selectFile : i18n.ts.selectFolder) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
-	<XDrive :multiple="multiple" :select="type" @changeSelection="onChangeSelection" @selected="ok()"/>
+	<XDrive :multiple="multiple" :select="type" @change-selection="onChangeSelection" @selected="ok()"/>
 </XModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import { DriveFile } from 'misskey-js/built/entities';
 import XDrive from '@/components/MkDrive.vue';
 import XModalWindow from '@/components/MkModalWindow.vue';
 import number from '@/filters/number';
@@ -34,25 +34,25 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', r?: Misskey.entities.DriveFile[]): void;
+	(ev: 'done', r?: DriveFile[]): void;
 	(ev: 'closed'): void;
 }>();
 
 const dialog = ref<InstanceType<typeof XModalWindow>>();
 
-const selected = ref<Misskey.entities.DriveFile[]>([]);
+const selected = ref<DriveFile[]>([]);
 
-function ok() {
+const ok = (): void => {
 	emit('done', selected.value);
 	dialog.value?.close();
-}
+};
 
-function cancel() {
+const cancel = (): void => {
 	emit('done');
 	dialog.value?.close();
-}
+};
 
-function onChangeSelection(files: Misskey.entities.DriveFile[]) {
+const onChangeSelection = (files: DriveFile[]): void => {
 	selected.value = files;
-}
+};
 </script>

@@ -20,13 +20,13 @@
 					<button class="config _button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
 					<button class="remove _button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
-						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
+						<component :is="`mkw-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>
 				</div>
 			</template>
 		</XDraggable>
 	</template>
-	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" class="widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`mkw-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" class="widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
 
@@ -61,11 +61,11 @@ const emit = defineEmits<{
 }>();
 
 const widgetRefs = {};
-const configWidget = (id: string) => {
+const configWidget = (id: Widget['id']): void => {
 	widgetRefs[id].configure();
 };
-const widgetAdderSelected = ref(null);
-const addWidget = () => {
+const widgetAdderSelected = ref<string | null>(null);
+const addWidget = (): void => {
 	if (widgetAdderSelected.value == null) return;
 
 	emit('addWidget', {
@@ -76,10 +76,10 @@ const addWidget = () => {
 
 	widgetAdderSelected.value = null;
 };
-const removeWidget = (widget) => {
+const removeWidget = (widget: Widget): void => {
 	emit('removeWidget', widget);
 };
-const updateWidget = (id, data) => {
+const updateWidget = (id: Widget['id'], data: Widget['data']): void => {
 	emit('updateWidget', { id, data });
 };
 const widgets_ = computed({
@@ -89,12 +89,15 @@ const widgets_ = computed({
 	},
 });
 
-function onContextmenu(widget: Widget, ev: MouseEvent) {
-	const isLink = (el: HTMLElement) => {
+const onContextmenu = (widget: Widget, ev: MouseEvent): void => {
+	if (!(ev.target instanceof HTMLElement)) return;
+
+	const isLink = (el: HTMLElement): el is HTMLAnchorElement => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {
 			return isLink(el.parentElement);
 		}
+		return false;
 	};
 	if (isLink(ev.target)) return;
 	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
@@ -106,11 +109,11 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 	}, {
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
-		action: () => {
+		action: (): void => {
 			configWidget(widget.id);
 		},
 	}], ev);
-}
+};
 </script>
 
 <style lang="scss" scoped>

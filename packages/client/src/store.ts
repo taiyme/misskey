@@ -1,11 +1,32 @@
 import { markRaw, ref } from 'vue';
+import { Note, UserDetailed } from 'misskey-js/built/entities';
 import { Storage } from './pizzax';
 
-export const postFormActions = [];
-export const userActions = [];
-export const noteActions = [];
-export const noteViewInterruptors = [];
-export const notePostInterruptors = [];
+export const postFormActions: {
+	title: string;
+	handler: (
+		form: { text: NonNullable<Note['text']> },
+		update: (key: string, value: NonNullable<Note['text']>) => void,
+	) => void;
+}[] = [];
+export const userActions: {
+	title: string;
+	handler: (
+		user: UserDetailed,
+	) => void;
+}[] = [];
+export const noteActions: {
+	title: string;
+	handler: (
+		note: Note,
+	) => void;
+}[] = [];
+export const noteViewInterruptors: {
+	handler: (note: Note) => Promise<Note>;
+}[] = [];
+export const notePostInterruptors: {
+	handler: (note: unknown) => Promise<unknown>;
+}[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -28,7 +49,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteVisibility: {
 		where: 'account',
-		default: 'public',
+		default: 'public' as 'public' | 'home' | 'followers' | 'specified',
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',

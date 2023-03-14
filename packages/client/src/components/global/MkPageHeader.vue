@@ -23,7 +23,7 @@
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" class="buttons right">
 			<template v-for="action in actions" :key="action.text">
-				<button v-tooltip.noDelay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+				<button v-tooltip.no-delay="action.text" class="_button button" :class="{ highlighted: action.highlighted }" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</div>
 	</div>
@@ -63,8 +63,8 @@ const emit = defineEmits<{
 
 const metadata = injectPageMetadata();
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
-const thin_ = props.thin || inject('shouldHeaderThin', false);
+const hideTitle = inject<boolean>('shouldOmitHeaderTitle', false);
+const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
 
 let el = $shallowRef<HTMLElement | undefined>(undefined);
 const bg = ref<string | undefined>(undefined);
@@ -75,27 +75,27 @@ const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
 });
 
-const preventDrag = (ev: TouchEvent) => {
+const preventDrag = (ev: TouchEvent): void => {
 	ev.stopPropagation();
 };
 
-const top = () => {
+const top = (): void => {
 	if (el) {
 		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
 	}
 };
 
-function openAccountMenu(ev: MouseEvent) {
+const openAccountMenu = (ev: MouseEvent): void => {
 	openAccountMenu_({
 		withExtraOperation: true,
 	}, ev);
-}
+};
 
-function onTabClick(): void {
+const onTabClick = (): void => {
 	top();
-}
+};
 
-const calcBg = () => {
+const calcBg = (): void => {
 	const rawBg = 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
@@ -110,7 +110,7 @@ onMounted(() => {
 
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
+		ro = new ResizeObserver((_entries, _observer) => {
 			if (el && el.parentElement && document.body.contains(el as HTMLElement)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}

@@ -6,7 +6,7 @@
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin">
-			<MkInput v-model="username" class="_formBlock" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
+			<MkInput v-model="username" class="_formBlock" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required data-cy-signin-username @update:model-value="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
@@ -50,6 +50,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
+import { UserDetailed } from 'misskey-js/built/entities';
 import { toUnicode } from 'punycode/';
 import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import MkButton from '@/components/MkButton.vue';
@@ -63,7 +64,7 @@ import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
 let signing = $ref(false);
-let user = $ref(null);
+let user = $ref<UserDetailed | null>(null);
 let username = $ref('');
 let password = $ref('');
 let token = $ref('');
@@ -99,7 +100,7 @@ const props = defineProps({
 	},
 });
 
-function onUsernameChange() {
+const onUsernameChange = (): void => {
 	os.api('users/show', {
 		username: username,
 	}).then(userResponse => {
@@ -107,15 +108,15 @@ function onUsernameChange() {
 	}, () => {
 		user = null;
 	});
-}
+};
 
-function onLogin(res) {
+const onLogin = (res) => {
 	if (props.autoSet) {
 		return login(res.i);
 	}
-}
+};
 
-function queryKey() {
+const queryKey = () => {
 	queryingKey = true;
 	return navigator.credentials.get({
 		publicKey: {
@@ -155,9 +156,9 @@ function queryKey() {
 		});
 		signing = false;
 	});
-}
+};
 
-function onSubmit() {
+const onSubmit = (): void => {
 	signing = true;
 	console.log('submit');
 	if (!totpLogin && user && user.twoFactorEnabled) {
@@ -189,9 +190,9 @@ function onSubmit() {
 			onLogin(res);
 		}).catch(loginFailed);
 	}
-}
+};
 
-function loginFailed(err) {
+const loginFailed = (err: unknown): void => {
 	switch (err.id) {
 		case '6cc579cc-885d-43d8-95c2-b8c7fc963280': {
 			os.alert({
@@ -234,12 +235,12 @@ function loginFailed(err) {
 	challengeData = null;
 	totpLogin = false;
 	signing = false;
-}
+};
 
-function resetPassword() {
+const resetPassword = (): void => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkForgotPassword.vue')), {}, {
 	}, 'closed');
-}
+};
 </script>
 
 <style lang="scss" scoped>
