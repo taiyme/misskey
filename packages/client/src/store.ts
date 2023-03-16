@@ -22,10 +22,10 @@ export const noteActions: {
 	) => void;
 }[] = [];
 export const noteViewInterruptors: {
-	handler: (note: Note) => Promise<Note>;
+	handler: (note: Note) => unknown;
 }[] = [];
 export const notePostInterruptors: {
-	handler: (note: unknown) => Promise<unknown>;
+	handler: (note: FIXME) => unknown;
 }[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
@@ -277,12 +277,14 @@ export const defaultStore = markRaw(new Storage('base', {
 
 const PREFIX = 'miux:';
 
-type Plugin = {
+export type Plugin = {
 	id: string;
 	name: string;
 	active: boolean;
+	config?: Record<string, { default: any }>;
 	configData: Record<string, any>;
 	token: string;
+	version: string;
 	ast: any[];
 };
 
