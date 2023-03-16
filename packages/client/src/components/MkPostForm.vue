@@ -627,7 +627,7 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(deepClone(postData));
+			postData = await interruptor.handler(deepClone(postData)) as typeof postData;
 		}
 	}
 
@@ -808,6 +808,10 @@ onMounted(() => {
 			> .text-count {
 				opacity: 0.7;
 				line-height: 66px;
+
+				&.over {
+					color: var(--error);
+				}
 			}
 
 			> .visibility {

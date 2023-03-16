@@ -35,6 +35,7 @@ const pagination = {
 async function create() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
+		max: 100,
 	});
 	if (canceled) return;
 	await os.apiWithDialog('users/lists/create', { name: name });

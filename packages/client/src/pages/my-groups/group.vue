@@ -87,6 +87,7 @@ async function renameGroup() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.groupName,
 		default: group.value.name,
+		max: 100,
 	});
 
 	if (canceled) return;

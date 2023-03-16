@@ -1,7 +1,11 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="matxzzsk">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ inline, disabled, focused }">
+	<div class="label" @click="focus">
+		<span v-if="$slots.label" class="label-text"><slot name="label"></slot></span>
+		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
+	</div>
+	<div class="input" :class="{ inline, disabled, focused, invalid }">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<input
 			ref="inputEl"
@@ -19,7 +23,7 @@
 			:list="id"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown($event)"
+			@keydown="onKeydown"
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
@@ -34,8 +38,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
+import { length } from 'stringz';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
@@ -49,19 +54,20 @@ const props = defineProps<{
 	pattern?: string;
 	placeholder?: string;
 	autofocus?: boolean;
-	autocomplete?: boolean;
+	autocomplete?: string;
 	spellcheck?: boolean;
-	step?: any;
+	step?: number;
 	datalist?: string[];
 	inline?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
+	max?: number;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: Event): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string | number): void;
@@ -73,8 +79,7 @@ const id = Math.random().toString(); // TODO: uuid?
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
-const filled = computed(() => v.value !== '' && v.value != null);
-const inputEl = ref<HTMLElement>();
+const inputEl = ref<HTMLInputElement>();
 const prefixEl = ref<HTMLElement>();
 const suffixEl = ref<HTMLElement>();
 const height =
@@ -82,12 +87,21 @@ const height =
 	props.large ? 40 :
 	38;
 
-const focus = () => inputEl.value.focus();
-const onInput = (ev: KeyboardEvent) => {
+const textLength = $computed((): number | null => {
+	if (typeof v.value !== 'string') return null;
+	return length(v.value);
+});
+
+const maxTextLength = $computed((): number | null => {
+	return props.max ?? null;
+});
+
+const focus = (): void => inputEl.value?.focus();
+const onInput = (ev: Event): void => {
 	changed.value = true;
 	emit('change', ev);
 };
-const onKeydown = (ev: KeyboardEvent) => {
+const onKeydown = (ev: KeyboardEvent): void => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 
 	emit('keydown', ev);
@@ -97,10 +111,10 @@ const onKeydown = (ev: KeyboardEvent) => {
 	}
 };
 
-const updated = () => {
+const updated = (): void => {
 	changed.value = false;
-	if (type.value === 'number') {
-		emit('update:modelValue', parseFloat(v.value));
+	if (type?.value === 'number') {
+		emit('update:modelValue', parseFloat(v.value as string));
 	} else {
 		emit('update:modelValue', v.value);
 	}
@@ -112,7 +126,9 @@ watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, newValue => {
+watch(v, () => {
+	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
+
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -120,13 +136,12 @@ watch(v, newValue => {
 			updated();
 		}
 	}
-
-	invalid.value = inputEl.value.validity.badInput;
 });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
+	if (!inputEl.value) return;
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {
 			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
@@ -157,9 +172,26 @@ onMounted(() => {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
+		min-height: 1.35em; // line-height
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 8px;
 
 		&:empty {
 			display: none;
+		}
+
+		> .label-text {
+			overflow-wrap: break-word;
+		}
+
+		> .text-count {
+			opacity: 0.7;
+
+			&.over {
+				color: var(--error);
+			}
 		}
 	}
 
