@@ -2,7 +2,7 @@
 <template>
 <div class="matxzzsk">
 	<div class="label" @click="focus">
-		<slot name="label"></slot>
+		<span class="label-text"><slot name="label"></slot></span>
 		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
 	</div>
 	<div class="input" :class="{ inline, disabled, focused, invalid }">
@@ -171,20 +171,33 @@ onMounted(() => {
 <style lang="scss" scoped>
 .matxzzsk {
 	> .label {
-		position: relative;
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
+		min-height: 1.35em; // line-height
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 8px;
 
 		&:empty {
 			display: none;
 		}
 
+		> .label-text {
+			overflow-wrap: break-word;
+
+			&:empty {
+				display: none;
+			}
+		}
+
 		> .text-count {
-			position: absolute;
-			top: 0;
-			right: 0;
 			opacity: 0.7;
+
+			&:empty {
+				display: none;
+			}
 
 			&.over {
 				color: var(--error);
