@@ -246,6 +246,7 @@ export const inputText = (props: {
 	placeholder?: string | null;
 	default?: string | null;
 	allowMfm?: boolean;
+	max?: number;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
 }> => {
@@ -257,6 +258,7 @@ export const inputText = (props: {
 				type: props.type,
 				placeholder: props.placeholder,
 				default: props.default,
+				max: props.max,
 			},
 		}, {
 			done: result => {

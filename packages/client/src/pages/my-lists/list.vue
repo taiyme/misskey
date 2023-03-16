@@ -89,6 +89,7 @@ async function renameList() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
 		default: list.name,
+		max: 100,
 	});
 	if (canceled) return;
 

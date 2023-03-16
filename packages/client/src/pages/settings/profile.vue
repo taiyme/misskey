@@ -1,6 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="_formRoot">
-	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+	<div class="llvierxe" :style="{ backgroundImage: $i?.bannerUrl ? `url(${ $i.bannerUrl })` : undefined }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
 			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
@@ -8,7 +9,7 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
+	<FormInput v-model="profile.name" :max="50" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</FormInput>
 
@@ -17,7 +18,7 @@
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
-	<FormInput v-model="profile.location" manual-save class="_formBlock">
+	<FormInput v-model="profile.location" :max="50" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</FormInput>
@@ -77,14 +78,14 @@ import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const profile = reactive({
-	name: $i.name,
-	description: $i.description,
-	location: $i.location,
-	birthday: $i.birthday,
-	lang: $i.lang,
-	isBot: $i.isBot,
-	isCat: $i.isCat,
-	showTimelineReplies: $i.showTimelineReplies,
+	name: $i?.name ?? '',
+	description: $i?.description ?? '',
+	location: $i?.location ?? '',
+	birthday: $i?.birthday ?? '',
+	lang: $i?.lang ?? '',
+	isBot: !!$i?.isBot,
+	isCat: !!$i?.isCat,
+	showTimelineReplies: !!$i?.showTimelineReplies,
 });
 
 watch(() => profile, () => {
@@ -93,26 +94,26 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = reactive($i.fields.map(field => ({ name: field.name, value: field.value })));
+const fields = reactive($i?.fields.map(field => ({ name: field.name, value: field.value })) ?? []);
 
-function addField() {
+const addField = (): void => {
 	fields.push({
 		name: '',
 		value: '',
 	});
-}
+};
 
 while (fields.length < 4) {
 	addField();
 }
 
-function saveFields() {
+const saveFields = (): void => {
 	os.apiWithDialog('i/update', {
 		fields: fields.filter(field => field.name !== '' && field.value !== ''),
 	});
-}
+};
 
-function save() {
+const save = (): void => {
 	os.apiWithDialog('i/update', {
 		name: profile.name || null,
 		description: profile.description || null,
@@ -123,10 +124,12 @@ function save() {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
-}
+};
 
-function changeAvatar(ev) {
+const changeAvatar = (ev: MouseEvent): void => {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
+		if (!$i) return;
+
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -146,10 +149,12 @@ function changeAvatar(ev) {
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
 	});
-}
+};
 
-function changeBanner(ev) {
+const changeBanner = (ev: MouseEvent): void => {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
+		if (!$i) return;
+
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -169,11 +174,11 @@ function changeBanner(ev) {
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
 	});
-}
+};
 
-const headerActions = $computed(() => []);
+// const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+// const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,

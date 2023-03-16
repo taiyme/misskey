@@ -20,7 +20,7 @@
 			<Mfm v-if="allowMfm" :text="text"/>
 			<span v-else>{{ text }}</span>
 		</div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" :max="input.max" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
@@ -56,6 +56,7 @@ type Input = {
 	type: HTMLInputElement['type'];
 	placeholder?: string | null;
 	default: any | null;
+	max?: number;
 };
 
 type Select = {

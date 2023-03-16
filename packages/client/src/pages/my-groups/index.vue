@@ -103,6 +103,7 @@ definePageMetadata(
 async function create() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.groupName,
+		max: 100,
 	});
 
 	if (canceled) return;
