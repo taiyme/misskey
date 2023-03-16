@@ -3,11 +3,11 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="_formRoot">
-			<MkInput v-model="name" class="_formBlock">
+			<MkInput v-model="name" :max="128" class="_formBlock">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description" class="_formBlock">
+			<MkTextarea v-model="description" :max="2048" class="_formBlock">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 

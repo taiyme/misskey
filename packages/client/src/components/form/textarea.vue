@@ -1,7 +1,11 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="adhpbeos">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ disabled, focused, tall, pre }">
+	<div class="label" @click="focus">
+		<slot name="label"></slot>
+		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
+	</div>
+	<div class="input" :class="{ disabled, focused, invalid, tall, pre }">
 		<textarea
 			ref="inputEl"
 			v-model="v"
@@ -16,7 +20,7 @@
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown($event)"
+			@keydown="onKeydown"
 			@input="onInput"
 		></textarea>
 	</div>
@@ -26,165 +30,125 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+<script lang="ts" setup>
+import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
+import { length } from 'stringz';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const props = defineProps<{
+	modelValue: string;
+	type?: string;
+	required?: boolean;
+	readonly?: boolean;
+	disabled?: boolean;
+	pattern?: string;
+	placeholder?: string;
+	autofocus?: boolean;
+	autocomplete?: string;
+	spellcheck?: boolean;
+	code?: boolean;
+	tall?: boolean;
+	pre?: boolean;
+	debounce?: boolean;
+	manualSave?: boolean;
+	max?: number;
+}>();
 
-	props: {
-		modelValue: {
-			required: true,
-		},
-		type: {
-			type: String,
-			required: false,
-		},
-		required: {
-			type: Boolean,
-			required: false,
-		},
-		readonly: {
-			type: Boolean,
-			required: false,
-		},
-		disabled: {
-			type: Boolean,
-			required: false,
-		},
-		pattern: {
-			type: String,
-			required: false,
-		},
-		placeholder: {
-			type: String,
-			required: false,
-		},
-		autofocus: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		autocomplete: {
-			required: false,
-		},
-		spellcheck: {
-			required: false,
-		},
-		code: {
-			type: Boolean,
-			required: false,
-		},
-		tall: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		pre: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		debounce: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		manualSave: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'change', _ev: Event): void;
+	(ev: 'keydown', _ev: KeyboardEvent): void;
+	(ev: 'enter'): void;
+	(ev: 'update:modelValue', value: string | number): void;
+}>();
 
-	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
+const { modelValue, autofocus } = toRefs(props);
+const v = ref(modelValue.value);
+const focused = ref(false);
+const changed = ref(false);
+const invalid = ref(false);
+const inputEl = ref<HTMLTextAreaElement>();
 
-	setup(props, context) {
-		const { modelValue, autofocus } = toRefs(props);
-		const v = ref(modelValue.value);
-		const focused = ref(false);
-		const changed = ref(false);
-		const invalid = ref(false);
-		const filled = computed(() => v.value !== '' && v.value != null);
-		const inputEl = ref(null);
+const textLength = $computed((): number | null => {
+	if (props.type !== 'text') return null;
+	if (typeof v.value !== 'string') return null;
+	return length(v.value);
+});
 
-		const focus = () => inputEl.value.focus();
-		const onInput = (ev) => {
-			changed.value = true;
-			context.emit('change', ev);
-		};
-		const onKeydown = (ev: KeyboardEvent) => {
-			if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+const maxTextLength = $computed((): number | null => {
+	if (props.type !== 'text') return null;
+	return props.max ?? null;
+});
 
-			context.emit('keydown', ev);
+const focus = (): void => inputEl.value?.focus();
+const onInput = (ev: Event): void => {
+	changed.value = true;
+	emit('change', ev);
+};
+const onKeydown = (ev: KeyboardEvent): void => {
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 
-			if (ev.code === 'Enter') {
-				context.emit('enter');
-			}
-		};
+	emit('keydown', ev);
 
-		const updated = () => {
-			changed.value = false;
-			context.emit('update:modelValue', v.value);
-		};
+	if (ev.code === 'Enter') {
+		emit('enter');
+	}
+};
 
-		const debouncedUpdated = debounce(1000, updated);
+const updated = (): void => {
+	changed.value = false;
+	emit('update:modelValue', v.value);
+};
 
-		watch(modelValue, newValue => {
-			v.value = newValue;
-		});
+const debouncedUpdated = debounce(1000, updated);
 
-		watch(v, newValue => {
-			if (!props.manualSave) {
-				if (props.debounce) {
-					debouncedUpdated();
-				} else {
-					updated();
-				}
-			}
+watch(modelValue, newValue => {
+	v.value = newValue;
+});
 
-			invalid.value = inputEl.value.validity.badInput;
-		});
+watch(v, () => {
+	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
 
-		onMounted(() => {
-			nextTick(() => {
-				if (autofocus.value) {
-					focus();
-				}
-			});
-		});
+	if (!props.manualSave) {
+		if (props.debounce) {
+			debouncedUpdated();
+		} else {
+			updated();
+		}
+	}
+});
 
-		return {
-			v,
-			focused,
-			invalid,
-			changed,
-			filled,
-			inputEl,
-			focus,
-			onInput,
-			onKeydown,
-			updated,
-			i18n,
-		};
-	},
+onMounted(() => {
+	nextTick(() => {
+		if (autofocus.value) {
+			focus();
+		}
+	});
 });
 </script>
 
 <style lang="scss" scoped>
 .adhpbeos {
 	> .label {
+		position: relative;
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
 
 		&:empty {
 			display: none;
+		}
+
+		> .text-count {
+			position: absolute;
+			top: 0;
+			right: 0;
+			opacity: 0.7;
+
+			&.over {
+				color: var(--error);
+			}
 		}
 	}
 

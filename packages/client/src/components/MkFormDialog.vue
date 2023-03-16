@@ -21,11 +21,11 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormInput>
-				<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text" class="_formBlock">
+				<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" :max="form[item].max" type="text" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormInput>
-				<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" class="_formBlock">
+				<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :max="form[item].max" class="_formBlock">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</FormTextarea>

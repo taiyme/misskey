@@ -10,7 +10,7 @@
 	</template>
 	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
-			<MkTextarea v-model="comment">
+			<MkTextarea v-model="comment" :max="2048">
 				<template #label>{{ i18n.ts.details }}</template>
 				<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
 			</MkTextarea>
