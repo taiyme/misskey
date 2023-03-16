@@ -9,7 +9,7 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
+	<FormInput v-model="profile.name" :max="50" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</FormInput>
 
