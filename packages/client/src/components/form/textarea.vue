@@ -71,13 +71,13 @@ const invalid = ref(false);
 const inputEl = ref<HTMLTextAreaElement>();
 
 const textLength = $computed((): number | null => {
-	if (props.type !== 'text') return null;
+	if (props.type && props.type !== 'text') return null;
 	if (typeof v.value !== 'string') return null;
 	return length(v.value);
 });
 
 const maxTextLength = $computed((): number | null => {
-	if (props.type !== 'text') return null;
+	if (props.type && props.type !== 'text') return null;
 	return props.max ?? null;
 });
 
