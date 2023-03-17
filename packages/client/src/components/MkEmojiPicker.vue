@@ -84,7 +84,7 @@
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import { CustomEmoji } from 'misskey-js/built/entities';
 import XSection from '@/components/MkEmojiPicker.section.vue';
 import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
@@ -127,7 +127,7 @@ const height = computed(() => props.asReactionPicker ? reactionPickerHeight.valu
 const customEmojiCategories = emojiCategories;
 const customEmojis = instance.emojis ?? [];
 const q = ref<string>('');
-const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
+const searchResultCustom = ref<CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
 
@@ -142,10 +142,10 @@ watch(q, () => {
 
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
-	const searchCustom = (): Set<Misskey.entities.CustomEmoji> => {
+	const searchCustom = (): Set<CustomEmoji> => {
 		const max = 8;
 		const emojis = customEmojis;
-		const matches = new Set<Misskey.entities.CustomEmoji>();
+		const matches = new Set<CustomEmoji>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);
 		if (exactMatch) matches.add(exactMatch);
@@ -285,7 +285,7 @@ const reset = (): void => {
 	q.value = '';
 };
 
-const getKey = (emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string => {
+const getKey = (emoji: string | CustomEmoji | UnicodeEmojiDef): string => {
 	if (typeof emoji === 'string') return emoji;
 	return 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 };
@@ -299,7 +299,7 @@ const computeButtonTitle = (ev: MouseEvent): void => {
 	el.title = emoji.startsWith(':') ? emoji : getEmojiName(emoji) ?? emoji;
 };
 
-const chosen = (emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef, ev?: MouseEvent): void => {
+const chosen = (emoji: string | CustomEmoji | UnicodeEmojiDef, ev?: MouseEvent): void => {
 	const el = ev && (ev.currentTarget ?? ev.target);
 	if (el instanceof HTMLElement) {
 		const rect = el.getBoundingClientRect();
@@ -379,62 +379,60 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 
+	width: calc((var(--mkep-size) * var(--mkep-width)) + #{$pad * 2});
+	height: calc((var(--mkep-size) * var(--mkep-height)) + #{$pad * 2});
+
 	&.s1 {
-		--eachSize: 40px;
+		--mkep-size: 40px;
 	}
 
 	&.s2 {
-		--eachSize: 45px;
+		--mkep-size: 45px;
 	}
 
 	&.s3 {
-		--eachSize: 50px;
+		--mkep-size: 50px;
 	}
 
 	&.w1 {
-		width: calc((var(--eachSize) * 5) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr;
+		--mkep-width: 5;
 	}
 
 	&.w2 {
-		width: calc((var(--eachSize) * 6) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		--mkep-width: 6;
 	}
 
 	&.w3 {
-		width: calc((var(--eachSize) * 7) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--mkep-width: 7;
 	}
 
 	&.w4 {
-		width: calc((var(--eachSize) * 8) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--mkep-width: 8;
 	}
 
 	&.w5 {
-		width: calc((var(--eachSize) * 9) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--mkep-width: 9;
 	}
 
 	&.h1 {
-		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
+		--mkep-height: 4;
 	}
 
 	&.h2 {
-		height: calc((var(--eachSize) * 6) + (#{$pad} * 2));
+		--mkep-height: 6;
 	}
 
 	&.h3 {
-		height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+		--mkep-height: 8;
 	}
 
 	&.h4 {
-		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
+		--mkep-height: 10;
 	}
 
 	&.asDrawer {
 		padding: 0 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
-		width: 100% !important;
+		width: 100%;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
@@ -450,7 +448,7 @@ defineExpose({
 
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(var(--mkep-width), 1fr);
 					font-size: 30px;
 
 					> .item {
@@ -465,14 +463,14 @@ defineExpose({
 	}
 
 	&.asWindow {
-		width: 100% !important;
-		height: 100% !important;
+		width: 100%;
+		height: 100%;
 
 		> .emojis {
 			::v-deep(section) {
 				> .body {
 					display: grid;
-					grid-template-columns: repeat(auto-fill, minmax(var(--eachSize), 1fr));
+					grid-template-columns: repeat(auto-fill, minmax(var(--mkep-size), 1fr));
 					font-size: 30px;
 
 					> .item {
@@ -556,8 +554,8 @@ defineExpose({
 				> .item {
 					position: relative;
 					padding: 0;
-					width: var(--eachSize);
-					height: var(--eachSize);
+					width: var(--mkep-size);
+					height: var(--mkep-size);
 					contain: strict;
 					border-radius: 4px;
 					font-size: 24px;
