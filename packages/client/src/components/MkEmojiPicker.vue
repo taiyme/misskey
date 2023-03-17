@@ -97,6 +97,7 @@ const props = withDefaults(defineProps<{
 	maxHeight?: number;
 	asDrawer?: boolean;
 }>(), {
+	maxHeight: undefined,
 	showPinned: true,
 });
 
@@ -137,19 +138,19 @@ watch(q, () => {
 
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
-	const searchCustom = () => {
+	const searchCustom = (): Set<Misskey.entities.CustomEmoji> => {
 		const max = 8;
-		const emojis = customEmojis;
+		const customEmojis_ = customEmojis;
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
-		const exactMatch = emojis.find(emoji => emoji.name === newQ);
+		const exactMatch = customEmojis_.find(emoji => emoji.name === newQ);
 		if (exactMatch) matches.add(exactMatch);
 
 		if (newQ.includes(' ')) { // AND検索
 			const keywords = newQ.split(' ');
 
 			// 名前にキーワードが含まれている
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -158,14 +159,14 @@ watch(q, () => {
 			if (matches.size >= max) return matches;
 
 			// 名前またはエイリアスにキーワードが含まれている
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
 			}
 		} else {
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -173,7 +174,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -181,7 +182,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -189,7 +190,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of customEmojis_) {
 				if (emoji.aliases.some(alias => alias.includes(newQ))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -200,19 +201,19 @@ watch(q, () => {
 		return matches;
 	};
 
-	const searchUnicode = () => {
+	const searchUnicode = (): Set<UnicodeEmojiDef> => {
 		const max = 8;
-		const emojis = emojilist;
+		const unicodeEmojis = emojilist;
 		const matches = new Set<UnicodeEmojiDef>();
 
-		const exactMatch = emojis.find(emoji => emoji.name === newQ);
+		const exactMatch = unicodeEmojis.find(emoji => emoji.name === newQ);
 		if (exactMatch) matches.add(exactMatch);
 
 		if (newQ.includes(' ')) { // AND検索
 			const keywords = newQ.split(' ');
 
 			// 名前にキーワードが含まれている
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -221,14 +222,14 @@ watch(q, () => {
 			if (matches.size >= max) return matches;
 
 			// 名前またはエイリアスにキーワードが含まれている
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.keywords.some(alias => alias.includes(keyword)))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
 			}
 		} else {
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -236,7 +237,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (emoji.keywords.some(keyword => keyword.startsWith(newQ))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -244,7 +245,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -252,7 +253,7 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			for (const emoji of emojis) {
+			for (const emoji of unicodeEmojis) {
 				if (emoji.keywords.some(keyword => keyword.includes(newQ))) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
@@ -267,26 +268,27 @@ watch(q, () => {
 	searchResultUnicode.value = Array.from(searchUnicode());
 });
 
-function focus() {
+const focus = (): void => {
 	if (!['smartphone', 'tablet'].includes(deviceKind) && !isTouchUsing) {
 		search.value?.focus({
 			preventScroll: true,
 		});
 	}
-}
+};
 
-function reset() {
+const reset = (): void => {
 	if (emojis.value) emojis.value.scrollTop = 0;
 	q.value = '';
-}
+};
 
-function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string {
-	return typeof emoji === 'string' ? emoji : (emoji.char || `:${emoji.name}:`);
-}
+const getKey = (emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string => {
+	if (typeof emoji === 'string') return emoji;
+	return 'char' in emoji ? emoji.char : `:${emoji.name}:`;
+};
 
-function chosen(emoji: any, ev?: MouseEvent) {
-	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
-	if (el) {
+const chosen = (emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef, ev?: MouseEvent): void => {
+	const el = ev && (ev.currentTarget ?? ev.target);
+	if (el instanceof HTMLElement) {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
@@ -299,29 +301,30 @@ function chosen(emoji: any, ev?: MouseEvent) {
 	// 最近使った絵文字更新
 	if (!pinned.value.includes(key)) {
 		let recents = defaultStore.state.recentlyUsedEmojis;
-		recents = recents.filter((emoji: any) => emoji !== key);
+		recents = recents.filter((recentEmoji) => recentEmoji !== key);
 		recents.unshift(key);
 		defaultStore.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
-}
+};
 
-function paste(event: ClipboardEvent) {
-	const paste = (event.clipboardData || window.clipboardData).getData('text');
-	if (done(paste)) {
+const paste = (event: ClipboardEvent): void => {
+	if (!event.clipboardData) return;
+	const paste_ = event.clipboardData.getData('text');
+	if (done(paste_)) {
 		event.preventDefault();
 	}
-}
+};
 
-function onEnter(ev: KeyboardEvent) {
+const onEnter = (ev: KeyboardEvent): void => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 	done();
-}
+};
 
-function done(query?: any): boolean | void {
-	if (query == null) query = q.value;
+const done = (query_?: unknown): boolean | void => {
+	const query = query_ ?? q.value;
 	if (query == null || typeof query !== 'string') return;
 
-	const q2 = query.replace(/:/g, '');
+	const q2 = query.startsWith(':') ? query.slice(1, -1) : query;
 	const exactMatchCustom = customEmojis.find(emoji => emoji.name === q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
@@ -340,7 +343,7 @@ function done(query?: any): boolean | void {
 		chosen(searchResultUnicode.value[0]);
 		return true;
 	}
-}
+};
 
 onMounted(() => {
 	focus();
@@ -413,7 +416,11 @@ defineExpose({
 	}
 
 	&.asDrawer {
+		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
 		width: 100% !important;
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
 
 		> .emojis {
 			::v-deep(section) {
