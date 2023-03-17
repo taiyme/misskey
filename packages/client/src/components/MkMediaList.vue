@@ -4,8 +4,8 @@
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="grid-container">
 		<div ref="gallery" :class="['medias', count <= 4 ? 'n' + count : 'nMany']">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="media.id" class="media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" class="media image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="'video:' + media.id" class="media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="'image:' + media.id" class="media image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -23,7 +23,6 @@ import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];

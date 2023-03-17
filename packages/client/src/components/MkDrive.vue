@@ -7,18 +7,18 @@
 				:parent-folder="folder"
 				@move="move"
 				@upload="upload"
-				@removeFile="removeFile"
-				@removeFolder="removeFolder"
+				@remove-file="removeFile"
+				@remove-folder="removeFolder"
 			/>
-			<template v-for="f in hierarchyFolders">
+			<template v-for="f in hierarchyFolders" :key="f.id">
 				<span class="separator"><i class="ti ti-chevron-right"></i></span>
 				<XNavFolder
 					:folder="f"
 					:parent-folder="folder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 				/>
 			</template>
 			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
@@ -48,13 +48,14 @@
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
-					@removeFile="removeFile"
-					@removeFolder="removeFolder"
+					@remove-file="removeFile"
+					@remove-folder="removeFolder"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
+				<div v-for="_ in 16" class="padding"></div>
 				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
@@ -71,7 +72,8 @@
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
+				<div v-for="_ in 16" class="padding"></div>
 				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
@@ -88,7 +90,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
@@ -99,6 +101,7 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { uploadFile, uploads } from '@/scripts/upload';
+import { parseObject } from '@/scripts/tms/parse';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -228,7 +231,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		const file = JSON.parse(driveFile);
+		const file = parseObject<Misskey.entities.DriveFile>(driveFile);
 		if (files.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);
 		os.api('drive/files/update', {
@@ -241,7 +244,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 	if (driveFolder != null && driveFolder !== '') {
-		const droppedFolder = JSON.parse(driveFolder);
+		const droppedFolder = parseObject<Misskey.entities.DriveFolder>(driveFolder);
 
 		// 移動先が自分自身ならreject
 		if (folder.value && droppedFolder.id === folder.value.id) return false;

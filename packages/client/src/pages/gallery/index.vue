@@ -42,16 +42,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, watch } from 'vue';
-import XUserList from '@/components/MkUserList.vue';
+import { watch } from 'vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkInput from '@/components/form/input.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkTab from '@/components/MkTab.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { useRouter } from '@/router';

@@ -46,7 +46,7 @@ importers:
       '@elastic/elasticsearch': 8.6.0
       '@koa/cors': 4.0.0
       '@koa/multer': 3.0.2
-      '@koa/router': 12.0.0
+      '@koa/router': 9.0.1
       '@peertube/http-signature': 1.7.0
       '@redocly/openapi-core': 1.0.0-beta.123
       '@sinonjs/fake-timers': 10.0.2
@@ -217,7 +217,7 @@ importers:
       '@elastic/elasticsearch': 8.6.0
       '@koa/cors': 4.0.0
       '@koa/multer': 3.0.2_multer@1.4.5-lts.1
-      '@koa/router': 12.0.0
+      '@koa/router': 9.0.1
       '@peertube/http-signature': 1.7.0
       '@sinonjs/fake-timers': 10.0.2
       '@swc/cli': 0.1.62_wyduggqpvtv2oy5nc7cgtozgpy
@@ -1587,14 +1587,17 @@ packages:
       - supports-color
     dev: false
 
-  /@koa/router/12.0.0:
-    resolution: {integrity: sha512-cnnxeKHXlt7XARJptflGURdJaO+ITpNkOHmQu7NHmCoRinPbyvFzce/EG/E8Zy81yQ1W9MoSdtklc3nyaDReUw==}
-    engines: {node: '>= 12'}
+  /@koa/router/9.0.1:
+    resolution: {integrity: sha512-OI+OU49CJV4px0WkIMmayBeqVXB/JS1ZMq7UoGlTZt6Y7ijK7kdeQ18+SEHHJPytmtI1y6Hf8XLrpxva3mhv5Q==}
+    engines: {node: '>= 8.0.0'}
     dependencies:
-      http-errors: 2.0.0
+      debug: 4.3.4
+      http-errors: 1.8.1
       koa-compose: 4.1.0
       methods: 1.1.2
       path-to-regexp: 6.2.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@kurkle/color/0.3.2:

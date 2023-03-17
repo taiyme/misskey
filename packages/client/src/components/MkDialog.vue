@@ -20,16 +20,16 @@
 			<Mfm v-if="allowMfm" :text="text"/>
 			<span v-else>{{ text }}</span>
 		</div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" :max="input.max" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
-				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+				<option v-for="item in select.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 			</template>
 			<template v-else>
-				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
-					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
+				<optgroup v-for="groupedItem in select.groupedItems" :key="groupedItem.label" :label="groupedItem.label">
+					<option v-for="item in groupedItem.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 				</optgroup>
 			</template>
 		</MkSelect>
@@ -56,6 +56,7 @@ type Input = {
 	type: HTMLInputElement['type'];
 	placeholder?: string | null;
 	default: any | null;
+	max?: number;
 };
 
 type Select = {

@@ -1,4 +1,4 @@
-import { computed, ref, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
@@ -56,14 +56,6 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/lists',
 	},
-	/*
-	groups: {
-		title: 'groups',
-		icon: 'ti ti-users',
-		show: computed(() => $i != null),
-		to: '/my/groups',
-	},
-	*/
 	antennas: {
 		title: 'antennas',
 		icon: 'ti ti-antenna',

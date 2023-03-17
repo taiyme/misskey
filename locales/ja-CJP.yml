@@ -1369,6 +1369,8 @@ _visibility:
   specifiedDescription: "指定レだユーザーゐみに公开"
   localOnly: "当地ゐみ"
   localOnlyDescription: "刂乇ー卜ユーザーには非公开"
+  disableFederation: "连合なレ"
+  disableFederationDescription: "他亻ソヌタソヌへゐ配信を行いま乜ん"
 
 _postForm:
   replyPlaceholder: "こゐノー卜に返信..."
@@ -1810,3 +1812,9 @@ _deck:
     channel: "于ャソ礻儿"
     mentions: "贵樣宛て"
     direct: "ダ亻レケ卜"
+
+_tms:
+  react: "刂マケツ゚彐ソずゑ"
+  unreact: "刂マケツ゚彐ソを解除"
+  pakuru: "八゜ケゑ"
+  numberquote: "数字引用ずゑ"

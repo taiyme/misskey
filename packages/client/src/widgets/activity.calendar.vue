@@ -1,13 +1,13 @@
 <template>
 <svg viewBox="0 0 21 7">
-	<rect v-for="record in activity" class="day"
+	<rect v-for="record in activity" :key="JSON.stringify(record)" class="day"
 		width="1" height="1"
 		:x="record.x" :y="record.date.weekday"
 		rx="1" ry="1"
 		fill="transparent">
 		<title>{{ record.date.year }}/{{ record.date.month + 1 }}/{{ record.date.day }}</title>
 	</rect>
-	<rect v-for="record in activity" class="day"
+	<rect v-for="record in activity" :key="JSON.stringify(record)" class="day"
 		:width="record.v" :height="record.v"
 		:x="record.x + ((1 - record.v) / 2)" :y="record.date.weekday + ((1 - record.v) / 2)"
 		rx="1" ry="1"

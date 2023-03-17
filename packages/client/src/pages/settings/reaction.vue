@@ -56,7 +56,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import XDraggable from 'vuedraggable';
-import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/MkButton.vue';

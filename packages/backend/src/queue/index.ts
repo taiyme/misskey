@@ -82,7 +82,7 @@ webhookDeliverQueue
 	.on('error', (job: any, err: Error) => webhookLogger.error(`error ${err}`, { job, e: renderError(err) }))
 	.on('stalled', (job) => webhookLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
 
-export function deliver(user: ThinUser, content: unknown, to: string | null) {
+export function deliver(user: ThinUser, content: unknown, to: string | null, isSharedInbox: boolean) {
 	if (content == null) return null;
 	if (to == null) return null;
 
@@ -92,6 +92,7 @@ export function deliver(user: ThinUser, content: unknown, to: string | null) {
 		},
 		content,
 		to,
+		isSharedInbox,
 	};
 
 	return deliverQueue.add(data, {

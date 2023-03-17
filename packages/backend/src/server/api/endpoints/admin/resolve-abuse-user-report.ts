@@ -33,7 +33,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		const actor = await getInstanceActor();
 		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
 
-		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
+		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox, false);
 	}
 
 	await AbuseUserReports.update(report.id, {

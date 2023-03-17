@@ -4,13 +4,13 @@
 		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
-					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-for="button in buttonsLeft" :key="button.title" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
 				</span>
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<span class="right">
-					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-for="button in buttonsRight" :key="button.title" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
 					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
 					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-rectangle"></i></button>
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="button _button" @click="close()"><i class="ti ti-x"></i></button>

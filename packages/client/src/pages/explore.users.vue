@@ -29,8 +29,8 @@
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
-				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
-				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/explore/tags/${tag.tag}`">{{ tag.tag }}</MkA>
+				<MkA v-for="tagLocal in tagsLocal" :key="'local:' + tagLocal.tag" :to="`/explore/tags/${tagLocal.tag}`" class="local">{{ tagLocal.tag }}</MkA>
+				<MkA v-for="tagRemote in tagsRemote" :key="'remote:' + tagRemote.tag" :to="`/explore/tags/${tagRemote.tag}`">{{ tagRemote.tag }}</MkA>
 			</div>
 		</MkFolder>
 
@@ -58,14 +58,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTab from '@/components/MkTab.vue';
-import number from '@/filters/number';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 
 const props = defineProps<{
 	tag?: string;

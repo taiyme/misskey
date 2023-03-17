@@ -32,13 +32,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import MkSwitch from '@/components/ui/switch.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes';
-import * as os from '@/os';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

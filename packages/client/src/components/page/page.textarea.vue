@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import { TextBlock } from '@/scripts/hpml/block';
-import { Hpml } from '@/scripts/hpml/evaluator';
 import { defineComponent, PropType } from 'vue';
 import MkTextarea from '../form/textarea.vue';
+import { TextBlock } from '@/scripts/hpml/block';
+import { Hpml } from '@/scripts/hpml/evaluator';
 
 export default defineComponent({
 	components: {

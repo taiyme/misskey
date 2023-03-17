@@ -30,7 +30,7 @@ import * as misskey from 'misskey-js';
 import XMediaList from '@/components/MkMediaList.vue';
 import XPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -47,13 +47,13 @@ onMounted(() => {
 	}
 });
 
-const tmsIsLongEnabled = defaultStore.state.tmsIsLongEnabled ?? true;
-const tmsIsLongTextElHeight = defaultStore.state.tmsIsLongTextElHeight ?? 500;
+const tmsCollapseNote = tmsStore.state.collapseNote;
+const tmsCollapseNoteHeight = tmsStore.state.collapseNoteHeight;
 const isLong = $computed(() => {
-	return tmsIsLongEnabled && !!(
+	return tmsCollapseNote && !!(
 		props.note.cw == null && 
 		props.note.text != null && (
-			(!!tmsIsLongTextElHeight && (textElHeight >= tmsIsLongTextElHeight))
+			(!!tmsCollapseNoteHeight && (textElHeight >= tmsCollapseNoteHeight))
 		)
 	);
 });

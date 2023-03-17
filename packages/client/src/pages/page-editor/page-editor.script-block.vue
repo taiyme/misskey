@@ -25,15 +25,15 @@
 	</section>
 	<section v-else-if="modelValue.type === 'ref'" class="hpdwcrvs">
 		<select v-model="modelValue.value">
-			<option v-for="v in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
+			<option v-for="(v, i) in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :key="i" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$ts._pages.script.argVariables">
-				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
+				<option v-for="(v, i) in fnSlots" :key="i" :value="v.name">{{ v.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts._pages.script.pageVariables">
-				<option v-for="v in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
+				<option v-for="(v, i) in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$ts._pages.script.enviromentVariables">
-				<option v-for="v in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
+				<option v-for="(v, i) in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
 	</section>

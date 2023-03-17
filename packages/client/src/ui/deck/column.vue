@@ -23,17 +23,18 @@
 			<slot name="action"></slot>
 		</div>
 		<span class="header"><slot name="header"></slot></span>
+		<button v-tooltip="i18n.ts.reload" class="reload _button" @click.stop="reload"><i class="ti ti-reload"></i></button>
 		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body">
+	<div v-show="active" :key="reloadCount" ref="body">
 		<slot></slot>
 	</div>
 </section>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column , deckStore } from './deck-store';
+import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { MenuItem } from '@/types/menu';
@@ -67,6 +68,8 @@ watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'colu
 let draghover = $ref(false);
 let dropready = $ref(false);
 
+let reloadCount = $ref(0);
+
 const isMainColumn = $computed(() => props.column.type === 'main');
 const active = $computed(() => props.column.active !== false);
 watch($$(active), v => emit('change-active-state', v));
@@ -87,6 +90,10 @@ onBeforeUnmount(() => {
 	os.deckGlobalEvents.off('column.dragStart', onOtherDragStart);
 	os.deckGlobalEvents.off('column.dragEnd', onOtherDragEnd);
 });
+
+const reload = (): void => {
+	reloadCount++;
+};
 
 function onOtherDragStart() {
 	dropready = true;
@@ -352,6 +359,7 @@ function onDrop(ev) {
 
 		> .toggleActive,
 		> .action > ::v-deep(*),
+		> .reload,
 		> .menu {
 			z-index: 1;
 			width: var(--deckColumnHeaderHeight);
@@ -377,6 +385,11 @@ function onDrop(ev) {
 
 		> .action:empty {
 			display: none;
+		}
+
+		> .reload {
+			margin-left: auto;
+			margin-right: 0px;
 		}
 
 		> .menu {

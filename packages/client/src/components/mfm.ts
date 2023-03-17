@@ -11,7 +11,6 @@ import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
-import { MFM_TAGS } from '@/scripts/mfm-tags';
 
 export default defineComponent({
 	props: {

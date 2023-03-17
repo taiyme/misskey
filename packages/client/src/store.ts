@@ -1,12 +1,32 @@
 import { markRaw, ref } from 'vue';
+import { Note, UserDetailed } from 'misskey-js/built/entities';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
-export const postFormActions = [];
-export const userActions = [];
-export const noteActions = [];
-export const noteViewInterruptors = [];
-export const notePostInterruptors = [];
+export const postFormActions: {
+	title: string;
+	handler: (
+		form: { text: NonNullable<Note['text']> },
+		update: (key: string, value: NonNullable<Note['text']>) => void,
+	) => void;
+}[] = [];
+export const userActions: {
+	title: string;
+	handler: (
+		user: UserDetailed,
+	) => void;
+}[] = [];
+export const noteActions: {
+	title: string;
+	handler: (
+		note: Note,
+	) => void;
+}[] = [];
+export const noteViewInterruptors: {
+	handler: (note: Note) => unknown;
+}[] = [];
+export const notePostInterruptors: {
+	handler: (note: FIXME) => unknown;
+}[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -29,7 +49,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteVisibility: {
 		where: 'account',
-		default: 'public',
+		default: 'public' as 'public' | 'home' | 'followers' | 'specified',
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
@@ -251,70 +271,20 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	tmsVerticalInstanceTicker: {
-		where: 'device',
-		default: true,
-	},
-	tmsIsLongEnabled: {
-		where: 'device',
-		default: true,
-	},
-	tmsIsLongTextElHeight: {
-		where: 'device',
-		default: 500,
-	},
-	tmsIsLongFilesLength: {
-		where: 'device',
-		default: 5,
-	},
-	tmsIsLongUrlsLength: {
-		where: 'device',
-		default: 4,
-	},
-	tmsIsLongPollLength: {
-		where: 'device',
-		default: 5,
-	},
-	tmsRenoteCollapsedEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsPakuruEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsNumberquoteEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsImanonashiEnabled: {
-		where: 'device',
-		default: false,
-	},
-	tmsImanonashiWords: {
-		where: 'device',
-		default: ['/^いまのなし$/'] as (string | string[])[],
-	},
-	tmsImanonashiConfirmEnabled: {
-		where: 'device',
-		default: true,
-	},
-	tmsImanonashiDeleteEnabled: {
-		where: 'device',
-		default: false,
-	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
 
 const PREFIX = 'miux:';
 
-type Plugin = {
+export type Plugin = {
 	id: string;
 	name: string;
 	active: boolean;
+	config?: Record<string, { default: any }>;
 	configData: Record<string, any>;
 	token: string;
+	version: string;
 	ast: any[];
 };
 

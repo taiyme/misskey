@@ -19,7 +19,6 @@
 import { ref } from 'vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
-import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

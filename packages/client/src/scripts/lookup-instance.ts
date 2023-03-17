@@ -1,4 +1,3 @@
-import { i18n } from '@/i18n';
 import * as os from '@/os';
 
 export async function lookupInstance() {

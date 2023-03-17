@@ -1331,6 +1331,8 @@ _visibility:
   specifiedDescription: "지정한 유저에게만 공개"
   localOnly: "로컬에만"
   localOnlyDescription: "리모트 유저에게 보이지 않기"
+  disableFederation: "연합에 보내지 않기"
+  disableFederationDescription: "다른 서버로 보내지 않습니다"
 _postForm:
   replyPlaceholder: "이 노트에 답글..."
   quotePlaceholder: "이 노트를 인용..."
@@ -1748,3 +1750,7 @@ _deck:
     channel: "채널"
     mentions: "받은 멘션"
     direct: "다이렉트"
+
+_tms:
+  react: "리액션하기"
+  unreact: "리액션 취소"

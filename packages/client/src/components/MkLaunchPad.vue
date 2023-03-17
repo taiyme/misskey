@@ -2,7 +2,7 @@
 <MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="preferedModalType" :anchor="anchor" :transparent-bg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
-			<template v-for="item in items">
+			<template v-for="item in items" :key="item.text">
 				<button v-if="item.action" v-click-anime class="_button" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
@@ -23,11 +23,9 @@
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
-import { instanceName } from '@/config';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { deviceKind } from '@/scripts/device-kind';
-import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
@@ -40,9 +38,13 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'popup' :
-	deviceKind === 'smartphone' ? 'drawer' :
-	'dialog';
+const preferedModalType: 'popup' | 'drawer' | 'dialog' = (
+	(deviceKind === 'desktop' && props.src != null)
+		? 'popup'
+		: deviceKind === 'smartphone'
+			? 'drawer'
+			: 'dialog'
+);
 
 const modal = $ref<InstanceType<typeof MkModal>>();
 

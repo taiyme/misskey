@@ -7,7 +7,7 @@
 		<FormSection v-if="scopes">
 			<template #label>{{ i18n.ts.system }}</template>
 			<div class="_formLinks">
-				<FormLink v-for="scope in scopes" :to="`/registry/keys/system/${scope.join('/')}`" class="_monospace">{{ scope.join('/') }}</FormLink>
+				<FormLink v-for="scope in scopes" :key="scope.join('/')" :to="`/registry/keys/system/${scope.join('/')}`" class="_monospace">{{ scope.join('/') }}</FormLink>
 			</div>
 		</FormSection>
 	</MkSpacer>
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
