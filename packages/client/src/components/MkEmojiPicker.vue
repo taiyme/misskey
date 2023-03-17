@@ -472,7 +472,7 @@ defineExpose({
 			::v-deep(section) {
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(auto-fill, minmax(var(--eachSize), 1fr));
 					font-size: 30px;
 
 					> .item {
