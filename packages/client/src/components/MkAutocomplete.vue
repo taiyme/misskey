@@ -79,7 +79,7 @@ for (const x of lib) {
 emjdb.sort((a, b) => a.name.length - b.name.length);
 
 //#region Construct Emoji DB
-const customEmojis = instance.emojis;
+const customEmojis = instance.emojis ?? [];
 const emojiDefinitions: EmojiDef[] = [];
 
 for (const x of customEmojis) {
