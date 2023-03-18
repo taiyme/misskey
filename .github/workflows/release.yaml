@@ -33,7 +33,6 @@ jobs:
 
       - name: Get latest tag
         id: latest_tag
-        if: github.event_name == 'workflow_dispatch'
         run: |
           git fetch --prune --unshallow
           echo "latest_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
