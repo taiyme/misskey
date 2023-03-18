@@ -43,7 +43,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const version = ${{ steps.latest_tag.outputs.latest_tag }} 
+            const version = "${{ steps.latest_tag.outputs.latest_tag }} "
 
             const isPatch = ${{ github.event.label.name == 'release-patch' }}
             const isMinor = ${{ github.event.label.name == 'release-minor' }}
