@@ -168,7 +168,7 @@ jobs:
       - name: Download files
         uses: actions/download-artifact@v3
         with:
-          path: ${{ github.workspace }}
+          name: version_files
 
       - name: Check change
         id: is_chnage
