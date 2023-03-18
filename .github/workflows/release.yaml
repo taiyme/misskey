@@ -180,7 +180,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
           git add .
-          git commit --author=. -m "update version"
+          git commit --author=. -m "${{ needs.get_new_version.outputs.new_version }}"
           git tag "${{ needs.get_new_version.outputs.new_version }}"
           git push --follow-tags
 
