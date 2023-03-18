@@ -36,7 +36,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           git fetch --prune --unshallow
-          echo "latest_tag=$(git describe --tags --abbrev=0)"
+          echo "latest_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Update version
         uses: actions/github-script@v6
