@@ -3,7 +3,6 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { QueueService } from '@/core/QueueService.js';
-import { bindThis } from '@/decorators.js';
 import { getJobInfo } from './get-job-info.js';
 import { SystemQueueProcessorsService } from './SystemQueueProcessorsService.js';
 import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';
@@ -13,6 +12,7 @@ import { EndedPollNotificationProcessorService } from './processors/EndedPollNot
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { InboxProcessorService } from './processors/InboxProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class QueueProcessorService {
@@ -128,12 +128,6 @@ export class QueueProcessorService {
 		});
 	
 		this.queueService.systemQueue.add('cleanCharts', {
-		}, {
-			repeat: { cron: '0 0 * * *' },
-			removeOnComplete: true,
-		});
-
-		this.queueService.systemQueue.add('aggregateRetention', {
 		}, {
 			repeat: { cron: '0 0 * * *' },
 			removeOnComplete: true,
