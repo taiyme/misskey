@@ -40,7 +40,7 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 				reply: undefined,
 				renote: undefined,
 				user: type === 'notification' ? undefined as any : body.note.user,
-			}
+			},
 		} : {}),
 	};
 
@@ -97,16 +97,6 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
-			// Continue if sendReadMessage is false
-			if ([
-				'readNotifications',
-				'readAllNotifications',
-				'readAllMessagingMessages',
-				'readAllMessagingMessagesOfARoom',
-				'readAntenna',
-				'readAllAntennas',
-			].includes(type) && !subscription.sendReadMessage) continue;
-
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {

@@ -52,6 +52,7 @@
 	<div class="_footer navigation">
 		<div class="step">
 			<button class="arrow _button" :disabled="tutorial === 0" @click="tutorial--">
+				<<<<<<< HEAD
 				<i class="ti ti-chevron-left"></i>
 			</button>
 			<span>{{ tutorial + 1 }} / 7</span>
@@ -61,7 +62,18 @@
 		</div>
 		<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 		<MkButton v-else class="ok" primary @click="tutorial++"><i class="ti ti-check"></i> {{ i18n.ts.next }}</MkButton>
+		=======
+		<i class="fas fa-chevron-left"></i>
+		</button>
+		<span>{{ tutorial + 1 }} / 7</span>
+		<button class="arrow _button" :disabled="tutorial === 6" @click="tutorial++">
+			<i class="fas fa-chevron-right"></i>
+		</button>
 	</div>
+	<MkButton v-if="tutorial === 6" class="ok" primary @click="tutorial = -1"><i class="fas fa-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+	<MkButton v-else class="ok" primary @click="tutorial++"><i class="fas fa-check"></i> {{ i18n.ts.next }}</MkButton>
+	>>>>>>> parent of 4ecc42744 (enhance: Implement the  toggle to (or not to) close push notifications when notifications or messages are read (#9219))
+</div>
 </div>
 </template>
 

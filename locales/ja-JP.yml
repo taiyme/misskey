@@ -13,7 +13,6 @@ fetchingAsApObject: "連合に照会中"
 ok: "OK"
 gotIt: "わかった"
 cancel: "キャンセル"
-noThankYou: "やめておく"
 enterUsername: "ユーザー名を入力"
 renotedBy: "{user}がRenote"
 noNotes: "ノートはありません"
@@ -1247,9 +1246,6 @@ _tutorial:
   step7_1: "これで、Misskeyの基本的な使い方の説明は終わりました。お疲れ様でした。"
   step7_2: "もっとMisskeyについて知りたいときは、{help}を見てみてください。"
   step7_3: "では、Misskeyをお楽しみください🚀"
-  step8_1: "最後に、プッシュ通知を有効化してみませんか？"
-  step8_2: "プッシュ通知を受け取ることで、Misskeyを開いていない時にもリアクションやフォロー、メンションなどに気づけます。"
-  step8_3: "通知の設定は後から変更できます。"
 
 _2fa:
   alreadyRegistered: "既に設定は完了しています。"
