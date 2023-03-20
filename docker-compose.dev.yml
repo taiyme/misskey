@@ -10,6 +10,7 @@ services:
       - internal_network
       - external_network
     tty: true
+    init: true
     volumes:
       - .:/workspaces:cached
       - ./.config:/misskey/.config:ro

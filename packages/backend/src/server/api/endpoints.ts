@@ -8,6 +8,8 @@ import * as ep___admin_ad_create from './endpoints/admin/ad/create.js';
 import * as ep___admin_ad_delete from './endpoints/admin/ad/delete.js';
 import * as ep___admin_ad_list from './endpoints/admin/ad/list.js';
 import * as ep___admin_ad_update from './endpoints/admin/ad/update.js';
+import * as ep___admin_admin_add from './endpoints/admin/admin/add.js';
+import * as ep___admin_admin_remove from './endpoints/admin/admin/remove.js';
 import * as ep___admin_announcements_create from './endpoints/admin/announcements/create.js';
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
@@ -39,8 +41,6 @@ import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
 import * as ep___admin_invite from './endpoints/admin/invite.js';
 import * as ep___admin_moderators_add from './endpoints/admin/moderators/add.js';
 import * as ep___admin_moderators_remove from './endpoints/admin/moderators/remove.js';
-import * as ep___admin_admin_add from './endpoints/admin/admin/add.js';
-import * as ep___admin_admin_remove from './endpoints/admin/admin/remove.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -324,6 +324,8 @@ const eps = [
 	['admin/ad/delete', ep___admin_ad_delete],
 	['admin/ad/list', ep___admin_ad_list],
 	['admin/ad/update', ep___admin_ad_update],
+	['admin/admin/add', ep___admin_admin_add],
+	['admin/admin/remove', ep___admin_admin_remove],
 	['admin/announcements/create', ep___admin_announcements_create],
 	['admin/announcements/delete', ep___admin_announcements_delete],
 	['admin/announcements/list', ep___admin_announcements_list],
@@ -355,8 +357,6 @@ const eps = [
 	['admin/invite', ep___admin_invite],
 	['admin/moderators/add', ep___admin_moderators_add],
 	['admin/moderators/remove', ep___admin_moderators_remove],
-	['admin/admin/add', ep___admin_admin_add],
-	['admin/admin/remove', ep___admin_admin_remove],
 	['admin/promo/create', ep___admin_promo_create],
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],
