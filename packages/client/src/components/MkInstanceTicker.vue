@@ -131,6 +131,7 @@ const tickerColor = {
 	&%BottomBase {
 		pointer-events: none;
 		position: absolute;
+		z-index: -1;
 		inset: 0;
 		padding: 6px;
 		display: flex;
