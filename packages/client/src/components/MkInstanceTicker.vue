@@ -1,5 +1,5 @@
 <template>
-<div class="hpaizdrt" :class="position" :style="tickerColor">
+<div class="mk-instance-ticker" :class="position" :style="tickerColor">
 	<img v-if="instance.faviconUrl" class="icon" :src="instance.faviconUrl"/>
 	<span class="name">{{ instance.name }}</span>
 </div>
@@ -59,7 +59,7 @@ const tickerColor = {
 </script>
 
 <style lang="scss" scoped>
-.hpaizdrt {
+.mk-instance-ticker {
 	background: var(--ticker-bg, #777777);
 	color: var(--ticker-fg, #ffffff);
 	overflow: hidden;
@@ -91,9 +91,10 @@ const tickerColor = {
 		}
 	}
 
-	&%EdgeBase {
+	&.leftedge {
 		position: absolute;
 		top: 0;
+		left: 0;
 		display: grid;
 		gap: 4px;
 		grid-template-rows: auto 1fr;
@@ -103,7 +104,6 @@ const tickerColor = {
 		> .icon {
 			display: block;
 			width: 100%;
-			aspect-ratio: 1 / 1;
 		}
 
 		> .name {
@@ -118,17 +118,14 @@ const tickerColor = {
 		}
 	}
 
-	&.leftedge {
-		@extend %EdgeBase;
-		left: 0;
-	}
-
 	&.rightedge {
-		@extend %EdgeBase;
+		@extend .leftedge;
+		left: auto;
 		right: 0;
 	}
 
-	&%BottomBase {
+	&.bottomright {
+		--ticker-bg-deg: 135deg;
 		pointer-events: none;
 		position: absolute;
 		z-index: -1;
@@ -138,6 +135,16 @@ const tickerColor = {
 		gap: 4px;
 		flex-direction: column;
 		justify-content: flex-end;
+		align-items: flex-end;
+		background: linear-gradient(
+			var(--ticker-bg-deg),
+			rgba(var(--ticker-bg-rgb), 0.04),
+			rgba(var(--ticker-bg-rgb), 0.19) 4em,
+			rgba(0, 0, 0, 0) 4em,
+			rgba(0, 0, 0, 0) calc(100% - 4em),
+			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 4em),
+			rgba(var(--ticker-bg-rgb), 0.04) 100%
+    );
 		color: #fff;
 		text-shadow: /* 0.866 ≈ sin(60deg) */
 			1px 0 1px #000,
@@ -165,35 +172,14 @@ const tickerColor = {
 			opacity: 0.7;
 			white-space: nowrap;
 			overflow: visible;
-		}
-	}
-
-	&.bottomright {
-		@extend %BottomBase;
-		align-items: flex-end;
-		background: linear-gradient(
-			125deg,
-			rgba(0, 0, 0, 0),
-			rgba(0, 0, 0, 0) calc(100% - 5em),
-			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 5em),
-			rgba(var(--ticker-bg-rgb), 0.04) 100%
-		);
-
-		> .name {
 			text-align: end;
 		}
 	}
 
 	&.bottomleft {
-		@extend %BottomBase;
+		@extend .bottomright;
+		--ticker-bg-deg: -135deg;
 		align-items: flex-start;
-		background: linear-gradient(
-			-125deg,
-			rgba(0, 0, 0, 0),
-			rgba(0, 0, 0, 0) calc(100% - 5em),
-			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 5em),
-			rgba(var(--ticker-bg-rgb), 0.04) 100%
-		);
 
 		> .name {
 			text-align: start;
