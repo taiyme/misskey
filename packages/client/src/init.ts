@@ -1,6 +1,8 @@
 /**
  * Client entry point
  */
+// https://vitejs.dev/config/build-options.html#build-modulepreload
+import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 
@@ -105,16 +107,6 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		else location.reload();
 	});
 
-	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	// TODO: いつの日にか消したい
-	const vh = window.innerHeight * 0.01;
-	document.documentElement.style.setProperty('--vh', `${vh}px`);
-	window.addEventListener('resize', () => {
-		const vh = window.innerHeight * 0.01;
-		document.documentElement.style.setProperty('--vh', `${vh}px`);
-	});
-	//#endregion
-
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
 		const viewport = document.getElementsByName('viewport').item(0);
@@ -159,7 +151,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		}
 
 		// 連携ログインの場合用にCookieを参照する
-		const i = (document.cookie.match(/igi=(\w+)/) || [null, null])[1];
+		const i = (document.cookie.match(/igi=(\w+)/) ?? [null, null])[1];
 
 		if (i != null && i !== 'null') {
 			if (_DEV_) {

@@ -109,11 +109,11 @@ In addition, it will also automatically start the Misskey server process.
 ### Run test
 Create a config file.
 ```
-cp test/test.yml .config/
+cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker-compose -f test/docker-compose.yml up
+docker-compose -f packages/backend/test/docker-compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 
@@ -124,7 +124,7 @@ pnpm run test
 
 #### Run specify test
 ```
-npx cross-env TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT="./test/tsconfig.json" npx mocha test/foo.ts --require ts-node/register
+yarn jest -- foo.ts
 ```
 
 ### e2e tests
@@ -257,7 +257,7 @@ MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`�
 ### Migration作成方法
 packages/backendで:
 ```sh
-npx typeorm migration:generate -d ormconfig.js -o <migration name>
+yarn dlx typeorm migration:generate -d ormconfig.js -o <migration name>
 ```
 
 - 生成後、ファイルをmigration下に移してください
