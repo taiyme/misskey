@@ -3,6 +3,7 @@
 	ref="dialog"
 	:width="400"
 	:height="450"
+	@click="dialog?.close()"
 	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
