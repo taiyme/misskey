@@ -1,6 +1,6 @@
 <template>
 <button
-	v-if="!link"
+	v-if="!(link && to)"
 	ref="el"
 	class="bghgjjyj _button"
 	:class="{ inline, primary, gradate, danger, rounded, full, small }"
@@ -32,22 +32,19 @@
 import { nextTick, onMounted } from 'vue';
 
 const props = defineProps<{
-	inline?: boolean;
+	type?: 'button' | 'submit' | 'reset';
 	primary?: boolean;
 	gradate?: boolean;
-	danger?: boolean;
 	rounded?: boolean;
+	inline?: boolean;
+	link?: boolean;
+	to?: string;
+	autofocus?: boolean;
+	wait?: boolean;
+	danger?: boolean;
 	full?: boolean;
 	small?: boolean;
-	wait?: boolean;
-	autofocus?: boolean;
-} & ({
-	link?: false;
-	type?: 'button' | 'submit' | 'reset';
-} | {
-	link: true;
-	to: string;
-})>();
+}>();
 
 const emit = defineEmits<{
 	(ev: 'click', payload: MouseEvent): void;
