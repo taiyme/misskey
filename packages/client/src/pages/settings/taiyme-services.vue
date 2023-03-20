@@ -63,10 +63,15 @@
 	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
 	<FormSection>
-		<FormSwitch v-model="tmsVerticalInstanceTicker" class="_formBlock">
-			ノートのインスタンス情報を左端に表示
-			<template #caption>タイムライン上のインスタンス情報を左端に表示します。</template>
-		</FormSwitch>
+		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock">
+			<template #label>ノートのインスタンス情報の表示位置</template>
+			<option value="normal">通常</option>
+			<option value="leftedge">←左端</option>
+			<option value="rightedge">右端→</option>
+			<option value="bottomleft">↙左下</option>
+			<option value="bottomright">右下↘</option>
+			<template #caption>タイムライン上のインスタンス情報を指定した位置に表示します。</template>
+		</FormSelect>
 
 		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
 			リアクションメニューを有効にする
@@ -164,6 +169,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import FormLink from '@/components/form/link.vue';
+import FormSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormTextarea from '@/components/form/textarea.vue';
@@ -180,6 +186,7 @@ import { version } from '@/config';
 import { tmsStore } from '@/tms/store';
 import { renderWords, parseWords, checkWords } from '@/scripts/tms/words';
 
+// #region person
 type Contributor = {
 	name: string;
 	acct: string;
@@ -223,11 +230,18 @@ const patrons: string[] = [
 	'xyzzy',
 	'ふれすと',
 ];
+// #endregion
 
+// types
+type TmsStore = typeof tmsStore.state;
+type ChangedKeys = keyof TmsStore;
+
+// flag
 let tab = $ref('overview');
 let changed = $ref(false);
 
-const tmsVerticalInstanceTicker = $ref(tmsStore.state.verticalInstanceTicker);
+// #region v-model
+const tmsInstanceTickerPosition = $ref(tmsStore.state.instanceTickerPosition);
 const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
 const tmsCollapseNote = $ref(tmsStore.state.collapseNote);
 const tmsCollapseNoteHeight = $ref(tmsStore.state.collapseNoteHeight);
@@ -241,29 +255,55 @@ const tmsUseImanonashi = $ref(tmsStore.state.useImanonashi);
 const tmsImanonashiWords = $ref(renderWords(tmsStore.state.imanonashiWords));
 const tmsImanonashiConfirm = $ref(tmsStore.state.imanonashiConfirm);
 const tmsImanonashiItself = $ref(tmsStore.state.imanonashiItself);
+// #endregion
 
-watch(
-	[
-		$$(tmsVerticalInstanceTicker),
-		$$(tmsUseReactionMenu),
-		$$(tmsCollapseNote),
-		$$(tmsCollapseNoteHeight),
-		$$(tmsCollapseNoteFile),
-		$$(tmsCollapseNoteUrl),
-		$$(tmsCollapseNotePoll),
-		$$(tmsCollapseRenote),
-		$$(tmsUsePakuru),
-		$$(tmsUseNumberquote),
-		$$(tmsUseImanonashi),
-		$$(tmsImanonashiWords),
-		$$(tmsImanonashiConfirm),
-		$$(tmsImanonashiItself),
-	],
-	() => {
-		changed = true;
-	},
-);
+// #region map
+const tmsMap = new Map<ChangedKeys, () => TmsStore[ChangedKeys]>();
+tmsMap.set('instanceTickerPosition', () => tmsInstanceTickerPosition);
+tmsMap.set('useReactionMenu', () => tmsUseReactionMenu);
+tmsMap.set('collapseNote', () => tmsCollapseNote);
+tmsMap.set('collapseNoteHeight', () => tmsCollapseNoteHeight);
+tmsMap.set('collapseNoteFile', () => tmsCollapseNoteFile);
+tmsMap.set('collapseNoteUrl', () => tmsCollapseNoteUrl);
+tmsMap.set('collapseNotePoll', () => tmsCollapseNotePoll);
+tmsMap.set('collapseRenote', () => tmsCollapseRenote);
+tmsMap.set('usePakuru', () => tmsUsePakuru);
+tmsMap.set('useNumberquote', () => tmsUseNumberquote);
+tmsMap.set('useImanonashi', () => tmsUseImanonashi);
+tmsMap.set('imanonashiWords', () => parseWords(tmsImanonashiWords));
+tmsMap.set('imanonashiConfirm', () => tmsImanonashiConfirm);
+tmsMap.set('imanonashiItself', () => tmsImanonashiItself);
+// #endregion
 
+// #region change
+const changedKeys: Set<ChangedKeys> = new Set();
+watch(changedKeys, newSet => changed = !!newSet.size);
+
+const change = (key: ChangedKeys) => (newValue: unknown, oldValue: unknown): void => {
+	if (newValue === oldValue) {
+		changedKeys.delete(key);
+	} else {
+		changedKeys.add(key);
+	}
+};
+
+watch($$(tmsInstanceTickerPosition), change('instanceTickerPosition'));
+watch($$(tmsUseReactionMenu), change('useReactionMenu'));
+watch($$(tmsCollapseNote), change('collapseNote'));
+watch($$(tmsCollapseNoteHeight), change('collapseNoteHeight'));
+watch($$(tmsCollapseNoteFile), change('collapseNoteFile'));
+watch($$(tmsCollapseNoteUrl), change('collapseNoteUrl'));
+watch($$(tmsCollapseNotePoll), change('collapseNotePoll'));
+watch($$(tmsCollapseRenote), change('collapseRenote'));
+watch($$(tmsUsePakuru), change('usePakuru'));
+watch($$(tmsUseNumberquote), change('useNumberquote'));
+watch($$(tmsUseImanonashi), change('useImanonashi'));
+watch($$(tmsImanonashiWords), change('imanonashiWords'));
+watch($$(tmsImanonashiConfirm), change('imanonashiConfirm'));
+watch($$(tmsImanonashiItself), change('imanonashiItself'));
+// #endregion
+
+// #region check/save
 const check = async (): Promise<boolean> => {
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
@@ -280,34 +320,24 @@ const check = async (): Promise<boolean> => {
 };
 
 const save = async (): Promise<void> => {
-	if (await check()) {
-		tmsStore.set('verticalInstanceTicker', tmsVerticalInstanceTicker);
-		tmsStore.set('useReactionMenu', tmsUseReactionMenu);
-		tmsStore.set('collapseNote', tmsCollapseNote);
-		tmsStore.set('collapseNoteHeight', tmsCollapseNoteHeight);
-		tmsStore.set('collapseNoteFile', tmsCollapseNoteFile);
-		tmsStore.set('collapseNoteUrl', tmsCollapseNoteUrl);
-		tmsStore.set('collapseNotePoll', tmsCollapseNotePoll);
-		tmsStore.set('collapseRenote', tmsCollapseRenote);
-		tmsStore.set('usePakuru', tmsUsePakuru);
-		tmsStore.set('useNumberquote', tmsUseNumberquote);
-		tmsStore.set('useImanonashi', tmsUseImanonashi);
-		tmsStore.set('imanonashiWords', parseWords(tmsImanonashiWords));
-		tmsStore.set('imanonashiConfirm', tmsImanonashiConfirm);
-		tmsStore.set('imanonashiItself', tmsImanonashiItself);
+	if (!changed) return;
+	if (!(await check())) return os.alert({ type: 'error' });
 
-		const { canceled } = await os.confirm({
-			type: 'info',
-			text: i18n.ts.reloadToApplySetting,
-		});
-
-		if (canceled) return;
-
-		unisonReload();
-	} else {
-		os.alert({
-			type: 'error',
-		});
+	for (const key of changedKeys) {
+		const fn = tmsMap.get(key);
+		if (fn) tmsStore.set(key, fn());
 	}
+
+	changedKeys.clear();
+
+	const { canceled } = await os.confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+
+	if (canceled) return;
+
+	unisonReload();
 };
+// #endregion
 </script>
