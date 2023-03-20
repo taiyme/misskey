@@ -12,8 +12,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { ILocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
-import { SigninService } from './SigninService.js';
 import { bindThis } from '@/decorators.js';
+import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -75,12 +75,6 @@ export class SignupApiService {
 	
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
-				});
-			}
-
-			if (instance.enableTurnstile && instance.turnstileSecretKey) {
-				await this.captchaService.verifyTurnstile(instance.turnstileSecretKey, body['turnstile-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}

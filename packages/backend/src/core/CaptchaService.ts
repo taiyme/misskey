@@ -78,21 +78,5 @@ export class CaptchaService {
 			throw `hcaptcha-failed: ${errorCodes}`;
 		}
 	}
-
-	@bindThis
-	public async verifyTurnstile(secret: string, response: string | null | undefined): Promise<void> {
-		if (response == null) {
-			throw 'turnstile-failed: no response provided';
-		}
-	
-		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(err => {
-			throw `turnstile-request-failed: ${err}`;
-		});
-
-		if (result.success !== true) {
-			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
-			throw `turnstile-failed: ${errorCodes}`;
-		}
-	}
 }
 

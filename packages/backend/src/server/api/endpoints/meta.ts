@@ -118,14 +118,6 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			enableTurnstile: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			turnstileSiteKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
 			swPublickey: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -379,8 +371,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
-				enableTurnstile: instance.enableTurnstile,
-				turnstileSiteKey: instance.turnstileSiteKey,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
@@ -432,7 +422,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,
 					recaptcha: instance.enableRecaptcha,
-					turnstile: instance.enableTurnstile,
 					objectStorage: instance.useObjectStorage,
 					twitter: instance.enableTwitterIntegration,
 					github: instance.enableGithubIntegration,

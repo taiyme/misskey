@@ -52,9 +52,6 @@ export const paramDef = {
 		enableRecaptcha: { type: 'boolean' },
 		recaptchaSiteKey: { type: 'string', nullable: true },
 		recaptchaSecretKey: { type: 'string', nullable: true },
-		enableTurnstile: { type: 'boolean' },
-		turnstileSiteKey: { type: 'string', nullable: true },
-		turnstileSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -232,18 +229,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.recaptchaSecretKey !== undefined) {
 				set.recaptchaSecretKey = ps.recaptchaSecretKey;
-			}
-
-			if (ps.enableTurnstile !== undefined) {
-				set.enableTurnstile = ps.enableTurnstile;
-			}
-
-			if (ps.turnstileSiteKey !== undefined) {
-				set.turnstileSiteKey = ps.turnstileSiteKey;
-			}
-
-			if (ps.turnstileSecretKey !== undefined) {
-				set.turnstileSecretKey = ps.turnstileSecretKey;
 			}
 
 			if (ps.sensitiveMediaDetection !== undefined) {
