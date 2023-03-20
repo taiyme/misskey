@@ -138,13 +138,13 @@ const tickerColor = {
 		align-items: flex-end;
 		background: linear-gradient(
 			var(--ticker-bg-deg),
-			rgba(var(--ticker-bg-rgb), 0.04),
-			rgba(var(--ticker-bg-rgb), 0.19) 4em,
-			rgba(0, 0, 0, 0) 4em,
-			rgba(0, 0, 0, 0) calc(100% - 4em),
-			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 4em),
-			rgba(var(--ticker-bg-rgb), 0.04) 100%
-    );
+			rgba(var(--ticker-bg-rgb), 0.35),
+			rgba(var(--ticker-bg-rgb), 0.35) 3em,
+			rgba(0, 0, 0, 0) 3em,
+			rgba(0, 0, 0, 0) calc(100% - 3em),
+			rgba(var(--ticker-bg-rgb), 0.35) calc(100% - 3em),
+			rgba(var(--ticker-bg-rgb), 0.35) 100%
+		);
 		color: #fff;
 		text-shadow: /* 0.866 ≈ sin(60deg) */
 			1px 0 1px #000,
