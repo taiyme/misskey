@@ -17,7 +17,7 @@ const props = defineProps<{
 		name: string;
 		themeColor?: string;
 	};
-	normal?: boolean;
+	forceType?: typeof tmsStore.state.instanceTickerPosition;
 }>();
 
 // if no instance data is given, this is for the local instance
@@ -28,8 +28,7 @@ const instance = props.instance ?? {
 };
 
 const position = computed(() => {
-	if (props.normal) return 'normal';
-	return tmsStore.state.instanceTickerPosition;
+	return props.forceType ?? tmsStore.state.instanceTickerPosition;
 });
 
 const hexToRgb = (hex: string): {

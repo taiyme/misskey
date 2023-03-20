@@ -63,7 +63,7 @@
 	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
 	<FormSection>
-		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock">
+		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock" @update:model-value="sampleNoteReload">
 			<template #label>ノートのインスタンス情報の表示位置</template>
 			<option value="normal">通常</option>
 			<option value="leftedge">←左端</option>
@@ -73,6 +73,12 @@
 			<template #caption>タイムライン上のインスタンス情報を指定した位置に表示します。</template>
 		</FormSelect>
 
+		<div class="_formBlock">
+			<MkSampleNote :key="sampleNoteReloadCount" :instance-ticker-position="tmsInstanceTickerPosition"/>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
 			リアクションメニューを有効にする
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
@@ -179,6 +185,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTab from '@/components/MkTab.vue';
+import MkSampleNote from '@/components/MkNote.sample.vue';
 import * as os from '@/os';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
@@ -275,6 +282,11 @@ watch(
 		changed = true;
 	},
 );
+
+let sampleNoteReloadCount = $ref(0);
+const sampleNoteReload = (): void => {
+	sampleNoteReloadCount++;
+};
 // #endregion
 
 // #region check/save
