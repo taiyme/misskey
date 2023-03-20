@@ -232,10 +232,6 @@ const patrons: string[] = [
 ];
 // #endregion
 
-// types
-type TmsStore = typeof tmsStore.state;
-type ChangedKeys = keyof TmsStore;
-
 // flag
 let tab = $ref('overview');
 let changed = $ref(false);
@@ -257,50 +253,28 @@ const tmsImanonashiConfirm = $ref(tmsStore.state.imanonashiConfirm);
 const tmsImanonashiItself = $ref(tmsStore.state.imanonashiItself);
 // #endregion
 
-// #region map
-const tmsMap = new Map<ChangedKeys, () => TmsStore[ChangedKeys]>();
-tmsMap.set('instanceTickerPosition', () => tmsInstanceTickerPosition);
-tmsMap.set('useReactionMenu', () => tmsUseReactionMenu);
-tmsMap.set('collapseNote', () => tmsCollapseNote);
-tmsMap.set('collapseNoteHeight', () => tmsCollapseNoteHeight);
-tmsMap.set('collapseNoteFile', () => tmsCollapseNoteFile);
-tmsMap.set('collapseNoteUrl', () => tmsCollapseNoteUrl);
-tmsMap.set('collapseNotePoll', () => tmsCollapseNotePoll);
-tmsMap.set('collapseRenote', () => tmsCollapseRenote);
-tmsMap.set('usePakuru', () => tmsUsePakuru);
-tmsMap.set('useNumberquote', () => tmsUseNumberquote);
-tmsMap.set('useImanonashi', () => tmsUseImanonashi);
-tmsMap.set('imanonashiWords', () => parseWords(tmsImanonashiWords));
-tmsMap.set('imanonashiConfirm', () => tmsImanonashiConfirm);
-tmsMap.set('imanonashiItself', () => tmsImanonashiItself);
-// #endregion
-
 // #region change
-const changedKeys: Set<ChangedKeys> = new Set();
-watch(changedKeys, newSet => changed = !!newSet.size);
-
-const change = (key: ChangedKeys) => (newValue: unknown, oldValue: unknown): void => {
-	if (newValue === oldValue) {
-		changedKeys.delete(key);
-	} else {
-		changedKeys.add(key);
-	}
-};
-
-watch($$(tmsInstanceTickerPosition), change('instanceTickerPosition'));
-watch($$(tmsUseReactionMenu), change('useReactionMenu'));
-watch($$(tmsCollapseNote), change('collapseNote'));
-watch($$(tmsCollapseNoteHeight), change('collapseNoteHeight'));
-watch($$(tmsCollapseNoteFile), change('collapseNoteFile'));
-watch($$(tmsCollapseNoteUrl), change('collapseNoteUrl'));
-watch($$(tmsCollapseNotePoll), change('collapseNotePoll'));
-watch($$(tmsCollapseRenote), change('collapseRenote'));
-watch($$(tmsUsePakuru), change('usePakuru'));
-watch($$(tmsUseNumberquote), change('useNumberquote'));
-watch($$(tmsUseImanonashi), change('useImanonashi'));
-watch($$(tmsImanonashiWords), change('imanonashiWords'));
-watch($$(tmsImanonashiConfirm), change('imanonashiConfirm'));
-watch($$(tmsImanonashiItself), change('imanonashiItself'));
+watch(
+	[
+		$$(tmsInstanceTickerPosition),
+		$$(tmsUseReactionMenu),
+		$$(tmsCollapseNote),
+		$$(tmsCollapseNoteHeight),
+		$$(tmsCollapseNoteFile),
+		$$(tmsCollapseNoteUrl),
+		$$(tmsCollapseNotePoll),
+		$$(tmsCollapseRenote),
+		$$(tmsUsePakuru),
+		$$(tmsUseNumberquote),
+		$$(tmsUseImanonashi),
+		$$(tmsImanonashiWords),
+		$$(tmsImanonashiConfirm),
+		$$(tmsImanonashiItself),
+	],
+	() => {
+		changed = true;
+	},
+);
 // #endregion
 
 // #region check/save
@@ -323,12 +297,22 @@ const save = async (): Promise<void> => {
 	if (!changed) return;
 	if (!(await check())) return os.alert({ type: 'error' });
 
-	for (const key of changedKeys) {
-		const fn = tmsMap.get(key);
-		if (fn) tmsStore.set(key, fn());
-	}
+	tmsStore.set('instanceTickerPosition', tmsInstanceTickerPosition);
+	tmsStore.set('useReactionMenu', tmsUseReactionMenu);
+	tmsStore.set('collapseNote', tmsCollapseNote);
+	tmsStore.set('collapseNoteHeight', tmsCollapseNoteHeight);
+	tmsStore.set('collapseNoteFile', tmsCollapseNoteFile);
+	tmsStore.set('collapseNoteUrl', tmsCollapseNoteUrl);
+	tmsStore.set('collapseNotePoll', tmsCollapseNotePoll);
+	tmsStore.set('collapseRenote', tmsCollapseRenote);
+	tmsStore.set('usePakuru', tmsUsePakuru);
+	tmsStore.set('useNumberquote', tmsUseNumberquote);
+	tmsStore.set('useImanonashi', tmsUseImanonashi);
+	tmsStore.set('imanonashiWords', parseWords(tmsImanonashiWords));
+	tmsStore.set('imanonashiConfirm', tmsImanonashiConfirm);
+	tmsStore.set('imanonashiItself', tmsImanonashiItself);
 
-	changedKeys.clear();
+	changed = false;
 
 	const { canceled } = await os.confirm({
 		type: 'info',
