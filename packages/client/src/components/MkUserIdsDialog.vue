@@ -3,7 +3,7 @@
 	ref="dialog"
 	:width="400"
 	:height="450"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ title }}</template>

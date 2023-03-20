@@ -453,8 +453,8 @@ const clear = (): void => {
 };
 
 const onKeydown = (ev: KeyboardEvent): void => {
-	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
-	if (ev.which === 27) emit('esc');
+	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
+	if (ev.key === 'Escape' || ev.key === 'Esc') emit('esc');
 	typing();
 };
 
