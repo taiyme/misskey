@@ -3,14 +3,15 @@
 	ref="dialog"
 	:width="400"
 	:height="450"
-	@close="dialog.close()"
+	@click="dialog?.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.reactions }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="note" class="mk-reacted-users-dialog _gaps">
-			<div v-if="!hasRenote && reactions.length === 0" class="_fullinfo">
+			<div v-if="!hasRenote && reactions?.length === 0" class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
@@ -58,7 +59,7 @@ const props = defineProps<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const RENOTE_TAB = Symbol('RENOTE_TAB');
+const RENOTE_TAB = 'RENOTE_TAB';
 let hasRenote = $ref<boolean>(false);
 
 let note = $ref<misskey.entities.Note>();

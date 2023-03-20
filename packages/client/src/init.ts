@@ -107,19 +107,19 @@ import { trimHash } from '@/scripts/tms/url-hash';
 
 	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	// TODO: いつの日にか消したい
-	const vh = window.innerHeight * 0.01;
-	document.documentElement.style.setProperty('--vh', `${vh}px`);
-	window.addEventListener('resize', () => {
+	const setViewportHeight = (): void => {
 		const vh = window.innerHeight * 0.01;
 		document.documentElement.style.setProperty('--vh', `${vh}px`);
-	});
+	};
+	window.addEventListener('resize', setViewportHeight);
 	//#endregion
 
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.getElementsByName('viewport').item(0);
-		viewport.setAttribute('content',
-			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+		const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+		if (viewport) {
+			viewport.content += ', minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
+		}
 	}
 
 	//#region Set lang attr
