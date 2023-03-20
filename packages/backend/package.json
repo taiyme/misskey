@@ -152,6 +152,7 @@
 		"@types/jsonld": "1.5.8",
 		"@types/jsrsasign": "10.5.7",
 		"@types/mime-types": "2.1.1",
+		"@types/ms": "^0.7.31",
 		"@types/node": "18.15.3",
 		"@types/nodemailer": "6.4.7",
 		"@types/oauth": "0.9.1",
