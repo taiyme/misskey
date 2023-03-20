@@ -95,6 +95,7 @@ const tickerColor = {
 		position: absolute;
 		top: 0;
 		display: grid;
+		gap: 4px;
 		grid-template-rows: auto 1fr;
 		width: 14px;
 		height: 100%;
@@ -133,6 +134,7 @@ const tickerColor = {
 		inset: 0;
 		padding: 6px;
 		display: flex;
+		gap: 4px;
 		flex-direction: column;
 		justify-content: flex-end;
 		color: #fff;
@@ -171,8 +173,8 @@ const tickerColor = {
 		background: linear-gradient(
 			125deg,
 			rgba(0, 0, 0, 0),
-			rgba(0, 0, 0, 0) calc(100% - 7em),
-			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 7em),
+			rgba(0, 0, 0, 0) calc(100% - 5em),
+			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 5em),
 			rgba(var(--ticker-bg-rgb), 0.04) 100%
 		);
 
@@ -187,8 +189,8 @@ const tickerColor = {
 		background: linear-gradient(
 			-125deg,
 			rgba(0, 0, 0, 0),
-			rgba(0, 0, 0, 0) calc(100% - 7em),
-			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 7em),
+			rgba(0, 0, 0, 0) calc(100% - 5em),
+			rgba(var(--ticker-bg-rgb), 0.19) calc(100% - 5em),
 			rgba(var(--ticker-bg-rgb), 0.04) 100%
 		);
 
