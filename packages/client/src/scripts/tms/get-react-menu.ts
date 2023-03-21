@@ -132,7 +132,7 @@ export const toggleReact = ({ reaction, note, canToggle, reactButton }: ReactPro
 };
 
 export const getReactMenuDryrun = ({ reactButton }: Pick<ReactProps, 'reactButton'>): void => {
-	if (reactButton.value) return;
+	if (!reactButton.value) return;
 
 	const menu: MenuItem[] = [];
 
@@ -163,6 +163,6 @@ export const getReactMenuDryrun = ({ reactButton }: Pick<ReactProps, 'reactButto
 };
 
 export const toggleReactDryrun = ({ reactButton }: Pick<ReactProps, 'reactButton'>): void => {
-	if (reactButton.value) return;
+	if (!reactButton.value) return;
 	rippleEffect(reactButton.value);
 };
