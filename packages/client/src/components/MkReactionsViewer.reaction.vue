@@ -3,7 +3,7 @@
 	v-if="count > 0"
 	ref="buttonRef"
 	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle, viewType }"
+	:class="[viewType, { reacted: note.myReaction == reaction, canToggle }]"
 	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
