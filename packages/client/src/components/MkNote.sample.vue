@@ -230,16 +230,16 @@ const react = (): void => {
 				background: var(--accent);
 			}
 
-			> .count {
+			> .reactionCount {
 				color: var(--fgOnAccent);
 			}
 
-			> .icon {
+			> .reactionIcon {
 				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 			}
 		}
 
-		> .count {
+		> .reactionCount {
 			font-size: 0.9em;
 			line-height: 32px;
 			margin: 0 0 0 4px;
@@ -253,12 +253,12 @@ const react = (): void => {
 		grid-template-columns: auto auto;
 		grid-template-rows: 32px;
 		border-radius: 4px;
-		box-shadow: 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
+		box-shadow: 0 5px 15px -5px var(--shadow);
 		align-items: center;
 		overflow: hidden;
 
 		&.canToggle {
-			box-shadow: 0 0 0 1px var(--accent); // SEE: https://dskd.jp/archives/73.html
+			box-shadow: 0 5px 15px -5px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
 		}
 
 		&.canToggle:hover,
