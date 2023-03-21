@@ -326,7 +326,6 @@ const react = ({ reaction, canToggle }: {
 		margin: 0 10px 8px 0;
 		width: 46px;
 		height: 46px;
-		top: calc(14px + var(--stickyTop, 0px));
 	}
 }
 
