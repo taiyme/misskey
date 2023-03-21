@@ -17,7 +17,7 @@
 			<div :class="$style.reactionsViewer">
 				<template v-for="item in reactions" :key="item.reaction">
 					<button
-						:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.canToggle]: item.canToggle }]"
+						:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.canToggle]: item.canToggle, [$style.reacted]: item.reacted }]"
 						class="_button"
 						@click="react(item, $event)"
 					>
@@ -70,9 +70,10 @@ const useReactionMenu = computed(() => unref(props.useReactionMenu));
 const useEasyReactionsViewer = computed(() => unref(props.useEasyReactionsViewer));
 const showActionsOnlyOnHover = computed(() => unref(props.showActionsOnlyOnHover) && !isTouchUsing && deviceKind !== 'smartphone');
 
-const emojis = getRandomArrayElements(instance.emojis ?? [], 3).map(emoji => {
+const emojis = getRandomArrayElements(instance.emojis ?? [], 6).map(emoji => {
 	return {
 		reaction: `:${emoji.name}:`,
+		reacted: false,
 		canToggle: true,
 		customEmojis: [emoji],
 	};
@@ -81,11 +82,7 @@ const emojis = getRandomArrayElements(instance.emojis ?? [], 3).map(emoji => {
 const reactions = [
 	{
 		reaction: '👍',
-		canToggle: true,
-		customEmojis: [],
-	},
-	{
-		reaction: '🍮',
+		reacted: true,
 		canToggle: true,
 		customEmojis: [],
 	},
@@ -224,12 +221,6 @@ const react = ({ reaction, canToggle }: {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
-
-	&.isMe {
-		> span {
-			cursor: default !important;
-		}
-	}
 }
 
 .reactionButton {
