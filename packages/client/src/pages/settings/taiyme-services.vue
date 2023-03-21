@@ -63,6 +63,13 @@
 	<MkInfo warn class="_formBlock">設定は自動で保存されません。画面下部の保存ボタンを使用してください。</MkInfo>
 
 	<FormSection>
+		<template #label>プレビュー</template>
+		<div class="_formBlock">
+			<MkSampleNote :key="sampleNoteReloadCount" :instance-ticker-position="tmsInstanceTickerPosition" :use-reaction-menu="tmsUseReactionMenu"/>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock" @update:model-value="sampleNoteReload">
 			<template #label>ノートのインスタンス情報の表示位置</template>
 			<option value="normal">通常</option>
@@ -73,13 +80,7 @@
 			<template #caption>タイムライン上のインスタンス情報を指定した位置に表示します。</template>
 		</FormSelect>
 
-		<div class="_formBlock">
-			<MkSampleNote :key="sampleNoteReloadCount" :instance-ticker-position="tmsInstanceTickerPosition"/>
-		</div>
-	</FormSection>
-
-	<FormSection>
-		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
+		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock" @update:model-value="sampleNoteReload">
 			リアクションメニューを有効にする
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
 		</FormSwitch>

@@ -15,6 +15,17 @@
 				</div>
 			</div>
 			<footer>
+				<div :style="$style.reactionsViewer">
+					<button
+						ref="reactButton"
+						:class="$style.reactionButton"
+						class="_button"
+						@click="react"
+					>
+						<MkEmoji emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
+						<span :class="$style.reactionCount">1</span>
+					</button>
+				</div>
 				<button :class="$style.button" class="_button"><i class="ti ti-arrow-back-up"></i></button>
 				<button :class="$style.button" class="_button"><i class="ti ti-repeat"></i></button>
 				<button :class="$style.button" class="_button"><i class="ti ti-plus"></i></button>
@@ -31,17 +42,29 @@ import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { api } from '@/os';
 import { $i } from '@/account';
 import { tmsStore } from '@/tms/store';
+import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-menu';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	text?: string;
 	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition;
+	useReactionMenu?: typeof tmsStore.state.useReactionMenu;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
+	useReactionMenu: tmsStore.state.useReactionMenu,
 });
 
 const user = ref($i && await api('users/show', { userId: $i.id }));
 const createdAt = ref(new Date().toJSON());
+const reactButton = ref<HTMLElement>();
+
+const react = (): void => {
+	if (props.useReactionMenu) {
+		getReactMenuDryrun({ reactButton });
+	} else {
+		toggleReactDryrun({ reactButton });
+	}
+};
 </script>
 
 <style lang="scss" module>
@@ -125,5 +148,28 @@ const createdAt = ref(new Date().toJSON());
 	&:hover {
 		color: var(--fgHighlighted);
 	}
+}
+
+.reactionsViewer {
+	margin: 4px -2px 0 -2px;
+}
+
+.reactionButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border-radius: 4px;
+	background: rgba(0, 0, 0, 0.05);
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.1);
+	}
+}
+
+.reactionCount {
+	font-size: 0.9em;
+	line-height: 32px;
+	margin: 0 0 0 4px;
 }
 </style>
