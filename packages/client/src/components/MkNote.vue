@@ -35,7 +35,7 @@
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" class="text" @click="renoteCollapsed = false"/>
 	</div>
-	<article v-else class="article" @contextmenu.stop="onContextmenu">
+	<article v-else ref="articleEl" class="article" :style="{ '--articleTop': `${(el?.clientHeight ?? 0) - (articleEl?.clientHeight ?? 0)}px` }" @contextmenu.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
@@ -182,6 +182,7 @@ onMounted(() => {
 });
 
 const el = ref<HTMLElement>();
+const articleEl = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
@@ -377,7 +378,7 @@ function readPromo() {
 		> .article > .main > .footer {
 			visibility: hidden;
 			position: absolute;
-			top: 12px;
+			top: calc(12px + var(--articleTop, 0px));
 			right: 12px;
 			padding: 0 4px;
 			margin-bottom: 0 !important;
