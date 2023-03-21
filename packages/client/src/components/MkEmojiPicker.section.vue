@@ -8,7 +8,9 @@
 		<button
 			v-for="emoji in emojis"
 			:key="emoji"
+			:data-emoji="emoji"
 			class="_button item"
+			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
 			<MkEmoji class="emoji" :emoji="emoji" :normal="true"/>
@@ -18,10 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed, Ref } from 'vue';
+import { getEmojiName } from '@/scripts/emojilist';
 
 const props = defineProps<{
-	emojis: string[];
+	emojis: string[] | Ref<string[]>;
 	initialShown?: boolean;
 }>();
 
@@ -29,8 +32,16 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string, event: MouseEvent): void;
 }>();
 
-const shown = ref(!!props.initialShown);
-</script>
+const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);
 
-<style lang="scss" scoped>
-</style>
+const shown = ref(!!props.initialShown);
+
+/** @see MkEmojiPicker.vue */
+const computeButtonTitle = (ev: MouseEvent): void => {
+	const el = ev.target;
+	if (!(el instanceof HTMLElement)) return;
+	const emoji = el.dataset.emoji;
+	if (!emoji) return;
+	el.title = emoji.startsWith(':') ? emoji : getEmojiName(emoji) ?? emoji;
+};
+</script>

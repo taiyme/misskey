@@ -224,13 +224,11 @@ export function getNoteMenu(props: {
 
 							const clip = await os.apiWithDialog('clips/create', result);
 
-							claimAchievement('noteClipped1');
 							os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
 						},
 					}, null, ...clips.map(clip => ({
 						text: clip.name,
 						action: () => {
-							claimAchievement('noteClipped1');
 							os.promiseDialog(
 								os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
 								null,

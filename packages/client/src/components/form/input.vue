@@ -87,8 +87,8 @@ const height =
 	props.large ? 40 :
 	38;
 
-const textLength = $computed((): number | null => {
-	if (typeof v.value !== 'string') return null;
+const textLength = $computed((): number => {
+	if (typeof v.value !== 'string') return 0;
 	return length(v.value);
 });
 

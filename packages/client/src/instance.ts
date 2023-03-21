@@ -1,7 +1,10 @@
 import { computed, reactive } from 'vue';
-import * as Misskey from 'misskey-js';
+import { InstanceMetadata as InstanceMetadata_ } from 'misskey-js/built/entities';
 import { api } from './os';
 import { parseObject } from '@/scripts/tms/parse';
+
+type SomeNullable<T, D extends keyof T> = { [K in keyof T]: (K extends D ? T[K] | null | undefined : T[K]) };
+type InstanceMetadata = SomeNullable<InstanceMetadata_, 'emojis'>;
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -9,11 +12,15 @@ const instanceData = localStorage.getItem('instance');
 
 // TODO: instanceをリアクティブにするかは再考の余地あり
 
-export const instance: Misskey.entities.InstanceMetadata = reactive(instanceData ? parseObject<Misskey.entities.InstanceMetadata>(instanceData) : {
-	// TODO: set default values
-});
+export const instance: InstanceMetadata = reactive(
+	instanceData
+		? parseObject<InstanceMetadata>(instanceData)
+		: {
+			// TODO: set default values
+		} as InstanceMetadata,
+);
 
-export async function fetchInstance() {
+export const fetchInstance = async (): Promise<void> => {
 	const meta = await api('meta', {
 		detail: false,
 	});
@@ -23,7 +30,7 @@ export async function fetchInstance() {
 	}
 
 	localStorage.setItem('instance', JSON.stringify(instance));
-}
+};
 
 export const emojiCategories = computed(() => {
 	if (instance.emojis == null) return [];

@@ -2,9 +2,9 @@ import { markRaw } from 'vue';
 import { Storage } from '@/pizzax';
 
 export const tmsStore = markRaw(new Storage('tms', {
-	verticalInstanceTicker: {
+	instanceTickerPosition: {
 		where: 'account',
-		default: true,
+		default: 'leftedge' as 'normal' | 'leftedge' | 'rightedge' | 'bottomleft' | 'bottomright',
 	},
 	useReactionMenu: {
 		where: 'account',
