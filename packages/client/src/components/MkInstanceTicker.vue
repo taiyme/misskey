@@ -40,7 +40,7 @@ const hexToRgb = (hex: string): {
 	return { r, g, b };
 };
 
-const yuvColor = (hex: string): string => {
+const getTickerFgColor = (hex: string): string => {
 	const { r, g, b } = hexToRgb(hex);
 	const yuv = 0.299 * r + 0.587 * g + 0.114 * b;
 
@@ -48,7 +48,7 @@ const yuvColor = (hex: string): string => {
 };
 
 const tickerBgColor = instance.themeColor ?? '#777777';
-const tickerFgColor = yuvColor(tickerBgColor);
+const tickerFgColor = getTickerFgColor(tickerBgColor);
 
 const tickerColor = {
 	'--ticker-bg': tickerBgColor,
