@@ -14,11 +14,11 @@
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
 			</div>
-			<footer>
-				<button :style="$style.button" class="_button"><i class="ti ti-arrow-back-up"></i></button>
-				<button :style="$style.button" class="_button"><i class="ti ti-repeat"></i></button>
-				<button :style="$style.button" class="_button"><i class="ti ti-plus"></i></button>
-				<button :style="$style.button" class="_button"><i class="ti ti-dots"></i></button>
+			<footer :style="$style.footer">
+				<button :style="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
+				<button :style="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
+				<button :style="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
+				<button :style="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
 			</footer>
 		</div>
 	</article>
@@ -51,6 +51,7 @@ const createdAt = ref(new Date().toJSON());
 	font-size: 1.05em;
 	overflow: clip;
 	contain: content;
+	background: var(--panel);
 }
 
 .article {
@@ -72,23 +73,6 @@ const createdAt = ref(new Date().toJSON());
 .main {
 	flex: 1;
 	min-width: 0;
-}
-
-.text {
-	overflow-wrap: break-word;
-}
-
-.button {
-	margin: 0;
-	padding: 8px;
-
-	&:not(:last-child) {
-		margin-right: 28px;
-	}
-
-	&:hover {
-		color: var(--fgHighlighted);
-	}
 }
 
 .header {
@@ -124,5 +108,22 @@ const createdAt = ref(new Date().toJSON());
 	flex-shrink: 0;
 	margin-left: auto;
 	font-size: 0.9em;
+}
+
+.text {
+	overflow-wrap: break-word;
+}
+
+.footerButton {
+	margin: 0;
+	padding: 8px;
+
+	&:not(:last-child) {
+		margin-right: 28px;
+	}
+
+	&:hover {
+		color: var(--fgHighlighted);
+	}
 }
 </style>
