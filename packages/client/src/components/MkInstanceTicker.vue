@@ -13,9 +13,9 @@ import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string;
-		name: string;
-		themeColor?: string;
+		faviconUrl?: string | null;
+		name: string | null;
+		themeColor?: string | null;
 	};
 	forceType?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 }>();
@@ -162,7 +162,7 @@ const tickerColor = {
 
 		> .icon {
 			display: block;
-			height: 2em;
+			height: 1.5em;
 			opacity: 0.8;
 		}
 

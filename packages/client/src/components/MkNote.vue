@@ -6,13 +6,13 @@
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 	:class="{ renote: isRenote, showActionsOnlyOnHover }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
 	<div v-if="pinned" class="info"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<div v-if="appearNote._prId_" class="info"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
-	<div v-if="appearNote._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
+	<div v-if="(appearNote as any)._prId_" class="info"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
+	<div v-if="(appearNote as any)._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="ti ti-repeat"></i>
@@ -54,8 +54,8 @@
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
-								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+								<b>{{ $t('translatedFrom', { x: (translation as any).sourceLang }) }}: </b>
+								<Mfm :text="(translation as any).text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 						<span>{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="(appearNote as any).channel && !inChannel" class="channel" :to="`/channels/${(appearNote as any).channel.id}`"><i class="ti ti-device-tv"></i> {{ (appearNote as any).channel.name }}</MkA>
 			</div>
 			<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 			<footer class="footer">
@@ -219,14 +219,13 @@ const showActionsOnlyOnHover = ref(tmsStore.state.showActionsOnlyOnHover && !isT
 shownNoteIds.add(appearNote.id);
 
 const keymap = {
-	'r': () => reply(true),
-	'e|a|plus': () => react(true),
-	'q': () => renoteButton.value.renote(true),
+	'r': (): void => reply(true),
+	'e|a|plus': (): void => react(true),
+	'q': (): void => renoteButton.value?.renote(true),
 	'up|k|shift+tab': focusBefore,
 	'down|j|tab': focusAfter,
 	'esc': blur,
-	'm|o': () => menu(true),
-	's': () => showContent.value !== showContent.value,
+	'm|o': (): void => menu(true),
 };
 
 useNoteCapture({
@@ -245,7 +244,7 @@ function reply(viaKeyboard = false): void {
 	});
 }
 
-function react(viaKeyboard = false): void {
+function react(_viaKeyboard = false): void {
 	pleaseLogin();
 	blur();
 	reactionPicker.show(reactButton.value, reaction => {
@@ -258,11 +257,11 @@ function react(viaKeyboard = false): void {
 	});
 }
 
-function undoReact(note): void {
-	const oldReaction = note.myReaction;
+function undoReact(note_: misskey.entities.Note): void {
+	const oldReaction = note_.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note.id,
+		noteId: note_.id,
 	});
 }
 
