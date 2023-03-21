@@ -65,7 +65,11 @@
 	<FormSection>
 		<template #label>プレビュー</template>
 		<div ref="sampleNoteArea" class="_formBlock">
-			<MkSampleNote :instance-ticker-position="computed(() => tmsInstanceTickerPosition)" :use-reaction-menu="computed(() => tmsUseReactionMenu)"/>
+			<MkSampleNote
+				:instance-ticker-position="computed(() => tmsInstanceTickerPosition)"
+				:use-reaction-menu="computed(() => tmsUseReactionMenu)"
+				:show-actions-only-on-hover="computed(() => tmsShowActionsOnlyOnHover)"
+			/>
 		</div>
 	</FormSection>
 
@@ -83,6 +87,11 @@
 		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
 			リアクションメニューを有効にする
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
+		</FormSwitch>
+
+		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
+			ノートの操作部をホバー時のみ表示する
+			<template #caption>スマートフォンなどのタッチデバイスでは、このオプションは無効になります。</template>
 		</FormSwitch>
 	</FormSection>
 
@@ -247,6 +256,7 @@ let changed = $ref(false);
 // #region v-model
 const tmsInstanceTickerPosition = $ref(tmsStore.state.instanceTickerPosition);
 const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
+const tmsShowActionsOnlyOnHover = $ref(tmsStore.state.showActionsOnlyOnHover);
 const tmsCollapseNote = $ref(tmsStore.state.collapseNote);
 const tmsCollapseNoteHeight = $ref(tmsStore.state.collapseNoteHeight);
 const tmsCollapseNoteFile = $ref(tmsStore.state.collapseNoteFile);
@@ -266,6 +276,7 @@ watch(
 	[
 		$$(tmsInstanceTickerPosition),
 		$$(tmsUseReactionMenu),
+		$$(tmsShowActionsOnlyOnHover),
 		$$(tmsCollapseNote),
 		$$(tmsCollapseNoteHeight),
 		$$(tmsCollapseNoteFile),
@@ -307,6 +318,7 @@ const save = async (): Promise<void> => {
 
 	tmsStore.set('instanceTickerPosition', tmsInstanceTickerPosition);
 	tmsStore.set('useReactionMenu', tmsUseReactionMenu);
+	tmsStore.set('showActionsOnlyOnHover', tmsShowActionsOnlyOnHover);
 	tmsStore.set('collapseNote', tmsCollapseNote);
 	tmsStore.set('collapseNoteHeight', tmsCollapseNoteHeight);
 	tmsStore.set('collapseNoteFile', tmsCollapseNoteFile);

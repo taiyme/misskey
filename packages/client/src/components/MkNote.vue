@@ -7,7 +7,7 @@
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
 	:tabindex="!isDeleted ? '-1' : null"
-	:class="{ renote: isRenote }"
+	:class="{ renote: isRenote, showActionsOnlyOnHover }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
 	<div v-if="pinned" class="info"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
@@ -74,8 +74,8 @@
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
+			<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 			<footer class="footer">
-				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
@@ -89,6 +89,9 @@
 				</button>
 				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="ti ti-dots"></i>
+				</button>
+				<button v-if="showActionsOnlyOnHover" class="button _button" @click="notePage(appearNote)">
+					<i class="ti ti-info-circle"></i>
 				</button>
 			</footer>
 		</div>
@@ -123,6 +126,7 @@ import MkVisibility from '@/components/MkVisibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';
+import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { defaultStore, noteViewInterruptors } from '@/store';
@@ -134,6 +138,8 @@ import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { deepClone } from '@/scripts/clone';
+import { isTouchUsing } from '@/scripts/touch';
+import { deviceKind } from '@/scripts/device-kind';
 import { shownNoteIds } from '@/os';
 import { tmsStore } from '@/tms/store';
 
@@ -208,6 +214,7 @@ const translation = ref(null);
 const translating = ref(false);
 const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
+const showActionsOnlyOnHover = ref(tmsStore.state.showActionsOnlyOnHover && isTouchUsing && deviceKind === 'desktop');
 
 shownNoteIds.add(appearNote.id);
 
@@ -366,6 +373,34 @@ function readPromo() {
 
 	&:hover > .article > .main > .footer > .button {
 		opacity: 1;
+	}
+
+	&.showActionsOnlyOnHover {
+		> .article > .main > .footer {
+			visibility: hidden;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 0 4px;
+			margin-bottom: 0 !important;
+			background: var(--popup);
+			border-radius: 8px;
+			box-shadow: 0px 4px 32px var(--shadow);
+
+			> .button {
+				font-size: 80%;
+
+				&:not(:last-child) {
+					margin-right: 6px;
+				}
+			}
+		}
+
+		&:hover {
+			> .article > .main > .footer {
+				visibility: visible;
+			}
+		}
 	}
 
 	> .info {

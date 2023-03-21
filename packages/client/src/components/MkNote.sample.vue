@@ -1,5 +1,5 @@
 <template>
-<div v-if="user" :class="$style.root">
+<div v-if="user" :class="[$style.root, { [$style.showActionsOnlyOnHover]: showActionsOnlyOnHover }]">
 	<article :class="$style.article">
 		<MkAvatar :class="$style.avatar" :user="user" disable-link disable-preview/>
 		<div :class="$style.main">
@@ -30,6 +30,7 @@
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
+				<button v-if="showActionsOnlyOnHover" :class="$style.footerButton" class="_button"><i class="ti ti-info-circle"></i></button>
 			</footer>
 		</div>
 	</article>
@@ -40,6 +41,8 @@
 import { ref, computed, ComputedRef } from 'vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { $i } from '@/account';
+import { isTouchUsing } from '@/scripts/touch';
+import { deviceKind } from '@/scripts/device-kind';
 import { tmsStore } from '@/tms/store';
 import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-menu';
 
@@ -47,10 +50,12 @@ const props = withDefaults(defineProps<{
 	text?: string;
 	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 	useReactionMenu?: typeof tmsStore.state.useReactionMenu | ComputedRef<typeof tmsStore.state.useReactionMenu>;
+	showActionsOnlyOnHover?: typeof tmsStore.state.showActionsOnlyOnHover | ComputedRef<typeof tmsStore.state.showActionsOnlyOnHover>;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
 	useReactionMenu: tmsStore.state.useReactionMenu,
+	showActionsOnlyOnHover: tmsStore.state.showActionsOnlyOnHover,
 });
 
 const user = ref($i);
@@ -58,7 +63,19 @@ const createdAt = ref(new Date().toJSON());
 const reactButton = ref<HTMLElement>();
 
 const useReactionMenu = computed(() => {
-	return typeof props.useReactionMenu === 'boolean' ? props.useReactionMenu : props.useReactionMenu.value;
+	return (
+		typeof props.useReactionMenu === 'boolean'
+			? props.useReactionMenu
+			: props.useReactionMenu.value
+	);
+});
+
+const showActionsOnlyOnHover = computed(() => {
+	return (
+		typeof props.showActionsOnlyOnHover === 'boolean'
+			? props.showActionsOnlyOnHover
+			: props.showActionsOnlyOnHover.value
+	) && isTouchUsing && deviceKind === 'smartphone';
 });
 
 const react = (): void => {
@@ -79,6 +96,34 @@ const react = (): void => {
 	overflow: clip;
 	contain: content;
 	background: var(--panel);
+
+	&.showActionsOnlyOnHover {
+		.footer {
+			visibility: hidden;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 0 4px;
+			margin-bottom: 0 !important;
+			background: var(--popup);
+			border-radius: 8px;
+			box-shadow: 0px 4px 32px var(--shadow);
+		}
+
+		.footerButton {
+			font-size: 90%;
+
+			&:not(:last-child) {
+				margin-right: 0;
+			}
+		}
+	}
+
+	&.showActionsOnlyOnHover:hover {
+		.footer {
+			visibility: visible;
+		}
+	}
 }
 
 .article {
