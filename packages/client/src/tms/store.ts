@@ -10,6 +10,10 @@ export const tmsStore = markRaw(new Storage('tms', {
 		where: 'account',
 		default: true,
 	},
+	useEasyReactionsViewer: {
+		where: 'account',
+		default: true,
+	},
 	showActionsOnlyOnHover: {
 		where: 'account',
 		default: false,

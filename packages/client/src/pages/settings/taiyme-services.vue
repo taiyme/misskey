@@ -89,6 +89,11 @@
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
 		</FormSwitch>
 
+		<FormSwitch v-model="tmsUseEasyReactionsViewer" class="_formBlock">
+			ノートのリアクションを見やすくする
+			<template #caption>ノートのリアクションを見やすくします。リアクションの背景色は白固定になります。</template>
+		</FormSwitch>
+
 		<FormSwitch v-model="tmsShowActionsOnlyOnHover" class="_formBlock">
 			ノートの操作部をホバー時のみ表示する
 			<template #caption>スマートフォンなどのタッチデバイスでは、このオプションは無効になります。</template>
@@ -256,6 +261,7 @@ let changed = $ref(false);
 // #region v-model
 const tmsInstanceTickerPosition = $ref(tmsStore.state.instanceTickerPosition);
 const tmsUseReactionMenu = $ref(tmsStore.state.useReactionMenu);
+const tmsUseEasyReactionsViewer = $ref(tmsStore.state.useEasyReactionsViewer);
 const tmsShowActionsOnlyOnHover = $ref(tmsStore.state.showActionsOnlyOnHover);
 const tmsCollapseNote = $ref(tmsStore.state.collapseNote);
 const tmsCollapseNoteHeight = $ref(tmsStore.state.collapseNoteHeight);
@@ -276,6 +282,7 @@ watch(
 	[
 		$$(tmsInstanceTickerPosition),
 		$$(tmsUseReactionMenu),
+		$$(tmsUseEasyReactionsViewer),
 		$$(tmsShowActionsOnlyOnHover),
 		$$(tmsCollapseNote),
 		$$(tmsCollapseNoteHeight),
@@ -315,22 +322,52 @@ const check = async (): Promise<boolean> => {
 const save = async (): Promise<void> => {
 	if (!changed) return;
 	if (!(await check())) return os.alert({ type: 'error' });
+	
+	type Store = typeof tmsStore.state;
+	type StoreKeys = keyof Store;
 
-	tmsStore.set('instanceTickerPosition', tmsInstanceTickerPosition);
-	tmsStore.set('useReactionMenu', tmsUseReactionMenu);
-	tmsStore.set('showActionsOnlyOnHover', tmsShowActionsOnlyOnHover);
-	tmsStore.set('collapseNote', tmsCollapseNote);
-	tmsStore.set('collapseNoteHeight', tmsCollapseNoteHeight);
-	tmsStore.set('collapseNoteFile', tmsCollapseNoteFile);
-	tmsStore.set('collapseNoteUrl', tmsCollapseNoteUrl);
-	tmsStore.set('collapseNotePoll', tmsCollapseNotePoll);
-	tmsStore.set('collapseRenote', tmsCollapseRenote);
-	tmsStore.set('usePakuru', tmsUsePakuru);
-	tmsStore.set('useNumberquote', tmsUseNumberquote);
-	tmsStore.set('useImanonashi', tmsUseImanonashi);
-	tmsStore.set('imanonashiWords', parseWords(tmsImanonashiWords));
-	tmsStore.set('imanonashiConfirm', tmsImanonashiConfirm);
-	tmsStore.set('imanonashiItself', tmsImanonashiItself);
+	const regist = (key: StoreKeys, newValue: Store[StoreKeys]): void => {
+		const isPrimitive = (x: unknown): x is string | number | boolean | bigint => {
+			switch (typeof x) {
+				case 'string':
+				case 'number':
+				case 'boolean':
+				case 'bigint': {
+					return true;
+				}
+				default: {
+					return false;
+				}
+			}
+		};
+
+		// プリミティブ型の場合、値が同じならsetしない
+		const oldValue = tmsStore.state[key];
+		if (isPrimitive(oldValue) && isPrimitive(newValue)) {
+			if (oldValue === newValue) return;
+		}
+
+		// TODO: 配列の比較もしたい
+
+		tmsStore.set(key, newValue);
+	};
+
+	regist('instanceTickerPosition', tmsInstanceTickerPosition);
+	regist('useReactionMenu', tmsUseReactionMenu);
+	regist('useEasyReactionsViewer', tmsUseEasyReactionsViewer);
+	regist('showActionsOnlyOnHover', tmsShowActionsOnlyOnHover);
+	regist('collapseNote', tmsCollapseNote);
+	regist('collapseNoteHeight', tmsCollapseNoteHeight);
+	regist('collapseNoteFile', tmsCollapseNoteFile);
+	regist('collapseNoteUrl', tmsCollapseNoteUrl);
+	regist('collapseNotePoll', tmsCollapseNotePoll);
+	regist('collapseRenote', tmsCollapseRenote);
+	regist('usePakuru', tmsUsePakuru);
+	regist('useNumberquote', tmsUseNumberquote);
+	regist('useImanonashi', tmsUseImanonashi);
+	regist('imanonashiWords', parseWords(tmsImanonashiWords));
+	regist('imanonashiConfirm', tmsImanonashiConfirm);
+	regist('imanonashiItself', tmsImanonashiItself);
 
 	changed = false;
 

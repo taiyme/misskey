@@ -17,7 +17,7 @@
 			<div :class="$style.reactionsViewer">
 				<button
 					ref="reactButton"
-					:class="$style.reactionButton"
+					:class="[$style.reactionButton, $style[reactionViewType]]"
 					class="_button"
 					@click="react"
 				>
@@ -51,11 +51,13 @@ const props = withDefaults(defineProps<{
 	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 	useReactionMenu?: typeof tmsStore.state.useReactionMenu | ComputedRef<typeof tmsStore.state.useReactionMenu>;
 	showActionsOnlyOnHover?: typeof tmsStore.state.showActionsOnlyOnHover | ComputedRef<typeof tmsStore.state.showActionsOnlyOnHover>;
+	useEasyReactionsViewer?: typeof tmsStore.state.useEasyReactionsViewer | ComputedRef<typeof tmsStore.state.useEasyReactionsViewer>;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
 	useReactionMenu: tmsStore.state.useReactionMenu,
 	showActionsOnlyOnHover: tmsStore.state.showActionsOnlyOnHover,
+	useEasyReactionsViewer: tmsStore.state.useEasyReactionsViewer,
 });
 
 const user = ref($i);
@@ -76,6 +78,10 @@ const showActionsOnlyOnHover = computed(() => {
 			? props.showActionsOnlyOnHover
 			: props.showActionsOnlyOnHover.value
 	) && !isTouchUsing && deviceKind !== 'smartphone';
+});
+
+const reactionViewType = computed(() => {
+	return props.useEasyReactionsViewer ? 'easy' : 'normal';
 });
 
 const react = (): void => {
@@ -201,25 +207,98 @@ const react = (): void => {
 
 .reactionsViewer {
 	margin: 4px -2px 0 -2px;
-}
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
 
-.reactionButton {
-	display: inline-block;
-	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
-	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.05);
-
-	&:hover {
-		background: rgba(0, 0, 0, 0.1);
+	&.isMe {
+		> span {
+			cursor: default !important;
+		}
 	}
 }
 
-.reactionCount {
-	font-size: 0.9em;
-	line-height: 32px;
-	margin: 0 0 0 4px;
+.reactionButton {
+	&.normal {
+		display: inline-block;
+		height: 32px;
+		padding: 0 6px;
+		border-radius: 4px;
+
+		&.canToggle {
+			background: rgba(0, 0, 0, 0.05);
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
+		}
+
+		&:not(.canToggle) {
+			cursor: default;
+		}
+
+		&.reacted {
+			background: var(--accent);
+
+			&:hover {
+				background: var(--accent);
+			}
+
+			> .count {
+				color: var(--fgOnAccent);
+			}
+
+			> .icon {
+				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			}
+		}
+
+		> .count {
+			font-size: 0.9em;
+			line-height: 32px;
+			margin: 0 0 0 4px;
+		}
+	}
+
+	&.easy {
+		color: var(--fgTransparentWeak);
+		box-sizing: border-box;
+		display: grid;
+		grid-template-columns: auto auto;
+		grid-template-rows: 32px;
+		border-radius: 4px;
+		outline: solid 1px var(--divider);
+		align-items: center;
+		overflow: hidden;
+
+		&.canToggle {
+			outline: solid 1px var(--accent);
+		}
+
+		&.canToggle:hover,
+		&.reacted {
+			background-color: var(--accent);
+			color: var(--fgOnAccent);
+		}
+
+		&:not(.canToggle) {
+			cursor: default;
+		}
+
+		> .icon {
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 4px;
+			max-width: 100%; // はみ出し防止
+			height: 100% !important; // MkEmojiのheight上書き
+		}
+
+		> .count {
+			box-sizing: border-box;
+			padding: 0 4px;
+			font-size: 0.9em;
+		}
+	}
 }
 
 @container (max-width: 580px) {

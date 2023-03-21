@@ -3,7 +3,7 @@
 	v-if="count > 0"
 	ref="buttonRef"
 	class="hkzvhatu _button"
-	:class="{ reacted: note.myReaction == reaction, canToggle }"
+	:class="{ reacted: note.myReaction == reaction, canToggle, viewType }"
 	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
@@ -30,6 +30,8 @@ const props = defineProps<{
 	isInitial: boolean;
 	note: misskey.entities.Note;
 }>();
+
+const viewType = computed(() => tmsStore.state.useEasyReactionsViewer ? 'easy' : 'normal');
 
 const buttonRef = ref<HTMLElement>();
 
@@ -93,44 +95,85 @@ useTooltip(buttonRef, async (showing) => {
 
 <style lang="scss" scoped>
 .hkzvhatu {
-	display: inline-block;
-	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
-	border-radius: 4px;
+	&.normal {
+		display: inline-block;
+		height: 32px;
+		padding: 0 6px;
+		border-radius: 4px;
 
-	&.canToggle {
-		background: rgba(0, 0, 0, 0.05);
+		&.canToggle {
+			background: rgba(0, 0, 0, 0.05);
 
-		&:hover {
-			background: rgba(0, 0, 0, 0.1);
+			&:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
 		}
-	}
 
-	&:not(.canToggle) {
-		cursor: default;
-	}
+		&:not(.canToggle) {
+			cursor: default;
+		}
 
-	&.reacted {
-		background: var(--accent);
-
-		&:hover {
+		&.reacted {
 			background: var(--accent);
+
+			&:hover {
+				background: var(--accent);
+			}
+
+			> .count {
+				color: var(--fgOnAccent);
+			}
+
+			> .icon {
+				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			}
 		}
 
 		> .count {
-			color: var(--fgOnAccent);
-		}
-
-		> .icon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			font-size: 0.9em;
+			line-height: 32px;
+			margin: 0 0 0 4px;
 		}
 	}
 
-	> .count {
-		font-size: 0.9em;
-		line-height: 32px;
-		margin: 0 0 0 4px;
+	&.easy {
+		color: var(--fgTransparentWeak);
+		box-sizing: border-box;
+		display: grid;
+		grid-template-columns: auto auto;
+		grid-template-rows: 32px;
+		border-radius: 4px;
+		outline: solid 1px var(--divider);
+		align-items: center;
+		overflow: hidden;
+
+		&.canToggle {
+			outline: solid 1px var(--accent);
+		}
+
+		&.canToggle:hover,
+		&.reacted {
+			background-color: var(--accent);
+			color: var(--fgOnAccent);
+		}
+
+		&:not(.canToggle) {
+			cursor: default;
+		}
+
+		> .icon {
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 4px;
+			max-width: 100%; // はみ出し防止
+			height: 100% !important; // MkEmojiのheight上書き
+		}
+
+		> .count {
+			box-sizing: border-box;
+			padding: 0 4px;
+			font-size: 0.9em;
+		}
 	}
 }
 </style>
