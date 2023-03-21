@@ -17,7 +17,7 @@
 			<div :class="$style.reactionsViewer">
 				<button
 					ref="reactButton"
-					:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeNormal : $style.viewTypeEasy]"
+					:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal]"
 					class="_button"
 					@click="react"
 				>

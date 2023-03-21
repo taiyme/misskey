@@ -109,7 +109,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, ref, Ref } from 'vue';
+import { inject, onMounted, ref, Ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -213,9 +213,8 @@ const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
 const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
+const showActionsOnlyOnHover = computed(() => tmsStore.reactiveState.showActionsOnlyOnHover.value && !isTouchUsing && deviceKind !== 'smartphone');
 let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
-const showActionsOnlyOnHover = ref(tmsStore.state.showActionsOnlyOnHover && !isTouchUsing && deviceKind !== 'smartphone');
-
 shownNoteIds.add(appearNote.id);
 
 const keymap = {
