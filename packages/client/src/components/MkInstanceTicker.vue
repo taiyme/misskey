@@ -168,10 +168,14 @@ const tickerColor = {
 
 		> .name {
 			display: block;
+			max-width: 100%;
+			margin: -4px; // text-shadow
+			padding: 4px; // text-shadow
 			line-height: 1;
 			opacity: 0.7;
 			white-space: nowrap;
-			overflow: visible;
+			text-overflow: ellipsis;
+			overflow: hidden;
 			text-align: end;
 		}
 	}
