@@ -68,6 +68,7 @@
 			<MkSampleNote
 				:instance-ticker-position="computed(() => tmsInstanceTickerPosition)"
 				:use-reaction-menu="computed(() => tmsUseReactionMenu)"
+				:use-easy-reactions-viewer="computed(() => tmsUseEasyReactionsViewer)"
 				:show-actions-only-on-hover="computed(() => tmsShowActionsOnlyOnHover)"
 			/>
 		</div>

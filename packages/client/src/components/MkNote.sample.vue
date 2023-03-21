@@ -21,7 +21,7 @@
 					class="_button"
 					@click="react"
 				>
-					<MkEmoji emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
+					<MkEmoji :class="$style.reactionIcon" emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
 					<span :class="$style.reactionCount">1</span>
 				</button>
 			</div>
@@ -50,14 +50,14 @@ const props = withDefaults(defineProps<{
 	text?: string;
 	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 	useReactionMenu?: typeof tmsStore.state.useReactionMenu | ComputedRef<typeof tmsStore.state.useReactionMenu>;
-	showActionsOnlyOnHover?: typeof tmsStore.state.showActionsOnlyOnHover | ComputedRef<typeof tmsStore.state.showActionsOnlyOnHover>;
 	useEasyReactionsViewer?: typeof tmsStore.state.useEasyReactionsViewer | ComputedRef<typeof tmsStore.state.useEasyReactionsViewer>;
+	showActionsOnlyOnHover?: typeof tmsStore.state.showActionsOnlyOnHover | ComputedRef<typeof tmsStore.state.showActionsOnlyOnHover>;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
 	useReactionMenu: tmsStore.state.useReactionMenu,
-	showActionsOnlyOnHover: tmsStore.state.showActionsOnlyOnHover,
 	useEasyReactionsViewer: tmsStore.state.useEasyReactionsViewer,
+	showActionsOnlyOnHover: tmsStore.state.showActionsOnlyOnHover,
 });
 
 const user = ref($i);
@@ -72,16 +72,16 @@ const useReactionMenu = computed(() => {
 	);
 });
 
+const reactionViewType = computed(() => {
+	return props.useEasyReactionsViewer ? 'easy' : 'normal';
+});
+
 const showActionsOnlyOnHover = computed(() => {
 	return (
 		typeof props.showActionsOnlyOnHover === 'boolean'
 			? props.showActionsOnlyOnHover
 			: props.showActionsOnlyOnHover.value
 	) && !isTouchUsing && deviceKind !== 'smartphone';
-});
-
-const reactionViewType = computed(() => {
-	return props.useEasyReactionsViewer ? 'easy' : 'normal';
 });
 
 const react = (): void => {
@@ -267,12 +267,12 @@ const react = (): void => {
 		grid-template-columns: auto auto;
 		grid-template-rows: 32px;
 		border-radius: 4px;
-		outline: solid 1px var(--divider);
+		box-shadow: 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
 		align-items: center;
 		overflow: hidden;
 
 		&.canToggle {
-			outline: solid 1px var(--accent);
+			box-shadow: 0 0 0 1px var(--accent); // SEE: https://dskd.jp/archives/73.html
 		}
 
 		&.canToggle:hover,
@@ -285,7 +285,7 @@ const react = (): void => {
 			cursor: default;
 		}
 
-		> .icon {
+		> .reactionIcon {
 			background-color: #fff;
 			box-sizing: border-box;
 			padding: 4px;
@@ -293,7 +293,7 @@ const react = (): void => {
 			height: 100% !important; // MkEmojiのheight上書き
 		}
 
-		> .count {
+		> .reactionCount {
 			box-sizing: border-box;
 			padding: 0 4px;
 			font-size: 0.9em;
