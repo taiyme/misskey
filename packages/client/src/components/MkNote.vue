@@ -90,7 +90,7 @@
 				<button ref="menuButton" class="button _button" @click="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
-				<MkA v-if="showActionsOnlyOnHover" class="button _button" :to="notePage(appearNote)">
+				<MkA v-if="showActionsOnlyOnHover" class="button _button" style="text-decoration: none;" :to="notePage(appearNote)">
 					<i class="ti ti-info-circle"></i>
 				</MkA>
 			</footer>

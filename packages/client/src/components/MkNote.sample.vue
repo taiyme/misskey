@@ -30,7 +30,7 @@
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
-				<div v-if="showActionsOnlyOnHover" :class="$style.footerButton" class="_button"><i class="ti ti-info-circle"></i></div>
+				<div v-if="showActionsOnlyOnHover" :class="$style.footerButton" style="text-decoration: none;" class="_button"><i class="ti ti-info-circle"></i></div>
 			</footer>
 		</div>
 	</article>
