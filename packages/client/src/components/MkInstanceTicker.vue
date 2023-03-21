@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ComputedRef } from 'vue';
 import { instanceName } from '@/config';
 import { instance as Instance } from '@/instance';
 import { tmsStore } from '@/tms/store';
@@ -17,7 +17,7 @@ const props = defineProps<{
 		name: string;
 		themeColor?: string;
 	};
-	forceType?: typeof tmsStore.state.instanceTickerPosition;
+	forceType?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 }>();
 
 // if no instance data is given, this is for the local instance
@@ -28,7 +28,7 @@ const instance = props.instance ?? {
 };
 
 const position = computed(() => {
-	return props.forceType ?? tmsStore.state.instanceTickerPosition;
+	return typeof props.forceType === 'string' ? props.forceType : props.forceType?.value ?? tmsStore.state.instanceTickerPosition;
 });
 
 const hexToRgb = (hex: string): {

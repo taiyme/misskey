@@ -65,7 +65,7 @@
 	<FormSection>
 		<template #label>プレビュー</template>
 		<div ref="sampleNoteArea" class="_formBlock">
-			<MkSampleNote :instance-ticker-position="tmsInstanceTickerPosition" :use-reaction-menu="tmsUseReactionMenu"/>
+			<MkSampleNote :instance-ticker-position="computed(() => tmsInstanceTickerPosition)" :use-reaction-menu="computed(() => tmsUseReactionMenu)"/>
 		</div>
 	</FormSection>
 
@@ -174,7 +174,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';

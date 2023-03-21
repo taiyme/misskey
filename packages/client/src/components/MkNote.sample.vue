@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed, ComputedRef } from 'vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { api } from '@/os';
 import { $i } from '@/account';
@@ -46,8 +46,8 @@ import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-m
 
 const props = withDefaults(defineProps<{
 	text?: string;
-	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition;
-	useReactionMenu?: typeof tmsStore.state.useReactionMenu;
+	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
+	useReactionMenu?: typeof tmsStore.state.useReactionMenu | ComputedRef<typeof tmsStore.state.useReactionMenu>;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
@@ -58,8 +58,12 @@ const user = ref($i && await api('users/show', { userId: $i.id }));
 const createdAt = ref(new Date().toJSON());
 const reactButton = ref<HTMLElement>();
 
+const useReactionMenu = computed(() => {
+	return typeof props.useReactionMenu === 'boolean' ? props.useReactionMenu : props.useReactionMenu.value;
+});
+
 const react = (): void => {
-	if (props.useReactionMenu) {
+	if (useReactionMenu.value) {
 		getReactMenuDryrun({ reactButton });
 	} else {
 		toggleReactDryrun({ reactButton });
