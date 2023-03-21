@@ -9,12 +9,12 @@
 				<div :class="$style.info"><div><MkTime :time="createdAt"/></div></div>
 			</header>
 			<MkInstanceTicker :force-type="instanceTickerPosition"/>
-			<div style="container-type: inline-size;">
+			<div>
 				<div :class="$style.content">
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
 			</div>
-			<footer>
+			<footer :style="$style.footer">
 				<div :style="$style.reactionsViewer">
 					<button
 						ref="reactButton"
@@ -72,6 +72,7 @@ const react = (): void => {
 
 <style lang="scss" module>
 .root {
+	container-type: inline-size;
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
