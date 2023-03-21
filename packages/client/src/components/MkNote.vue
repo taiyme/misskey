@@ -214,7 +214,7 @@ const translation = ref(null);
 const translating = ref(false);
 const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
-const showActionsOnlyOnHover = ref(tmsStore.state.showActionsOnlyOnHover && isTouchUsing && deviceKind === 'desktop');
+const showActionsOnlyOnHover = ref(tmsStore.state.showActionsOnlyOnHover && !isTouchUsing && deviceKind !== 'smartphone');
 
 shownNoteIds.add(appearNote.id);
 
@@ -391,7 +391,7 @@ function readPromo() {
 				font-size: 80%;
 
 				&:not(:last-child) {
-					margin-right: 6px;
+					margin-right: 6px !important;
 				}
 			}
 		}

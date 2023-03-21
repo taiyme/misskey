@@ -75,7 +75,7 @@ const showActionsOnlyOnHover = computed(() => {
 		typeof props.showActionsOnlyOnHover === 'boolean'
 			? props.showActionsOnlyOnHover
 			: props.showActionsOnlyOnHover.value
-	) && isTouchUsing && deviceKind === 'smartphone';
+	) && !isTouchUsing && deviceKind !== 'smartphone';
 });
 
 const react = (): void => {
