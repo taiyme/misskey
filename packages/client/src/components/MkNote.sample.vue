@@ -2,7 +2,7 @@
 <div v-if="user" :class="$style.root">
 	<article :class="$style.article">
 		<MkAvatar :class="$style.avatar" :user="user"/>
-		<div :style="$style.main">
+		<div :class="$style.main">
 			<header :class="$style.header">
 				<div :class="$style.name"><MkUserName :user="user"/></div>
 				<div :class="$style.username"><MkAcct :user="user"/></div>
@@ -14,11 +14,11 @@
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
 			</div>
-			<footer :style="$style.footer">
-				<button :style="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
-				<button :style="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
-				<button :style="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
-				<button :style="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
+			<footer>
+				<button :class="$style.button" class="_button"><i class="ti ti-arrow-back-up"></i></button>
+				<button :class="$style.button" class="_button"><i class="ti ti-repeat"></i></button>
+				<button :class="$style.button" class="_button"><i class="ti ti-plus"></i></button>
+				<button :class="$style.button" class="_button"><i class="ti ti-dots"></i></button>
 			</footer>
 		</div>
 	</article>
@@ -114,7 +114,7 @@ const createdAt = ref(new Date().toJSON());
 	overflow-wrap: break-word;
 }
 
-.footerButton {
+.button {
 	margin: 0;
 	padding: 8px;
 
