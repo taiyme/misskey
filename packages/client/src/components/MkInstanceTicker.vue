@@ -27,7 +27,7 @@ const instance = props.instance ?? {
 	themeColor: document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content,
 };
 
-const position = computed(() => unref(props.forceType) ?? tmsStore.reactiveState.instanceTickerPosition.value);
+const position = computed(() => unref(props.forceType) ?? tmsStore.state.instanceTickerPosition);
 
 const hexToRgb = (hex: string): {
 	r: number;

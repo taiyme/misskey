@@ -300,7 +300,7 @@ const react = ({ reaction, canToggle }: {
 
 		> .reactionCount {
 			box-sizing: border-box;
-			padding: 0 4px;
+			padding: 0 6px;
 			font-size: 0.9em;
 		}
 	}

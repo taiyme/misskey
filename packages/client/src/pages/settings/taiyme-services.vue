@@ -64,7 +64,7 @@
 
 	<FormSection>
 		<template #label>プレビュー</template>
-		<div ref="sampleNoteArea" class="_formBlock">
+		<div class="_formBlock">
 			<MkSampleNote
 				:instance-ticker-position="computed(() => tmsInstanceTickerPosition)"
 				:use-reaction-menu="computed(() => tmsUseReactionMenu)"
@@ -82,7 +82,7 @@
 			<option value="rightedge">右端→</option>
 			<option value="bottomleft">↙左下</option>
 			<option value="bottomright">右下↘</option>
-			<template #caption>タイムライン上のインスタンス情報を指定した位置に表示します。</template>
+			<template #caption>タイムライン上のノートのインスタンス情報を指定した位置に表示します。</template>
 		</FormSelect>
 
 		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
@@ -97,7 +97,8 @@
 
 		<FormSwitch v-model="tmsShowActionsOnlyOnHover" class="_formBlock">
 			ノートの操作部をホバー時のみ表示する
-			<template #caption>スマートフォンなどのタッチデバイスでは、このオプションは無効になります。</template>
+			<template v-if="!isTouchUsing && deviceKind !== 'smartphone'" #caption>タイムライン上のノートにカーソルを合わせたときのみ、操作部を表示するようにします。</template>
+			<template v-else #caption>スマートフォンなどのタッチデバイスでは、このオプションは無効になります。</template>
 		</FormSwitch>
 	</FormSection>
 
@@ -108,8 +109,7 @@
 		</FormSwitch>
 		<FormFolder>
 			<template #label>ノートを畳む条件</template>
-			<template v-if="tmsCollapseNote" #suffix>有効</template>
-			<template v-else #suffix>無効</template>
+			<template #suffix>{{ tmsCollapseNote ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 
 			<div class="_formRoot">
 				<MkInfo class="_formBlock">0以上の整数を指定してください。0を指定すると条件が無効になります。</MkInfo>
@@ -161,8 +161,7 @@
 		</FormSwitch>
 		<FormFolder>
 			<template #label>削除する条件</template>
-			<template v-if="tmsUseImanonashi" #suffix>有効</template>
-			<template v-else #suffix>無効</template>
+			<template #suffix>{{ tmsUseImanonashi ? i18n.ts.enabled : i18n.ts.disabled }}</template>
 
 			<div class="_formRoot">
 				<FormTextarea v-model="tmsImanonashiWords" class="_formBlock">
@@ -203,6 +202,8 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkSampleNote from '@/components/MkNote.sample.vue';
 import * as os from '@/os';
+import { isTouchUsing } from '@/scripts/touch';
+import { deviceKind } from '@/scripts/device-kind';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { version } from '@/config';
@@ -305,24 +306,37 @@ watch(
 // #endregion
 
 // #region check/save
-const check = async (): Promise<boolean> => {
+const check = async (): Promise<{
+	ok: boolean;
+	errors: string[];
+}> => {
+	const errors: string[] = [];
 	const isNumberInRange = (x: number, min?: number, max?: number): boolean => {
 		if (!Number.isInteger(x)) return false;
 		if (Math.sign(x) === -1) return false;
 		return (min == null ? -Infinity : min) <= x && x <= (max == null ? Infinity : max);
 	};
-	return (
-		isNumberInRange(tmsCollapseNoteHeight, 0) &&
-		isNumberInRange(tmsCollapseNoteFile, 0) &&
-		isNumberInRange(tmsCollapseNoteUrl, 0) &&
-		isNumberInRange(tmsCollapseNotePoll, 0) &&
-		checkWords(tmsImanonashiWords)
-	);
+	if (!isNumberInRange(tmsCollapseNoteHeight, 0)) errors.push(`[RangeError]: key=collapseNoteHeight; input=${tmsCollapseNoteHeight};`);
+	if (!isNumberInRange(tmsCollapseNoteFile, 0)) errors.push(`[RangeError]: key=collapseNoteFile; input=${tmsCollapseNoteFile};`);
+	if (!isNumberInRange(tmsCollapseNoteUrl, 0)) errors.push(`[RangeError]: key=collapseNoteUrl; input=${tmsCollapseNoteUrl};`);
+	if (!isNumberInRange(tmsCollapseNotePoll, 0)) errors.push(`[RangeError]: key=collapseNotePoll; input=${tmsCollapseNotePoll};`);
+	if (!checkWords(tmsImanonashiWords)) errors.push(`[SyntaxError]: key=imanonashiWords; input=${tmsImanonashiWords};`);
+	return {
+		ok: errors.length === 0,
+		errors,
+	};
 };
 
 const save = async (): Promise<void> => {
 	if (!changed) return;
-	if (!(await check())) return os.alert({ type: 'error' });
+	const { ok, errors } = await check();
+
+	if (!ok) {
+		return os.alert({
+			type: 'error',
+			text: errors.join('\n'),
+		});
+	}
 	
 	type Store = typeof tmsStore.state;
 	type StoreKeys = keyof Store;

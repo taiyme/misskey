@@ -31,7 +31,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const useEasyReactionsViewer = computed(() => tmsStore.reactiveState.useEasyReactionsViewer.value);
+const useEasyReactionsViewer = computed(() => tmsStore.state.useEasyReactionsViewer);
 
 const buttonRef = ref<HTMLElement>();
 
@@ -171,7 +171,7 @@ useTooltip(buttonRef, async (showing) => {
 
 		> .count {
 			box-sizing: border-box;
-			padding: 0 4px;
+			padding: 0 6px;
 			font-size: 0.9em;
 		}
 	}

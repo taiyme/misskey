@@ -213,7 +213,7 @@ const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
 const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const showActionsOnlyOnHover = computed(() => tmsStore.reactiveState.showActionsOnlyOnHover.value && !isTouchUsing && deviceKind !== 'smartphone');
+const showActionsOnlyOnHover = computed(() => tmsStore.state.showActionsOnlyOnHover && !isTouchUsing && deviceKind !== 'smartphone');
 let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
 shownNoteIds.add(appearNote.id);
 
