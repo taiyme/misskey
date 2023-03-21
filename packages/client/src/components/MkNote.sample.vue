@@ -306,13 +306,9 @@ const react = ({ reaction, canToggle }: {
 	}
 }
 
-@container (max-width: 580px) {
+@container (max-width: 500px) {
 	.root {
-		font-size: 0.95em;
-	}
-
-	.article {
-		padding: 24px 26px;
+		font-size: 0.9em;
 	}
 
 	.avatar {
@@ -321,47 +317,23 @@ const react = ({ reaction, canToggle }: {
 	}
 }
 
-@container (max-width: 500px) {
-	.root {
-		font-size: 0.9em;
-	}
-
-	.article {
-		padding: 20px 22px;
-	}
-
-	.footer {
-		margin-bottom: -8px;
-	}
-}
-
-@container (max-width: 480px) {
-
-	.article {
-		padding: 14px 16px;
-	}
-}
-
 @container (max-width: 450px) {
+	.article {
+		padding: 14px 16px 9px;
+	}
+
 	.avatar {
-		margin: 0 10px 0 0;
+		margin: 0 10px 8px 0;
 		width: 46px;
 		height: 46px;
+		top: calc(14px + var(--stickyTop, 0px));
 	}
-}
-
-@container (max-width: 400px) {
-	.footerButton {
-			&:not(:last-child) {
-				margin-right: 18px;
-			}
-		}
 }
 
 @container (max-width: 350px) {
 	.footerButton {
 		&:not(:last-child) {
-			margin-right: 12px;
+			margin-right: 18px;
 		}
 	}
 }
@@ -374,7 +346,7 @@ const react = ({ reaction, canToggle }: {
 
 	.footerButton {
 		&:not(:last-child) {
-			margin-right: 8px;
+			margin-right: 12px;
 		}
 	}
 }
