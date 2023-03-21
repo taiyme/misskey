@@ -64,7 +64,7 @@
 
 	<FormSection>
 		<template #label>プレビュー</template>
-		<div class="_formBlock">
+		<div ref="sampleNoteArea" class="_formBlock">
 			<MkSampleNote :key="sampleNoteReloadCount" :instance-ticker-position="tmsInstanceTickerPosition" :use-reaction-menu="tmsUseReactionMenu"/>
 		</div>
 	</FormSection>
@@ -174,7 +174,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, onMounted } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
@@ -288,6 +288,17 @@ let sampleNoteReloadCount = $ref(0);
 const sampleNoteReload = (): void => {
 	sampleNoteReloadCount++;
 };
+
+const sampleNoteArea = $ref<HTMLElement>();
+onMounted(() => {
+	if (!sampleNoteArea) return;
+	const keepHeight = (): void => {
+		const height = sampleNoteArea.scrollHeight;
+		if (height === 0) return;
+		sampleNoteArea.style.minHeight = `${height}px`;
+	};
+	new ResizeObserver(keepHeight).observe(sampleNoteArea);
+});
 // #endregion
 
 // #region check/save
