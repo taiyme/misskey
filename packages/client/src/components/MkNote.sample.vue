@@ -39,7 +39,6 @@
 <script lang="ts" setup>
 import { ref, computed, ComputedRef } from 'vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { api } from '@/os';
 import { $i } from '@/account';
 import { tmsStore } from '@/tms/store';
 import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-menu';
@@ -54,7 +53,7 @@ const props = withDefaults(defineProps<{
 	useReactionMenu: tmsStore.state.useReactionMenu,
 });
 
-const user = ref($i && await api('users/show', { userId: $i.id }));
+const user = ref($i);
 const createdAt = ref(new Date().toJSON());
 const reactButton = ref<HTMLElement>();
 
