@@ -15,15 +15,16 @@
 				</div>
 			</div>
 			<div :class="$style.reactionsViewer">
-				<button
-					ref="reactButton"
-					:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal]"
-					class="_button"
-					@click="react"
-				>
-					<MkEmoji :class="$style.reactionIcon" emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
-					<span :class="$style.reactionCount">1</span>
-				</button>
+				<template v-for="item in reactions" :key="item.reaction">
+					<button
+						:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.canToggle]: item.canToggle }]"
+						class="_button"
+						@click="react(item, $event)"
+					>
+						<MkEmoji :class="$style.reactionIcon" :emoji="item.reaction" :custom-emojis="item.customEmojis" :is-reaction="true" :normal="true"/>
+						<span :class="$style.reactionCount">1</span>
+					</button>
+				</template>
 			</div>
 			<footer :class="$style.footer">
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
@@ -45,6 +46,8 @@ import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
 import { tmsStore } from '@/tms/store';
 import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-menu';
+import { getRandomArrayElements } from '@/scripts/tms/utils';
+import { instance } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	text?: string;
@@ -62,19 +65,44 @@ const props = withDefaults(defineProps<{
 
 const user = ref($i);
 const createdAt = ref(new Date().toJSON());
-const reactButton = ref<HTMLElement>();
 
 const useReactionMenu = computed(() => unref(props.useReactionMenu));
-
 const useEasyReactionsViewer = computed(() => unref(props.useEasyReactionsViewer));
-
 const showActionsOnlyOnHover = computed(() => unref(props.showActionsOnlyOnHover) && !isTouchUsing && deviceKind !== 'smartphone');
 
-const react = (): void => {
+const emojis = getRandomArrayElements(instance.emojis ?? [], 3).map(emoji => {
+	return {
+		reaction: emoji.name,
+		canToggle: true,
+		customEmojis: [emoji],
+	};
+});
+
+const reactions = [
+	{
+		reaction: '👍',
+		canToggle: true,
+		customEmojis: [],
+	},
+	{
+		reaction: '🍮',
+		canToggle: true,
+		customEmojis: [],
+	},
+	...emojis,
+];
+
+const react = ({ reaction, canToggle }: {
+	reaction: string;
+	canToggle: boolean;
+}, ev: MouseEvent): void => {
+	if (!(ev.target instanceof HTMLElement)) return;
+	const reactButton = ref(ev.target);
+
 	if (useReactionMenu.value) {
-		getReactMenuDryrun({ reactButton });
+		getReactMenuDryrun({ reactButton, reaction });
 	} else {
-		toggleReactDryrun({ reactButton });
+		toggleReactDryrun({ reactButton, canToggle: ref(canToggle) });
 	}
 };
 </script>
