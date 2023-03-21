@@ -65,12 +65,12 @@
 	<FormSection>
 		<template #label>プレビュー</template>
 		<div ref="sampleNoteArea" class="_formBlock">
-			<MkSampleNote :key="sampleNoteReloadCount" :instance-ticker-position="tmsInstanceTickerPosition" :use-reaction-menu="tmsUseReactionMenu"/>
+			<MkSampleNote :instance-ticker-position="tmsInstanceTickerPosition" :use-reaction-menu="tmsUseReactionMenu"/>
 		</div>
 	</FormSection>
 
 	<FormSection>
-		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock" @update:model-value="sampleNoteReload">
+		<FormSelect v-model="tmsInstanceTickerPosition" class="_formBlock">
 			<template #label>ノートのインスタンス情報の表示位置</template>
 			<option value="normal">通常</option>
 			<option value="leftedge">←左端</option>
@@ -80,7 +80,7 @@
 			<template #caption>タイムライン上のインスタンス情報を指定した位置に表示します。</template>
 		</FormSelect>
 
-		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock" @update:model-value="sampleNoteReload">
+		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
 			リアクションメニューを有効にする
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
 		</FormSwitch>
@@ -174,7 +174,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted } from 'vue';
+import { watch } from 'vue';
 import FormLink from '@/components/form/link.vue';
 import FormSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
@@ -283,22 +283,6 @@ watch(
 		changed = true;
 	},
 );
-
-let sampleNoteReloadCount = $ref(0);
-const sampleNoteReload = (): void => {
-	sampleNoteReloadCount++;
-};
-
-const sampleNoteArea = $ref<HTMLElement>();
-onMounted(() => {
-	if (!sampleNoteArea) return;
-	const keepHeight = (): void => {
-		const height = sampleNoteArea.scrollHeight;
-		if (height === 0) return;
-		sampleNoteArea.style.minHeight = `${height}px`;
-	};
-	new ResizeObserver(keepHeight).observe(sampleNoteArea);
-});
 // #endregion
 
 // #region check/save
