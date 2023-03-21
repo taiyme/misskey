@@ -68,11 +68,29 @@ function edit() {
 	router.push(`/channels/${channel.id}/edit`);
 }
 
+async function deleteChannel(): Promise<void> {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('removeAreYouSure', { x: channel.name }),
+	});
+
+	if (canceled) return;
+
+	await os.apiWithDialog('channels/delete', {
+		channelId: props.channelId,
+	});
+	router.push('/channels');
+}
+
 const headerActions = $computed(() => channel && channel.userId ? [{
 	icon: 'ti ti-settings',
 	text: i18n.ts.edit,
 	handler: edit,
-}] : null);
+}, ...($i != null && ($i.isAdmin || $i.isModerator) ? [{
+	icon: 'ti ti-trash',
+	text: i18n.ts.delete,
+	handler: deleteChannel,
+}] : [])] : []);
 
 const headerTabs = $computed(() => []);
 

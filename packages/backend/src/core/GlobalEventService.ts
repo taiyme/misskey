@@ -34,7 +34,7 @@ export class GlobalEventService {
 		private config: Config,
 
 		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		private redisClient: Redis,
 	) {
 	}
 

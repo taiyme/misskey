@@ -91,6 +91,7 @@ import * as ep___channels_show from './endpoints/channels/show.js';
 import * as ep___channels_timeline from './endpoints/channels/timeline.js';
 import * as ep___channels_unfollow from './endpoints/channels/unfollow.js';
 import * as ep___channels_update from './endpoints/channels/update.js';
+import * as ep___channels_delete from './endpoints/channels/delete.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -409,6 +410,7 @@ const $channels_show: Provider = { provide: 'ep:channels/show', useClass: ep___c
 const $channels_timeline: Provider = { provide: 'ep:channels/timeline', useClass: ep___channels_timeline.default };
 const $channels_unfollow: Provider = { provide: 'ep:channels/unfollow', useClass: ep___channels_unfollow.default };
 const $channels_update: Provider = { provide: 'ep:channels/update', useClass: ep___channels_update.default };
+const $channels_delete: Provider = { provide: 'ep:channels/delete', useClass: ep___channels_delete.default };
 const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useClass: ep___charts_activeUsers.default };
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
@@ -731,6 +733,7 @@ const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.d
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$channels_delete,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
