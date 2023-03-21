@@ -9,7 +9,7 @@
 				<div :class="$style.info"><div><MkTime :time="createdAt"/></div></div>
 			</header>
 			<MkInstanceTicker :force-type="instanceTickerPosition"/>
-			<div :class="$style.body">
+			<div style="container-type: inline-size;">
 				<div :class="$style.content">
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
@@ -26,10 +26,10 @@
 						<span :class="$style.reactionCount">1</span>
 					</button>
 				</div>
-				<button :class="$style.button" class="_button"><i class="ti ti-arrow-back-up"></i></button>
-				<button :class="$style.button" class="_button"><i class="ti ti-repeat"></i></button>
-				<button :class="$style.button" class="_button"><i class="ti ti-plus"></i></button>
-				<button :class="$style.button" class="_button"><i class="ti ti-dots"></i></button>
+				<button :class="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
+				<button :class="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
+				<button :class="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
+				<button :class="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
 			</footer>
 		</div>
 	</article>
@@ -140,7 +140,7 @@ const react = (): void => {
 	overflow-wrap: break-word;
 }
 
-.button {
+.footerButton {
 	margin: 0;
 	padding: 8px;
 
@@ -174,5 +174,78 @@ const react = (): void => {
 	font-size: 0.9em;
 	line-height: 32px;
 	margin: 0 0 0 4px;
+}
+
+@container (max-width: 580px) {
+	.root {
+		font-size: 0.95em;
+	}
+
+	.article {
+		padding: 24px 26px;
+	}
+
+	.avatar {
+		width: 50px;
+		height: 50px;
+	}
+}
+
+@container (max-width: 500px) {
+	.root {
+		font-size: 0.9em;
+	}
+
+	.article {
+		padding: 20px 22px;
+	}
+
+	.footer {
+		margin-bottom: -8px;
+	}
+}
+
+@container (max-width: 480px) {
+
+	.article {
+		padding: 14px 16px;
+	}
+}
+
+@container (max-width: 450px) {
+	.avatar {
+		margin: 0 10px 0 0;
+		width: 46px;
+		height: 46px;
+	}
+}
+
+@container (max-width: 400px) {
+	.footerButton {
+			&:not(:last-child) {
+				margin-right: 18px;
+			}
+		}
+}
+
+@container (max-width: 350px) {
+	.footerButton {
+		&:not(:last-child) {
+			margin-right: 12px;
+		}
+	}
+}
+
+@container (max-width: 300px) {
+	.avatar {
+		width: 44px;
+		height: 44px;
+	}
+
+	.footerButton {
+		&:not(:last-child) {
+			margin-right: 8px;
+		}
+	}
 }
 </style>
