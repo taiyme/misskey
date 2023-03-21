@@ -72,7 +72,7 @@ const showActionsOnlyOnHover = computed(() => unref(props.showActionsOnlyOnHover
 
 const emojis = getRandomArrayElements(instance.emojis ?? [], 3).map(emoji => {
 	return {
-		reaction: emoji.name,
+		reaction: `:${emoji.name}:`,
 		canToggle: true,
 		customEmojis: [emoji],
 	};
