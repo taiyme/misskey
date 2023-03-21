@@ -17,7 +17,7 @@
 			<div :class="$style.reactionsViewer">
 				<button
 					ref="reactButton"
-					:class="[$style.reactionButton, $style[reactionViewType]]"
+					:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeNormal : $style.viewTypeEasy]"
 					class="_button"
 					@click="react"
 				>
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, ComputedRef } from 'vue';
+import { ref, computed, ComputedRef, unref } from 'vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { $i } from '@/account';
 import { isTouchUsing } from '@/scripts/touch';
@@ -64,25 +64,11 @@ const user = ref($i);
 const createdAt = ref(new Date().toJSON());
 const reactButton = ref<HTMLElement>();
 
-const useReactionMenu = computed(() => {
-	return (
-		typeof props.useReactionMenu === 'boolean'
-			? props.useReactionMenu
-			: props.useReactionMenu.value
-	);
-});
+const useReactionMenu = computed(() => unref(props.useReactionMenu));
 
-const reactionViewType = computed(() => {
-	return props.useEasyReactionsViewer ? 'easy' : 'normal';
-});
+const useEasyReactionsViewer = computed(() => unref(props.useEasyReactionsViewer));
 
-const showActionsOnlyOnHover = computed(() => {
-	return (
-		typeof props.showActionsOnlyOnHover === 'boolean'
-			? props.showActionsOnlyOnHover
-			: props.showActionsOnlyOnHover.value
-	) && !isTouchUsing && deviceKind !== 'smartphone';
-});
+const showActionsOnlyOnHover = computed(() => unref(props.showActionsOnlyOnHover) && !isTouchUsing && deviceKind !== 'smartphone');
 
 const react = (): void => {
 	if (useReactionMenu.value) {
@@ -219,7 +205,7 @@ const react = (): void => {
 }
 
 .reactionButton {
-	&.normal {
+	&.viewTypeNormal {
 		display: inline-block;
 		height: 32px;
 		padding: 0 6px;
@@ -260,7 +246,7 @@ const react = (): void => {
 		}
 	}
 
-	&.easy {
+	&.viewTypeEasy {
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
 		display: grid;

@@ -3,7 +3,7 @@
 	v-if="count > 0"
 	ref="buttonRef"
 	class="hkzvhatu _button"
-	:class="[viewType, { reacted: note.myReaction == reaction, canToggle }]"
+	:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'normal' : 'easy']"
 	@click="react"
 >
 	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
@@ -31,7 +31,7 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const viewType = computed(() => tmsStore.state.useEasyReactionsViewer ? 'easy' : 'normal');
+const useEasyReactionsViewer = computed(() => tmsStore.reactiveState.useEasyReactionsViewer.value);
 
 const buttonRef = ref<HTMLElement>();
 
