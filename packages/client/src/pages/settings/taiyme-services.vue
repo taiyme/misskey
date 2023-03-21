@@ -89,7 +89,7 @@
 			<template #caption>リアクションを押したとき、リアクションメニューを表示するようにします。無効にすると従来のトグル式になります。</template>
 		</FormSwitch>
 
-		<FormSwitch v-model="tmsUseReactionMenu" class="_formBlock">
+		<FormSwitch v-model="tmsShowActionsOnlyOnHover" class="_formBlock">
 			ノートの操作部をホバー時のみ表示する
 			<template #caption>スマートフォンなどのタッチデバイスでは、このオプションは無効になります。</template>
 		</FormSwitch>
