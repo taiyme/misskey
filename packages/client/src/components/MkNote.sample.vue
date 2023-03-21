@@ -14,23 +14,23 @@
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
 			</div>
-			<footer :style="$style.footer">
-				<div :style="$style.reactionsViewer">
-					<button
-						ref="reactButton"
-						:class="$style.reactionButton"
-						class="_button"
-						@click="react"
-					>
-						<MkEmoji emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
-						<span :class="$style.reactionCount">1</span>
-					</button>
-				</div>
+			<div :class="$style.reactionsViewer">
+				<button
+					ref="reactButton"
+					:class="$style.reactionButton"
+					class="_button"
+					@click="react"
+				>
+					<MkEmoji emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
+					<span :class="$style.reactionCount">1</span>
+				</button>
+			</div>
+			<footer :class="$style.footer">
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
-				<button v-if="showActionsOnlyOnHover" :class="$style.footerButton" class="_button"><i class="ti ti-info-circle"></i></button>
+				<div v-if="showActionsOnlyOnHover" :class="$style.footerButton" class="_button"><i class="ti ti-info-circle"></i></div>
 			</footer>
 		</div>
 	</article>
