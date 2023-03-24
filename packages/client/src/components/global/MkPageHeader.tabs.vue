@@ -1,5 +1,5 @@
 <template>
-<div ref="el" :class="$style.tabs" @wheel="onTabWheel">
+<div ref="rootEl" :class="[$style.tabs, { [$style.entering]: entering }]" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs"
@@ -69,7 +69,7 @@ const emit = defineEmits<{
 	(ev: 'tabClick', key: string);
 }>();
 
-const el = shallowRef<HTMLElement | null>(null);
+const rootEl = shallowRef<HTMLElement | null>(null);
 const tabRefs: Record<string, HTMLElement | null> = {};
 const tabHighlightEl = shallowRef<HTMLElement | null>(null);
 
@@ -120,14 +120,14 @@ const onTabWheel = (ev: WheelEvent): boolean => {
 
 let entering = false;
 
-const enter = async (el_: HTMLElement): Promise<void> => {
+const enter = async (el: HTMLElement): Promise<void> => {
 	entering = true;
-	const { width: elementWidth } = el_.getBoundingClientRect();
-	el_.style.width = '0';
-	el_.style.paddingLeft = '0';
-	el_.offsetWidth; // force reflow
-	el_.style.width = `${elementWidth}px`;
-	el_.style.paddingLeft = '';
+	const { width: elementWidth } = el.getBoundingClientRect();
+	el.style.width = '0';
+	el.style.paddingLeft = '0';
+	el.offsetWidth; // force reflow
+	el.style.width = `${elementWidth}px`;
+	el.style.paddingLeft = '';
 	nextTick(() => {
 		entering = false;
 	});
@@ -136,20 +136,20 @@ const enter = async (el_: HTMLElement): Promise<void> => {
 };
 
 const afterEnter = (_el: HTMLElement): void => {
-	//el.style.width = '';
+	//_el.style.width = '';
 };
 
-const leave = async (el_: HTMLElement): Promise<void> => {
-	const { width: elementWidth } = el_.getBoundingClientRect();
-	el_.style.width = `${elementWidth}px`;
-	el_.style.paddingLeft = '';
-	el_.offsetWidth; // force reflow
-	el_.style.width = '0';
-	el_.style.paddingLeft = '0';
+const leave = async (el: HTMLElement): Promise<void> => {
+	const { width: elementWidth } = el.getBoundingClientRect();
+	el.style.width = `${elementWidth}px`;
+	el.style.paddingLeft = '';
+	el.offsetWidth; // force reflow
+	el.style.width = '0';
+	el.style.paddingLeft = '0';
 };
 
-const afterLeave = (el_: HTMLElement): void => {
-	el_.style.width = '';
+const afterLeave = (el: HTMLElement): void => {
+	el.style.width = '';
 };
 
 let ro2: ResizeObserver | null;
@@ -168,8 +168,8 @@ onMounted(() => {
 	});
 
 	if (props.rootEl) {
-		ro2 = new ResizeObserver((_entries, _observer) => {
-			if (document.body.contains(el.value)) {
+		ro2 = new ResizeObserver(() => {
+			if (document.body.contains(rootEl.value)) {
 				nextTick(() => renderTab());
 			}
 		});
@@ -196,6 +196,10 @@ onUnmounted(() => {
 
 	&::-webkit-scrollbar {
 		display: none;
+	}
+
+	&.entering {
+		pointer-events: none;
 	}
 }
 
