@@ -1,16 +1,18 @@
-import { VNode, defineComponent, h } from 'vue';
+import { VNode, defineComponent, h, PropType } from 'vue';
+import { CustomEmoji } from 'misskey-js/built/entities';
 import * as mfm from 'mfm-js';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
-import { concat } from '@/scripts/array';
 import MkFormula from '@/components/MkFormula.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
+import { defaultStore } from '@/store';
+import { parseMfmText } from '@/scripts/tms/parse-mfm-text';
 
 export default defineComponent({
 	props: {
@@ -35,7 +37,9 @@ export default defineComponent({
 			default: null,
 		},
 		customEmojis: {
+			type: Array as PropType<CustomEmoji[]>,
 			required: false,
+			default: undefined,
 		},
 		isNote: {
 			type: Boolean,
@@ -48,21 +52,39 @@ export default defineComponent({
 
 		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text);
 
-		const validTime = (t: string | null | undefined) => {
-			if (t == null) return null;
+		const validTime = (t: unknown): string | null => {
+			if (typeof t !== 'string') return null;
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
-		const genEl = (ast: mfm.MfmNode[]) => concat(ast.map((token): VNode[] => {
+		const parseNumber = (n: unknown): number | null => {
+			if (typeof n === 'number') return n;
+			if (typeof n !== 'string') return null;
+			const parsedFloat = parseFloat(n);
+			if (Number.isNaN(parsedFloat)) return null;
+			return parsedFloat;
+		};
+
+		const validHex = (hex: unknown): hex is string => {
+			if (typeof hex !== 'string') return false;
+			// TODO: v13系との互換性のためにあえて残しているが、このままでは4桁,5桁の意図しない色コードを許可してしまう
+			// 6桁,3桁の色コードを許可するつもりなら /^([0-9a-f]{3}){1,2}$/i
+			// 加えて8桁,4桁の色コードを許可するのであれば /^(([0-9a-f]{3}){1,2}|([0-9a-f]{4}){1,2})$/i
+			return /^[0-9a-f]{3,6}$/i.test(hex);
+		};
+
+		const useAnim = defaultStore.state.animatedMfm;
+
+		const genEl = (ast: mfm.MfmNode[]) => ast.map((token): VNode | string | (VNode | string)[] => {
 			switch (token.type) {
 				case 'text': {
 					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (!this.plain) {
-						const res = [];
+						const res: (VNode | string)[] = [];
 						for (const t of text.split('\n')) {
 							res.push(h('br'));
-							res.push(t);
+							res.push(...parseMfmText(t));
 						}
 						res.shift();
 						return res;
@@ -87,26 +109,26 @@ export default defineComponent({
 
 				case 'fn': {
 					// TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
-					let style;
+					let style: string | undefined;
 					switch (token.props.name) {
 						case 'tada': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
+							style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = (this.$store.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+							style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
 							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+							style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
 							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
+							style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'spin': {
@@ -119,17 +141,17 @@ export default defineComponent({
 								token.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
 							const speed = validTime(token.props.args.speed) ?? '1.5s';
-							style = this.$store.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+							style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
 							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
+							style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
 							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+							style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
 						case 'flip': {
@@ -178,41 +200,41 @@ export default defineComponent({
 						}
 						case 'rainbow': {
 							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
+							style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'sparkle': {
-							if (!this.$store.state.animatedMfm) {
+							if (!useAnim) {
 								return genEl(token.children);
 							}
 							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
-							const degrees = parseFloat(token.props.args.deg ?? '90');
+							const degrees = parseNumber(token.props.args.deg) ?? 90;
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 							break;
 						}
 						case 'position': {
-							const x = parseFloat(token.props.args.x ?? '0');
-							const y = parseFloat(token.props.args.y ?? '0');
+							const x = parseNumber(token.props.args.x) ?? 0;
+							const y = parseNumber(token.props.args.y) ?? 0;
 							style = `transform: translateX(${x}em) translateY(${y}em);`;
 							break;
 						}
 						case 'scale': {
-							const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
-							const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
+							const x = Math.min(parseNumber(token.props.args.x) ?? 1, 5);
+							const y = Math.min(parseNumber(token.props.args.y) ?? 1, 5);
 							style = `transform: scale(${x}, ${y});`;
 							break;
 						}
 						case 'fg': {
 							let color = token.props.args.color;
-							if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+							if (!validHex(color)) color = 'f00';
 							style = `color: #${color};`;
 							break;
 						}
 						case 'bg': {
 							let color = token.props.args.color;
-							if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+							if (!validHex(color)) color = 'f00';
 							style = `background-color: #${color};`;
 							break;
 						}
@@ -274,7 +296,7 @@ export default defineComponent({
 					return [h(MkCode, {
 						key: Math.random(),
 						code: token.props.code,
-						lang: token.props.lang,
+						lang: token.props.lang ?? undefined,
 					})];
 				}
 
@@ -346,12 +368,13 @@ export default defineComponent({
 				}
 
 				default: {
-					console.error('unrecognized ast type:', token.type);
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					console.error('unrecognized ast type:', (token as any).type);
 
 					return [];
 				}
 			}
-		}));
+		}).flat(Infinity) as (VNode | string)[];
 
 		// Parse ast to DOM
 		return h('span', genEl(ast));
