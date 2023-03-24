@@ -11,8 +11,8 @@
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
 	<div v-if="pinned" class="info"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<div v-if="(appearNote as any)._prId_" class="info"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
-	<div v-if="(appearNote as any)._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
+	<div v-if="(appearNote as any /* 定義されていないため */)._prId_" class="info"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
+	<div v-if="(appearNote as any /* 定義されていないため */)._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
 		<i class="ti ti-repeat"></i>
@@ -54,8 +54,8 @@
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
-								<b>{{ $t('translatedFrom', { x: (translation as any).sourceLang }) }}: </b>
-								<Mfm :text="(translation as any).text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+								<b>{{ $t('translatedFrom', { x: (translation as any /* 定義されていないため */).sourceLang }) }}: </b>
+								<Mfm :text="(translation as any /* 定義されていないため */).text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 						<span>{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
-				<MkA v-if="(appearNote as any).channel && !inChannel" class="channel" :to="`/channels/${(appearNote as any).channel.id}`"><i class="ti ti-device-tv"></i> {{ (appearNote as any).channel.name }}</MkA>
+				<MkA v-if="(appearNote as any /* 定義されていないため */).channel && !inChannel" class="channel" :to="`/channels/${(appearNote as any /* 定義されていないため */).channel.id}`"><i class="ti ti-device-tv"></i> {{ (appearNote as any /* 定義されていないため */).channel.name }}</MkA>
 			</div>
 			<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 			<footer class="footer">
@@ -110,9 +110,9 @@
 
 <script lang="ts" setup>
 import { inject, onMounted, ref, Ref, computed } from 'vue';
+import { ReactiveVariable } from 'vue/macros';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
-import { ReactiveVariable } from 'vue/macros';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import XNoteHeader from '@/components/MkNoteHeader.vue';
 import XNoteSimple from '@/components/MkNoteSimple.vue';
@@ -143,6 +143,7 @@ import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
 import { shownNoteIds } from '@/os';
 import { tmsStore } from '@/tms/store';
+import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -158,21 +159,16 @@ if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
 		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>;
+			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>; // unknownのため
 		}
 		note = result;
 	});
 }
 
-const isRenote = (
-	note.renote != null &&
-	note.text == null &&
-	note.fileIds.length === 0 &&
-	note.poll == null
-);
+const isRenote = isPureRenote(note);
 
 const textEl = ref<HTMLElement>();
-let textElHeight = $ref(0);
+let textElHeight = $ref<number | null>(null);
 onMounted(() => {
 	if (textEl.value) {
 		const resizeObserver = new ResizeObserver(() => {
@@ -188,23 +184,20 @@ const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $computed(() => isRenote ? (note.renote as misskey.entities.Note) : note);
+let appearNote = $computed(() => isPureRenote(note) ? note.renote : note); // 本当はisRenoteを使いたいけど型推論してくれない
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const tmsCollapseNote = tmsStore.state.collapseNote;
-const tmsCollapseNoteHeight = tmsStore.state.collapseNoteHeight;
-const tmsCollapseNoteFile = tmsStore.state.collapseNoteFile;
-const tmsCollapseNoteUrl = tmsStore.state.collapseNoteUrl;
-const tmsCollapseNotePoll = tmsStore.state.collapseNotePoll;
+const { collapseNote, collapseNoteHeight, collapseNoteFile, collapseNoteUrl, collapseNotePoll } = tmsStore.state;
 const isLong = $computed(() => {
-	return tmsCollapseNote && !!(
+	return collapseNote && !!(
 		appearNote.cw == null && 
 		appearNote.text != null && (
-			(!!tmsCollapseNoteHeight && (textElHeight >= tmsCollapseNoteHeight)) ||
-			(!!tmsCollapseNoteFile && (appearNote.files.length >= tmsCollapseNoteFile)) ||
-			(!!tmsCollapseNoteUrl && (urls && urls.length >= tmsCollapseNoteUrl)) ||
-			(!!tmsCollapseNotePoll && (appearNote.poll?.choices.length ?? 0) >= tmsCollapseNotePoll)
+			// textElHeight: null の場合は文字数で判定する
+			(!!collapseNoteHeight && (textElHeight == null ? appearNote.text.length > 500 : textElHeight >= collapseNoteHeight)) ||
+			(!!collapseNoteFile && (appearNote.files.length >= collapseNoteFile)) ||
+			(!!collapseNoteUrl && (urls && urls.length >= collapseNoteUrl)) ||
+			(!!collapseNotePoll && (appearNote.poll?.choices.length ?? 0) >= collapseNotePoll)
 		)
 	);
 });
@@ -223,50 +216,50 @@ const keymap = {
 	'r': (): void => reply(true),
 	'e|a|plus': (): void => react(true),
 	'q': (): void => renoteButton.value?.renote(true),
-	'up|k|shift+tab': focusBefore,
-	'down|j|tab': focusAfter,
-	'esc': blur,
+	'up|k|shift+tab': (): void => focusBefore(),
+	'down|j|tab': (): void => focusAfter(),
+	'esc': (): void => blur(),
 	'm|o': (): void => menu(true),
 };
 
 useNoteCapture({
-	rootEl: el as Ref<HTMLElement>,
+	rootEl: el as Ref<HTMLElement>, // undefinedを除外するため
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
 
-function reply(viaKeyboard = false): void {
+const reply = (viaKeyboard = false): void => {
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
 	});
-}
+};
 
-function react(_viaKeyboard = false): void {
+const react = (_viaKeyboard = false): void => {
+	if (!reactButton.value) return;
+
 	pleaseLogin();
 	blur();
-	reactionPicker.show(reactButton.value as HTMLElement, reaction => {
+	reactionPicker.show(reactButton.value, reaction => {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
-	}, () => {
-		focus();
-	});
-}
+	}, focus);
+};
 
-function undoReact(note_: misskey.entities.Note): void {
+const undoReact = (note_: misskey.entities.Note): void => {
 	const oldReaction = note_.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
 		noteId: note_.id,
 	});
-}
+};
 
 const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
-function onContextmenu(ev: MouseEvent): void {
+const onContextmenu = (ev: MouseEvent): void => {
 	const isLink = (elem: HTMLElement): boolean => {
 		if (elem.tagName === 'A') return true;
 		if (elem.parentElement) {
@@ -275,24 +268,44 @@ function onContextmenu(ev: MouseEvent): void {
 
 		return false;
 	};
-	if (isLink(ev.target as HTMLElement)) return;
+	if (!(ev.target instanceof HTMLElement)) return;
+	if (isLink(ev.target)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	if (defaultStore.state.useReactionPickerForContextMenu) {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note, translating, translation, menuButton: menuButton as Ref<HTMLElement>, isDeleted, currentClipPage: currentClipPage ?? undefined }), ev).then(focus);
+		os.contextMenu(
+			getNoteMenu({
+				note,
+				translating,
+				translation,
+				// menuButton,
+				isDeleted,
+				currentClipPage: currentClipPage ?? undefined,
+			}),
+			ev,
+		).then(focus);
 	}
-}
+};
 
-function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note, translating, translation, menuButton: menuButton as Ref<HTMLElement>, isDeleted, currentClipPage: currentClipPage ?? undefined }), menuButton.value, {
-		viaKeyboard,
-	}).then(focus);
-}
+const menu = (viaKeyboard = false): void => {
+	os.popupMenu(
+		getNoteMenu({
+			note,
+			translating,
+			translation,
+			// menuButton,
+			isDeleted,
+			currentClipPage: currentClipPage ?? undefined,
+		}),
+		menuButton.value,
+		{ viaKeyboard },
+	).then(focus);
+};
 
-function showRenoteMenu(viaKeyboard = false): void {
+const showRenoteMenu = (viaKeyboard = false): void => {
 	if (!isMyRenote) return;
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
@@ -307,30 +320,30 @@ function showRenoteMenu(viaKeyboard = false): void {
 	}], renoteTime.value, {
 		viaKeyboard: viaKeyboard,
 	});
-}
+};
 
-function focus(): void {
+const focus = (): void => {
 	el.value?.focus();
-}
+};
 
-function blur(): void {
+const blur = (): void => {
 	el.value?.blur();
-}
+};
 
-function focusBefore(): void {
-	focusPrev(el.value as HTMLElement);
-}
+const focusBefore = (): void => {
+	if (el.value) focusPrev(el.value);
+};
 
-function focusAfter(): void {
-	focusNext(el.value as HTMLElement);
-}
+const focusAfter = (): void => {
+	if (el.value) focusNext(el.value);
+};
 
-function readPromo(): void {
+const readPromo = (): void => {
 	os.api('promo/read', {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
-}
+};
 </script>
 
 <style lang="scss" scoped>
