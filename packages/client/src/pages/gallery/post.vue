@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
 		<div class="_root">
-			<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
 					<div class="files">
 						<div v-for="file in post.files" :key="file.id" class="file">
