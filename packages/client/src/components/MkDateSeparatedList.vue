@@ -174,7 +174,7 @@ export default defineComponent({
 	> * {
 		margin: 0 !important;
 		border: none;
-		border-radius: 0;
+		border-radius: 0 !important;
 		box-shadow: none;
 
 		&:not(:last-child) {
