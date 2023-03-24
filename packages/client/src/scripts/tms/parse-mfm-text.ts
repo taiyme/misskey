@@ -13,7 +13,9 @@ type ParsedMfmText = {
 	url: `${typeof DLSITE_PRODUCT_URL}${string}`;
 };
 
-export const parseMfmText = (text: string): (VNode | string)[] => {
+export const parseMfmText = (text: string, parent?: string): (VNode | string)[] => {
+	if (parent === 'link') return [text];
+
 	const _parse = (_text: string): ParsedMfmText[] => {
 		const matches = _text.match(REGEX_DLSITE_PID);
 		if (!matches) return [{ type: 'text', value: _text }];
