@@ -1,5 +1,5 @@
 <template>
-<div ref="rootEl" :class="[$style.tabs, { [$style.entering]: entering }]" @wheel="onTabWheel">
+<div ref="rootEl" :class="[$style.tabs, { [$style.activeAnim]: animation }]" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs"
@@ -104,6 +104,9 @@ const renderTab = (): void => {
 		tabHighlightEl.value.style.width = `${rect.width}px`;
 		tabHighlightEl.value.style.left = `${rect.left - parentRect.left + tabHighlightEl.value.parentElement.scrollLeft}px`;
 	}
+	nextTick(() => {
+		animation = false;
+	});
 };
 
 const onTabWheel = (ev: WheelEvent): boolean => {
@@ -119,9 +122,11 @@ const onTabWheel = (ev: WheelEvent): boolean => {
 };
 
 let entering = false;
+let animation = false;
 
 const enter = async (el: HTMLElement): Promise<void> => {
 	entering = true;
+	animation = true;
 	const { width: elementWidth } = el.getBoundingClientRect();
 	el.style.width = '0';
 	el.style.paddingLeft = '0';
@@ -198,7 +203,7 @@ onUnmounted(() => {
 		display: none;
 	}
 
-	&.entering {
+	&.activeAnim {
 		pointer-events: none;
 	}
 }
