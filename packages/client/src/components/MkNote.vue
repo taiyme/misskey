@@ -112,6 +112,7 @@
 import { inject, onMounted, ref, Ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
+import { ReactiveVariable } from 'vue/macros';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import XNoteHeader from '@/components/MkNoteHeader.vue';
 import XNoteSimple from '@/components/MkNoteSimple.vue';
@@ -157,7 +158,7 @@ if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
 		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result);
+			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>;
 		}
 		note = result;
 	});
@@ -229,7 +230,7 @@ const keymap = {
 };
 
 useNoteCapture({
-	rootEl: el,
+	rootEl: el as Ref<HTMLElement>,
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
@@ -239,15 +240,13 @@ function reply(viaKeyboard = false): void {
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
-	}, () => {
-		focus();
 	});
 }
 
 function react(_viaKeyboard = false): void {
 	pleaseLogin();
 	blur();
-	reactionPicker.show(reactButton.value, reaction => {
+	reactionPicker.show(reactButton.value as HTMLElement, reaction => {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
 			reaction: reaction,
@@ -268,25 +267,27 @@ function undoReact(note_: misskey.entities.Note): void {
 const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
 function onContextmenu(ev: MouseEvent): void {
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
+	const isLink = (elem: HTMLElement): boolean => {
+		if (elem.tagName === 'A') return true;
+		if (elem.parentElement) {
+			return isLink(elem.parentElement);
 		}
+
+		return false;
 	};
-	if (isLink(ev.target)) return;
-	if (window.getSelection().toString() !== '') return;
+	if (isLink(ev.target as HTMLElement)) return;
+	if (window.getSelection()?.toString() !== '') return;
 
 	if (defaultStore.state.useReactionPickerForContextMenu) {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note, translating, translation, menuButton: menuButton as Ref<HTMLElement>, isDeleted, currentClipPage: currentClipPage ?? undefined }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
+	os.popupMenu(getNoteMenu({ note, translating, translation, menuButton: menuButton as Ref<HTMLElement>, isDeleted, currentClipPage: currentClipPage ?? undefined }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
 }
@@ -297,7 +298,7 @@ function showRenoteMenu(viaKeyboard = false): void {
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',
 		danger: true,
-		action: () => {
+		action: (): void => {
 			os.api('notes/delete', {
 				noteId: note.id,
 			});
@@ -308,23 +309,23 @@ function showRenoteMenu(viaKeyboard = false): void {
 	});
 }
 
-function focus() {
-	el.value.focus();
+function focus(): void {
+	el.value?.focus();
 }
 
-function blur() {
-	el.value.blur();
+function blur(): void {
+	el.value?.blur();
 }
 
-function focusBefore() {
-	focusPrev(el.value);
+function focusBefore(): void {
+	focusPrev(el.value as HTMLElement);
 }
 
-function focusAfter() {
-	focusNext(el.value);
+function focusAfter(): void {
+	focusNext(el.value as HTMLElement);
 }
 
-function readPromo() {
+function readPromo(): void {
 	os.api('promo/read', {
 		noteId: appearNote.id,
 	});
