@@ -1,5 +1,5 @@
 <template>
-<transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
+<Transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" ref="rootEl" class="ebkgocck" :class="{ maximized }">
 		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">

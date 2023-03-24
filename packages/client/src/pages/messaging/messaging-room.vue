@@ -38,7 +38,7 @@
 				</I18n>
 				<MkEllipsis/>
 			</div>
-			<transition :name="animation ? 'fade' : ''">
+			<Transition :name="animation ? 'fade' : ''">
 				<div v-show="showIndicator" class="new-message">
 					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="ti ti-fw ti-arrow-down-circle"></i>{{ i18n.ts.newMessageExists }}</button>
 				</div>

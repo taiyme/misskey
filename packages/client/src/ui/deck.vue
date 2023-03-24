@@ -54,7 +54,7 @@
 		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
 	</div>
 
-	<transition :name="$store.state.animation ? 'menu-back' : ''">
+	<Transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
@@ -63,7 +63,7 @@
 		></div>
 	</transition>
 
-	<transition :name="$store.state.animation ? 'menu' : ''">
+	<Transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
 	</transition>
 

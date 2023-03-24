@@ -1,5 +1,5 @@
 <template>
-<transition
+<Transition
 	:name="transitionName"
 	:duration="transitionDuration"
 	appear
@@ -31,7 +31,7 @@
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts" setup>
@@ -42,7 +42,7 @@ import { defaultStore } from '@/store';
 import { deviceKind } from '@/scripts/device-kind';
 import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
-function getFixedContainer(el: Element | null): Element | null {
+const getFixedContainer = (el: HTMLElement | null): HTMLElement | null => {
 	if (el == null || el.tagName === 'BODY') return null;
 	const position = window.getComputedStyle(el).getPropertyValue('position');
 	if (position === 'fixed') {
@@ -50,7 +50,7 @@ function getFixedContainer(el: Element | null): Element | null {
 	} else {
 		return getFixedContainer(el.parentElement);
 	}
-}
+};
 
 type ModalTypes = 'popup' | 'dialog' | 'dialog:top' | 'drawer';
 
@@ -64,7 +64,7 @@ const props = withDefaults(defineProps<{
 	transparentBg?: boolean;
 }>(), {
 	manualShowing: null,
-	src: null,
+	src: undefined,
 	anchor: () => ({ x: 'center', y: 'bottom' }),
 	preferType: 'auto',
 	zPriority: 'low',
@@ -97,7 +97,7 @@ const type = $computed(() => {
 			return props.src != null ? 'popup' : 'dialog';
 		}
 	} else {
-		return props.preferType!;
+		return props.preferType;
 	}
 });
 let transitionName = $computed((() =>
@@ -126,13 +126,13 @@ if (type === 'drawer') {
 }
 
 const keymap = {
-	'esc': () => emit('esc'),
+	'esc': (): void => emit('esc'),
 };
 
 const MARGIN = 16;
 const SCROLLBAR_THICKNESS = 16;
 
-const align = () => {
+const align = (): void => {
 	if (props.src == null) return;
 	if (type === 'drawer') return;
 	if (type === 'dialog') return;
@@ -141,11 +141,11 @@ const align = () => {
 
 	const srcRect = props.src.getBoundingClientRect();
 
-	const width = content!.offsetWidth;
-	const height = content!.offsetHeight;
+	const width = content.offsetWidth;
+	const height = content.offsetHeight;
 
-	let left;
-	let top;
+	let left = 0;
+	let top = 0;
 
 	const x = srcRect.left + (fixed ? 0 : window.pageXOffset);
 	const y = srcRect.top + (fixed ? 0 : window.pageYOffset);
@@ -245,7 +245,7 @@ const align = () => {
 	content.style.top = top + 'px';
 };
 
-const onOpened = () => {
+const onOpened = (): void => {
 	emit('opened');
 
 	if (type !== 'popup') {
@@ -260,10 +260,10 @@ const onOpened = () => {
 	}
 
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
-	const el = content!.children[0];
-	el.addEventListener('mousedown', ev => {
+	const el = content?.children[0];
+	el?.addEventListener('mousedown', () => {
 		contentClicking = true;
-		window.addEventListener('mouseup', ev => {
+		window.addEventListener('mouseup', () => {
 			// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
 			window.setTimeout(() => {
 				contentClicking = false;
@@ -272,7 +272,7 @@ const onOpened = () => {
 	}, { passive: true });
 };
 
-const close = () => {
+const close = (): void => {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
@@ -284,18 +284,16 @@ const close = () => {
 	emit('close');
 };
 
-const onBgClick = () => {
+const onBgClick = (): void => {
 	if (contentClicking) return;
 	emit('click');
 };
 
 onMounted(() => {
 	watch(() => props.src, async () => {
-		if (props.src) {
-			// eslint-disable-next-line vue/no-mutating-props
-			props.src.style.pointerEvents = 'none';
-		}
-		fixed = (type === 'drawer') || (getFixedContainer(props.src) != null);
+		// eslint-disable-next-line vue/no-mutating-props
+		if (props.src) props.src.style.pointerEvents = 'none';
+		fixed = (type === 'drawer') || (getFixedContainer(props.src ?? null) != null);
 
 		await nextTick();
 
@@ -303,9 +301,8 @@ onMounted(() => {
 	}, { immediate: true });
 
 	nextTick(() => {
-		new ResizeObserver((entries, observer) => {
-			align();
-		}).observe(content!);
+		if (!content) return;
+		new ResizeObserver(align).observe(content);
 	});
 });
 
