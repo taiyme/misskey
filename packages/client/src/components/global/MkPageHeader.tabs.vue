@@ -2,9 +2,14 @@
 <div ref="el" :class="$style.tabs" @wheel="onTabWheel">
 	<div :class="$style.tabsInner">
 		<button
-			v-for="t in tabs" :key="t.key" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.no-delay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
-			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
+			v-for="t in tabs"
+			:key="t.key"
+			:ref="(el) => tabRefs[t.key] = (el as HTMLElement)"
+			v-tooltip.no-delay="t.title"
+			class="_button"
+			:class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
+			@mousedown="(ev) => onTabMousedown(t, ev)"
+			@click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">
 				<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
@@ -15,11 +20,15 @@
 					{{ t.title }}
 				</div>
 				<Transition
-					v-else mode="in-out" @enter="enter" @after-enter="afterEnter" @leave="leave"
+					v-else
+					mode="in-out"
+					@enter="enter"
+					@after-enter="afterEnter"
+					@leave="leave"
 					@after-leave="afterLeave"
 				>
 					<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
-				</Transition>
+				</transition>
 			</div>
 		</button>
 	</div>
@@ -42,7 +51,7 @@ export type Tab = {
 	onClick?: (ev: MouseEvent) => void;
 } & {
 	iconOnly: true;
-	iccn: string;
+	icon: string;
 };
 
 const props = withDefaults(defineProps<{
@@ -50,7 +59,9 @@ const props = withDefaults(defineProps<{
 	tab?: string;
 	rootEl?: HTMLElement;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tabs: (): Tab[] => [],
+	tab: undefined,
+	rootEl: undefined,
 });
 
 const emit = defineEmits<{
@@ -90,18 +101,18 @@ const renderTab = (): void => {
 		// https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/offsetWidth#%E5%80%A4
 		const parentRect = tabHighlightEl.value.parentElement.getBoundingClientRect();
 		const rect = tabEl.getBoundingClientRect();
-		tabHighlightEl.value.style.width = rect.width + 'px';
-		tabHighlightEl.value.style.left = (rect.left - parentRect.left + tabHighlightEl.value.parentElement.scrollLeft) + 'px';
+		tabHighlightEl.value.style.width = `${rect.width}px`;
+		tabHighlightEl.value.style.left = `${rect.left - parentRect.left + tabHighlightEl.value.parentElement.scrollLeft}px`;
 	}
 };
 
 const onTabWheel = (ev: WheelEvent): boolean => {
-	if (ev.deltaY !== 0 && ev.deltaX === 0) {
+	if (ev.currentTarget instanceof HTMLElement && ev.deltaY !== 0 && ev.deltaX === 0) {
 		ev.preventDefault();
 		ev.stopPropagation();
-		(ev.currentTarget as HTMLElement).scrollBy({
+		ev.currentTarget.scrollBy({
 			left: ev.deltaY,
-			behavior: 'instant',
+			behavior: 'instant' as ScrollBehavior,
 		});
 	}
 	return false;
@@ -109,39 +120,45 @@ const onTabWheel = (ev: WheelEvent): boolean => {
 
 let entering = false;
 
-const enter = async(el: HTMLElement): Promise<void> => {
+const enter = async (el_: HTMLElement): Promise<void> => {
 	entering = true;
-	const elementWidth = el.getBoundingClientRect().width;
-	el.style.width = '0';
-	el.style.paddingLeft = '0';
-	el.offsetWidth; // force reflow
-	el.style.width = elementWidth + 'px';
-	el.style.paddingLeft = '';
+	const { width: elementWidth } = el_.getBoundingClientRect();
+	el_.style.width = '0';
+	el_.style.paddingLeft = '0';
+	el_.offsetWidth; // force reflow
+	el_.style.width = `${elementWidth}px`;
+	el_.style.paddingLeft = '';
 	nextTick(() => {
 		entering = false;
 	});
 
 	setTimeout(renderTab, 170);
 };
+
 const afterEnter = (_el: HTMLElement): void => {
 	//el.style.width = '';
 };
-const leave = async (el: HTMLElement): Promise<void> => {
-	const elementWidth = el.getBoundingClientRect().width;
-	el.style.width = elementWidth + 'px';
-	el.style.paddingLeft = '';
-	el.offsetWidth; // force reflow
-	el.style.width = '0';
-	el.style.paddingLeft = '0';
+
+const leave = async (el_: HTMLElement): Promise<void> => {
+	const { width: elementWidth } = el_.getBoundingClientRect();
+	el_.style.width = `${elementWidth}px`;
+	el_.style.paddingLeft = '';
+	el_.offsetWidth; // force reflow
+	el_.style.width = '0';
+	el_.style.paddingLeft = '0';
 };
-const afterLeave = (el: HTMLElement): void => {
-	el.style.width = '';
+
+const afterLeave = (el_: HTMLElement): void => {
+	el_.style.width = '';
 };
 
 let ro2: ResizeObserver | null;
 
 onMounted(() => {
-	watch([(): string | undefined => props.tab, (): Tab[] => props.tabs], () => {
+	watch([
+		(): string | undefined => props.tab,
+		(): Tab[] => props.tabs,
+	], () => {
 		nextTick(() => {
 			if (entering) return;
 			renderTab();
@@ -152,7 +169,7 @@ onMounted(() => {
 
 	if (props.rootEl) {
 		ro2 = new ResizeObserver((_entries, _observer) => {
-			if (document.body.contains(el.value as HTMLElement)) {
+			if (document.body.contains(el.value)) {
 				nextTick(() => renderTab());
 			}
 		});
