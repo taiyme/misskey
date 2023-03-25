@@ -40,22 +40,21 @@ export const parseMfmText = (text: string, parents: string[]): (VNode | string)[
 	};
 
 	let parsed: ParsedMfmText[] = [{ type: 'text', value: text }];
-	parsed = _parse(parsed, 'dlsite_pid', DLSITE_PID_REGEXP);
-	parsed = _parse(parsed, 'dlsite_mid', DLSITE_MID_REGEXP);
+	parsed = _parse(parsed, DLSITE_PID, DLSITE_PID_REGEXP);
+	parsed = _parse(parsed, DLSITE_MID, DLSITE_MID_REGEXP);
 
-	return parsed.map(props => {
-		const { type, value } = props;
+	return parsed.map(({ type, value }) => {
 		switch (type) {
 			case 'text': {
 				return value;
 			}
-			case 'dlsite_pid': {
+			case DLSITE_PID: {
 				return h(MkLinkDlsite, {
 					key: value,
 					url: `${DLSITE_PID_BASEURL}${value}`,
 				}, value);
 			}
-			case 'dlsite_mid': {
+			case DLSITE_MID: {
 				return h(MkLinkDlsite, {
 					key: value,
 					url: `${DLSITE_MID_BASEURL}${value}`,
