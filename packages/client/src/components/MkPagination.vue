@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :user="users" :fetching="fetching || moreFetching"></slot>
+		<slot :items="items" :users="users" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
