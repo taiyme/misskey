@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :fetching="fetching || moreFetching"></slot>
+		<slot :items="items" :user="users" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_gap">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -92,6 +92,11 @@ let backed = $ref(false);
 let scrollRemove = $ref<(() => void) | null>(null);
 
 const items = ref<MisskeyEntity[]>([]);
+const users = computed(() => {
+	return items.value
+		.flatMap(x => 'user' in x ? [x.user as misskey.entities.UserDetailed /* any型のため */] : [])
+		.filter((a, i, s) => s.findIndex(b => b.id === a.id) === i);
+});
 const queue = ref<MisskeyEntity[]>([]);
 const offset = ref(0);
 const fetching = ref(true);
