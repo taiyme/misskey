@@ -319,6 +319,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Zapnout ReCAPTCHu"
 recaptchaSiteKey: "Klíč stránky"
 recaptchaSecretKey: "Tajný Klíč (Secret Key)"
+turnstileSiteKey: "Klíč stránky"
+turnstileSecretKey: "Tajný Klíč (Secret Key)"
 antennas: "Antény"
 manageAntennas: "Spravovat Antény"
 name: "Jméno"
@@ -611,6 +613,14 @@ speed: "Rychlost"
 slow: "Pomalá"
 fast: "Rychlá"
 account: "Účty"
+show: "Zobrazit"
+color: "Barva"
+_role:
+  priority: "Priorita"
+  _priority:
+    low: "Nízká"
+    middle: "Střední"
+    high: "Vysoká"
 _ad:
   back: "Zpět"
 _gallery:
@@ -678,6 +688,7 @@ _sfx:
 _ago:
   future: "Budoucí"
   justNow: "Teď"
+  invalid: "Nic nebylo nalezeno"
 _time:
   second: "Sekund"
   minute: "Minut"
@@ -694,6 +705,8 @@ _weekday:
   friday: "Pátek"
   saturday: "Sobota"
 _widgets:
+  profile: "Váš profil"
+  instanceInfo: "Informace o instanci"
   notifications: "Oznámení"
   timeline: "Časová osa"
   calendar: "Kalendář"
@@ -710,6 +723,8 @@ _widgets:
   jobQueue: "Fronta úloh"
   aiscript: "AiScript conzole"
   aichan: "Ai"
+  _userList:
+    chooseList: "Vybrat seznam"
 _cw:
   hide: "Skrýt"
   show: "Zobrazit více"
@@ -747,6 +762,9 @@ _charts:
 _timelines:
   home: "Domů"
   global: "Globální"
+_play:
+  script: "Skript"
+  summary: "Popis"
 _pages:
   newPage: "Vytvořit novou stránku"
   editPage: "Upravit stránku"
@@ -929,4 +947,9 @@ _deck:
     tl: "Časová osa"
     antenna: "Antény"
     list: "Seznamy"
+    channel: "Kanály"
     mentions: "Zmínění"
+_webhookSettings:
+  name: "Jméno"
+  active: "Zapnuto"
+

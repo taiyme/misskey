@@ -348,6 +348,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "reCAPTCHA চালু করুন"
 recaptchaSiteKey: "সাইট কী"
 recaptchaSecretKey: "সিক্রেট কী"
+turnstileSiteKey: "সাইট কী"
+turnstileSecretKey: "সিক্রেট কী"
 avoidMultiCaptchaConfirm: "একাধিক Captcha ব্যবহার করলে তারা পরস্পরের কাজে বাধা দিতে পারে। আপনি কি অন্যান্য Captcha নিষ্ক্রিয় করতে চান? আপনি 'বাতিল' ক্লিক করার মাধ্যমে একাধিক Captcha চালু রাখতে পারেন।"
 antennas: "অ্যান্টেনা"
 manageAntennas: "অ্যান্টেনা ব্যবস্থাপনা"
@@ -502,6 +504,7 @@ deleteAll: "সব মুছুন"
 showFixedPostForm: "টাইমলাইনের শীর্ষে পোস্ট করার ফর্মটি দেখান"
 newNoteRecived: "নতুন নোট আছে"
 sounds: "শব্দ"
+sound: "শব্দ"
 listen: "শুনুন"
 none: "কিছুই না"
 showInPage: "পেজে দেখান"
@@ -837,6 +840,7 @@ instanceDefaultLightTheme: "ইন্সট্যান্সের ডিফল
 instanceDefaultDarkTheme: "ইন্সট্যান্সের ডিফল্ট ডার্ক থিম"
 instanceDefaultThemeDescription: "অবজেক্ট ফরম্যাটে থিম কোড লিখুন"
 mutePeriod: "মিউটের সময়কাল"
+period: "পোলের সময়সীমা"
 indefinitely: "অনির্দিষ্ট"
 tenMinutes: "১০ মিনিট"
 oneHour: "১ ঘণ্টা"
@@ -851,6 +855,15 @@ colored: "রঙ্গিন"
 label: "লেবেল"
 localOnly: "শুধুমাত্র লোকাল"
 account: "অ্যাকাউন্টগুলি"
+like: "পছন্দ করা"
+show: "প্রদর্শন"
+color: "রং"
+_role:
+  priority: "অগ্রাধিকার"
+  _priority:
+    low: "নিম্ন"
+    middle: "মাঝারি"
+    high: "উচ্চ"
 _emailUnavailable:
   used: "এই ইমেইল ঠিকানাটি ইতোমধ্যে ব্যবহৃত হয়েছে"
   format: "এই ইমেল ঠিকানাটি সঠিকভাবে লিখা হয়নি"
@@ -875,6 +888,7 @@ _accountDelete:
 _ad:
   back: "পিছনে"
   reduceFrequencyOfThisAd: "এই বিজ্ঞাপনটি কম দেখান"
+  hide: "দেখাবেন না"
 _forgotPassword:
   enterEmail: "আপনি আপনার অ্যাকাউন্টের জন্য নিবন্ধিত ইমেল ঠিকানা লিখুন. সেই ঠিকানায় একটি পাসওয়ার্ড রিসেট লিঙ্ক পাঠানো হবে।"
   ifNoEmail: "আপনি যদি নিবন্ধনের সময় ই-মেইল ঠিকানা না দিয়ে থাকেন, তাহলে অনুগ্রহ করে প্রশাসকের সাথে যোগাযোগ করুন।"
@@ -1105,6 +1119,7 @@ _ago:
   weeksAgo: "{n} সপ্তাহ আগে"
   monthsAgo: "{n} মাস আগে"
   yearsAgo: "{n} বছর আগে"
+  invalid: "এখানে কিছুই নাই"
 _time:
   second: "সেকেন্ড"
   minute: "মিনিট"
@@ -1198,6 +1213,8 @@ _weekday:
   friday: "শুক্রবার"
   saturday: "শনিবার"
 _widgets:
+  profile: "প্রোফাইল"
+  instanceInfo: "ইন্সট্যান্সের তথ্য"
   memo: "স্টিকি নোট"
   notifications: "বিজ্ঞপ্তি"
   timeline: "টাইমলাইন"
@@ -1217,6 +1234,8 @@ _widgets:
   serverMetric: "সার্ভার মেট্রিক্স"
   aiscript: "AiScript কনসোল"
   aichan: "আই চান"
+  _userList:
+    chooseList: "লিস্ট নির্বাচন করুন"
 _cw:
   hide: "লুকান"
   show: "আরও দেখুন"
@@ -1317,6 +1336,12 @@ _timelines:
   local: "স্থানীয়"
   social: "সামাজিক"
   global: "গ্লোবাল"
+_play:
+  viewSource: "উৎস দেখুন"
+  featured: "জনপ্রিয়"
+  title: "শিরোনাম"
+  script: "স্ক্রিপ্ট"
+  summary: "বর্ণনা"
 _pages:
   newPage: "নতুন পৃষ্ঠা বানান"
   editPage: "পৃষ্ঠাটি সম্পাদনা করুন"
@@ -1616,13 +1641,9 @@ _notification:
   youGotReply: "{name} আপনাকে জবাব দিয়েছে"
   youGotQuote: "{name} আপনাকে উদ্ধৃত করেছে"
   youRenoted: "{name} এর Renote"
-  youGotPoll: "{name} আপনার পোলে ভোট দিয়েছে"
-  youGotMessagingMessageFromUser: "{name} আপনাকে মেসেজ করেছে"
-  youGotMessagingMessageFromGroup: "{name} গ্রুপে একটি নতুন মেসেজ আছে"
   youWereFollowed: "আপনাকে অনুসরণ করছে"
   youReceivedFollowRequest: "অনুসরণ করার জন্য অনুরোধ পাওয়া গেছে"
   yourFollowRequestAccepted: "আপনার অনুসরণ করার অনুরোধ গৃহীত হয়েছে"
-  youWereInvitedToGroup: "আপনি একটি গ্রুপে আমন্ত্রিত হয়েছেন"
   pollEnded: "পোলের ফলাফল দেখা যাবে"
   emptyPushNotificationMessage: "আপডেট করা পুশ বিজ্ঞপ্তি"
   _types:
@@ -1666,3 +1687,7 @@ _deck:
     channel: "চ্যানেলগুলি"
     mentions: "উল্লেখসমূহ"
     direct: "ডাইরেক্ট নোটগুলি"
+_webhookSettings:
+  name: "নাম"
+  active: "চালু"
+

@@ -348,6 +348,8 @@ recaptcha: "reCAPTCHA"
 enableRecaptcha: "Activează reCAPTCHA"
 recaptchaSiteKey: "Site key"
 recaptchaSecretKey: "Secret key"
+turnstileSiteKey: "Site key"
+turnstileSecretKey: "Secret key"
 avoidMultiCaptchaConfirm: "Folosirea mai multor sisteme Captcha poate cauza interferență între acestea. Ai dori să dezactivezi alte sisteme Captcha acum active? Dacă preferi să rămână activate, apasă Anulare."
 antennas: "Antene"
 manageAntennas: "Gestionează Antenele"
@@ -502,6 +504,7 @@ deleteAll: "Șterge tot"
 showFixedPostForm: "Arată caseta de postare în vârful cronologie"
 newNoteRecived: "Sunt note noi"
 sounds: "Sunete"
+sound: "Sunete"
 listen: "Ascultă"
 none: "Nimic"
 showInPage: "Arată în pagină"
@@ -647,6 +650,10 @@ middle: "Mediu"
 sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
+show: "Arată"
+_role:
+  _priority:
+    middle: "Mediu"
 _email:
   _follow:
     title: "te-a urmărit"
@@ -665,12 +672,18 @@ _sfx:
   note: "Note"
   notification: "Notificări"
   chat: "Chat"
+_ago:
+  invalid: "Nu e nimic de văzut aici"
 _widgets:
+  profile: "Profil"
+  instanceInfo: "Informații despre instanță"
   notifications: "Notificări"
   timeline: "Cronologie"
   activity: "Activitate"
   federation: "Federație"
   jobQueue: "coada de job-uri"
+  _userList:
+    chooseList: "Selectează o listă"
 _cw:
   show: "Incarcă mai mult"
 _visibility:
@@ -688,6 +701,9 @@ _charts:
   federation: "Federație"
 _timelines:
   home: "Acasă"
+_play:
+  script: "Script"
+  summary: "Descriere"
 _pages:
   blocks:
     image: "Imagini"
@@ -728,4 +744,8 @@ _deck:
     tl: "Cronologie"
     antenna: "Antene"
     list: "Liste"
+    channel: "Canale"
     mentions: "Mențiuni"
+_webhookSettings:
+  name: "Nume"
+
