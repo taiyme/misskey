@@ -20,15 +20,31 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="_gap">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMoreAhead">
+		<div v-show="pagination.reversed && more" key="_more_" class="_gap" :class="$style.loadMore">
+			<MkButton
+				v-if="!moreFetching"
+				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null"
+				:disabled="moreFetching"
+				:style="{ cursor: moreFetching ? 'wait' : 'pointer' }"
+				primary
+				rounded
+				@click="fetchMoreAhead"
+			>
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items" :users="users" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="_gap">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary @click="fetchMore">
+		<div v-show="!pagination.reversed && more" key="_more_" class="_gap" :class="$style.loadMore">
+			<MkButton
+				v-if="!moreFetching"
+				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null"
+				:disabled="moreFetching"
+				:style="{ cursor: moreFetching ? 'wait' : 'pointer' }"
+				primary
+				rounded
+				@click="fetchMore"
+			>
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -413,17 +429,16 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.transition_fade_enterActive,
-.transition_fade_leaveActive {
+.transition_fade_enterActive, .transition_fade_leaveActive {
 	transition: opacity 0.125s ease;
 }
-.transition_fade_enterFrom,
-.transition_fade_leaveTo {
+
+.transition_fade_enterFrom, .transition_fade_leaveTo {
 	opacity: 0;
 }
 
-.more {
-	margin-left: auto;
-	margin-right: auto;
+.loadMore {
+	display: grid;
+	place-items: center;
 }
 </style>
