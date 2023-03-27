@@ -70,7 +70,7 @@ export const urlPreviewHandler = async (ctx: Koa.Context): Promise<void> => {
 function wrap(url: string | null): string | null {
 	return url != null
 		? url.match(/^https?:\/\//)
-			? `${config.mediaProxy}/preview.webp?${query({
+			? `${config.url}/proxy/preview.webp?${query({
 				url,
 				preview: '1',
 			})}`
