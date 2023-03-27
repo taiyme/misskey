@@ -57,7 +57,7 @@
 					/>
 				</div>
 				<div :class="$style.loadMore">
-					<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+					<MkButton v-if="moreFolders" ref="moreFolders" primary rounded>{{ i18n.ts.loadMore }}</MkButton>
 				</div>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
@@ -77,7 +77,7 @@
 					/>
 				</div>
 				<div :class="$style.loadMore">
-					<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
+					<MkButton v-show="moreFiles" ref="loadMoreFiles" primary rounded @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 				</div>
 			</div>
 			<div v-if="files.length === 0 && folders.length === 0 && !fetching" class="empty">
