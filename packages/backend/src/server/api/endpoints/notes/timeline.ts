@@ -55,17 +55,9 @@ export default define(meta, paramDef, async (ps, user) => {
 		take: 1,
 	})) !== 0;
 
-	//#region Construct query
-	const followingQuery = Followings.createQueryBuilder('following')
-		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
-
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere(new Brackets(qb => { qb
-			.where('note.userId = :meId', { meId: user.id });
-		if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
-		}))
+		.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -76,8 +68,19 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(followingQuery.getParameters());
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+
+	if (hasFollowing) {
+		const followees = await Followings.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: user.id })
+				.getMany();
+		const meOrFolloweeIds = [user.id, ...followees.map(f => f.followeeId)];
+
+		query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+	} else {
+		query.andWhere('note.userId = :meId', { meId: user.id });
+	}
 
 	generateChannelQuery(query, user);
 	generateRepliesQuery(query, user);
