@@ -37,46 +37,50 @@
 	>
 		<div ref="contents" class="contents">
 			<div v-show="folders.length > 0" ref="foldersContainer" class="folders">
-				<XFolder
-					v-for="(f, i) in folders"
-					:key="f.id"
-					v-anim="i"
-					class="folder"
-					:folder="f"
-					:select-mode="select === 'folder'"
-					:is-selected="selectedFolders.some(x => x.id === f.id)"
-					@chosen="chooseFolder"
-					@move="move"
-					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
-				<div v-for="_ in 16" class="padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				<div :class="$style.gridLayout">
+					<XFolder
+						v-for="(f, i) in folders"
+						:key="f.id"
+						v-anim="i"
+						class="folder"
+						:class="$style.gridItem"
+						:folder="f"
+						:select-mode="select === 'folder'"
+						:is-selected="selectedFolders.some(x => x.id === f.id)"
+						@chosen="chooseFolder"
+						@move="move"
+						@upload="upload"
+						@remove-file="removeFile"
+						@remove-folder="removeFolder"
+						@dragstart="isDragSource = true"
+						@dragend="isDragSource = false"
+					/>
+				</div>
+				<div :class="$style.loadMore">
+					<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				</div>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
-				<XFile
-					v-for="(file, i) in files"
-					:key="file.id"
-					v-anim="i"
-					class="file"
-					:file="file"
-					:select-mode="select === 'file'"
-					:is-selected="selectedFiles.some(x => x.id === file.id)"
-					@chosen="chooseFile"
-					@dragstart="isDragSource = true"
-					@dragend="isDragSource = false"
-				/>
-				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<!-- eslint-disable-next-line vue/require-v-for-key, vue/no-unused-vars -->
-				<div v-for="_ in 16" class="padding"></div>
-				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
+				<div :class="$style.gridLayout">
+					<XFile
+						v-for="(file, i) in files"
+						:key="file.id"
+						v-anim="i"
+						class="file"
+						:class="$style.gridItem"
+						:file="file"
+						:select-mode="select === 'file'"
+						:is-selected="selectedFiles.some(x => x.id === file.id)"
+						@chosen="chooseFile"
+						@dragstart="isDragSource = true"
+						@dragend="isDragSource = false"
+					/>
+				</div>
+				<div :class="$style.loadMore">
+					<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
+				</div>
 			</div>
-			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
+			<div v-if="files.length === 0 && folders.length === 0 && !fetching" class="empty">
 				<p v-if="draghover">{{ i18n.t('empty-draghover') }}</p>
 				<p v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
 				<p v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</p>
@@ -741,22 +745,7 @@ onBeforeUnmount(() => {
 
 			> .folders,
 			> .files {
-				display: flex;
-				flex-wrap: wrap;
-
-				> .folder,
-				> .file {
-					flex-grow: 1;
-					width: 128px;
-					margin: 4px;
-					box-sizing: border-box;
-				}
-
-				> .padding {
-					flex-grow: 1;
-					pointer-events: none;
-					width: 128px + 8px;
-				}
+				margin-bottom: 8px;
 			}
 
 			> .empty {
@@ -785,5 +774,23 @@ onBeforeUnmount(() => {
 	> input {
 		display: none;
 	}
+}
+</style>
+
+<style lang="scss" module>
+.gridLayout {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+	gap: 8px;
+}
+
+.gridItem {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.loadMore {
+	display: grid;
+	place-items: center;
 }
 </style>
