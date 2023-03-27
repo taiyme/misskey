@@ -107,11 +107,12 @@ let description = $ref<string | null>(null);
 let thumbnail = $ref<string | null>(null);
 let icon = $ref<string | null>(null);
 let sitename = $ref<string | null>(null);
-let player = $ref({
+let player = $ref<SummalyResult['player']>({
 	url: null,
 	width: null,
 	height: null,
-} as SummalyResult['player']);
+	allow: [],
+});
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
