@@ -53,14 +53,16 @@ export const parseMfmText = (text: string, parents: string[]): (VNode | string)[
 			case DLSITE_PID: {
 				return h(MkLinkDlsite, {
 					key: value,
+					value,
 					url: `${DLSITE_PID_BASEURL}${value}`,
-				}, value);
+				});
 			}
 			case DLSITE_MID: {
 				return h(MkLinkDlsite, {
 					key: value,
+					value,
 					url: `${DLSITE_MID_BASEURL}${value}`,
-				}, value);
+				});
 			}
 		}
 	});
