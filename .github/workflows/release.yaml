@@ -171,6 +171,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Download files
         uses: actions/download-artifact@v3
@@ -190,6 +192,11 @@ jobs:
           git commit --author=. -m "${{ needs.get_new_version.outputs.new_version }}"
           git tag "${{ needs.get_new_version.outputs.new_version }}"
           git push --follow-tags
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: merge PR
         env:
