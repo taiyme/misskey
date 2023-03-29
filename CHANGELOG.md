@@ -9,6 +9,40 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.1.0 (2023/03/29)
+
+- Upgrade pnpm v7.29.1 -> v8.0.0
+- update deps
+- Update i18n
+- hotfix: クリップの作成/追加ができない @taiyme
+- fix(frontend): tms: Renoteボタンのカーソル指定を修正 @taiyme
+- fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正 @Fairy-Phy @syuilo @rinsuki
+- fix(frontend): 文字数カウンターが表示されないことがある @taiyme
+- fix(frontend): ダイアログなどのボタンにフォーカスされない @taiyme
+- fix(frontend): ホバー時のURLプレビューにコンテンツ展開ボタンがある @taiyme
+- feat(frontend): botアカウントでログイン時にその旨を知らせる表示を追加 (#113) @syuilo @cffnpwr
+- feat(mfm): DLsiteのRJ番号をリンク化する (#111) @taiyme
+- feat: oEmbedのサポート (#114) @taiyme @saschanaz
+- enhance: tms: ノートの操作部をホバー時のみ表示するオプションなど (#106)
+  - enhance: tms: ノートの操作部をホバー時のみ表示するオプション @syuilo
+  - enhance: tms: ノートのリアクションを見やすくするオプション @taiyme
+  - enhance: フォローリクエストのUI改善 @EbiseLutica
+  - chore: tms: インスタンスティッカーの調整 @taiyme
+  - change: tms: 設定を保存するとき値を比較して同等ならsetしないように @taiyme
+  - change/fix: ノートのショートカットキーに関する調整 @taiyme
+    - (KeyS): 廃止(検索のショートカットキーがどこでも使えるように)
+    - (KeyQ): Renoteメニューが正常に開かない問題を修正
+  - fix: 通知のサブアイコンが若干ズレる問題 @taiyme
+  - fix: 上向きのページネーションが壊れている @tamaina @Johann150 @acid-chicken
+  - (ほか リファクタリングなど) @taiyme @yszkst @cffnpwr
+- enhance(frontend): MkDriveをGridレイアウトにする @taiyme
+- enhance(frontend): tms: ノートのインスタンス情報の表示位置 (#104) @taiyme
+- enhance(frontend): 一部のモーダルで背景クリックしたら閉じるように @taiyme
+- enhance(frontend): ウィンドウの絵文字ピッカーをリサイズ可能にする (#101) @taiyme
+- Enhance release workflow (#103) @cffnpwr
+- perf(backend): improve performance of timeline apis (#115) @syuilo @cffnpwr
+- refactor(frontend): use KeyboardEvent.key (+ fix types) @taiyme
+
 ## 12.119.2-taiyme-v1.0.48 (2023/03/16)
 
 - feat(frontend): 文字数カウンター (#99) @taiyme
