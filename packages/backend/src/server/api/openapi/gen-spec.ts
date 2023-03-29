@@ -1,21 +1,21 @@
+import type { Config } from '@/config.js';
 import endpoints from '../endpoints.js';
-import config from '@/config/index.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
-export function genOpenapiSpec() {
+export function genOpenapiSpec(config: Config) {
 	const spec = {
 		openapi: '3.0.0',
 
 		info: {
-			version: 'v1',
+			version: config.version,
 			title: 'Misskey API',
 			'x-logo': { url: '/static-assets/api-doc.png' },
 		},
 
 		externalDocs: {
 			description: 'Repository',
-			url: 'https://github.com/taiyme/misskey',
+			url: 'https://github.com/misskey-dev/misskey',
 		},
 
 		servers: [{
@@ -60,15 +60,18 @@ export function genOpenapiSpec() {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = endpoint.params;
+		const schema = { ...endpoint.params };
 
 		if (endpoint.meta.requireFile) {
-			schema.properties.file = {
-				type: 'string',
-				format: 'binary',
-				description: 'The file contents.',
+			schema.properties = {
+				...schema.properties,
+				file: {
+					type: 'string',
+					format: 'binary',
+					description: 'The file contents.',
+				},
 			};
-			schema.required.push('file');
+			schema.required = [...schema.required ?? [], 'file'];
 		}
 
 		const info = {
@@ -77,7 +80,7 @@ export function genOpenapiSpec() {
 			description: desc,
 			externalDocs: {
 				description: 'Source code',
-				url: `https://github.com/taiyme/misskey/blob/taiyme-v12/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
+				url: `https://github.com/misskey-dev/misskey/blob/develop/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],

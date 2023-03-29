@@ -11,7 +11,7 @@ module.exports = {
 		project: ['./tsconfig.eslint.json'],
 	},
 	extends: [
-		//"../shared/.eslintrc.js",
+		"../shared/.eslintrc.js",
 	],
 	globals: {
 		"require": false,

@@ -113,7 +113,7 @@ import url from 'url';
 
 	const start = async () => {
 		try {
-			const exist = existsSync(__dirname + '/../packages/backend/built/index.js');
+			const exist = existsSync(__dirname + '/../packages/backend/built/boot/index.js');
 			if (!exist) throw new Error('not exist yet');
 
 			await execa('pnpm', ['start'], {

@@ -1,6 +1,8 @@
-import define from '../../../define.js';
-import { Users } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { UsersRepository } from '@/models/index.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -17,21 +19,31 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
+@Injectable()
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy({ id: ps.userId });
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (user == null) {
-		throw new Error('user not found');
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const user = await this.usersRepository.findOneBy({ id: ps.userId });
+
+			if (user == null) {
+				throw new Error('user not found');
+			}
+
+			if (user.id === me.id) {
+				throw new Error('cannot remove yourself');
+			}
+
+			await this.usersRepository.update(user.id, {
+				isAdmin: false,
+			});
+
+			this.globalEventService.publishInternalEvent('userChangeAdminState', { id: user.id, isAdmin: false });
+		});
 	}
-
-	if (user.id === me.id) {
-		throw new Error('cannot remove yourself');
-	}
-
-	await Users.update(user.id, {
-		isAdmin: false,
-	});
-
-	publishInternalEvent('userChangeAdminState', { id: user.id, isAdmin: false });
-});
+}
