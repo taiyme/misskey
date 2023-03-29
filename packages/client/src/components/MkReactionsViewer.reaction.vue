@@ -102,10 +102,10 @@ useTooltip(buttonRef, async (showing) => {
 		border-radius: 4px;
 
 		&.canToggle {
-			background: rgba(0, 0, 0, 0.05);
+			background-color: rgba(0, 0, 0, 0.05);
 
 			&:hover {
-				background: rgba(0, 0, 0, 0.1);
+				background-color: rgba(0, 0, 0, 0.1);
 			}
 		}
 
@@ -114,10 +114,10 @@ useTooltip(buttonRef, async (showing) => {
 		}
 
 		&.reacted {
-			background: var(--accent);
+			background-color: var(--accent);
 
 			&:hover {
-				background: var(--accent);
+				background-color: var(--accent);
 			}
 
 			> .count {
@@ -137,6 +137,7 @@ useTooltip(buttonRef, async (showing) => {
 	}
 
 	&.easy {
+		background-color: var(--panel);
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
 		display: grid;
