@@ -142,7 +142,11 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		icon = info.icon;
 		sitename = info.sitename;
 		fetching = false;
-		player = info.player;
+		// info.playerが空になる/欠落することがあるためデフォルト値を設定する
+		player = {
+			...{ url: null, width: null, height: null, allow: [] },
+			...info.player,
+		};
 	});
 });
 
