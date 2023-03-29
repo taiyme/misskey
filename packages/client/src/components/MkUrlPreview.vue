@@ -135,6 +135,11 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 requestUrl.hash = '';
 
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
+	// 例外が発生した場合はunknownUrlフラグを有効にする
+	if (!res.ok) {
+		unknownUrl = true;
+		return;
+	}
 	res.json().then((info: SummalyResult) => {
 		title = info.title;
 		description = info.description;
@@ -147,8 +152,6 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 			...{ url: null, width: null, height: null, allow: [] },
 			...info.player,
 		};
-		// Player.urlがnullの場合は困っちゃうのでunknownUrlフラグを有効にする
-		unknownUrl = player.url == null;
 	});
 });
 
