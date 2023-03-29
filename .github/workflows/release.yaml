@@ -160,8 +160,8 @@ jobs:
     with:
       tag: ${{ needs.get_new_version.outputs.new_version }}
 
-  commit_tag_merge_push:
-    name: Commit, Tag, Merge and Push
+  commit_tag_push:
+    name: Commit, Tag and Push
     needs:
       - get_new_version
       - update_package_json
@@ -193,6 +193,12 @@ jobs:
           git tag "${{ needs.get_new_version.outputs.new_version }}"
           git push origin HEAD --follow-tags
 
+  merge_pr:
+    name: Merge Pull request
+    needs:
+      - commit_tag_push
+    runs-on: ubuntu-latest
+    steps:
       - name: merge PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -203,7 +209,7 @@ jobs:
     needs:
       - get_new_version
       - update_changelog_md
-      - commit_tag_merge_push
+      - merge_pr
       - docker_build
     runs-on: ubuntu-latest
     steps:
