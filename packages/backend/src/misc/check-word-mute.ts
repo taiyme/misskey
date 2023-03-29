@@ -1,6 +1,6 @@
 import RE2 from 're2';
-import { Note } from '@/models/entities/note.js';
-import { User } from '@/models/entities/user.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { User } from '@/models/entities/User.js';
 
 type NoteLike = {
 	userId: Note['userId'];
@@ -23,16 +23,16 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 		const text = [
 			// 自分自身を除く返信
 			...(note.reply && note.reply.userId !== me?.id) ? [
-				note.reply?.cw ?? '',
-				note.reply?.text ?? '',
+				note.reply.cw ?? '',
+				note.reply.text ?? '',
 			] : [],
 			// 自分自身を除く投稿
 			note.cw ?? '',
 			note.text ?? '',
 			// 自分自身を除くRN
 			...(note.renote && note.renote.userId !== me?.id) ? [
-				note.renote?.cw ?? '',
-				note.renote?.text ?? '',
+				note.renote.cw ?? '',
+				note.renote.text ?? '',
 			] : [],
 		].filter(x => x).join('\n').trim();
 

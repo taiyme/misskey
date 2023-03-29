@@ -1,6 +1,6 @@
 ---
 _lang_: "Ελληνικά"
-monthAndDay: "{day}/{month}"
+monthAndDay: "{μήνας}/{ημέρα}"
 search: "Αναζήτηση"
 notifications: "Ειδοποιήσεις"
 username: "Όνομα μέλους"
@@ -230,13 +230,21 @@ moderator: "Συντονιστής"
 moderation: "Συντονισμός"
 cacheClear: "Εκκαθάριση προσωρινής μνήμης"
 markAsReadAllNotifications: "Όλες οι ειδοποιήσεις διαβάστηκαν"
+group: "Ομάδα"
+groups: "Ομάδες"
+createGroup: "Δημιουργία ομάδας"
+ownedGroups: "Οι ομάδες σας"
+groupName: "Όνομα ομάδας"
 members: "Μέλη"
 transfer: "Μεταφορά"
+messagingWithUser: "Ιδιωτική συνομιλία"
+messagingWithGroup: "Ομαδική συνομιλία"
 title: "Τίτλος"
 text: "Κείμενο"
 enable: "Ενεργοποίηση"
 next: "Επόμενο"
 noteOf: "Σημείωμα από {user}"
+inviteToGroup: "Πρόσκληση στην ομάδα"
 quoteAttached: "Παράθεση"
 signinRequired: "Παρακαλούμε δημιουργήστε λογαριασμό ή συνδεθείτε πριν συνεχίσετε"
 category: "Κατηγορία"
@@ -290,6 +298,11 @@ cannotUploadBecauseNoFreeSpace: "Το ανέβασμα απέτυχε λόγω �
 _email:
   _follow:
     title: "Έχετε ένα νέο ακόλουθο"
+_mfm:
+  mention: "Επισήμανση"
+  quote: "Παράθεση"
+  emoji: "Επιπλέον emoji"
+  search: "Αναζήτηση"
 _channel:
   featured: "Δημοφιλή"
 _theme:
@@ -329,6 +342,7 @@ _antennaSources:
   homeTimeline: "Σημειώματα από μέλη που ακολουθείτε"
   users: "Σημειώματα από συγκεκριμένα μέλη"
   userList: "Σημειώματα από καθορισμένη λίστα μελών"
+  userGroup: "Σημειώματα από μέλη καθορισμένης ομάδας"
 _widgets:
   profile: "Προφίλ"
   instanceInfo: "Πληροφορίες του instance"
@@ -372,7 +386,28 @@ _pages:
   viewPage: "Δείτε τις Σελίδες σας"
   blocks:
     image: "Εικόνες"
+    _switch:
+      text: "Τίτλος"
+  script:
+    categories:
+      list: "Λίστες"
+    blocks:
+      _join:
+        arg1: "Λίστες"
+      _randomPick:
+        arg1: "Λίστες"
+      _dailyRandomPick:
+        arg1: "Λίστες"
+      _seedRandomPick:
+        arg2: "Λίστες"
+      _pick:
+        arg1: "Λίστες"
+      _listLen:
+        arg1: "Λίστα"
+    types:
+      array: "Λίστες"
 _notification:
+  youGotMessagingMessageFromUser: "{name} σάς έστειλε ένα μήνυμα συνομιλίας"
   youWereFollowed: "σε ακολούθησε"
   _types:
     follow: "Νέοι ακόλουθοι"

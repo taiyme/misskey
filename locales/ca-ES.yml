@@ -166,6 +166,7 @@ annotation: "Comentaris"
 federation: "Federació"
 instances: "Servidors"
 registeredAt: "Registrat a"
+latestRequestSentAt: "Darrera petició enviada"
 latestRequestReceivedAt: "Última petició rebuda"
 latestStatus: "Últim estat"
 storageUsage: "Emmagatzematge utilitzat"
@@ -315,10 +316,13 @@ userList: "Llistes"
 about: "Informació"
 aboutMisskey: "Quant a Misskey"
 administrator: "Administrador/a"
+twoStepAuthentication: "Verificació en dos passos"
 moderator: "Moderador/a"
 moderation: "Moderació"
 nUsersMentioned: "{n} usuaris mencionats"
 securityKey: "Clau de seguretat"
+securityKeyName: "Nom de la clau"
+registerSecurityKey: "Registra la clau de seguretat"
 unregister: "Cancel·la el registre"
 passwordLessLogin: "Inici de sessió sense contrasenya"
 resetPassword: "Restableix la contrasenya"
@@ -331,6 +335,7 @@ help: "Ajuda"
 invites: "Convida"
 next: "Següent"
 noteOf: "Publicació de: {user}"
+inviteToGroup: "Convida'l al grup"
 invitations: "Convida"
 tags: "Etiquetes"
 docSource: "Font del document"
@@ -374,6 +379,7 @@ _email:
 _mfm:
   mention: "Menció"
   quote: "Citar"
+  emoji: "Emojis personalitzats"
   search: "Cercar"
 _instanceMute:
   instanceMuteDescription: "Silencia tots els impulsos dels servidors seleccionats, també els usuaris que responen a altres d'un servidor silenciat."
@@ -393,6 +399,7 @@ _antennaSources:
   homeTimeline: "Publicacions dels usuaris seguits"
   users: "Publicacions d'usuaris específics"
   userList: "Publicacions d'una llista d'usuaris"
+  userGroup: "Publicacions d'usuaris d'un grup"
 _widgets:
   profile: "Perfil"
   instanceInfo: "Informació del fitxer d'instal·lació"
@@ -401,8 +408,6 @@ _widgets:
   activity: "Activitat"
   federation: "Federació"
   jobQueue: "Cua de tasques"
-  _userList:
-    chooseList: "Tria una llista"
 _cw:
   show: "Carregar més"
 _visibility:
@@ -436,6 +441,10 @@ _pages:
     blocks:
       _join:
         arg1: "Llistes"
+      notEq: "A i B són diferents"
+      _notEq:
+        arg1: "A"
+        arg2: "B"
       _randomPick:
         arg1: "Llistes"
       _dailyRandomPick:
@@ -483,4 +492,3 @@ _deck:
     list: "Llistes"
     mentions: "Mencions"
     direct: "Publicacions directes"
-

@@ -1390,16 +1390,37 @@ _mfm:
   mention: "Menzioni"
   mentionDescription: "Si può menzionare un utente specifico digitando il suo nome utente subito dopo il segno @."
   hashtag: "Hashtag"
+  hashtagDescription: "Per indicare un hashtag si può usare il segno numerico + tag."
   url: "URL"
+  urlDescription: "È possibile indicare gli URL"
   link: "Link"
+  linkDescription: "È possibile associare specifici intervalli di testo agli URL"
   bold: "Grassetto"
+  boldDescription: "Il testo può essere grassettato per enfasi"
+  small: "vistosamente"
+  smallDescription: "Il contenuto può essere visualizzato più piccolo e più sottile"
+  center: "centratura"
+  centerDescription: "Il contenuto può essere centrato"
+  inlineCode: "Codice (inline)"
+  inlineCodeDescription: "Evidenziazione della sintassi in linea di programmi e altro codice"
   blockCode: "Codice (blocco)"
+  blockCodeDescription: "Evidenziazione della sintassi di programmi multilinea e di altro codice in blocchi"
   inlineMath: "Espressione matematica(Immersione)"
+  inlineMathDescription: "Visualizza le formule (KaTeX) in linea."
   blockMath: "Formula matematica (blocco)"
+  blockMathDescription: "Visualizzazione di formule multilinea (KaTeX) in blocchi."
   quote: "Cita il nota"
+  quoteDescription: "Può indicare che il contenuto è una citazione."
   emoji: "Emoji personalizzati"
+  emojiDescription: "Utilizzare i due punti per racchiudere il nome di un'emoji personalizzata e visualizzarla."
   search: "Cerca"
+  searchDescription: "È possibile visualizzare una casella di ricerca precompilata."
   flip: "Inverti"
+  flipDescription: "Capovolgere il contenuto verso l'alto o verso il basso, a sinistra o a destra."
+  jelly: "Animazione (Biyon Biyon)."
+  jellyDescription: "Dà un'animazione di salto."
+  tada: "Animazione (jang)."
+  tadaDescription: "Ta-da! dà un'animazione che assomiglia a."
   jump: "Animazione(salto)"
   jumpDescription: "Da un animazione che salta su e giù."
   bounce: "Animazione(rimbalzo)"
@@ -1408,6 +1429,8 @@ _mfm:
   shakeDescription: "Rende il testo traballante"
   twitch: "testo"
   twitchDescription: "Fa tremare il testo"
+  spin: "Animazione (rotazione)"
+  spinDescription: "Fornisce un'animazione rotante."
   x2: "Più grande"
   x2Description: "Mostra il contenuto ingrandito."
   x3: "Molto più grande"
@@ -1419,7 +1442,13 @@ _mfm:
   font: "Tipo di carattere"
   fontDescription: "Puoi scegliere il tipo di carattere per il contenuto."
   rainbow: "Arcobaleno"
+  rainbowDescription: "Arcobaleno il contenuto."
+  sparkle: "brillantini"
+  sparkleDescription: "Aggiungere effetti particellari scintillanti."
   rotate: "Ruota"
+  rotateDescription: "Ruota con un angolo specificato."
+  plain: "aereo"
+  plainDescription: "Disattiva tutta la sintassi interna."
 _instanceTicker:
   none: "Nascondi"
   remote: "Mostra solo per i profili remoti"
@@ -1864,6 +1893,8 @@ _pages:
     post: "Finestra di pubblicazione"
     _post:
       text: "Contenuto"
+      attachCanvasImage: "Allegare un'immagine della tela."
+      canvasId: "ID tela"
     textInput: "Immissione testo"
     _textInput:
       name: "Nome della variabile"
@@ -1879,7 +1910,9 @@ _pages:
       name: "Nome della variabile"
       text: "Titolo"
       default: "Valore predefinito"
+    canvas: "tela"
     _canvas:
+      id: "ID tela"
       width: "Larghezza"
       height: "Altezza"
     note: "Nota integrata"
@@ -1919,43 +1952,69 @@ _pages:
     _radioButton:
       name: "Nome della variabile"
       title: "Titolo"
+      values: "Opzioni separate da una nuova riga"
       default: "Valore predefinito"
   script:
     categories:
+      flow: "controllo"
+      logical: "funzionamento logico"
+      operation: "calcolo"
       comparison: "Metodo comparativo"
       random: "Aleatorietà"
       value: "Valore"
       fn: "Funzione"
+      text: "manipolazione del testo"
+      convert: "trasformazione"
       list: "Liste"
     blocks:
       text: "Testo"
       multiLineText: "Testo (a più righe)"
       textList: "Lista di testo"
+      _textList:
+        info: "Separare ciascuno di essi con una nuova riga"
+      strLen: "Lunghezza del testo"
       _strLen:
         arg1: "Testo"
+      strPick: "estrazione dei caratteri"
       _strPick:
         arg1: "Testo"
+        arg2: "posizione del carattere"
+      strReplace: "sostituzione del testo"
       _strReplace:
         arg1: "Testo"
+        arg2: "Prima della sostituzione"
+        arg3: "dopo la sostituzione"
+      strReverse: "Invertire il testo."
       _strReverse:
         arg1: "Testo"
+      join: "Concatenazione del testo."
       _join:
         arg1: "Liste"
+        arg2: "punteggiatura"
+      add: "aggiungere (qualcosa)"
       _add:
         arg1: "A"
         arg2: "B"
+      subtract: "attirare (attenzione, ecc.)"
       _subtract:
         arg1: "A"
         arg2: "B"
+      multiply: "impostare (un quadrante, una sveglia, ecc.)"
       _multiply:
         arg1: "A"
         arg2: "B"
+      divide: "smash"
       _divide:
         arg1: "A"
         arg2: "B"
+      mod: "i residui di una divisione"
       _mod:
         arg1: "A"
         arg2: "B"
+      round: "arrotondare una frazione"
+      _round:
+        arg1: "valore numerico"
+      eq: "A e B sono uguali"
       _eq:
         arg1: "A"
         arg2: "B"
@@ -1971,46 +2030,106 @@ _pages:
       _or:
         arg1: "A"
         arg2: "B"
+      lt: "< A è più piccolo di B"
       _lt:
         arg1: "A"
         arg2: "B"
+      gt: "> A è maggiore di B"
       _gt:
         arg1: "A"
         arg2: "B"
+      ltEq: "<= A è uguale o inferiore a B"
       _ltEq:
         arg1: "A"
         arg2: "B"
+      gtEq: ">= A è uguale o maggiore di B"
       _gtEq:
         arg1: "A"
         arg2: "B"
+      if: "divergenza (ad esempio in una strada)"
       _if:
         arg1: "Se"
         arg2: "Se"
+        arg3: "se non così"
+      not: "negazione"
+      _not:
+        arg1: "negazione"
       random: "Aleatorietà"
+      _random:
+        arg1: "probabilità"
+      rannum: "numero casuale"
+      _rannum:
+        arg1: "più piccolo"
+        arg2: "massimo"
+      randomPick: "Selezionato a caso da un elenco."
       _randomPick:
         arg1: "Liste"
+      dailyRandom: "Casuale (cambia ogni giorno per utente)"
+      _dailyRandom:
+        arg1: "probabilità"
+      dailyRannum: "Numeri casuali (ogni giorno per utente)"
+      _dailyRannum:
+        arg1: "più piccolo"
+        arg2: "massimo"
+      dailyRandomPick: "Selezionato a caso da un elenco (cambia ogni giorno per utente)"
       _dailyRandomPick:
         arg1: "Liste"
+      seedRandom: "Casuale (seed)"
       _seedRandom:
+        arg1: "seed"
         arg2: "Probabilità"
+      seedRannum: "Numero casuale (seed)"
+      _seedRannum:
+        arg1: "seed"
+        arg2: "più piccolo"
+        arg3: "massimo"
+      seedRandomPick: "Selezionato a caso da un elenco (seed)"
       _seedRandomPick:
+        arg1: "seed"
         arg2: "Liste"
+      DRPWPM: "Selezionati a caso da un elenco con probabilità (giornalmente per utente)"
       _DRPWPM:
         arg1: "Lista di testo"
+      pick: "Selezionare dall'elenco"
       _pick:
         arg1: "Liste"
+        arg2: "posizione"
+      listLen: "Ottenere la lunghezza dell'elenco"
       _listLen:
         arg1: "Liste"
+      number: "valore numerico"
+      stringToNumber: "Da testo a numeri."
       _stringToNumber:
         arg1: "Testo"
+      numberToString: "Valori numerici in testo."
+      _numberToString:
+        arg1: "valore numerico"
+      splitStrByLine: "Dividere il testo per riga"
       _splitStrByLine:
         arg1: "Testo"
       ref: "Variabili"
+      aiScriptVar: "Variabili AiScript"
       fn: "Funzione"
+      _fn:
+        slots: "slot"
+        slots-info: "Separare ogni slot con una nuova riga"
+        arg1: "uscita "
+      for: "ripetizione"
+      _for:
+        arg1: "frequenza"
+        arg2: "elaborazione"
+    typeError: "Lo slot {slot} accetta \"{expect}\" ma contiene \"{actual}\"!"
+    thereIsEmptySlot: "Lo slot {slot} è vuoto!"
     types:
       string: "Testo"
+      number: "valore numerico"
+      boolean: "Segnala"
       array: "Liste"
       stringArray: "Lista di testo"
+    emptySlot: "slot vuoto"
+    enviromentVariables: "variabile d'ambiente"
+    pageVariables: "elemento pagina"
+    argVariables: "slot di ingresso"
 _relayStatus:
   requesting: "In attesa di approvazione"
   accepted: "Approvato"

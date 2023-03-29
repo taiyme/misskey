@@ -1,8 +1,6 @@
 /*
  * Notification manager for SW
  */
-declare var self: ServiceWorkerGlobalScope;
-
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
 import { badgeNames, pushNotificationDataMap } from '@/types';
@@ -47,7 +45,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 		*/
 		case 'notification':
 			switch (data.body.type) {
-				case 'follow':
+				case 'follow': {
 					// users/showの型定義をswos.apiへ当てはめるのが困難なのでapiFetch.requestを直接使用
 					const account = await getAccountFromId(data.userId);
 					if (!account) return null;
@@ -64,6 +62,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							}
 						],
 					}];
+				}
 
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
@@ -127,7 +126,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						],
 					}];
 
-				case 'reaction':
+				case 'reaction': {
 					let reaction = data.body.reaction;
 					let badge: string | undefined;
 
@@ -157,7 +156,6 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
-
 					if (badge ? await fetch(badge).then(res => res.status !== 200).catch(() => true) : true) {
 						badge = iconUrl('plus');
 					}
@@ -174,6 +172,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 							}
 						],
 					}];
+				}
 
 				case 'pollVote':
 					return [t('_notification.youGotPoll', { name: getUserName(data.body.user) }), {
@@ -265,7 +264,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text || ''}`,
 				icon: data.body.note.user.avatarUrl,
-				badge: iconUrl('antenna'),
+				badge: iconUrl('satellite'),
 				tag: `antenna:${data.body.antenna.id}`,
 				data,
 				renotify: true,
