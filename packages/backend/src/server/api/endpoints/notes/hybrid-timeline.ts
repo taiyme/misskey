@@ -7,6 +7,7 @@ import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { IdService } from '@/core/IdService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -53,8 +54,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
+// eslint-disable-next-line import/no-default-export
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
@@ -67,6 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 		private metaService: MetaService,
 		private activeUsersChart: ActiveUsersChart,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const m = await this.metaService.fetch();
@@ -81,6 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 				.andWhere(new Brackets(qb => {
 					qb.where(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id })
 						.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
