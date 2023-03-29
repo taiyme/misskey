@@ -28,19 +28,19 @@
 		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
 	</div>
 
-	<transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
+	<Transition :name="$store.state.animation ? 'menuDrawer-back' : ''">
 		<div v-if="drawerMenuShowing" class="menuDrawer-back _modalBg" @click="closeDrawerMenu()" @touchstart.passive="closeDrawerMenu()"></div>
 	</transition>
 
-	<transition :name="$store.state.animation ? 'menuDrawer' : ''">
+	<Transition :name="$store.state.animation ? 'menuDrawer' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menuDrawer"/>
 	</transition>
 
-	<transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
+	<Transition :name="$store.state.animation ? 'widgetsDrawer-back' : ''">
 		<div v-if="widgetsShowing" class="widgetsDrawer-back _modalBg" @click="closeWidgets()" @touchstart.passive="closeWidgets()"></div>
 	</transition>
 
-	<transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
+	<Transition :name="$store.state.animation ? 'widgetsDrawer' : ''">
 		<XWidgets v-if="widgetsShowing" class="widgetsDrawer"/>
 	</transition>
 

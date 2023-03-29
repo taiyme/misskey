@@ -6,16 +6,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ComputedRef } from 'vue';
+import { computed, ComputedRef, unref } from 'vue';
 import { instanceName } from '@/config';
 import { instance as Instance } from '@/instance';
 import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string;
-		name: string;
-		themeColor?: string;
+		faviconUrl?: string | null;
+		name: string | null;
+		themeColor?: string | null;
 	};
 	forceType?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 }>();
@@ -27,9 +27,7 @@ const instance = props.instance ?? {
 	themeColor: document.querySelector<HTMLMetaElement>('meta[name="theme-color-orig"]')?.content,
 };
 
-const position = computed(() => {
-	return typeof props.forceType === 'string' ? props.forceType : props.forceType?.value ?? tmsStore.state.instanceTickerPosition;
-});
+const position = computed(() => unref(props.forceType) ?? tmsStore.state.instanceTickerPosition);
 
 const hexToRgb = (hex: string): {
 	r: number;
@@ -162,7 +160,7 @@ const tickerColor = {
 
 		> .icon {
 			display: block;
-			height: 2em;
+			height: 1.5em;
 			opacity: 0.8;
 		}
 

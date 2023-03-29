@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="nmidsaqw">
 	<template v-if="display === 'marquee'">
-		<transition name="change" mode="default">
+		<Transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="instance in instances" :key="instance.id" class="item" :class="{ colored }" :style="{ background: colored ? instance.themeColor : null }">
 					<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>

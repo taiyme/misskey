@@ -2,7 +2,7 @@
 <div class="wrmlmaau" :class="{ collapsed, isLong }">
 	<div ref="textEl" class="body">
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deleted }})</span>
+		<!-- <span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deleted }})</span> -->
 		<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 		<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
@@ -30,6 +30,7 @@ import * as misskey from 'misskey-js';
 import XMediaList from '@/components/MkMediaList.vue';
 import XPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
@@ -37,7 +38,7 @@ const props = defineProps<{
 }>();
 
 const textEl = ref<HTMLElement>();
-let textElHeight = $ref(0);
+let textElHeight = $ref<number | null>(null);
 onMounted(() => {
 	if (textEl.value) {
 		const resizeObserver = new ResizeObserver(() => {
@@ -47,13 +48,13 @@ onMounted(() => {
 	}
 });
 
-const tmsCollapseNote = tmsStore.state.collapseNote;
-const tmsCollapseNoteHeight = tmsStore.state.collapseNoteHeight;
+const { collapseNote, collapseNoteHeight } = tmsStore.state;
 const isLong = $computed(() => {
-	return tmsCollapseNote && !!(
+	return collapseNote && !!(
 		props.note.cw == null && 
 		props.note.text != null && (
-			(!!tmsCollapseNoteHeight && (textElHeight >= tmsCollapseNoteHeight))
+			// textElHeight: null の場合は文字数で判定する
+			(!!collapseNoteHeight && (textElHeight == null ? props.note.text.length > 500 : textElHeight >= collapseNoteHeight))
 		)
 	);
 });

@@ -103,6 +103,7 @@ you: "Εσύ"
 clickToShow: "Κάντε κλικ για εμφάνιση"
 add: "Προσθέστε"
 reaction: "Αντιδράσεις"
+reactions: "Αντιδράσεις"
 reactionSetting: "Αντιδράσεις για εμφάνιση στην επιλογή αντίδρασης"
 reactionSettingDescription2: "Σύρετε για να αλλάξετε τη σειρά, κάντε κλικ για να διαγράψετε, πατήστε \"+\" για να προσθέσετε."
 rememberNoteVisibility: "Θυμήσου τις ρυθμίσεις ορατότητας σημειώματος"
@@ -255,6 +256,7 @@ total: "Σύνολο"
 appearance: "Εμφάνιση"
 accountSettings: "Ρυθμίσεις λογαριασμού"
 sounds: "Ήχοι"
+sound: "Ήχοι"
 listen: "Ακρόαση"
 showInPage: "Εμφάνιση στη σελίδα"
 volume: "Ένταση"
@@ -342,6 +344,8 @@ _antennaSources:
   userList: "Σημειώματα από καθορισμένη λίστα μελών"
   userGroup: "Σημειώματα από μέλη καθορισμένης ομάδας"
 _widgets:
+  profile: "Προφίλ"
+  instanceInfo: "Πληροφορίες του instance"
   notifications: "Ειδοποιήσεις"
   timeline: "Χρονολόγιο"
   calendar: "Ημερολόγιο"
@@ -354,6 +358,8 @@ _widgets:
   postForm: "Φόρμα δημοσίευσης"
   button: "Κουμπί"
   onlineUsers: "Συνδεδεμένα μέλη"
+  _userList:
+    chooseList: "Επιλέξτε μία λίστα"
 _cw:
   show: "Δείτε περισσότερα"
 _visibility:
@@ -421,3 +427,6 @@ _deck:
     antenna: "Αντένες"
     list: "Λίστα"
     mentions: "Επισημάνσεις"
+_webhookSettings:
+  name: "Όνομα"
+

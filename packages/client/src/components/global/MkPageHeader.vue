@@ -54,7 +54,9 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tab: undefined,
+	actions: undefined,
+	tabs: (): Tab[] => [],
 });
 
 const emit = defineEmits<{
@@ -66,8 +68,8 @@ const metadata = injectPageMetadata();
 const hideTitle = inject<boolean>('shouldOmitHeaderTitle', false);
 const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
 
-let el = $shallowRef<HTMLElement | undefined>(undefined);
-const bg = ref<string | undefined>(undefined);
+let el = $shallowRef<HTMLElement>();
+const bg = ref<string>();
 let narrow = $ref(false);
 const hasTabs = $computed(() => props.tabs.length > 0);
 const hasActions = $computed(() => props.actions && props.actions.length > 0);
@@ -81,7 +83,7 @@ const preventDrag = (ev: TouchEvent): void => {
 
 const top = (): void => {
 	if (el) {
-		scrollToTop(el as HTMLElement, { behavior: 'smooth' });
+		scrollToTop(el, { behavior: 'smooth' });
 	}
 };
 
@@ -110,12 +112,12 @@ onMounted(() => {
 
 	if (el && el.parentElement) {
 		narrow = el.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((_entries, _observer) => {
-			if (el && el.parentElement && document.body.contains(el as HTMLElement)) {
+		ro = new ResizeObserver(() => {
+			if (el && el.parentElement && document.body.contains(el)) {
 				narrow = el.parentElement.offsetWidth < 500;
 			}
 		});
-		ro.observe(el.parentElement as HTMLElement);
+		ro.observe(el.parentElement);
 	}
 });
 

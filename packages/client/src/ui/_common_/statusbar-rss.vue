@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="xbhtxfms">
 	<template v-if="display === 'marquee'">
-		<transition name="change" mode="default">
+		<Transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="item in items" :key="item.link" class="item">
 					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>

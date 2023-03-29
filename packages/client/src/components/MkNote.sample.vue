@@ -1,5 +1,5 @@
 <template>
-<div v-if="user" :class="$style.root">
+<div v-if="user" :class="[$style.root, { [$style.showActionsOnlyOnHover]: showActionsOnlyOnHover }]">
 	<article :class="$style.article">
 		<MkAvatar :class="$style.avatar" :user="user" disable-link disable-preview/>
 		<div :class="$style.main">
@@ -14,22 +14,24 @@
 					<div :class="$style.text"><Mfm :text="text" :author="user" :i="$i"/></div>
 				</div>
 			</div>
-			<footer :style="$style.footer">
-				<div :style="$style.reactionsViewer">
+			<div :class="$style.reactionsViewer">
+				<template v-for="item in reactions" :key="item.reaction">
 					<button
-						ref="reactButton"
-						:class="$style.reactionButton"
+						:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.canToggle]: item.canToggle, [$style.reacted]: item.reacted }]"
 						class="_button"
-						@click="react"
+						@click="react(item, $event)"
 					>
-						<MkEmoji emoji="👍" :custom-emojis="[]" :is-reaction="true" :normal="true"/>
+						<MkEmoji :class="$style.reactionIcon" :emoji="item.reaction" :custom-emojis="item.customEmojis" :is-reaction="true" :normal="true"/>
 						<span :class="$style.reactionCount">1</span>
 					</button>
-				</div>
+				</template>
+			</div>
+			<footer :class="$style.footer">
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-arrow-back-up"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-repeat"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-plus"></i></button>
 				<button :class="$style.footerButton" class="_button"><i class="ti ti-dots"></i></button>
+				<div v-if="showActionsOnlyOnHover" :class="$style.footerButton" style="text-decoration: none;" class="_button"><i class="ti ti-info-circle"></i></div>
 			</footer>
 		</div>
 	</article>
@@ -37,35 +39,67 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, ComputedRef } from 'vue';
+import { ref, computed, ComputedRef, unref } from 'vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
 import { $i } from '@/account';
+import { isTouchUsing } from '@/scripts/touch';
+import { deviceKind } from '@/scripts/device-kind';
 import { tmsStore } from '@/tms/store';
 import { getReactMenuDryrun, toggleReactDryrun } from '@/scripts/tms/get-react-menu';
+import { getRandomArrayElements } from '@/scripts/tms/utils';
+import { instance } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	text?: string;
 	instanceTickerPosition?: typeof tmsStore.state.instanceTickerPosition | ComputedRef<typeof tmsStore.state.instanceTickerPosition>;
 	useReactionMenu?: typeof tmsStore.state.useReactionMenu | ComputedRef<typeof tmsStore.state.useReactionMenu>;
+	useEasyReactionsViewer?: typeof tmsStore.state.useEasyReactionsViewer | ComputedRef<typeof tmsStore.state.useEasyReactionsViewer>;
+	showActionsOnlyOnHover?: typeof tmsStore.state.showActionsOnlyOnHover | ComputedRef<typeof tmsStore.state.showActionsOnlyOnHover>;
 }>(), {
 	text: 'Oh my Aichan',
 	instanceTickerPosition: tmsStore.state.instanceTickerPosition,
 	useReactionMenu: tmsStore.state.useReactionMenu,
+	useEasyReactionsViewer: tmsStore.state.useEasyReactionsViewer,
+	showActionsOnlyOnHover: tmsStore.state.showActionsOnlyOnHover,
 });
 
 const user = ref($i);
 const createdAt = ref(new Date().toJSON());
-const reactButton = ref<HTMLElement>();
 
-const useReactionMenu = computed(() => {
-	return typeof props.useReactionMenu === 'boolean' ? props.useReactionMenu : props.useReactionMenu.value;
+const useReactionMenu = computed(() => unref(props.useReactionMenu));
+const useEasyReactionsViewer = computed(() => unref(props.useEasyReactionsViewer));
+const showActionsOnlyOnHover = computed(() => unref(props.showActionsOnlyOnHover) && !isTouchUsing && deviceKind !== 'smartphone');
+
+const emojis = getRandomArrayElements(instance.emojis ?? [], 6).map(emoji => {
+	return {
+		reaction: `:${emoji.name}:`,
+		reacted: false,
+		canToggle: true,
+		customEmojis: [emoji],
+	};
 });
 
-const react = (): void => {
+const reactions = [
+	{
+		reaction: '👍',
+		reacted: true,
+		canToggle: true,
+		customEmojis: [],
+	},
+	...emojis,
+];
+
+const react = ({ reaction, canToggle }: {
+	reaction: string;
+	canToggle: boolean;
+}, ev: MouseEvent): void => {
+	if (!(ev.target instanceof HTMLElement)) return;
+	const reactButton = ref(ev.target);
+
 	if (useReactionMenu.value) {
-		getReactMenuDryrun({ reactButton });
+		getReactMenuDryrun({ reactButton, reaction });
 	} else {
-		toggleReactDryrun({ reactButton });
+		toggleReactDryrun({ reactButton, canToggle: ref(canToggle) });
 	}
 };
 </script>
@@ -79,6 +113,34 @@ const react = (): void => {
 	overflow: clip;
 	contain: content;
 	background: var(--panel);
+
+	&.showActionsOnlyOnHover {
+		.footer {
+			visibility: hidden;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 0 4px;
+			margin-bottom: 0 !important;
+			background: var(--popup);
+			border-radius: 8px;
+			box-shadow: 0px 4px 32px var(--shadow);
+		}
+
+		.footerButton {
+			font-size: 90%;
+
+			&:not(:last-child) {
+				margin-right: 0;
+			}
+		}
+	}
+
+	&.showActionsOnlyOnHover:hover {
+		.footer {
+			visibility: visible;
+		}
+	}
 }
 
 .article {
@@ -156,39 +218,91 @@ const react = (): void => {
 
 .reactionsViewer {
 	margin: 4px -2px 0 -2px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
 }
 
 .reactionButton {
-	display: inline-block;
-	height: 32px;
-	margin: 2px;
-	padding: 0 6px;
-	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.05);
+	&.viewTypeNormal {
+		display: inline-block;
+		height: 32px;
+		padding: 0 6px;
+		border-radius: 4px;
 
-	&:hover {
-		background: rgba(0, 0, 0, 0.1);
+		&.canToggle {
+			background: rgba(0, 0, 0, 0.05);
+
+			&:hover {
+				background: rgba(0, 0, 0, 0.1);
+			}
+		}
+
+		&:not(.canToggle) {
+			cursor: default;
+		}
+
+		&.reacted {
+			background: var(--accent);
+
+			&:hover {
+				background: var(--accent);
+			}
+
+			> .reactionCount {
+				color: var(--fgOnAccent);
+			}
+
+			> .reactionIcon {
+				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			}
+		}
+
+		> .reactionCount {
+			font-size: 0.9em;
+			line-height: 32px;
+			margin: 0 0 0 4px;
+		}
 	}
-}
 
-.reactionCount {
-	font-size: 0.9em;
-	line-height: 32px;
-	margin: 0 0 0 4px;
-}
+	&.viewTypeEasy {
+		color: var(--fgTransparentWeak);
+		box-sizing: border-box;
+		display: grid;
+		grid-template-columns: auto auto;
+		grid-template-rows: 32px;
+		border-radius: 4px;
+		box-shadow: 0 5px 15px -5px var(--shadow);
+		align-items: center;
+		overflow: hidden;
 
-@container (max-width: 580px) {
-	.root {
-		font-size: 0.95em;
-	}
+		&.canToggle {
+			box-shadow: 0 5px 15px -5px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
+		}
 
-	.article {
-		padding: 24px 26px;
-	}
+		&.canToggle:hover,
+		&.reacted {
+			background-color: var(--accent);
+			color: var(--fgOnAccent);
+		}
 
-	.avatar {
-		width: 50px;
-		height: 50px;
+		&:not(.canToggle) {
+			cursor: default;
+		}
+
+		> .reactionIcon {
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 4px;
+			max-width: 100%; // はみ出し防止
+			height: 100% !important; // MkEmojiのheight上書き
+		}
+
+		> .reactionCount {
+			box-sizing: border-box;
+			padding: 0 6px;
+			font-size: 0.9em;
+		}
 	}
 }
 
@@ -197,42 +311,28 @@ const react = (): void => {
 		font-size: 0.9em;
 	}
 
-	.article {
-		padding: 20px 22px;
-	}
-
-	.footer {
-		margin-bottom: -8px;
-	}
-}
-
-@container (max-width: 480px) {
-
-	.article {
-		padding: 14px 16px;
+	.avatar {
+		width: 50px;
+		height: 50px;
 	}
 }
 
 @container (max-width: 450px) {
+	.article {
+		padding: 14px 16px 9px;
+	}
+
 	.avatar {
-		margin: 0 10px 0 0;
+		margin: 0 10px 8px 0;
 		width: 46px;
 		height: 46px;
 	}
 }
 
-@container (max-width: 400px) {
-	.footerButton {
-			&:not(:last-child) {
-				margin-right: 18px;
-			}
-		}
-}
-
 @container (max-width: 350px) {
 	.footerButton {
 		&:not(:last-child) {
-			margin-right: 12px;
+			margin-right: 18px;
 		}
 	}
 }
@@ -245,7 +345,7 @@ const react = (): void => {
 
 	.footerButton {
 		&:not(:last-child) {
-			margin-right: 8px;
+			margin-right: 12px;
 		}
 	}
 }

@@ -95,7 +95,7 @@ export class HttpRequestService {
 	}
 
 	@bindThis
-	public async getJson(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<unknown> {
+	public async getJson<T>(url: string, accept = 'application/json, */*', timeout = 10000, headers?: Record<string, string>): Promise<T> {
 		const res = await this.getResponse({
 			url,
 			method: 'GET',
@@ -107,7 +107,7 @@ export class HttpRequestService {
 			size: 1024 * 256,
 		});
 
-		return await res.json();
+		return await res.json() as T;
 	}
 
 	@bindThis

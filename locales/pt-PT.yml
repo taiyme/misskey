@@ -456,6 +456,7 @@ deleteAll: "Apagar Tudo"
 showFixedPostForm: "Exibir o formulário de postagem na parte superior da linha do tempo"
 newNoteRecived: "Nova nota recebida"
 sounds: "Sons"
+sound: "Sons"
 listen: "Ouvir"
 none: "Nenhum"
 showInPage: "Ver na página"
@@ -489,11 +490,15 @@ _sfx:
   notification: "Notificações"
   chat: "Chat"
 _widgets:
+  profile: "Perfil"
+  instanceInfo: "Informações da instância"
   notifications: "Notificações"
   timeline: "Timeline"
   activity: "atividade"
   federation: "União"
   jobQueue: "Fila de trabalhos"
+  _userList:
+    chooseList: "Escolhe uma lista"
 _cw:
   show: "Carregar mais"
 _visibility:
@@ -735,3 +740,6 @@ _deck:
     list: "Listas"
     mentions: "Menções"
     direct: "Notas diretas"
+_webhookSettings:
+  name: "Nome"
+

@@ -131,14 +131,16 @@ export const toggleReact = ({ reaction, note, canToggle, reactButton }: ReactPro
 	}
 };
 
-export const getReactMenuDryrun = ({ reactButton }: Pick<ReactProps, 'reactButton'>): void => {
+export const getReactMenuDryrun = ({ reactButton, reaction }: Pick<ReactProps, 'reactButton' | 'reaction'>): void => {
 	if (!reactButton.value) return;
+
+	const reactionName = getReactionName(reaction);
 
 	const menu: MenuItem[] = [];
 
 	menu.push({
 		type: 'label',
-		text: '+1',
+		text: reactionName,
 	});
 
 	menu.push({
@@ -150,7 +152,10 @@ export const getReactMenuDryrun = ({ reactButton }: Pick<ReactProps, 'reactButto
 	menu.push({
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',
-		action: (): void => {},
+		action: (): void => {
+			copyText(reaction.startsWith(':') ? reactionName : reaction);
+			os.success();
+		},
 	});
 
 	menu.push({
@@ -162,7 +167,9 @@ export const getReactMenuDryrun = ({ reactButton }: Pick<ReactProps, 'reactButto
 	os.popupMenu(menu, reactButton.value);
 };
 
-export const toggleReactDryrun = ({ reactButton }: Pick<ReactProps, 'reactButton'>): void => {
+export const toggleReactDryrun = ({ reactButton, canToggle }: Pick<ReactProps, 'reactButton' | 'canToggle'>): void => {
+	if (!canToggle.value) return;
 	if (!reactButton.value) return;
+
 	rippleEffect(reactButton.value);
 };

@@ -116,6 +116,10 @@ const renote = (viaKeyboard = false): void => {
 
 	os.popupMenu(menu, buttonRef.value, { viaKeyboard });
 };
+
+defineExpose({
+	renote,
+});
 </script>
 
 <style lang="scss" scoped>

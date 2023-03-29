@@ -25,8 +25,8 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
+		if ($i) data.i = $i.token;
+		if (token !== undefined) data.i = token;
 
 		// Send request
 		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
@@ -517,7 +517,7 @@ export const openEmojiPicker = async (src?: HTMLElement, opts, initialTextarea: 
 			insertTextAtCursor(activeTextarea, emoji);
 		},
 		closed: () => {
-			openingEmojiPicker!.dispose();
+			openingEmojiPicker?.dispose();
 			openingEmojiPicker = null;
 			observer.disconnect();
 		},
@@ -530,7 +530,7 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	viaKeyboard?: boolean;
 }): Promise<void> => {
 	return new Promise((resolve, _reject) => {
-		let dispose;
+		let dispose: () => void;
 		popup(defineAsyncComponent(() => import('@/components/MkPopupMenu.vue')), {
 			items,
 			src,
@@ -551,7 +551,7 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 export const contextMenu = (items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent): Promise<void> => {
 	ev.preventDefault();
 	return new Promise((resolve, _reject) => {
-		let dispose;
+		let dispose: () => void;
 		popup(defineAsyncComponent(() => import('@/components/MkContextMenu.vue')), {
 			items,
 			ev,
@@ -573,7 +573,7 @@ export const post = (props: Record<string, any> = {}): Promise<void> => {
 		//       Vueが渡されたコンポーネントに内部的に__propsというプロパティを生やす影響で、
 		//       複数のpost formを開いたときに場合によってはエラーになる
 		//       もちろん複数のpost formを開けること自体Misskeyサイドのバグなのだが
-		let dispose;
+		let dispose: () => void;
 		popup(MkPostFormDialog, props, {
 			closed: () => {
 				resolve();
