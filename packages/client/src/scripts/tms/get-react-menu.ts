@@ -130,3 +130,46 @@ export const toggleReact = ({ reaction, note, canToggle, reactButton }: ReactPro
 		createReaction({ noteId, reaction });
 	}
 };
+
+export const getReactMenuDryrun = ({ reactButton, reaction }: Pick<ReactProps, 'reactButton' | 'reaction'>): void => {
+	if (!reactButton.value) return;
+
+	const reactionName = getReactionName(reaction);
+
+	const menu: MenuItem[] = [];
+
+	menu.push({
+		type: 'label',
+		text: reactionName,
+	});
+
+	menu.push({
+		text: i18n.ts._tms.react,
+		icon: 'ti ti-plus',
+		action: (): void => rippleEffect(reactButton.value),
+	});
+
+	menu.push({
+		text: i18n.ts.copy,
+		icon: 'ti ti-copy',
+		action: (): void => {
+			copyText(reaction.startsWith(':') ? reactionName : reaction);
+			os.success();
+		},
+	});
+
+	menu.push({
+		text: i18n.ts.details,
+		icon: 'ti ti-info-circle',
+		action: (): void => {},
+	});
+
+	os.popupMenu(menu, reactButton.value);
+};
+
+export const toggleReactDryrun = ({ reactButton, canToggle }: Pick<ReactProps, 'reactButton' | 'canToggle'>): void => {
+	if (!canToggle.value) return;
+	if (!reactButton.value) return;
+
+	rippleEffect(reactButton.value);
+};

@@ -6,6 +6,7 @@ import { $i } from '@/account';
 import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { deepClone } from '@/scripts/clone';
+import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<RequiredNotNull<Pick<T, K>>>;
 type RequiredNotNull<T> = {
@@ -97,15 +98,6 @@ const fixMentionsHost = (note: Note): Note => {
 	const cw = note.cw && _fix(note.cw, note.user.host);
 
 	return { ...note, text, cw };
-};
-
-const isPureRenote = (note: Note): note is SomeRequired<Note, 'renote' | 'renoteId'> => {
-	return (
-		note.renote != null &&
-		note.text == null &&
-		note.fileIds.length === 0 &&
-		note.poll == null
-	);
 };
 
 const makeVisibleUserIds = ({ visibility, visibleUserIds, userId }: Note): PostData['visibleUserIds'] => {

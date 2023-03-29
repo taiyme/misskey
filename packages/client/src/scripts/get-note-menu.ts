@@ -8,23 +8,17 @@ import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
 import { getUserMenu } from '@/scripts/get-user-menu';
+import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
-	menuButton: Ref<HTMLElement>;
+	menuButton?: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClipPage?: Ref<misskey.entities.Clip>;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isPureRenote(props.note) ? props.note.renote : props.note;
 
 	function del(): void {
 		os.confirm({
@@ -100,18 +94,18 @@ export function getNoteMenu(props: {
 		props.isDeleted.value = true;
 	}
 
-	async function promote(): Promise<void> {
-		const { canceled, result: days } = await os.inputNumber({
-			title: i18n.ts.numberOfDays,
-		});
+	// async function promote(): Promise<void> {
+	// 	const { canceled, result: days } = await os.inputNumber({
+	// 		title: i18n.ts.numberOfDays,
+	// 	});
 
-		if (canceled) return;
+	// 	if (canceled) return;
 
-		os.apiWithDialog('admin/promo/create', {
-			noteId: appearNote.id,
-			expiresAt: Date.now() + (86400000 * days),
-		});
-	}
+	// 	os.apiWithDialog('admin/promo/create', {
+	// 		noteId: appearNote.id,
+	// 		expiresAt: Date.now() + (86400000 * days),
+	// 	});
+	// }
 
 	function share(): void {
 		navigator.share({
@@ -224,13 +218,11 @@ export function getNoteMenu(props: {
 
 							const clip = await os.apiWithDialog('clips/create', result);
 
-							claimAchievement('noteClipped1');
 							os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
 						},
 					}, null, ...clips.map(clip => ({
 						text: clip.name,
 						action: () => {
-							claimAchievement('noteClipped1');
 							os.promiseDialog(
 								os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
 								null,

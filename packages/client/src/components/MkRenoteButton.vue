@@ -116,6 +116,10 @@ const renote = (viaKeyboard = false): void => {
 
 	os.popupMenu(menu, buttonRef.value, { viaKeyboard });
 };
+
+defineExpose({
+	renote,
+});
 </script>
 
 <style lang="scss" scoped>
@@ -126,11 +130,7 @@ const renote = (viaKeyboard = false): void => {
 	padding: 0 6px;
 	border-radius: 4px;
 
-	&:not(.canRenote) {
-		cursor: default;
-	}
-
-	&:not(.canPakuru) {
+	&:not(.canRenote):not(.canPakuru) {
 		cursor: default;
 	}
 

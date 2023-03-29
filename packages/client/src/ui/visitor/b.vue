@@ -21,7 +21,7 @@
 		</div>
 	</div>
 
-	<transition :name="$store.state.animation ? 'tray-back' : ''">
+	<Transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div
 			v-if="showMenu"
 			class="menu-back _modalBg"
@@ -30,7 +30,7 @@
 		></div>
 	</transition>
 
-	<transition :name="$store.state.animation ? 'tray' : ''">
+	<Transition :name="$store.state.animation ? 'tray' : ''">
 		<div v-if="showMenu" class="menu">
 			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>

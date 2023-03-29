@@ -107,19 +107,19 @@ import { trimHash } from '@/scripts/tms/url-hash';
 
 	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
 	// TODO: いつの日にか消したい
-	const vh = window.innerHeight * 0.01;
-	document.documentElement.style.setProperty('--vh', `${vh}px`);
-	window.addEventListener('resize', () => {
+	const setViewportHeight = (): void => {
 		const vh = window.innerHeight * 0.01;
 		document.documentElement.style.setProperty('--vh', `${vh}px`);
-	});
+	};
+	window.addEventListener('resize', setViewportHeight);
 	//#endregion
 
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.getElementsByName('viewport').item(0);
-		viewport.setAttribute('content',
-			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+		const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+		if (viewport) {
+			viewport.content += ', minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
+		}
 	}
 
 	//#region Set lang attr
@@ -348,7 +348,9 @@ import { trimHash } from '@/scripts/tms/url-hash';
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('./plugin').then(({ install }) => {
+		import('./plugin').then(async ({ install }) => {
+			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
+			await new Promise(r => setTimeout(r, 0));
 			install(plugin);
 		});
 	}

@@ -1,9 +1,9 @@
 <template>
-<transition :name="$store.state.animation ? 'fade' : ''" appear>
+<Transition :name="$store.state.animation ? 'fade' : ''" appear>
 	<div ref="rootEl" class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
 	</div>
-</transition>
+</Transition>
 </template>
 
 <script lang="ts" setup>
@@ -29,6 +29,8 @@ let zIndex = $ref<number>(os.claimZIndex('high'));
 const SCROLLBAR_THICKNESS = 16;
 
 onMounted(() => {
+	if (!rootEl) return;
+
 	let left = props.ev.pageX + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 	let top = props.ev.pageY + 1; // 間違って右ダブルクリックした場合に意図せずアイテムがクリックされるのを防ぐため + 1
 
@@ -65,9 +67,9 @@ onBeforeUnmount(() => {
 	}
 });
 
-function onMousedown(evt: Event) {
+const onMousedown = (evt: Event): void => {
 	if (!contains(rootEl, evt.target) && (rootEl !== evt.target)) emit('closed');
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@
 		"url": "https://github.com/taiyme/misskey.git"
 	},
 	"private": true,
-	"packageManager": "pnpm@7.29.1",
+	"packageManager": "pnpm@8.0.0",
 	"workspaces": [
 		"packages/client",
 		"packages/backend",

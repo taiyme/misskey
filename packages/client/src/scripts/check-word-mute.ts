@@ -1,9 +1,9 @@
 type NoteLike = {
 	userId: string;
-	cw: string | null;
-	text: string | null;
-	reply: NoteLike | null;
-	renote: NoteLike | null;
+	cw?: string | null;
+	text?: string | null;
+	reply?: NoteLike | null;
+	renote?: NoteLike | null;
 };
 
 type UserLike = {
@@ -19,16 +19,16 @@ export function checkWordMute(note: NoteLike, me: UserLike | null | undefined, m
 		const text = [
 			// 自分自身を除く返信
 			...(note.reply && note.reply.userId !== me?.id) ? [
-				note.reply?.cw ?? '',
-				note.reply?.text ?? '',
+				note.reply.cw ?? '',
+				note.reply.text ?? '',
 			] : [],
 			// 自分自身を除く投稿
 			note.cw ?? '',
 			note.text ?? '',
 			// 自分自身を除くRN
 			...(note.renote && note.renote.userId !== me?.id) ? [
-				note.renote?.cw ?? '',
-				note.renote?.text ?? '',
+				note.renote.cw ?? '',
+				note.renote.text ?? '',
 			] : [],
 		].filter(x => x).join('\n').trim();
 

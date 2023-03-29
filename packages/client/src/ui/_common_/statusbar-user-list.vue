@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="osdsvwzy">
 	<template v-if="display === 'marquee'">
-		<transition name="change" mode="default">
+		<Transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="note in notes" :key="note.id" class="item">
 					<img class="avatar" :src="note.user.avatarUrl" decoding="async"/>

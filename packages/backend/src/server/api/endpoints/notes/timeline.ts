@@ -1,6 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Notes, Followings } from '@/models/index.js';
 import { activeUsersChart } from '@/services/chart/index.js';
+import { genId } from '@/misc/gen-id.js';
 import define from '../../define.js';
 import { makePaginationQuery } from '../../common/make-pagination-query.js';
 import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
@@ -48,24 +49,14 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (ps, user) => {
-	const hasFollowing = (await Followings.count({
-		where: {
-			followerId: user.id,
-		},
-		take: 1,
-	})) !== 0;
-
-	//#region Construct query
-	const followingQuery = Followings.createQueryBuilder('following')
+	const followees = await Followings.createQueryBuilder('following')
 		.select('following.followeeId')
-		.where('following.followerId = :followerId', { followerId: user.id });
+		.where('following.followerId = :followerId', { followerId: user.id })
+		.getMany();
 
 	const query = makePaginationQuery(Notes.createQueryBuilder('note'),
 		ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere(new Brackets(qb => { qb
-			.where('note.userId = :meId', { meId: user.id });
-		if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
-		}))
+		.andWhere('note.id > :minId', { minId: genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 		.innerJoinAndSelect('note.user', 'user')
 		.leftJoinAndSelect('user.avatar', 'avatar')
 		.leftJoinAndSelect('user.banner', 'banner')
@@ -76,8 +67,15 @@ export default define(meta, paramDef, async (ps, user) => {
 		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 		.leftJoinAndSelect('renote.user', 'renoteUser')
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.setParameters(followingQuery.getParameters());
+		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+
+	if (followees.length > 0) {
+		const meOrFolloweeIds = [user.id, ...followees.map(f => f.followeeId)];
+
+		query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+	} else {
+		query.andWhere('note.userId = :meId', { meId: user.id });
+	}
 
 	generateChannelQuery(query, user);
 	generateRepliesQuery(query, user);

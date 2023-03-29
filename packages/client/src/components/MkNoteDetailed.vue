@@ -6,10 +6,10 @@
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="lxwezrsl _block"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 	:class="{ renote: isRenote }"
 >
-	<MkNoteSub v-for="note in conversation" :key="note.id" class="reply-to-more" :note="note"/>
+	<MkNoteSub v-for="convNote in conversation" :key="convNote.id" class="reply-to-more" :note="convNote"/>
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
@@ -37,13 +37,13 @@
 					<MkA v-user-preview="appearNote.user.id" class="name" :to="userPage(appearNote.user)">
 						<MkUserName :nowrap="false" :user="appearNote.user"/>
 					</MkA>
-					<span v-if="appearNote.user.isBot" class="is-bot">bot</span>
+					<span v-if="(appearNote.user as any /* 定義されていないため */).isBot" class="is-bot">bot</span>
 					<div class="info">
 						<MkVisibility :note="appearNote"/>
 					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
-				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance" :vertical="false"/>
+				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" force-type="normal"/>
 			</div>
 		</header>
 		<div class="main">
@@ -61,8 +61,8 @@
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
-								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+								<b>{{ $t('translatedFrom', { x: (translation as any /* 定義されていないため */).sourceLang }) }}: </b>
+								<Mfm :text="(translation as any /* 定義されていないため */).text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -73,7 +73,7 @@
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
 				</div>
-				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+				<MkA v-if="(appearNote as any /* 定義されていないため */).channel && !inChannel" class="channel" :to="`/channels/${(appearNote as any /* 定義されていないため */).channel.id}`"><i class="ti ti-device-tv"></i> {{ (appearNote as any /* 定義されていないため */).channel.name }}</MkA>
 			</div>
 			<footer class="footer">
 				<div class="info">
@@ -99,7 +99,7 @@
 			</footer>
 		</div>
 	</article>
-	<MkNoteSub v-for="note in replies" :key="note.id" :note="note" class="reply" :detail="true"/>
+	<MkNoteSub v-for="replyNote in replies" :key="replyNote.id" :note="replyNote" class="reply" :detail="true"/>
 </div>
 <div v-else class="_panel muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
@@ -113,7 +113,8 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, ref } from 'vue';
+import { inject, onMounted, ref, Ref } from 'vue';
+import { ReactiveVariable } from 'vue/macros';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -139,6 +140,7 @@ import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
+import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -154,25 +156,20 @@ if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
 		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result);
+			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>; // unknownのため
 		}
 		note = result;
 	});
 }
 
-const isRenote = (
-	note.renote != null &&
-	note.text == null &&
-	note.fileIds.length === 0 &&
-	note.poll == null
-);
+const isRenote = isPureRenote(note);
 
 const el = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isPureRenote(note) ? note.renote : note); // 本当はisRenoteを使いたいけど型推論してくれない
 const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
 const showContent = ref(false);
 const isDeleted = ref(false);
@@ -185,31 +182,30 @@ const conversation = ref<misskey.entities.Note[]>([]);
 const replies = ref<misskey.entities.Note[]>([]);
 
 const keymap = {
-	'r': () => reply(true),
-	'e|a|plus': () => react(true),
-	'q': () => renoteButton.value.renote(true),
-	'esc': blur,
-	'm|o': () => menu(true),
-	's': () => showContent.value !== showContent.value,
+	'r': (): void => reply(true),
+	'e|a|plus': (): void => react(true),
+	'q': (): void => renoteButton.value?.renote(true),
+	'esc': (): void => blur(),
+	'm|o': (): void => menu(true),
 };
 
 useNoteCapture({
-	rootEl: el,
+	rootEl: el as Ref<HTMLElement>, // undefinedを除外するため
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
 
-function reply(viaKeyboard = false): void {
+const reply = (viaKeyboard = false): void => {
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
-	}, () => {
-		focus();
 	});
-}
+};
 
-function react(viaKeyboard = false): void {
+const react = (_viaKeyboard = false): void => {
+	if (!reactButton.value) return;
+
 	pleaseLogin();
 	blur();
 	reactionPicker.show(reactButton.value, reaction => {
@@ -217,50 +213,68 @@ function react(viaKeyboard = false): void {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
-	}, () => {
-		focus();
-	});
-}
+	}, focus);
+};
 
-function undoReact(note): void {
-	const oldReaction = note.myReaction;
+const undoReact = (note_: misskey.entities.Note): void => {
+	const oldReaction = note_.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note.id,
+		noteId: note_.id,
 	});
-}
+};
 
-function onContextmenu(ev: MouseEvent): void {
-	const isLink = (el: HTMLElement) => {
-		if (el.tagName === 'A') return true;
-		if (el.parentElement) {
-			return isLink(el.parentElement);
+const onContextmenu = (ev: MouseEvent): void => {
+	const isLink = (elem: HTMLElement): boolean => {
+		if (elem.tagName === 'A') return true;
+		if (elem.parentElement) {
+			return isLink(elem.parentElement);
 		}
+
+		return false;
 	};
+	if (!(ev.target instanceof HTMLElement)) return;
 	if (isLink(ev.target)) return;
-	if (window.getSelection().toString() !== '') return;
+	if (window.getSelection()?.toString() !== '') return;
 
 	if (defaultStore.state.useReactionPickerForContextMenu) {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), ev).then(focus);
+		os.contextMenu(
+			getNoteMenu({
+				note,
+				translating,
+				translation,
+				// menuButton,
+				isDeleted,
+			}),
+			ev,
+		).then(focus);
 	}
-}
+};
 
-function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), menuButton.value, {
-		viaKeyboard,
-	}).then(focus);
-}
+const menu = (viaKeyboard = false): void => {
+	os.popupMenu(
+		getNoteMenu({
+			note,
+			translating,
+			translation,
+			// menuButton,
+			isDeleted,
+		}),
+		menuButton.value,
+		{ viaKeyboard },
+	).then(focus);
+};
 
-function showRenoteMenu(viaKeyboard = false): void {
+const showRenoteMenu = (viaKeyboard = false): void => {
 	if (!isMyRenote) return;
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',
 		danger: true,
-		action: () => {
+		action: (): void => {
 			os.api('notes/delete', {
 				noteId: note.id,
 			});
@@ -269,15 +283,15 @@ function showRenoteMenu(viaKeyboard = false): void {
 	}], renoteTime.value, {
 		viaKeyboard: viaKeyboard,
 	});
-}
+};
 
-function focus() {
-	el.value.focus();
-}
+const focus = (): void => {
+	el.value?.focus();
+};
 
-function blur() {
-	el.value.blur();
-}
+const blur = (): void => {
+	el.value?.blur();
+};
 
 os.api('notes/children', {
 	noteId: appearNote.id,
@@ -290,7 +304,8 @@ if (appearNote.replyId) {
 	os.api('notes/conversation', {
 		noteId: appearNote.replyId,
 	}).then(res => {
-		conversation.value = res.reverse();
+		const resTyped = res as misskey.entities.Note[]; // TODO型のため
+		conversation.value = resTyped.reverse();
 	});
 }
 </script>

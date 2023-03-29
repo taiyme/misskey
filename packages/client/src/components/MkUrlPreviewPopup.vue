@@ -1,8 +1,8 @@
 <template>
 <div class="fgmtyycl" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
-	<transition :name="$store.state.animation ? 'zoom' : ''" @after-leave="emit('closed')">
-		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
-	</transition>
+	<Transition :name="$store.state.animation ? 'zoom' : ''" @after-leave="emit('closed')">
+		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url" popup/>
+	</Transition>
 </div>
 </template>
 

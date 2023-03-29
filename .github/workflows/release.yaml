@@ -16,166 +16,192 @@ jobs:
         run: exit 1
 
       - name: Throw an error if PR has no release tags
-        if: github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch'
+        if: github.event.label.name != 'release-major' && github.event.label.name != 'release-minor' && github.event.label.name != 'release-patch'
         run: |
           echo "::error::PR has no release tags!! (release-major, release-minor, release-patch)"
           exit 1
 
-  get_diff:
-    name: Get diff
+  get_new_version:
+    name: Get new version
     runs-on: ubuntu-latest
     needs: [check_label]
     outputs:
-      package_diff: ${{ steps.get_diff.outputs.package_diff }}
-      compose_diff: ${{ steps.get_diff.outputs.compose_diff }}
+      new_version: ${{ steps.new_version.outputs.result }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: Get release branch
-        run: git fetch origin ${{ github.base_ref }} --depth 1
-
-      - name: Get  diff
-        id: get_diff
+      - name: Get latest tag
+        id: latest_tag
         run: |
-          echo "package_diff=$(git diff origin/${{ github.base_ref }} HEAD --relative "./package.json" | grep "^+.\+version" | wc -l)" >> $GITHUB_OUTPUT
-          echo "compose_diff=$(git diff origin/${{ github.base_ref }} HEAD --relative "./docker-compose.yml" | grep "^+.\+image: ghcr.io/${{ github.repository }}" | wc -l)" >> $GITHUB_OUTPUT
+          git fetch --prune --unshallow
+          echo "latest_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
-  update_version:
-    name: Update version
-    runs-on: ubuntu-latest
-    needs: [get_diff]
-    outputs:
-      version: ${{ steps.version.outputs.result }}
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Update package.json
+      - name: Update version
         uses: actions/github-script@v6
-        id: version
+        id: new_version
         with:
           result-encoding: string
           script: |
-            const fs = require('fs')
+            const version = "${{ steps.latest_tag.outputs.latest_tag }}";
 
-            const json = JSON.parse(fs.readFileSync('${{ github.workspace }}/package.json'))
-            let version = json.version
+            const isMajor = ${{ github.event.label.name == 'release-major' }};
+            const isMinor = ${{ github.event.label.name == 'release-minor' }};
+            const isPatch = ${{ github.event.label.name == 'release-patch' }};
 
-            if (${{ needs.get_diff.outputs.package_diff == '0' }}) {
-              const isPatch = ${{ github.event.label.name == 'release-patch' }}
-              const isMinor = ${{ github.event.label.name == 'release-minor' }}
-              const isMajor = ${{ github.event.label.name == 'release-major' }}
+            const versionSplit = version.split('-taiyme-v');
+            const versionMMP = versionSplit[1].split('.');
 
-              const versionSplit = version.split('-taiyme-v')
-              const versionMMP = versionSplit[1].split('.')
-
-              if (isPatch)
-                  versionMMP[2] = Number(versionMMP[2]) + 1;
-
-              if (isMinor) {
-                  versionMMP[1] = Number(versionMMP[1]) + 1;
-                  versionMMP[2] = 0;
-              }
-
-              if (isMajor) {
-                  versionMMP[0] = Number(versionMMP[0]) + 1;
-                  versionMMP[1] = 0;
-                  versionMMP[2] = 0;
-              }
-
-              versionSplit[1] = versionMMP.join('.');
-              version = versionSplit.join('-taiyme-v')
-              json.version = version
-              fs.writeFileSync('${{ github.workspace }}/package.json', JSON.stringify(json, null, '\t'))
+            if (isMajor) {
+                versionMMP[0] = Number(versionMMP[0]) + 1;
+                versionMMP[1] = 0;
+                versionMMP[2] = 0;
             }
 
-            return version
+            if (isMinor) {
+                versionMMP[1] = Number(versionMMP[1]) + 1;
+                versionMMP[2] = 0;
+            }
 
-      - name: Update docker-compose.yml
-        if: needs.get_diff.outputs.compose_diff == '0'
-        run: |
-          yq -r eval '.services.web.image = "ghcr.io/${{ github.repository }}:${{ steps.version.outputs.result }}"' -i "${{ github.workspace }}/docker-compose.yml"
+            if (isPatch) {
+                versionMMP[2] = Number(versionMMP[2]) + 1;
+            }
 
-      - name: Commit and Push
-        if: needs.get_diff.outputs.package_diff == '0' || needs.get_diff.outputs.compose_diff == '0'
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git add .
-          git commit --author=. -m "${{ steps.version.outputs.result }}"
-          git push
+            versionSplit[1] = versionMMP.join('.');
+            const newVersion = versionSplit.join('-taiyme-v');
 
-  docker_build:
-    name: Build Docker image and Push to Github Container Registry
-    needs: [update_version]
-    uses: ./.github/workflows/docker.yaml
-    with:
-      tag: ${{ needs.update_version.outputs.version }}
+            return newVersion;
 
-  release:
-    name: Release
-    needs: [update_version, docker_build]
+  update_package_json:
+    name: Update package.json
     runs-on: ubuntu-latest
+    needs: [get_new_version]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
 
-      - name: merge PR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge
-        
-      - name: Checkout release branch
-        uses: actions/checkout@v3
+      - name: Update package.json
+        run: jq '.version = "${{ needs.get_new_version.outputs.new_version }}"' "${{ github.workspace }}/package.json" --tab > tmp && mv tmp "${{ github.workspace }}/package.json"
+
+      - name: Upload package.json
+        uses: actions/upload-artifact@v3
         with:
-          ref: ${{ github.base_ref }}
+          name: version_files
+          path: ${{ github.workspace }}/package.json
+
+  update_docker_compose_yml:
+    name: Update docker-compose.yml
+    runs-on: ubuntu-latest
+    needs: [get_new_version]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update docker-compose.yml
+        run: yq -r eval '.services.web.image = "ghcr.io/${{ github.repository }}:${{ needs.get_new_version.outputs.new_version }}"' -i "${{ github.workspace }}/docker-compose.yml"
+
+      - name: Upload docker-compose.yml
+        uses: actions/upload-artifact@v3
+        with:
+          name: version_files
+          path: ${{ github.workspace }}/docker-compose.yml
+
+  update_changelog_md:
+    name: Update CHANGELOG.md
+    runs-on: ubuntu-latest
+    needs: [get_new_version]
+    outputs:
+      changelog_body: ${{ steps.get_changelog_body.outputs.result }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Get changelog title
         id: get_changelog_title
-        run: echo "changelog_title=${{ needs.update_version.outputs.version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
+        run: echo "changelog_title=${{ needs.get_new_version.outputs.new_version }} ($(date "+%Y/%m/%d"))" >> $GITHUB_OUTPUT
 
       - name: Get changelog body
         id: get_changelog_body
         uses: actions/github-script@v6
         with:
           result-encoding: string
-          script: return `${{ github.event.pull_request.body }}`
+          script: return `${{ github.event.pull_request.body }}`;
 
       - name: Add new changelog
         uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
-            const fs = require('fs')
+            const fs = require('fs');
 
-            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString()
+            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString();
 
-            const changelogSplit = changelog.split('-->\n\n##')
-            const changelogAdded = `## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n`
-            const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]]
-            const newChangelog = chnagelogArray.join('')
+            const changelogSplit = changelog.split('-->\n\n##');
+            const changelogAdded = `## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n`;
+            const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]];
+            const newChangelog = chnagelogArray.join('');
 
-            fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog)
+            fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog);
 
-      - name: Commit and Push
+      - name: Upload CHANGELOG.md
+        uses: actions/upload-artifact@v3
+        with:
+          name: version_files
+          path: ${{ github.workspace }}/CHANGELOG.md
+
+  docker_build:
+    name: Build Docker image and Push to Github Container Registry
+    needs: [get_new_version, update_package_json]
+    uses: ./.github/workflows/docker.yaml
+    with:
+      tag: ${{ needs.get_new_version.outputs.new_version }}
+
+  commit_tag_merge_push:
+    name: Commit, Tag, Merge and Push
+    needs: [get_new_version, update_package_json, update_docker_compose_yml, update_changelog_md]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Download files
+        uses: actions/download-artifact@v3
+        with:
+          name: version_files
+
+      - name: Check change
+        id: is_chnage
+        run: echo "is_change=$(git status -s | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Commit and Tag
+        if: steps.is_chnage.outputs.is_change != '0'
         run: |
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
           git add .
-          git commit --author=. -m "update CHANGELOG.md"
-          git tag "${{ needs.update_version.outputs.version }}"
+          git commit --author=. -m "${{ needs.get_new_version.outputs.new_version }}"
+          git tag "${{ needs.get_new_version.outputs.new_version }}"
           git push --follow-tags
+
+      - name: merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge
+
+  release:
+    name: Release
+    needs: [get_new_version, update_changelog_md, commit_tag_merge_push, docker_build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.base_ref }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.update_version.outputs.version }}
-          body: ${{ steps.get_changelog_body.outputs.result }}
+          tag_name: ${{ needs.get_new_version.outputs.new_version }}
+          body: ${{ needs.update_changelog_md.outputs.changelog_body }}
