@@ -9,6 +9,12 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.0.48 (2023/03/16)
+
+- feat(frontend): 文字数カウンター (#99) @taiyme
+- fix(frontend/backend): deepCloneの戻り値にundefinedを含まないように @taiyme
+- chore(frontend): fix types (plugin) @taiyme
+
 ## 12.119.2-taiyme-v1.0.47 (2023/03/14)
 
 - Update pnpm v7.28.0 -> v7.29.1
