@@ -16,7 +16,7 @@ jobs:
         run: exit 1
 
       - name: Throw an error if PR has no release tags
-        if: github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch' && github.event.label.name != 'release-patch'
+        if: github.event.label.name != 'release-major' && github.event.label.name != 'release-minor' && github.event.label.name != 'release-patch'
         run: |
           echo "::error::PR has no release tags!! (release-major, release-minor, release-patch)"
           exit 1
@@ -43,22 +43,14 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const version = "${{ steps.latest_tag.outputs.latest_tag }} "
+            const version = "${{ steps.latest_tag.outputs.latest_tag }}";
 
-            const isPatch = ${{ github.event.label.name == 'release-patch' }}
-            const isMinor = ${{ github.event.label.name == 'release-minor' }}
-            const isMajor = ${{ github.event.label.name == 'release-major' }}
+            const isMajor = ${{ github.event.label.name == 'release-major' }};
+            const isMinor = ${{ github.event.label.name == 'release-minor' }};
+            const isPatch = ${{ github.event.label.name == 'release-patch' }};
 
-            const versionSplit = version.split('-taiyme-v')
-            const versionMMP = versionSplit[1].split('.')
-
-            if (isPatch)
-                versionMMP[2] = Number(versionMMP[2]) + 1;
-
-            if (isMinor) {
-                versionMMP[1] = Number(versionMMP[1]) + 1;
-                versionMMP[2] = 0;
-            }
+            const versionSplit = version.split('-taiyme-v');
+            const versionMMP = versionSplit[1].split('.');
 
             if (isMajor) {
                 versionMMP[0] = Number(versionMMP[0]) + 1;
@@ -66,10 +58,19 @@ jobs:
                 versionMMP[2] = 0;
             }
 
-            versionSplit[1] = versionMMP.join('.');
-            const newVersion = versionSplit.join('-taiyme-v')
+            if (isMinor) {
+                versionMMP[1] = Number(versionMMP[1]) + 1;
+                versionMMP[2] = 0;
+            }
 
-            return newVersion
+            if (isPatch) {
+                versionMMP[2] = Number(versionMMP[2]) + 1;
+            }
+
+            versionSplit[1] = versionMMP.join('.');
+            const newVersion = versionSplit.join('-taiyme-v');
+
+            return newVersion;
 
   update_package_json:
     name: Update package.json
@@ -124,23 +125,23 @@ jobs:
         uses: actions/github-script@v6
         with:
           result-encoding: string
-          script: return `${{ github.event.pull_request.body }}`
+          script: return `${{ github.event.pull_request.body }}`;
 
       - name: Add new changelog
         uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
-            const fs = require('fs')
+            const fs = require('fs');
 
-            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString()
+            const changelog = fs.readFileSync('${{ github.workspace }}/CHANGELOG.md').toString();
 
-            const changelogSplit = changelog.split('-->\n\n##')
-            const changelogAdded = `## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n`
-            const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]]
-            const newChangelog = chnagelogArray.join('')
+            const changelogSplit = changelog.split('-->\n\n##');
+            const changelogAdded = `## ${{ steps.get_changelog_title.outputs.changelog_title }}\n\n${{ steps.get_changelog_body.outputs.result }}\n\n`;
+            const chnagelogArray = [changelogSplit[0] + "-->\n\n", changelogAdded, "##" + changelogSplit[1]];
+            const newChangelog = chnagelogArray.join('');
 
-            fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog)
+            fs.writeFileSync('${{ github.workspace }}/CHANGELOG.md', newChangelog);
 
       - name: Upload CHANGELOG.md
         uses: actions/upload-artifact@v3
