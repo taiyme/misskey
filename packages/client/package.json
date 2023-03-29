@@ -87,6 +87,7 @@
 		"eslint-plugin-vue": "9.9.0",
 		"rollup": "3.17.3",
 		"start-server-and-test": "2.0.0",
+		"summaly": "github:misskey-dev/summaly",
 		"vue-eslint-parser": "^9.1.0",
 		"vue-tsc": "^1.2.0"
 	}
