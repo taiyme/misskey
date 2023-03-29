@@ -24,7 +24,8 @@ jobs:
   get_new_version:
     name: Get new version
     runs-on: ubuntu-latest
-    needs: [check_label]
+    needs:
+      - check_label
     outputs:
       new_version: ${{ steps.new_version.outputs.result }}
     steps:
@@ -75,7 +76,8 @@ jobs:
   update_package_json:
     name: Update package.json
     runs-on: ubuntu-latest
-    needs: [get_new_version]
+    needs:
+      - get_new_version
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -92,7 +94,8 @@ jobs:
   update_docker_compose_yml:
     name: Update docker-compose.yml
     runs-on: ubuntu-latest
-    needs: [get_new_version]
+    needs:
+      - get_new_version
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -109,7 +112,8 @@ jobs:
   update_changelog_md:
     name: Update CHANGELOG.md
     runs-on: ubuntu-latest
-    needs: [get_new_version]
+    needs:
+      - get_new_version
     outputs:
       changelog_body: ${{ steps.get_changelog_body.outputs.result }}
     steps:
@@ -158,13 +162,15 @@ jobs:
 
   commit_tag_merge_push:
     name: Commit, Tag, Merge and Push
-    needs: [get_new_version, update_package_json, update_docker_compose_yml, update_changelog_md]
+    needs:
+      - get_new_version
+      - update_package_json
+      - update_docker_compose_yml
+      - update_changelog_md
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Download files
         uses: actions/download-artifact@v3
@@ -192,7 +198,11 @@ jobs:
 
   release:
     name: Release
-    needs: [get_new_version, update_changelog_md, commit_tag_merge_push, docker_build]
+    needs:
+      - get_new_version
+      - update_changelog_md
+      - commit_tag_merge_push
+      - docker_build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout release branch
