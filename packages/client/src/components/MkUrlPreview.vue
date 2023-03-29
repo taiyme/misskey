@@ -1,5 +1,5 @@
 <template>
-<template v-if="player.url && playerEnabled">
+<div v-if="player.url && playerEnabled">
 	<div
 		:class="$style.player"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
@@ -20,8 +20,8 @@
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
 		</MkButton>
 	</div>
-</template>
-<template v-else-if="tweetId && tweetExpanded">
+</div>
+<div v-else-if="tweetId && tweetExpanded">
 	<div ref="twitter" :class="$style.twitter">
 		<iframe
 			ref="tweet"
@@ -36,7 +36,7 @@
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else v-size="{ max: [400, 350] }" :class="$style.urlPreview">
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
@@ -58,12 +58,12 @@
 			</footer>
 		</article>
 	</component>
-	<div v-if="tweetId" :class="$style.action">
+	<div v-if="!popup && tweetId" :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = true">
 			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
 		</MkButton>
 	</div>
-	<div v-if="!playerEnabled && player.url" :class="$style.action">
+	<div v-if="!popup && !playerEnabled && player.url" :class="$style.action">
 		<MkButton :small="true" inline @click="playerEnabled = true">
 			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
 		</MkButton>
@@ -90,9 +90,11 @@ const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
 	compact?: boolean;
+	popup?: boolean;
 }>(), {
 	detail: false,
 	compact: false,
+	popup: false,
 });
 
 const MOBILE_THRESHOLD = 500;
