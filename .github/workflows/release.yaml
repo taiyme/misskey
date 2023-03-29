@@ -191,12 +191,7 @@ jobs:
           git add .
           git commit --author=. -m "${{ needs.get_new_version.outputs.new_version }}"
           git tag "${{ needs.get_new_version.outputs.new_version }}"
-          git push --follow-tags
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
+          git push origin HEAD --follow-tags
 
       - name: merge PR
         env:
