@@ -92,7 +92,7 @@ export default define(meta, paramDef, async (ps, user) => {
 		query.andWhere('note.fileIds != \'{}\'');
 	}
 
-	if (ps.fileType !== undefined) {
+	if (ps.fileType != null) {
 		const fileType = ps.fileType;
 		query.andWhere('note.fileIds != \'{}\'');
 		query.andWhere(new Brackets(qb => {
