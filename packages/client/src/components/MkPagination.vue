@@ -20,7 +20,7 @@
 	</div>
 
 	<div v-else ref="rootEl">
-		<div v-show="pagination.reversed && more" key="_more_" class="_gap" :class="$style.loadMore">
+		<div v-show="pagination.reversed && more" key="_more_ahead_" class="_gap" :class="$style.loadMore">
 			<MkButton
 				v-if="!moreFetching"
 				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null"
@@ -35,7 +35,7 @@
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="items" :users="users" :fetching="fetching || moreFetching"></slot>
-		<div v-show="!pagination.reversed && more" key="_more_" class="_gap" :class="$style.loadMore">
+		<div v-show="!pagination.reversed && more" key="_more_behind_" class="_gap" :class="$style.loadMore">
 			<MkButton
 				v-if="!moreFetching"
 				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null"

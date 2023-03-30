@@ -76,6 +76,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted } from 'vue';
+import { v4 as uuid } from 'uuid';
 import type { summaly } from 'summaly';
 import { url as local } from '@/config';
 import { i18n } from '@/i18n';
@@ -118,7 +119,7 @@ let player = $ref<SummalyResult['player']>({
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
-const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
+const embedId = `embed${uuid().split('-').join('')}`;
 let tweetHeight = $ref(150);
 let unknownUrl = $ref(false);
 
