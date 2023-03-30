@@ -266,14 +266,15 @@ const react = ({ reaction, canToggle }: {
 	}
 
 	&.viewTypeEasy {
+		background-color: var(--panel);
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
 		display: grid;
 		grid-template-columns: auto auto;
 		grid-template-rows: 32px;
+		align-items: center;
 		border-radius: 4px;
 		box-shadow: 0 5px 15px -5px var(--shadow);
-		align-items: center;
 		overflow: hidden;
 
 		&.canToggle {
@@ -295,7 +296,7 @@ const react = ({ reaction, canToggle }: {
 			box-sizing: border-box;
 			padding: 4px;
 			max-width: 100%; // はみ出し防止
-			height: 100% !important; // MkEmojiのheight上書き
+			height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
 		}
 
 		> .reactionCount {

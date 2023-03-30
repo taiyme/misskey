@@ -26,7 +26,7 @@
 		<button v-tooltip="i18n.ts.reload" class="reload _button" @click.stop="reload"><i class="ti ti-reload"></i></button>
 		<button v-tooltip="i18n.ts.settings" class="menu _button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" :key="reloadCount" ref="body">
+	<div v-show="active" :key="`${column.id}:${reloadCount}`" ref="body">
 		<slot></slot>
 	</div>
 </section>
