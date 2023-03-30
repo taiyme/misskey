@@ -45,6 +45,7 @@ export function useNoteCapture(props: {
 				const currentCount = (note.value.reactions || {})[reaction] || 0;
 
 				note.value.reactions[reaction] = Math.max(0, currentCount - 1);
+				if (note.value.reactions[reaction] === 0) delete note.value.reactions[reaction];
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = null;
@@ -60,8 +61,8 @@ export function useNoteCapture(props: {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
 					...($i && (body.userId === $i.id) ? {
-						isVoted: true
-					} : {})
+						isVoted: true,
+					} : {}),
 				};
 
 				note.value.poll.choices = choices;
