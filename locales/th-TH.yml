@@ -2157,6 +2157,7 @@ _notification:
     receiveFollowRequest: "ได้รับคำขอติดตาม\n"
     followRequestAccepted: "ยอมรับคำขอติดตาม"
     groupInvited: "ได้รับคำเชิญเข้ากลุ่ม"
+    achievementEarned: "ปลดล็อกความสำเร็จแล้ว"
     app: "การแจ้งเตือนจากแอปที่มีลิงก์"
   _actions:
     followBack: "ติดตามกลับด้วย"
