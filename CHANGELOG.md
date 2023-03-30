@@ -9,6 +9,10 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.1.2 (2023/03/30)
+
+- chore(github/workflow): ジョブの実行順を調整 @taiyme
+
 ## 12.119.2-taiyme-v1.1.1 (2023/03/30)
 
 - hotfix(backend): タイムラインの条件式を修正 @taiyme
