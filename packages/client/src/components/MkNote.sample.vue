@@ -266,14 +266,15 @@ const react = ({ reaction, canToggle }: {
 	}
 
 	&.viewTypeEasy {
+		background-color: var(--panel);
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
-		display: grid;
-		grid-template-columns: auto auto;
-		grid-template-rows: 32px;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		height: 32px;
 		border-radius: 4px;
 		box-shadow: 0 5px 15px -5px var(--shadow);
-		align-items: center;
 		overflow: hidden;
 
 		&.canToggle {
