@@ -140,7 +140,7 @@ useTooltip(buttonRef, async (showing) => {
 		background-color: var(--panel);
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
-		display: flex;
+		display: flex; // Grid Layoutを使いたいが、Geckoで描画がおかしくなる
 		flex-wrap: nowrap;
 		align-items: center;
 		height: 32px;
@@ -168,12 +168,14 @@ useTooltip(buttonRef, async (showing) => {
 			padding: 4px;
 			max-width: 100%; // はみ出し防止
 			height: 100% !important; // MkEmojiのheight上書き
+			flex-shrink: 0; // WebKitで潰さないため
 		}
 
 		> .count {
 			box-sizing: border-box;
 			padding: 0 6px;
 			font-size: 0.9em;
+			flex-shrink: 0; // WebKitで潰さないため
 		}
 	}
 }
