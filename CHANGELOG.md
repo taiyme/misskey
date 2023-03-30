@@ -9,6 +9,15 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.1.1 (2023/03/30)
+
+- hotfix(backend): タイムラインの条件式を修正 @taiyme
+- hotfix(frontend): tms: Geckoエンジンで見やすいリアクションが正常に描画されない問題 @taiyme
+- hotfix(github/workflow): merge PRがコケる問題
+- fix: リリース時にバージョン情報が更新されない不具合を修正 (#119) @cffnpwr
+- fix(frontend): リアクションが重複してカウントされる, 潰れて描画される問題 @taiyme
+- enhance(frontend): MkReactionsViewerをv13仕様に @taiyme
+
 ## 12.119.2-taiyme-v1.1.0 (2023/03/29)
 
 - Upgrade pnpm v7.29.1 -> v8.0.0
