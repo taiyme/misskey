@@ -197,12 +197,19 @@ jobs:
     name: Merge Pull request
     needs:
       - commit_tag_push
+      - docker_build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: merge PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          gh pr merge ${{ github.event.pull_request.number }} --merge
 
   release:
     name: Release
