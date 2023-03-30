@@ -27,6 +27,7 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
+import { v4 as uuid } from 'uuid';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -65,7 +66,7 @@ async function run() {
 		},
 		out: (value) => {
 			logs.value.push({
-				id: Math.random(),
+				id: uuid(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -73,7 +74,7 @@ async function run() {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: Math.random(),
+					id: uuid(),
 					text: utils.valToString(params.val, true),
 					print: false,
 				}); break;

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import { v4 as uuid } from 'uuid';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
 import { i18n } from '@/i18n';
@@ -103,7 +104,7 @@ export default defineComponent({
 				const nodes = children.flatMap((node) => node ?? []);
 				const keys = new Set(nodes.map((node) => node.key));
 				if (keys.size !== nodes.length) {
-					const id = crypto.randomUUID();
+					const id = uuid();
 					const instances = stackTraceInstances();
 					os.toast(instances.reduce((a, c) => `${a} at ${c.type.name}`, `[DEBUG_6864 (${id})]: ${nodes.length - keys.size} duplicated keys found`));
 					console.warn({ id, debugId: 6864, stack: instances });

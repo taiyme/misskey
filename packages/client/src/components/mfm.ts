@@ -1,6 +1,7 @@
 import { VNode, defineComponent, h, PropType } from 'vue';
 import { CustomEmoji } from 'misskey-js/built/entities';
 import * as mfm from 'mfm-js';
+import { v4 as uuid } from 'uuid';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
@@ -262,7 +263,7 @@ export default defineComponent({
 
 				case 'url': {
 					return [h(MkUrl, {
-						key: Math.random(),
+						key: uuid(),
 						url: token.props.url,
 						rel: 'nofollow noopener',
 					})];
@@ -270,7 +271,7 @@ export default defineComponent({
 
 				case 'link': {
 					return [h(MkLink, {
-						key: Math.random(),
+						key: uuid(),
 						url: token.props.url,
 						rel: 'nofollow noopener',
 					}, genEl(token.children, [...parents, token.type]))];
@@ -278,7 +279,7 @@ export default defineComponent({
 
 				case 'mention': {
 					return [h(MkMention, {
-						key: Math.random(),
+						key: uuid(),
 						host: (token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host) || host,
 						username: token.props.username,
 					})];
@@ -286,7 +287,7 @@ export default defineComponent({
 
 				case 'hashtag': {
 					return [h(MkA, {
-						key: Math.random(),
+						key: uuid(),
 						to: this.isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.props.hashtag)}`,
 						style: 'color:var(--hashtag);',
 					}, `#${token.props.hashtag}`)];
@@ -294,7 +295,7 @@ export default defineComponent({
 
 				case 'blockCode': {
 					return [h(MkCode, {
-						key: Math.random(),
+						key: uuid(),
 						code: token.props.code,
 						lang: token.props.lang ?? undefined,
 					})];
@@ -302,7 +303,7 @@ export default defineComponent({
 
 				case 'inlineCode': {
 					return [h(MkCode, {
-						key: Math.random(),
+						key: uuid(),
 						code: token.props.code,
 						inline: true,
 					})];
@@ -322,7 +323,7 @@ export default defineComponent({
 
 				case 'emojiCode': {
 					return [h(MkEmoji, {
-						key: Math.random(),
+						key: uuid(),
 						emoji: `:${token.props.name}:`,
 						customEmojis: this.customEmojis,
 						normal: this.plain,
@@ -333,7 +334,7 @@ export default defineComponent({
 
 				case 'unicodeEmoji': {
 					return [h(MkEmoji, {
-						key: Math.random(),
+						key: uuid(),
 						emoji: token.props.emoji,
 						customEmojis: this.customEmojis,
 						normal: this.plain,
@@ -342,7 +343,7 @@ export default defineComponent({
 
 				case 'mathInline': {
 					return [h(MkFormula, {
-						key: Math.random(),
+						key: uuid(),
 						formula: token.props.formula,
 						block: false,
 					})];
@@ -350,7 +351,7 @@ export default defineComponent({
 
 				case 'mathBlock': {
 					return [h(MkFormula, {
-						key: Math.random(),
+						key: uuid(),
 						formula: token.props.formula,
 						block: true,
 					})];
@@ -358,7 +359,7 @@ export default defineComponent({
 
 				case 'search': {
 					return [h(MkGoogle, {
-						key: Math.random(),
+						key: uuid(),
 						q: token.props.query,
 					})];
 				}
