@@ -153,13 +153,6 @@ jobs:
           name: version_files
           path: ${{ github.workspace }}/CHANGELOG.md
 
-  docker_build:
-    name: Build Docker image and Push to Github Container Registry
-    needs: [get_new_version, update_package_json]
-    uses: ./.github/workflows/docker.yaml
-    with:
-      tag: ${{ needs.get_new_version.outputs.new_version }}
-
   commit_tag_push:
     name: Commit, Tag and Push
     needs:
@@ -193,10 +186,18 @@ jobs:
           git tag "${{ needs.get_new_version.outputs.new_version }}"
           git push origin HEAD --follow-tags
 
+  docker_build:
+    name: Build Docker image and Push to Github Container Registry
+    needs:
+      - get_new_version
+      - commit_tag_push
+    uses: ./.github/workflows/docker.yaml
+    with:
+      tag: ${{ needs.get_new_version.outputs.new_version }}
+
   merge_pr:
     name: Merge Pull request
     needs:
-      - commit_tag_push
       - docker_build
     runs-on: ubuntu-latest
     steps:
@@ -217,7 +218,6 @@ jobs:
       - get_new_version
       - update_changelog_md
       - merge_pr
-      - docker_build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout release branch
