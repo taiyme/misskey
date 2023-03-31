@@ -11,7 +11,7 @@
 			<option value="user">{{ i18n.ts.user }}</option>
 		</MkTab>
 
-		<div v-show="searchType === 'note'">
+		<div v-if="searchType === 'note'">
 			<div v-if="pickup" style="margin-bottom: var(--margin);">
 				<div>Pickup</div>
 				<template v-if="pickup.type === 'fetch'">
@@ -22,7 +22,7 @@
 			</div>
 			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
 		</div>
-		<div v-show="searchType === 'user'">
+		<div v-if="searchType === 'user'">
 			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
 				<option value="combined">{{ i18n.ts.all }}</option>
 				<option value="local">{{ i18n.ts.local }}</option>
@@ -48,9 +48,6 @@ import FormRadios from '@/components/form/radios.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { useRouter } from '@/router';
-
-const router = useRouter();
 
 type SearchType = 'note' | 'user';
 type SearchOrigin = 'combined' | 'local' | 'remote';
@@ -66,8 +63,6 @@ let searchQuery = $ref('');
 let searchType = $ref<SearchType>('note');
 let searchOrigin = $ref<SearchOrigin>('combined');
 
-let mounted = $ref(false);
-
 let pickup = $ref<{
 	type: 'note';
 	value: misskey.entities.Note;
@@ -80,9 +75,6 @@ let pickup = $ref<{
 } | null>(null);
 
 onMounted(() => {
-	if (mounted) return;
-	mounted = true;
-
 	searchQuery = props.query || '';
 	searchType = props.type ?? 'note';
 	searchOrigin = props.origin ?? 'combined';
@@ -144,8 +136,10 @@ const search = async (): Promise<void> => {
 			break;
 		}
 	}
-
-	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`, null, false);
+	
+	if (location.pathname === '/search') {
+		window.history.replaceState(null, '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
+	}
 };
 
 const notePagination = {
