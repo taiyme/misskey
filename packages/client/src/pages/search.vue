@@ -128,7 +128,7 @@ const search = async (): Promise<void> => {
 		}
 	}
 
-	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
+	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`, null, false);
 };
 
 const notePagination = {
