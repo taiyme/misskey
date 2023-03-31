@@ -6,22 +6,36 @@
 		<FormInput v-model="searchQuery" :large="true" :autofocus="true" :debounce="true" type="search" style="margin-bottom: var(--margin);" @update:model-value="search()">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</FormInput>
-		<XTab v-model="searchType" style="margin-bottom: var(--margin);" @update:model-value="search()">
+		<MkTab v-model="searchType" style="margin-bottom: var(--margin);" @update:model-value="search()">
 			<option value="note">{{ i18n.ts.note }}</option>
 			<option value="user">{{ i18n.ts.user }}</option>
-		</XTab>
+		</MkTab>
 
-		<div v-if="searchType === 'note'">
-			<XNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
-		</div>
-		<div v-else>
-			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
-				<option value="combined">{{ i18n.ts.all }}</option>
-				<option value="local">{{ i18n.ts.local }}</option>
-				<option value="remote">{{ i18n.ts.remote }}</option>
-			</FormRadios>
+		<div>
+			<div v-if="pickup">
+				<div>Pickup</div>
+				<template v-if="pickup.type === 'user'">
+					<MkUserInfo :class="$style.pickupUser" :user="pickup.value"/>
+				</template>
+				<template v-else-if="pickup.type === 'note'">
+					<MkNote :class="$style.pickupNote" :note="pickup.value"/>
+				</template>
+				<template v-else-if="pickup.type === 'hashtag'">
+					<MkA :class="$style.pickupHashtag" style="color: var(--hashtag);" :to="pickup.path">{{ pickup.value }}</MkA>
+				</template>
+			</div>
 
-			<XUserList v-if="searchQuery" ref="users" :pagination="userPagination"/>
+			<div v-if="searchType === 'note'">
+				<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
+			</div>
+			<div v-else>
+				<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
+					<option value="combined">{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+				</FormRadios>
+				<MkUserList v-if="searchQuery" ref="users" :pagination="userPagination"/>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -29,27 +43,44 @@
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
+import * as misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
-import XNotes from '@/components/MkNotes.vue';
-import XUserList from '@/components/MkUserList.vue';
-import XTab from '@/components/MkTab.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkNotes from '@/components/MkNotes.vue';
+import MkUserInfo from '@/components/MkUserInfo.vue';
+import MkUserList from '@/components/MkUserList.vue';
+import MkTab from '@/components/MkTab.vue';
 import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { mainRouter } from '@/router';
+
+type SearchType = 'note' | 'user';
+type SearchOrigin = 'combined' | 'local' | 'remote';
 
 const props = defineProps<{
 	query: string;
 	channel?: string;
-	type?: string;
-	origin?: string;
+	type?: SearchType;
+	origin?: SearchOrigin;
 }>();
 
 let searchQuery = $ref('');
-let searchType = $ref('note');
-let searchOrigin = $ref('combined');
+let searchType = $ref<SearchType>('note');
+let searchOrigin = $ref<SearchOrigin>('combined');
+
+let pickup = $ref<{
+	type: 'note';
+	value: misskey.entities.Note;
+} | {
+	type: 'user';
+	value: misskey.entities.UserDetailed;
+} | {
+	type: 'hashtag';
+	value: string;
+	path: string;
+} | null>(null);
 
 onMounted(() => {
 	searchQuery = props.query || '';
@@ -68,37 +99,53 @@ const search = async (): Promise<void> => {
 	const parsed = mfm.parse(query);
 	const mfmType = parsed.length === 1 ? parsed[0].type : null;
 
-	if (mfmType === 'mention') {
-		mainRouter.push(`/${query}`);
-		return;
-	}
-
-	if (mfmType === 'hashtag') {
-		mainRouter.push(`/tags/${encodeURIComponent(query.slice(1))}`);
-		return;
-	}
-
-	if (mfmType === 'url') {
-		const promise = os.api('ap/show', {
-			uri: query,
-		});
-
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-		const res = await promise;
-
-		switch (res.type) {
-			case 'User': {
-				mainRouter.push(`/@${res.object.username}@${res.object.host}`);
-				break;
-			}
-			case 'Note': {
-				mainRouter.push(`/notes/${res.object.id}`);
-				break;
-			}
+	switch (mfmType) {
+		case 'mention': {
+			const [username, host = undefined] = query.split('@').filter(x => x);
+			os.api('users/show', { username, host }).then(user => {
+				pickup = {
+					type: 'user',
+					value: user,
+				};
+			}).catch(() => pickup = null);
+			break;
 		}
 
-		return;
+		case 'hashtag': {
+			pickup = {
+				type: 'hashtag',
+				value: query,
+				path: `/tags/${encodeURIComponent(query.slice(1))}`,
+			};
+			break;
+		}
+
+		case 'url': {
+			const promise = os.api('ap/show', {
+				uri: query,
+			});
+			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+			promise.then(res => {
+				if (res.type === 'User') {
+					pickup = {
+						type: 'user',
+						value: res.object,
+					};
+				}
+				if (res.type === 'Note') {
+					pickup = {
+						type: 'note',
+						value: res.object,
+					};
+				}
+			}).catch(() => pickup = null);
+			break;
+		}
+
+		default: {
+			pickup = null;
+			break;
+		}
 	}
 
 	window.history.replaceState('', '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
@@ -130,3 +177,6 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-search',
 })));
 </script>
+
+<style lang="scss" module>
+</style>
