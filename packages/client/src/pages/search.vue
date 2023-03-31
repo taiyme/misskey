@@ -55,6 +55,9 @@ import FormRadios from '@/components/form/radios.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
+import { useRouter } from '@/router';
+
+const router = useRouter();
 
 type SearchType = 'note' | 'user';
 type SearchOrigin = 'combined' | 'local' | 'remote';
@@ -148,7 +151,7 @@ const search = async (): Promise<void> => {
 		}
 	}
 
-	window.history.replaceState('', '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
+	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
 };
 
 const notePagination = {
