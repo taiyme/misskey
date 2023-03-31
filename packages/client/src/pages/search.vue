@@ -3,10 +3,10 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<FormInput v-model="searchQuery" :large="true" :autofocus="true" :debounce="true" type="search" style="margin-bottom: var(--margin);" @update:model-value="search()">
+		<FormInput v-model="searchQuery" :large="true" :autofocus="true" type="search" style="margin-bottom: var(--margin);">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</FormInput>
-		<MkTab v-model="searchType" style="margin-bottom: var(--margin);" @update:model-value="search()">
+		<MkTab v-model="searchType" style="margin-bottom: var(--margin);">
 			<option value="note">{{ i18n.ts.note }}</option>
 			<option value="user">{{ i18n.ts.user }}</option>
 		</MkTab>
@@ -23,7 +23,7 @@
 			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
 		</div>
 		<div v-else>
-			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
+			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);">
 				<option value="combined">{{ i18n.ts.all }}</option>
 				<option value="local">{{ i18n.ts.local }}</option>
 				<option value="remote">{{ i18n.ts.remote }}</option>
@@ -35,9 +35,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed, watch, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
+import { debounce } from 'throttle-debounce';
 import MkNote from '@/components/MkNote.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
@@ -66,6 +67,8 @@ let searchQuery = $ref('');
 let searchType = $ref<SearchType>('note');
 let searchOrigin = $ref<SearchOrigin>('combined');
 
+let mounted = $ref(false);
+
 let pickup = $ref<{
 	type: 'note';
 	value: misskey.entities.Note;
@@ -78,14 +81,20 @@ let pickup = $ref<{
 } | null>(null);
 
 onMounted(() => {
+	if (mounted) return;
+	mounted = true;
+
 	searchQuery = props.query || '';
 	searchType = props.type ?? 'note';
 	searchOrigin = props.origin ?? 'combined';
 
-	if (searchQuery) {
-		search();
-	}
+	if (searchQuery) search();
 });
+
+const debouncedSearch = debounce(1000, () => search());
+
+watch($$(searchQuery), () => debouncedSearch());
+watch([$$(searchType), $$(searchOrigin)], () => search());
 
 const search = async (): Promise<void> => {
 	const query = searchQuery.toString().trim();
@@ -142,7 +151,7 @@ const search = async (): Promise<void> => {
 		}
 	}
 
-	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`, null, false);
+	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
 };
 
 const notePagination = {
