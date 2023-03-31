@@ -82,6 +82,7 @@ const collapsed = $computed(() => collapsedFlag.value && isLong);
 		> .showLess {
 			display: block;
 			position: sticky;
+			z-index: 1;
 			bottom: var(--minBottomSpacing);
 			left: 0;
 			width: 100%;
@@ -106,6 +107,7 @@ const collapsed = $computed(() => collapsedFlag.value && isLong);
 		> .fade {
 			display: block;
 			position: absolute;
+			z-index: 1;
 			bottom: 0;
 			left: 0;
 			width: 100%;

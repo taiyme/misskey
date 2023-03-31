@@ -9,6 +9,11 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.1.4 (2023/03/31)
+
+- hotfix(frontend/MkPagination): 通知などが表示されなくなる問題 @taiyme
+- fix(frontend/MkNote): もっと見る/閉じるボタンにz-indexを追加 @taiyme
+
 ## 12.119.2-taiyme-v1.1.3 (2023/03/31)
 
 - change(frontend): タッチデバイスでのコンテキストメニューを無効化 @taiyme
