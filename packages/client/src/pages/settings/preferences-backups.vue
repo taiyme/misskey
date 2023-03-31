@@ -396,7 +396,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, null, {
-		text: ts._preferencesBackups.delete,
+		text: ts.delete, // ts._preferencesBackups.deleteは定義されていない
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,
