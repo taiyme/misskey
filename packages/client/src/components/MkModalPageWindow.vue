@@ -30,6 +30,7 @@ import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { i18n } from '@/i18n';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { isTouchUsing } from '@/scripts/touch';
 import { Router } from '@/nirax';
 
 const props = defineProps<{
@@ -111,6 +112,7 @@ function popout() {
 }
 
 function onContextmenu(ev: MouseEvent) {
+	if (isTouchUsing) return;
 	os.contextMenu(contextmenu, ev);
 }
 </script>

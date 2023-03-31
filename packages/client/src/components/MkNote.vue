@@ -260,6 +260,7 @@ const undoReact = (note_: misskey.entities.Note): void => {
 const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
 const onContextmenu = (ev: MouseEvent): void => {
+	if (isTouchUsing) return;
 	const isLink = (elem: HTMLElement): boolean => {
 		if (elem.tagName === 'A') return true;
 		if (elem.parentElement) {

@@ -38,6 +38,7 @@ import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { isTouchUsing } from '@/scripts/touch';
 
 const XDraggable = defineAsyncComponent(() => import('vuedraggable'));
 
@@ -90,6 +91,7 @@ const widgets_ = computed({
 });
 
 const onContextmenu = (widget: Widget, ev: MouseEvent): void => {
+	if (isTouchUsing) return;
 	if (!(ev.target instanceof HTMLElement)) return;
 
 	const isLink = (el: HTMLElement): el is HTMLAnchorElement => {

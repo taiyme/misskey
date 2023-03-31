@@ -40,6 +40,7 @@ import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { isTouchUsing } from '@/scripts/touch';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -101,6 +102,7 @@ function onClick(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
+	if (isTouchUsing) return;
 	os.contextMenu(getMenu(), ev);
 }
 
