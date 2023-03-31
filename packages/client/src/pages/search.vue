@@ -11,7 +11,7 @@
 			<option value="user">{{ i18n.ts.user }}</option>
 		</MkTab>
 
-		<div v-if="searchType === 'note'">
+		<div v-show="searchType === 'note'">
 			<div v-if="pickup" style="margin-bottom: var(--margin);">
 				<div>Pickup</div>
 				<template v-if="pickup.type === 'fetch'">
@@ -22,7 +22,7 @@
 			</div>
 			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
 		</div>
-		<div v-else>
+		<div v-show="searchType === 'user'">
 			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
 				<option value="combined">{{ i18n.ts.all }}</option>
 				<option value="local">{{ i18n.ts.local }}</option>
@@ -145,7 +145,7 @@ const search = async (): Promise<void> => {
 		}
 	}
 
-	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
+	router.replace(`/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`, null, false);
 };
 
 const notePagination = {
