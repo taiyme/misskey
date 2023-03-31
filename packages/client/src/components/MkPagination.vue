@@ -110,7 +110,12 @@ let scrollRemove = $ref<(() => void) | null>(null);
 const items = ref<MisskeyEntity[]>([]);
 const users = computed(() => {
 	return items.value
-		.flatMap(x => 'user' in x ? [x.user as misskey.entities.UserDetailed /* any型のため */] : [])
+		.flatMap(x => {
+			const xTyped = x as typeof x & {
+				user?: misskey.entities.UserDetailed | null; /* any型のため */
+			};
+			return xTyped.user ? [xTyped.user] : [];
+		})
 		.filter((a, i, s) => s.findIndex(b => b.id === a.id) === i);
 });
 const queue = ref<MisskeyEntity[]>([]);
