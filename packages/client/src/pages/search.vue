@@ -11,31 +11,21 @@
 			<option value="user">{{ i18n.ts.user }}</option>
 		</MkTab>
 
-		<div>
-			<div v-if="pickup">
+		<div v-if="searchType === 'note'">
+			<div v-if="pickup" style="margin-bottom: var(--margin);">
 				<div>Pickup</div>
-				<template v-if="pickup.type === 'user'">
-					<MkUserInfo :class="$style.pickupUser" :user="pickup.value"/>
-				</template>
-				<template v-else-if="pickup.type === 'note'">
-					<MkNote :class="$style.pickupNote" :note="pickup.value"/>
-				</template>
-				<template v-else-if="pickup.type === 'hashtag'">
-					<MkA :class="$style.pickupHashtag" style="color: var(--hashtag);" :to="pickup.path">{{ pickup.value }}</MkA>
-				</template>
+				<MkUserInfo v-if="pickup.type === 'user'" :user="pickup.value"/>
+				<MkNote v-if="pickup.type === 'note'" :note="pickup.value"/>
 			</div>
-
-			<div v-if="searchType === 'note'">
-				<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
-			</div>
-			<div v-else>
-				<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
-					<option value="combined">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="remote">{{ i18n.ts.remote }}</option>
-				</FormRadios>
-				<MkUserList v-if="searchQuery" ref="users" :pagination="userPagination"/>
-			</div>
+			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
+		</div>
+		<div v-else>
+			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
+				<option value="combined">{{ i18n.ts.all }}</option>
+				<option value="local">{{ i18n.ts.local }}</option>
+				<option value="remote">{{ i18n.ts.remote }}</option>
+			</FormRadios>
+			<MkUserList v-if="searchQuery" ref="users" :pagination="userPagination"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -79,10 +69,6 @@ let pickup = $ref<{
 } | {
 	type: 'user';
 	value: misskey.entities.UserDetailed;
-} | {
-	type: 'hashtag';
-	value: string;
-	path: string;
 } | null>(null);
 
 onMounted(() => {
@@ -111,15 +97,6 @@ const search = async (): Promise<void> => {
 					value: user,
 				};
 			}).catch(() => pickup = null);
-			break;
-		}
-
-		case 'hashtag': {
-			pickup = {
-				type: 'hashtag',
-				value: query,
-				path: `/tags/${encodeURIComponent(query.slice(1))}`,
-			};
 			break;
 		}
 
@@ -180,11 +157,3 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-search',
 })));
 </script>
-
-<style lang="scss" module>
-.pickupUser {}
-
-.pickupNote {}
-
-.pickupHashtag {}
-</style>
