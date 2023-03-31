@@ -179,4 +179,9 @@ definePageMetadata(computed(() => ({
 </script>
 
 <style lang="scss" module>
+.pickupUser {}
+
+.pickupNote {}
+
+.pickupHashtag {}
 </style>
