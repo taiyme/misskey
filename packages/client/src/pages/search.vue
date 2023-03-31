@@ -14,6 +14,9 @@
 		<div v-if="searchType === 'note'">
 			<div v-if="pickup" style="margin-bottom: var(--margin);">
 				<div>Pickup</div>
+				<template v-if="pickup.type === 'fetch'">
+					<span>{{ pickup.value ?? i18n.ts.processing }}</span><MkLoading :em="true"/>
+				</template>
 				<MkUserInfo v-if="pickup.type === 'user'" :user="pickup.value"/>
 				<MkNote v-if="pickup.type === 'note'" :note="pickup.value"/>
 			</div>
@@ -69,6 +72,9 @@ let pickup = $ref<{
 } | {
 	type: 'user';
 	value: misskey.entities.UserDetailed;
+} | {
+	type: 'fetch';
+	value: string | null;
 } | null>(null);
 
 onMounted(() => {
@@ -88,8 +94,16 @@ const search = async (): Promise<void> => {
 	const parsed = mfm.parse(query);
 	const mfmType = parsed.length === 1 ? parsed[0].type : null;
 
+	const fetching = (msg?: string | null): void => {
+		pickup = {
+			type: 'fetch',
+			value: msg ?? null,
+		};
+	};
+
 	switch (mfmType) {
 		case 'mention': {
+			fetching();
 			const [username, host = undefined] = query.split('@').filter(x => x);
 			os.api('users/show', { username, host }).then(user => {
 				pickup = {
@@ -101,10 +115,10 @@ const search = async (): Promise<void> => {
 		}
 
 		case 'url': {
+			fetching(i18n.ts.fetchingAsApObject);
 			const promise = os.api('ap/show', {
 				uri: query,
 			});
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
 			promise.then(res => {
 				if (res.type === 'User') {
 					pickup = {
