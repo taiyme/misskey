@@ -12,13 +12,14 @@
 		</MkTab>
 
 		<div v-if="searchType === 'note'">
-			<div v-if="pickup" style="margin-bottom: var(--margin);">
-				<div>Pickup</div>
-				<template v-if="pickup.type === 'fetch'">
-					<span>{{ pickup.value ?? i18n.ts.processing }}</span><MkLoading :em="true"/>
-				</template>
-				<MkUserInfo v-if="pickup.type === 'user'" :user="pickup.value"/>
-				<MkNote v-if="pickup.type === 'note'" :note="pickup.value"/>
+			<div v-if="pickup" style="background: var(--panel); border-radius: var(--radius); margin-bottom: var(--margin);">
+				<div style="font-weight: 700; padding: 8px 16px 0;">Pickup</div>
+				<div v-if="pickup.type === 'fetch'" style="text-align: center; padding: 32px;">
+					<div><MkLoading :em="true"/></div>
+					<div>{{ pickup.value ?? i18n.ts.processing }}</div>
+				</div>
+				<MkUserInfo v-if="pickup.type === 'user'" style="border-radius: 0 !important;" :user="pickup.value"/>
+				<MkNote v-if="pickup.type === 'note'" style="border-radius: 0 !important;" :note="pickup.value"/>
 			</div>
 			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
 		</div>
@@ -84,7 +85,10 @@ onMounted(() => {
 
 const search = async (): Promise<void> => {
 	const query = searchQuery.toString().trim();
-	if (query == null || query === '') return;
+	if (query == null || query === '') {
+		pickup = null;
+		return;
+	}
 
 	const parsed = mfm.parse(query);
 	const mfmType = parsed.length === 1 ? parsed[0].type : null;
