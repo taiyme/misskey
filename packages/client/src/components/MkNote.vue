@@ -562,6 +562,7 @@ const readPromo = (): void => {
 						> .showLess {
 							display: block;
 							position: sticky;
+							z-index: 1;
 							bottom: var(--minBottomSpacing);
 							left: 0;
 							width: 100%;
@@ -586,6 +587,7 @@ const readPromo = (): void => {
 						> .fade {
 							display: block;
 							position: absolute;
+							z-index: 1;
 							bottom: 0;
 							left: 0;
 							width: 100%;
