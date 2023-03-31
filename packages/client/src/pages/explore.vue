@@ -8,23 +8,6 @@
 		<div v-else-if="tab === 'users'">
 			<XUsers/>
 		</div>
-		<div v-else-if="tab === 'search'">
-			<MkSpacer :content-max="1200">
-				<div>
-					<MkInput v-model="searchQuery" :debounce="true" type="search" class="_formBlock">
-						<template #prefix><i class="ti ti-search"></i></template>
-						<template #label>{{ i18n.ts.searchUser }}</template>
-					</MkInput>
-					<MkRadios v-model="searchOrigin" class="_formBlock">
-						<option value="combined">{{ i18n.ts.all }}</option>
-						<option value="local">{{ i18n.ts.local }}</option>
-						<option value="remote">{{ i18n.ts.remote }}</option>
-					</MkRadios>
-				</div>
-
-				<XUserList v-if="searchQuery" ref="searchEl" class="_gap" :pagination="searchPagination"/>
-			</MkSpacer>
-		</div>
 	</div>
 </MkStickyContainer>
 </template>
@@ -34,33 +17,22 @@ import { computed, watch } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkInput from '@/components/form/input.vue';
-import MkRadios from '@/components/form/radios.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import XUserList from '@/components/MkUserList.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	tag?: string;
-}>();
+	initialTab?: string;
+}>(), {
+	initialTab: 'featured',
+});
 
-let tab = $ref('featured');
-let tagsEl = $ref<InstanceType<typeof MkFolder>>();
-let searchQuery = $ref(null);
-let searchOrigin = $ref('combined');
+let tab = $ref(props.initialTab);
+let tagsEl = $shallowRef<InstanceType<typeof MkFolder>>();
 
 watch(() => props.tag, () => {
 	if (tagsEl) tagsEl.toggleContent(props.tag == null);
 });
-
-const searchPagination = {
-	endpoint: 'users/search' as const,
-	limit: 10,
-	params: computed(() => (searchQuery && searchQuery !== '') ? {
-		query: searchQuery,
-		origin: searchOrigin,
-	} : null),
-};
 
 const headerActions = $computed(() => []);
 
@@ -72,9 +44,6 @@ const headerTabs = $computed(() => [{
 	key: 'users',
 	icon: 'ti ti-users',
 	title: i18n.ts.users,
-}, {
-	key: 'search',
-	title: i18n.ts.search,
 }]);
 
 definePageMetadata(computed(() => ({

@@ -50,7 +50,6 @@ import { ComputedRef, onMounted, provide } from 'vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
-import { search } from '@/scripts/search';
 import * as os from '@/os';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
@@ -81,11 +80,13 @@ let meta = $ref();
 
 const keymap = $computed(() => {
 	return {
-		'd': () => {
+		'd': (): void => {
 			if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
 		},
-		's': search,
+		's': (): void => {
+			mainRouter.push('/search');
+		},
 	};
 });
 

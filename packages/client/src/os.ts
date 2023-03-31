@@ -216,6 +216,7 @@ export const toast = (message: string): void => {
 };
 
 export const alert = (props: {
+	[x: string]: unknown;
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
