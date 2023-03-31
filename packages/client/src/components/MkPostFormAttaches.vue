@@ -111,7 +111,7 @@ export default defineComponent({
 		},
 
 		showFileMenu(file, ev: MouseEvent) {
-			if (isTouchUsing) return;
+			if (isTouchUsing && ev.type === 'contextmenu') return;
 			if (this.menu) return;
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,

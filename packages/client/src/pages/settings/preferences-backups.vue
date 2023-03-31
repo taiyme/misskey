@@ -374,7 +374,7 @@ async function rename(id: string): Promise<void> {
 }
 
 function menu(ev: MouseEvent, profileId: string) {
-	if (isTouchUsing) return;
+	if (isTouchUsing && ev.type === 'contextmenu') return;
 	if (!profiles) return;
 
 	return os.popupMenu([{
