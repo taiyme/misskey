@@ -145,11 +145,11 @@ useTooltip(buttonRef, async (showing) => {
 		grid-template-rows: 32px;
 		align-items: center;
 		border-radius: 4px;
-		box-shadow: 0 5px 15px -5px var(--shadow);
+		box-shadow: 0 4px 14px -8px var(--shadow);
 		overflow: hidden;
 
 		&.canToggle {
-			box-shadow: 0 5px 15px -5px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
+			box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
 		}
 
 		&.canToggle:hover,

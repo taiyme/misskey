@@ -40,6 +40,7 @@
 
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
+import { v4 as uuid } from 'uuid';
 import XChart from './queue.chart.chart.vue';
 import number from '@/filters/number';
 import * as os from '@/os';
@@ -101,7 +102,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: uuid(),
 		length: 200,
 	});
 });

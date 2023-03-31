@@ -67,6 +67,7 @@ import {
 	Tooltip,
 	SubTitle,
 } from 'chart.js';
+import { v4 as uuid } from 'uuid';
 import MkwFederation from '../../widgets/federation.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
@@ -154,13 +155,13 @@ export default defineComponent({
 			this.connection.on('stats', this.onStats);
 			this.connection.on('statsLog', this.onStatsLog);
 			this.connection.send('requestLog', {
-				id: Math.random().toString().substr(2, 8),
+				id: uuid(),
 				length: 150
 			});
 
 			this.$nextTick(() => {
 				this.queueConnection.send('requestLog', {
-					id: Math.random().toString().substr(2, 8),
+					id: uuid(),
 					length: 200
 				});
 			});

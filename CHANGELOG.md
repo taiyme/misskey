@@ -9,6 +9,13 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.1.3 (2023/03/31)
+
+- change(frontend): タッチデバイスでのコンテキストメニューを無効化 @taiyme
+- fix(frontend): もっと見るを閉じるボタンがボトムメニューに隠れてしまう @taiyme
+- chore(frontend): tms: 見やすいリアクションの影を少し薄くする @taiyme
+- refactor(frontend): use uuid v4 @taiyme
+
 ## 12.119.2-taiyme-v1.1.2 (2023/03/30)
 
 - chore(github/workflow): ジョブの実行順を調整 @taiyme

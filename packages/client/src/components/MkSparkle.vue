@@ -65,6 +65,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import { v4 as uuid } from 'uuid';
 
 const particles = ref([]);
 const el = ref<HTMLElement>();
@@ -86,7 +87,7 @@ onMounted(() => {
 		const y = (Math.random() * (height.value - 64));
 		const sizeFactor = Math.random();
 		const particle = {
-			id: Math.random().toString(),
+			id: uuid(),
 			x,
 			y,
 			size: 0.2 + ((sizeFactor / 10) * 3),

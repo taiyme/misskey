@@ -260,6 +260,7 @@ const undoReact = (note_: misskey.entities.Note): void => {
 const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
 const onContextmenu = (ev: MouseEvent): void => {
+	if (isTouchUsing) return;
 	const isLink = (elem: HTMLElement): boolean => {
 		if (elem.tagName === 'A') return true;
 		if (elem.parentElement) {
@@ -559,10 +560,12 @@ const readPromo = (): void => {
 				> .content {
 					&.isLong {
 						> .showLess {
-							width: 100%;
-							margin-top: 1em;
+							display: block;
 							position: sticky;
-							bottom: 1em;
+							bottom: var(--minBottomSpacing);
+							left: 0;
+							width: 100%;
+							height: 64px;
 
 							> span {
 								display: inline-block;

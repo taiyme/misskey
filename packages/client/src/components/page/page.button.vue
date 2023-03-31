@@ -33,7 +33,7 @@ export default defineComponent({
 					text: this.hpml.interpolate(this.block.content)
 				});
 			} else if (this.block.action === 'resetRandom') {
-				this.hpml.updateRandomSeed(Math.random());
+				this.hpml.updateRandomSeed(Math.random().toString());
 				this.hpml.eval();
 			} else if (this.block.action === 'pushEvent') {
 				os.api('page-push', {

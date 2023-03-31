@@ -49,6 +49,7 @@ import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
@@ -90,6 +91,7 @@ function top() {
 }
 
 function onContextmenu(ev: MouseEvent) {
+	if (isTouchUsing) return;
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {

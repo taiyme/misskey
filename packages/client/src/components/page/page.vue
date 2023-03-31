@@ -25,7 +25,7 @@ export default defineComponent({
 	},
 	setup(props, ctx) {
 		const hpml = new Hpml(props.page, {
-			randomSeed: Math.random(),
+			randomSeed: Math.random().toString(),
 			visitor: $i,
 			url: url,
 			enableAiScript: !defaultStore.state.disablePagesScript

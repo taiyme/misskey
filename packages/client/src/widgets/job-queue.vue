@@ -47,8 +47,9 @@
 
 <script lang="ts" setup>
 import { onUnmounted, reactive } from 'vue';
-import { GetFormResultType } from '@/scripts/form';
+import { v4 as uuid } from 'uuid';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import number from '@/filters/number';
 import * as sound from '@/scripts/sound';
@@ -127,7 +128,7 @@ connection.on('stats', onStats);
 connection.on('statsLog', onStatsLog);
 
 connection.send('requestLog', {
-	id: Math.random().toString().substr(2, 8),
+	id: uuid(),
 	length: 1,
 });
 

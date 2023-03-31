@@ -19,6 +19,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { isTouchUsing } from '@/scripts/touch';
 
 defineProps<{
 	column: Column;
@@ -42,6 +43,7 @@ function back() {
 }
 */
 function onContextmenu(ev: MouseEvent) {
+	if (isTouchUsing) return;
 	if (!ev.target) return;
 
 	const isLink = (el: HTMLElement) => {

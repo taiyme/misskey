@@ -14,6 +14,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { v4 as uuid } from 'uuid';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
@@ -75,7 +76,7 @@ const run = async () => {
 		},
 		out: (value) => {
 			logs.value.push({
-				id: Math.random().toString(),
+				id: uuid(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -83,7 +84,7 @@ const run = async () => {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: Math.random().toString(),
+					id: uuid(),
 					text: utils.valToString(params.val, true),
 					print: false,
 				}); break;

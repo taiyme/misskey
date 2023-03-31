@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { DriveFile } from 'misskey-js/built/entities';
+import { v4 as uuid } from 'uuid';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
@@ -48,7 +49,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 
-				const marker = Math.random().toString(); // TODO: UUIDとか使う
+				const marker = uuid();
 
 				const connection = stream.useChannel('main');
 				connection.on('urlUploadFinished', urlResponse => {
