@@ -560,10 +560,12 @@ const readPromo = (): void => {
 				> .content {
 					&.isLong {
 						> .showLess {
-							width: 100%;
-							margin-top: 1em;
+							display: block;
 							position: sticky;
-							bottom: 1em;
+							bottom: var(--minBottomSpacing);
+							left: 0;
+							width: 100%;
+							height: 64px;
 
 							> span {
 								display: inline-block;
