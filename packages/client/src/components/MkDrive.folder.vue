@@ -33,7 +33,7 @@ import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
-import { disableContextmenu } from '@/scripts/touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { parseObject } from '@/scripts/tms/parse';
 
 const props = withDefaults(defineProps<{
@@ -229,7 +229,7 @@ function setAsUploadFolder() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
+	if (isTouchUsing) return;
 	os.contextMenu([{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',

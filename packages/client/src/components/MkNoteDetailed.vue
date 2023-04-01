@@ -140,7 +140,7 @@ import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
-import { disableContextmenu } from '@/scripts/touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
@@ -226,7 +226,7 @@ const undoReact = (note_: misskey.entities.Note): void => {
 };
 
 const onContextmenu = (ev: MouseEvent): void => {
-	if (disableContextmenu) return;
+	if (isTouchUsing) return;
 	const isLink = (elem: HTMLElement): boolean => {
 		if (elem.tagName === 'A') return true;
 		if (elem.parentElement) {

@@ -37,7 +37,7 @@ import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
 import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { disableContextmenu } from '@/scripts/touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { MenuItem } from '@/types/menu';
 
 provide('shouldHeaderThin', true);
@@ -199,7 +199,7 @@ function showSettingsMenu(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
+	if (isTouchUsing) return;
 	os.contextMenu(getMenu(), ev);
 }
 

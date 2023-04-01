@@ -40,7 +40,7 @@ import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
 import { i18n } from '@/i18n';
-import { disableContextmenu } from '@/scripts/touch';
+import { isTouchUsing } from '@/scripts/touch';
 
 const minHeight = 50;
 const minWidth = 250;
@@ -111,7 +111,7 @@ function onKeydown(evt: KeyboardEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
+	if (isTouchUsing) return;
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}

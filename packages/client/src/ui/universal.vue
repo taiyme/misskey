@@ -62,7 +62,7 @@ import { $i } from '@/account';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
-import { disableContextmenu } from '@/scripts/touch';
+import { isTouchUsing } from '@/scripts/touch';
 import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
@@ -181,7 +181,7 @@ const closeDrawerMenu = (): void => {
 };
 
 const onContextmenu = (ev) => {
-	if (disableContextmenu) return;
+	if (isTouchUsing) return;
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {
