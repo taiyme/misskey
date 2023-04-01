@@ -43,7 +43,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { isTouchUsing } from '@/scripts/touch';
+import { disableContextmenu } from '@/scripts/touch';
 import { parseObject } from '@/scripts/tms/parse';
 const { t, ts } = i18n;
 
@@ -374,7 +374,7 @@ async function rename(id: string): Promise<void> {
 }
 
 function menu(ev: MouseEvent, profileId: string) {
-	if (isTouchUsing && ev.type === 'contextmenu') return;
+	if (disableContextmenu && ev.type === 'contextmenu') return;
 	if (!profiles) return;
 
 	return os.popupMenu([{
