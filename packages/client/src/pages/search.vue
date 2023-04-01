@@ -46,6 +46,7 @@
 import { computed, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
+import { v4 as uuid } from 'uuid';
 import MkNote from '@/components/MkNote.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
@@ -71,6 +72,8 @@ let searchQuery = $ref('');
 let searchType = $ref<SearchType>('note');
 let searchOrigin = $ref<SearchOrigin>('combined');
 
+let currentId = $ref(uuid());
+
 let pickup = $ref<{
 	type: 'note';
 	value: misskey.entities.Note;
@@ -91,8 +94,11 @@ onMounted(() => {
 });
 
 const search = async (): Promise<void> => {
+	const fetchId = uuid();
+
 	const query = searchQuery.toString().trim();
 	if (query == null || query === '') {
+		currentId = fetchId;
 		pickup = null;
 		return;
 	}
@@ -100,50 +106,52 @@ const search = async (): Promise<void> => {
 	const parsed = mfm.parse(query);
 	const mfmType = parsed.length === 1 ? parsed[0].type : null;
 
-	const fetching = (msg?: string | null): void => {
+	const openFetch = (msg?: string | null): void => {
+		currentId = fetchId;
 		pickup = {
 			type: 'fetch',
 			value: msg ?? null,
 		};
 	};
 
+	const closeFetch = (): void => {
+		if (fetchId !== currentId) return;
+		window.setTimeout(() => pickup = null, 500);
+	};
+
+	const pickFetch = (data: typeof pickup): void => {
+		if (fetchId !== currentId) return;
+		pickup = data;
+	};
+
 	switch (mfmType) {
 		case 'mention': {
-			fetching();
+			openFetch();
 			const [username, host = undefined] = query.split('@').filter(x => x);
-			os.api('users/show', { username, host }).then(user => {
-				pickup = {
-					type: 'user',
-					value: user,
-				};
-			}).catch(() => pickup = null);
+			os.api('users/show', { username, host }).then(res => {
+				pickFetch({ type: 'user', value: res });
+			}).catch(closeFetch);
 			break;
 		}
 
 		case 'url': {
-			fetching(i18n.ts.fetchingAsApObject);
+			openFetch(i18n.ts.fetchingAsApObject);
 			const promise = os.api('ap/show', {
 				uri: query,
 			});
 			promise.then(res => {
 				if (res.type === 'User') {
-					pickup = {
-						type: 'user',
-						value: res.object,
-					};
+					pickFetch({ type: 'user', value: res.object });
 				}
 				if (res.type === 'Note') {
-					pickup = {
-						type: 'note',
-						value: res.object,
-					};
+					pickFetch({ type: 'note', value: res.object });
 				}
-			}).catch(() => pickup = null);
+			}).catch(closeFetch);
 			break;
 		}
 
 		default: {
-			pickup = null;
+			closeFetch();
 			break;
 		}
 	}
