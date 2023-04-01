@@ -12,9 +12,9 @@
 		</MkTab>
 
 		<div v-if="searchType === 'note'">
-			<div v-if="pickup" style="background: var(--panel); border-radius: var(--radius); margin-bottom: var(--margin);">
-				<div style="font-weight: 700; padding: 8px 16px 0;">Pickup</div>
-				<div v-if="pickup.type === 'fetch'" style="text-align: center; padding: 32px;">
+			<div v-if="pickup" :class="$style.pickup">
+				<div :class="$style.pickupLabel">Pickup</div>
+				<div v-if="pickup.type === 'fetch'" :class="$style.pickupFetch">
 					<div><MkLoading :em="true"/></div>
 					<div>{{ pickup.value ?? i18n.ts.processing }}</div>
 				</div>
@@ -172,3 +172,22 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-search',
 })));
 </script>
+
+<style lang="scss" module>
+.pickup {
+	overflow: hidden;
+	background: var(--panel);
+	border-radius: var(--radius);
+	margin-bottom: var(--margin);
+}
+
+.pickupLabel {
+	font-weight: 700;
+	padding: calc(var(--margin) / 2) var(--margin);
+}
+
+.pickupFetch {
+	text-align: center;
+	padding: 32px;
+}
+</style>
