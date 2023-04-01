@@ -1,7 +1,7 @@
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
-		<div class="_fullinfo">
+		<div v-if="!noEmpty" class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 			<div>{{ i18n.ts.noNotes }}</div>
 		</div>
@@ -18,15 +18,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, ComputedRef } from 'vue';
 import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
-const props = defineProps<{
+defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
+	noEmpty?: boolean | ComputedRef<boolean>;
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();

@@ -21,7 +21,7 @@
 				<MkUserInfo v-if="pickup.type === 'user'" style="border-radius: 0 !important;" :user="pickup.value"/>
 				<MkNote v-if="pickup.type === 'note'" style="border-radius: 0 !important;" :note="pickup.value"/>
 			</div>
-			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
+			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination" :no-emtpy="computed(() => !!pickup)"/>
 		</div>
 		<div v-if="searchType === 'user'">
 			<FormRadios v-model="searchOrigin" style="margin-bottom: var(--margin);" @update:model-value="search()">
