@@ -87,7 +87,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
-import { isTouchUsing } from '@/scripts/touch';
+import { disableContextmenu } from '@/scripts/touch';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 const isNoMainColumn = (): boolean => !deckStore.state.columns.some(x => x.type === 'main');
@@ -168,7 +168,7 @@ const addColumn = async (ev) => {
 };
 
 const onContextmenu = (ev) => {
-	if (isTouchUsing) return;
+	if (disableContextmenu) return;
 	os.contextMenu([{
 		text: i18n.ts._deck.addColumn,
 		action: addColumn,

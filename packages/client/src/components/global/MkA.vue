@@ -10,7 +10,7 @@ import * as os from '@/os';
 import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
-import { isTouchUsing } from '@/scripts/touch';
+import { disableContextmenu } from '@/scripts/touch';
 import { i18n } from '@/i18n';
 import { useRouter } from '@/router';
 
@@ -36,7 +36,7 @@ const active = $computed(() => {
 });
 
 function onContextmenu(ev) {
-	if (isTouchUsing) return;
+	if (disableContextmenu) return;
 	const selection = window.getSelection();
 	if (selection && selection.toString() !== '') return;
 	os.contextMenu([{

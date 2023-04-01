@@ -11,7 +11,7 @@ import { onMounted } from 'vue';
 import * as os from '@/os';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	reaction: string;
 	emojis: {
 		name: string;
@@ -19,7 +19,9 @@ withDefaults(defineProps<{
 	}[];
 	x: number;
 	y: number;
+	originElement?: HTMLElement | null;
 }>(), {
+	originElement: null,
 });
 
 const emit = defineEmits<{
@@ -28,7 +30,7 @@ const emit = defineEmits<{
 
 let up = $ref(false);
 // Original: os.claimZIndex('middle');
-const zIndex = os.claimZIndex('low');
+const zIndex = (os.getZIndex(props.originElement) ?? 0) + 1;
 // Original: (90 - (Math.random() * 180)) + 'deg';
 const angle = (45 - (Math.random() * 90)) + 'deg';
 

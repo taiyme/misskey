@@ -158,6 +158,15 @@ export const claimZIndex = (priority: 'low' | 'middle' | 'high' = 'low'): number
 	zIndexes[priority] += 100;
 	return zIndexes[priority];
 };
+export const getZIndex = (el: HTMLElement | null): number | null => {
+	if (el == null || el.tagName === 'BODY') return null;
+	const zIndex = parseInt(window.getComputedStyle(el).getPropertyValue('z-index'));
+	if (zIndex >= 1000000 /* zIndexes.low */) {
+		return zIndex;
+	} else {
+		return getZIndex(el.parentElement);
+	}
+};
 
 export const popup = async (component: Component, props: Record<string, any>, events = {}, disposeEvent?: string): Promise<{
 	dispose: () => void;
@@ -207,6 +216,7 @@ export const toast = (message: string): void => {
 };
 
 export const alert = (props: {
+	[x: string]: unknown;
 	type?: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
 	text?: string | null;
