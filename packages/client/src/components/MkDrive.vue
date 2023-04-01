@@ -105,7 +105,7 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { uploadFile, uploads } from '@/scripts/upload';
-import { isTouchUsing } from '@/scripts/touch';
+import { disableContextmenu } from '@/scripts/touch';
 import { parseObject } from '@/scripts/tms/parse';
 
 const props = withDefaults(defineProps<{
@@ -610,7 +610,7 @@ function showMenu(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (isTouchUsing) return;
+	if (disableContextmenu) return;
 	os.contextMenu(getMenu(), ev);
 }
 
