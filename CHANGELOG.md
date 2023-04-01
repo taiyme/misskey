@@ -9,6 +9,14 @@
 You should also include the user name that made the change.
 -->
 
+## 12.119.2-taiyme-v1.2.0 (2023/04/01)
+
+- hotfix(frontend): 投稿フォームの添付ファイルの操作ができない  @taiyme
+- fix(frontend): コンテキストメニュー無効化用の変数を定義 @taiyme
+- fix(frontend): バックアップ削除ボタンのi18nが定義されていない @taiyme
+- feat(frontend): 検索画面の統一とピックアップ機能 (#126) @taiyme
+- enhance(frontend/MkReactionEffect): エフェクトのz-indexを要素を基準として計算するように @taiyme
+
 ## 12.119.2-taiyme-v1.1.4 (2023/03/31)
 
 - hotfix(frontend/MkPagination): 通知などが表示されなくなる問題 @taiyme
