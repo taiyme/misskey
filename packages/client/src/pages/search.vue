@@ -12,24 +12,23 @@
 		</MkTab>
 
 		<div v-if="searchType === 'note'">
-			<TransitionGroup
-				v-if="pickup"
+			<Transition
 				:enter-active-class="$store.state.animation ? $style.transition_x_enterActive : ''"
 				:leave-active-class="$store.state.animation ? $style.transition_x_leaveActive : ''"
 				:enter-from-class="$store.state.animation ? $style.transition_x_enterFrom : ''"
 				:leave-to-class="$store.state.animation ? $style.transition_x_leaveTo : ''"
 				:move-class="$store.state.animation ? $style.transition_x_move : ''"
-				:class="$style.pickup"
-				tag="div"
 			>
-				<div :class="$style.pickupLabel">Pickup</div>
-				<div v-if="pickup.type === 'fetch'" :class="$style.pickupFetch">
-					<div><MkLoading :em="true"/></div>
-					<div>{{ pickup.value ?? i18n.ts.processing }}</div>
+				<div v-if="pickup" :class="$style.pickup">
+					<div :class="$style.pickupLabel">Pickup</div>
+					<div v-if="pickup.type === 'fetch'" :class="$style.pickupFetch">
+						<div><MkLoading :em="true"/></div>
+						<div>{{ pickup.value ?? i18n.ts.processing }}</div>
+					</div>
+					<MkUserInfo v-if="pickup.type === 'user'" style="border-radius: 0 !important;" :user="pickup.value"/>
+					<MkNote v-if="pickup.type === 'note'" style="border-radius: 0 !important;" :note="pickup.value"/>
 				</div>
-				<MkUserInfo v-if="pickup.type === 'user'" style="border-radius: 0 !important;" :user="pickup.value"/>
-				<MkNote v-if="pickup.type === 'note'" style="border-radius: 0 !important;" :note="pickup.value"/>
-			</TransitionGroup>
+			</Transition>
 			<MkNotes v-if="searchQuery" ref="notes" :pagination="notePagination"/>
 		</div>
 		<div v-if="searchType === 'user'">
