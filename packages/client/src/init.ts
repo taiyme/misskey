@@ -32,7 +32,6 @@ import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
-import { search } from '@/scripts/search';
 import { deviceKind } from '@/scripts/device-kind';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
@@ -40,8 +39,9 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { trimHash } from '@/scripts/tms/url-hash';
+import { mainRouter } from '@/router';
 
-(async () => {
+(async (): Promise<void> => {
 	console.info(`Misskey v${version}`);
 
 	const [{ type: entryType }] = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
@@ -124,7 +124,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 
 	//#region Set lang attr
 	const html = document.documentElement;
-	html.setAttribute('lang', lang);
+	html.setAttribute('lang', lang ?? 'en-US');
 	//#endregion
 
 	//#region loginId
@@ -223,7 +223,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 
 	// https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 	// なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
-	const rootEl = (() => {
+	const rootEl = ((): HTMLElement => {
 		const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
 		const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
@@ -233,10 +233,10 @@ import { trimHash } from '@/scripts/tms/url-hash';
 			return currentEl;
 		}
 
-		const rootEl = document.createElement('div');
-		rootEl.id = MISSKEY_MOUNT_DIV_ID;
-		document.body.appendChild(rootEl);
-		return rootEl;
+		const rootEl_ = document.createElement('div');
+		rootEl_.id = MISSKEY_MOUNT_DIV_ID;
+		document.body.appendChild(rootEl_);
+		return rootEl_;
 	})();
 
 	app.mount(rootEl);
@@ -268,6 +268,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 				}
 			}
 		} catch (err) {
+			// emtpy
 		}
 	}
 
@@ -342,7 +343,7 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		}
 	});
 
-	stream.on('emojiAdded', emojiData => {
+	stream.on('emojiAdded', _emojiData => {
 		// TODO
 		//store.commit('instance/set', );
 	});
@@ -359,7 +360,9 @@ import { trimHash } from '@/scripts/tms/url-hash';
 		'd': (): void => {
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
 		},
-		's': search,
+		's': (): void => {
+			mainRouter.push('/search');
+		},
 	};
 
 	if ($i) {

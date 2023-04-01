@@ -21,12 +21,16 @@ import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
-const props = defineProps<{
+defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
+
+defineExpose({
+	pagingComponent,
+});
 </script>
 
 <style lang="scss" scoped>
