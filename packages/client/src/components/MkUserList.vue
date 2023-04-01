@@ -1,7 +1,7 @@
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
-		<div v-if="!noEmpty" class="_fullinfo">
+		<div class="_fullinfo">
 			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 			<div>{{ i18n.ts.noUsers }}</div>
 		</div>
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, ComputedRef } from 'vue';
+import { ref } from 'vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
@@ -24,7 +24,6 @@ import { i18n } from '@/i18n';
 defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
-	noEmpty?: boolean | ComputedRef<boolean>;
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
