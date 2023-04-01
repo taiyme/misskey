@@ -184,12 +184,12 @@ definePageMetadata(computed(() => ({
 
 <style lang="scss" module>
 .transition_x_move, .transition_x_enterActive, .transition_x_leaveActive {
-	transition: opacity 0.2s cubic-bezier(0, 0.5, 0.5, 1), transform 0.2s cubic-bezier(0, 0.5, 0.5, 1) !important;
+	transition: opacity 0.1s cubic-bezier(0, 0.5, 0.5, 1), transform 0.1s cubic-bezier(0, 0.5, 0.5, 1) !important;
 }
 
 .transition_x_enterFrom, .transition_x_leaveTo {
 	opacity: 0;
-	transform: scale(0.7);
+	transform: scale(0.95);
 }
 
 .transition_x_leaveActive {
