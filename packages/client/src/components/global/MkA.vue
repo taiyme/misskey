@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import * as os from '@/os';
 import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter();
 
-const el = $ref<HTMLAnchorElement>();
+const el = ref<HTMLAnchorElement>();
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
@@ -105,6 +105,8 @@ function nav(ev: MouseEvent) {
 }
 
 defineExpose({
-	el,
+	getAnchorElement() {
+		return el.value ?? null;
+	},
 });
 </script>
