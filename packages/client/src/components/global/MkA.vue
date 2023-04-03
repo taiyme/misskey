@@ -1,5 +1,5 @@
 <template>
-<a :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
@@ -24,6 +24,8 @@ const props = withDefaults(defineProps<{
 });
 
 const router = useRouter();
+
+const el = $ref<HTMLAnchorElement>();
 
 const active = $computed(() => {
 	if (props.activeClass == null) return false;
@@ -101,4 +103,8 @@ function nav(ev: MouseEvent) {
 
 	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
 }
+
+defineExpose({
+	el,
+});
 </script>

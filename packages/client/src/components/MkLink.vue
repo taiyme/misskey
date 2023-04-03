@@ -1,11 +1,11 @@
 <template>
-<component
-	:is="self ? 'MkA' : 'a'" ref="el" class="xlcxczvw _link" :[attr]="self ? url.substr(local.length) : url" :rel="rel" :target="target"
-	:title="url"
->
+<MkA v-if="props.url.startsWith(local)" ref="selfEl" :class="$style.root" class="xlcxczvw _link" :to="props.url.substring(local.length)" :rel="rel" :title="props.url">
 	<slot></slot>
-	<i v-if="target === '_blank'" class="ti ti-external-link icon"></i>
-</component>
+</MkA>
+<a v-else ref="linkEl" :class="$style.root" class="xlcxczvw _link" :href="props.url" :rel="rel ?? undefined" :title="props.url" target="_blank">
+	<slot></slot>
+	<i :class="$style.icon" class="ti ti-external-link icon"></i>
+</a>
 </template>
 
 <script lang="ts" setup>
@@ -13,18 +13,22 @@ import { defineAsyncComponent } from 'vue';
 import { url as local } from '@/config';
 import { useTooltip } from '@/scripts/use-tooltip';
 import * as os from '@/os';
+import MkA from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
 }>(), {
+	rel: null,
 });
 
-const self = props.url.startsWith(local);
-const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const selfEl = $ref<InstanceType<typeof MkA>>();
+const linkEl = $ref<HTMLAnchorElement>();
 
-const el = $ref();
+const el = selfEl?.el ?? linkEl ?? null;
+
+const url = new URL(props.url);
+if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
 
 useTooltip($$(el), (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
@@ -35,13 +39,13 @@ useTooltip($$(el), (showing) => {
 });
 </script>
 
-<style lang="scss" scoped>
-.xlcxczvw {
+<style lang="scss" module>
+.root {
 	word-break: break-all;
+}
 
-	> .icon {
-		padding-left: 2px;
-		font-size: .9em;
-	}
+.icon {
+	padding-left: 2px;
+	font-size: 0.9em;
 }
 </style>
