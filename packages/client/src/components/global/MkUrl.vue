@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<{
 const selfEl = ref<InstanceType<typeof MkA>>();
 const linkEl = ref<HTMLAnchorElement>();
 
-const el = ref(selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
+const el = computed(() => selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
 
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
