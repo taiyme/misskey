@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, defineAsyncComponent } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config';
 import * as os from '@/os';
@@ -35,7 +35,17 @@ const props = withDefaults(defineProps<{
 const selfEl = ref<InstanceType<typeof MkA>>();
 const linkEl = ref<HTMLAnchorElement>();
 
-const el = computed(() => selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
+onMounted(() => {
+	const el = ref(selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
+
+	useTooltip(el, (showing) => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: el.value,
+		}, {}, 'closed');
+	});
+});
 
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
@@ -46,14 +56,6 @@ const port = url.port;
 const pathname = safeURIDecode(url.pathname);
 const query = safeURIDecode(url.search);
 const hash = safeURIDecode(url.hash);
-
-useTooltip(el, (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: el.value,
-	}, {}, 'closed');
-});
 </script>
 
 <style lang="scss" module>
