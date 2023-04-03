@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, defineAsyncComponent } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import { url as local } from '@/config';
 import { useTooltip } from '@/scripts/use-tooltip';
 import * as os from '@/os';
@@ -25,16 +25,14 @@ const props = withDefaults(defineProps<{
 const selfEl = ref<InstanceType<typeof MkA>>();
 const linkEl = ref<HTMLAnchorElement>();
 
-onMounted(() => {
-	const el = ref(selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
+const el = computed(() => selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
 
-	useTooltip(el, (showing) => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-			showing,
-			url: props.url,
-			source: el.value,
-		}, {}, 'closed');
-	});
+useTooltip(el, (showing) => {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+		showing,
+		url: props.url,
+		source: el.value,
+	}, {}, 'closed');
 });
 </script>
 
