@@ -9,7 +9,6 @@ import { ref } from 'vue';
 import * as os from '@/os';
 import { copyText } from '@/scripts/tms/clipboard';
 import { url } from '@/config';
-import { popout as popout_ } from '@/scripts/popout';
 import { disableContextmenu } from '@/scripts/touch';
 import { i18n } from '@/i18n';
 import { useRouter } from '@/router';
@@ -37,64 +36,67 @@ const active = $computed(() => {
 	return resolved.route.name === router.currentRoute.value.name;
 });
 
-function onContextmenu(ev) {
+const onContextmenu = (ev: MouseEvent): void => {
 	if (disableContextmenu) return;
 	const selection = window.getSelection();
 	if (selection && selection.toString() !== '') return;
-	os.contextMenu([{
-		type: 'label',
-		text: props.to,
-	}, {
-		icon: 'ti ti-app-window',
-		text: i18n.ts.openInWindow,
-		action: () => {
-			os.pageWindow(props.to);
+	os.contextMenu([
+		{
+			type: 'label',
+			text: props.to,
 		},
-	}, {
-		icon: 'ti ti-player-eject',
-		text: i18n.ts.showInPage,
-		action: () => {
-			router.push(props.to, 'forcePage');
+		{
+			icon: 'ti ti-app-window',
+			text: i18n.ts.openInWindow,
+			action: (): void => {
+				os.pageWindow(props.to);
+			},
 		},
-	}, null, {
-		icon: 'ti ti-external-link',
-		text: i18n.ts.openInNewTab,
-		action: () => {
-			window.open(props.to, '_blank');
+		{
+			icon: 'ti ti-player-eject',
+			text: i18n.ts.showInPage,
+			action: (): void => {
+				router.push(props.to, 'forcePage');
+			},
 		},
-	}, {
-		icon: 'ti ti-link',
-		text: i18n.ts.copyLink,
-		action: () => {
-			copyText(`${url}${props.to}`);
+		null,
+		{
+			icon: 'ti ti-external-link',
+			text: i18n.ts.openInNewTab,
+			action: (): void => {
+				window.open(props.to, '_blank');
+			},
 		},
-	}], ev);
-}
+		{
+			icon: 'ti ti-link',
+			text: i18n.ts.copyLink,
+			action: (): void => {
+				copyText(`${url}${props.to}`);
+			},
+		},
+	], ev);
+};
 
-function openWindow() {
+const openWindow = (): void => {
 	os.pageWindow(props.to);
-}
+};
 
-function modalWindow() {
+const modalWindow = (): void => {
 	os.modalPageWindow(props.to);
-}
+};
 
-function popout() {
-	popout_(props.to);
-}
-
-function nav(ev: MouseEvent) {
+const nav = (ev: MouseEvent): void => {
 	if (props.behavior === 'browser') {
 		location.href = props.to;
 		return;
 	}
 
-	if (props.behavior) {
-		if (props.behavior === 'window') {
-			return openWindow();
-		} else if (props.behavior === 'modalWindow') {
-			return modalWindow();
-		}
+	if (props.behavior === 'window') {
+		return openWindow();
+	}
+
+	if (props.behavior === 'modalWindow') {
+		return modalWindow();
 	}
 
 	if (ev.shiftKey) {
@@ -102,11 +104,13 @@ function nav(ev: MouseEvent) {
 	}
 
 	router.push(props.to, ev.ctrlKey ? 'forcePage' : null);
-}
+};
+
+const getAnchorElement = (): HTMLAnchorElement | null => {
+	return el.value ?? null;
+};
 
 defineExpose({
-	getAnchorElement() {
-		return el.value ?? null;
-	},
+	getAnchorElement,
 });
 </script>
