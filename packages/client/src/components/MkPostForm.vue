@@ -94,6 +94,7 @@ import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import { parseObject, parseArray } from '@/scripts/tms/parse';
 import { imanonashi } from '@/scripts/tms/imanonashi';
+import { getDraft as _getDraft, setDraft as _setDraft, deleteDraft as _deleteDraft } from '@/scripts/tms/drafts';
 
 const modal = inject('modal');
 
@@ -453,14 +454,15 @@ const clear = (): void => {
 };
 
 const onKeydown = (ev: KeyboardEvent): void => {
+	typing();
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
 	if (ev.key === 'Escape' || ev.key === 'Esc') emit('esc');
-	typing();
 };
 
 const onCompositionUpdate = (ev: CompositionEvent): void => {
-	imeText = ev.data;
 	typing();
+	imeText = ev.data;
 };
 
 const onCompositionEnd = (_ev: CompositionEvent): void => {
@@ -555,45 +557,9 @@ const onDrop = (ev: DragEvent): void => {
 	//#endregion
 };
 
-type DraftData = {
-	updatedAt: string;
-	data: {
-		text: typeof text;
-		useCw: typeof useCw;
-		cw: typeof cw;
-		visibility: typeof visibility;
-		localOnly: typeof localOnly;
-		files: typeof files;
-		poll: typeof poll;
-	};
-};
+const saveDraft = (): void => _setDraft(draftKey, { text, useCw, cw, visibility, localOnly, files, poll });
 
-const saveDraft = (): void => {
-	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
-
-	draftData[draftKey] = {
-		updatedAt: new Date().toJSON(),
-		data: {
-			text: text,
-			useCw: useCw,
-			cw: cw,
-			visibility: visibility,
-			localOnly: localOnly,
-			files: files,
-			poll: poll,
-		},
-	};
-
-	localStorage.setItem('drafts', JSON.stringify(draftData));
-};
-
-const deleteDraft = (): void => {
-	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
-
-	delete draftData[draftKey];
-
-	localStorage.setItem('drafts', JSON.stringify(draftData));
-};
+const deleteDraft = (): void => _deleteDraft(draftKey);
 
 const post = async (ev?: MouseEvent): Promise<void> => {
 	if (ev) {
@@ -728,24 +694,22 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('drafts'))[draftKey];
+			const draft = _getDraft(draftKey);
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;
 				cw = draft.data.cw;
 				visibility = draft.data.visibility;
 				localOnly = draft.data.localOnly;
-				files = (draft.data.files || []).filter(draftFile => draftFile);
-				if (draft.data.poll) {
-					poll = draft.data.poll;
-				}
+				files = draft.data.files;
+				poll = draft.data.poll;
 			}
 		}
 
 		// 削除して編集
 		if (props.initialNote) {
 			const init = props.initialNote;
-			text = init.text ? init.text : '';
+			text = init.text ?? '';
 			files = init.files;
 			cw = init.cw;
 			useCw = init.cw != null;
@@ -758,11 +722,14 @@ onMounted(() => {
 				};
 			}
 			visibility = init.visibility;
-			localOnly = init.localOnly;
-			quoteId = init.renote ? init.renote.id : null;
+			localOnly = !!init.localOnly;
+			quoteId = init.renote?.id ?? null;
 		}
 
-		nextTick(() => watchForDraft());
+		nextTick(() => {
+			saveDraft();
+			watchForDraft();
+		});
 	});
 });
 </script>
