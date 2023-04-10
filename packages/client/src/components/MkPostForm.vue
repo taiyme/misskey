@@ -15,11 +15,12 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<button v-if="localOnly" v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="$style.headerRightItem" :disabled="channel != null || visibility === 'specified'" @click="localOnly = !localOnly">
-				<span :class="$style.headerRightButtonIcon"><i class="ti ti-rocket-off" style="color: var(--error);"></i></span>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="$style.headerRightItem" :disabled="channel != null || visibility === 'specified'" @click="localOnly = !localOnly">
+				<span v-if="!localOnly" :class="$style.headerRightButtonIcon"><i class="ti ti-rocket"></i></span>
+				<span v-else :class="$style.headerRightButtonIcon"><i class="ti ti-rocket-off" style="color: var(--error);"></i></span>
 			</button>
 			<template v-if="!(channel != null && fixed)">
-				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" class="_button" :class="[$style.v, $style.visibility]" @click="setVisibility">
+				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" class="_button" :class="[$style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'" :class="$style.headerRightButtonIcon"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'" :class="$style.headerRightButtonIcon"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'" :class="$style.headerRightButtonIcon"><i class="ti ti-lock"></i></span>
