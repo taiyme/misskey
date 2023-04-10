@@ -15,9 +15,11 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
+			<button v-if="localOnly" v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="$style.headerRightItem" :disabled="channel != null || visibility === 'specified'" @click="localOnly = !localOnly">
+				<span :class="$style.headerRightButtonIcon"><i class="ti ti-rocket-off" style="color: var(--error);"></i></span>
+			</button>
 			<template v-if="!(channel != null && fixed)">
 				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" class="_button" :class="[$style.v, $style.visibility]" @click="setVisibility">
-					<span v-if="localOnly" :class="$style.headerRightButtonIcon"><i class="ti ti-rocket-off" style="color: var(--error);"></i></span>
 					<span v-if="visibility === 'public'" :class="$style.headerRightButtonIcon"><i class="ti ti-world"></i></span>
 					<span v-if="visibility === 'home'" :class="$style.headerRightButtonIcon"><i class="ti ti-home"></i></span>
 					<span v-if="visibility === 'followers'" :class="$style.headerRightButtonIcon"><i class="ti ti-lock"></i></span>
@@ -64,8 +66,6 @@
 	<XPostFormAttaches :class="$style.attaches" :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
-	<div v-if="showingOptions" style="padding: 8px 16px;">
-	</div>
 	<footer :class="$style.footer">
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
@@ -174,7 +174,6 @@ let hasNotSpecifiedMentions = $ref(false);
 let annoyingPost = $ref(false);
 let recentHashtags = $ref(parseArray<string[]>(localStorage.getItem('hashtags')));
 let imeText = $ref('');
-let showingOptions = $ref(false);
 
 const typing = throttle(3000, () => {
 	if (props.channel) {
@@ -893,8 +892,8 @@ defineExpose({
 
 .visibility {
 	overflow: clip;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 
 	&:enabled {
 		> .headerRightButtonText {

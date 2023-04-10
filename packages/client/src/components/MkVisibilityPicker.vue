@@ -32,7 +32,7 @@
 				<span :class="$style.itemDescription">{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
-		<div class="divider"></div>
+		<div :class="$style.divider"></div>
 		<button key="localOnly" :disabled="v === 'specified'" class="_button" :class="[$style.item, { [$style.active]: localOnly }]" data-index="5" @click="localOnly = !localOnly">
 			<div :class="$style.icon">
 				<i v-if="!localOnly" class="ti ti-rocket"></i>
@@ -135,7 +135,8 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 	}
 
 	&.active {
-		color: var(--accent);
+		color: var(--fgOnAccent);
+		background: var(--accent);
 	}
 }
 
