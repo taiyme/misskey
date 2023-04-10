@@ -1004,11 +1004,12 @@ defineExpose({
 	right: 2px;
 	padding: 4px 6px;
 	font-size: .9em;
-	color: var(--warn);
+	color: var(--fg);
 	border-radius: 6px;
 	min-width: 1.6em;
 	text-align: center;
 	pointer-events: none;
+	opacity: 0.8;
 
 	&.textOver {
 		color: var(--error);
