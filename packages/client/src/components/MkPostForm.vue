@@ -273,7 +273,7 @@ const maxTextLength = $computed((): number => {
 });
 
 const canPost = $computed((): boolean => {
-	return !posting && !posted &&
+	return !loading && !posting && !posted &&
 		(1 <= textLength || 1 <= files.length || !!poll || !!renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
