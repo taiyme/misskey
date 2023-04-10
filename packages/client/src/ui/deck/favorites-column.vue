@@ -11,9 +11,11 @@
 		</template>
 
 		<template #default="{ items }">
-			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
-				<XNote :key="item.id" :note="item.note" :class="$style.note"/>
-			</XList>
+			<div :class="$style.notes">
+				<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
+					<XNote :key="item.id" :note="item.note"/>
+				</XList>
+			</div>
 		</template>
 	</MkPagination>
 </XColumn>
@@ -46,7 +48,7 @@ const pagination = {
 </script>
 
 <style lang="scss" module>
-.note {
+.notes {
 	background: var(--panel);
 }
 </style>
