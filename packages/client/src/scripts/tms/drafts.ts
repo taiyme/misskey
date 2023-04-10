@@ -18,6 +18,9 @@ type DraftData = {
 		expiresAt: string | null;
 		expiredAfter: string | null;
 	} | null;
+	replyId: string | null;
+	renoteId: string | null;
+	channelId: string | null;
 };
 
 type LsDraft = {
@@ -62,7 +65,7 @@ const loadLsDrafts = (): Record<string, LsDraft | undefined> => parseObject<Reco
 const saveLsDrafts = (drafts: Record<string, LsDraft | undefined>): void => localStorage.setItem(LS_DRAFTS_KEY, JSON.stringify(drafts));
 
 const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
-	const { text, useCw, cw, visibility, localOnly, files, poll } = lsDraft;
+	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId } = lsDraft;
 	return {
 		text: text ?? '',
 		useCw: useCw ?? false,
@@ -71,6 +74,9 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 		localOnly: localOnly ?? getLocalOnly(),
 		files: files ?? [],
 		poll: poll ?? null,
+		replyId: replyId ?? null,
+		renoteId: renoteId ?? null,
+		channelId: channelId ?? null,
 	};
 };
 
@@ -106,7 +112,7 @@ export const setDraft = (draftKey: string | null, data: DraftData): void => {
 
 	const drafts = loadLsDrafts();
 
-	const { text, useCw, cw, visibility, localOnly, files, poll } = data;
+	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId } = data;
 
 	const draftData: LsDraft['data'] = {
 		text: text || undefined,
@@ -116,6 +122,9 @@ export const setDraft = (draftKey: string | null, data: DraftData): void => {
 		localOnly: localOnly !== getLocalOnly() ? localOnly : undefined,
 		files: files.length ? files : undefined,
 		poll: poll ?? undefined,
+		replyId: replyId ?? undefined,
+		renoteId: renoteId ?? undefined,
+		channelId: channelId ?? undefined,
 	};
 
 	if (isEmptyObject(draftData)) return deleteDraft(draftKey);

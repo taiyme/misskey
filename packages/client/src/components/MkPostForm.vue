@@ -1,7 +1,7 @@
 <template>
 <div
 	v-size="{ max: [310, 500] }" class="gafaadew"
-	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
+	:class="[$style.root, { [$style.modal]: modal, _popup: modal, [$style.loading]: loading }]"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -179,21 +179,56 @@ let annoyingPost = $ref(false);
 let recentHashtags = $ref(parseArray<string[]>(localStorage.getItem('hashtags')));
 let imeText = $ref('');
 
+let reply = $ref(props.reply);
+let renote = $ref(props.renote);
+let channel = $ref(props.channel);
+let draft = $ref<DraftWithId>();
+let loading = $ref(false);
+
+watch($$(draft), async () => {
+	if (!draft) return;
+	if (loading) return;
+
+	loading = true;
+
+	const promises: Promise<unknown>[] = [];
+	if (draft.data.replyId) {
+		promises.push(os.api('notes/show', { noteId: draft.data.replyId }).then(_reply => reply = _reply));
+	}
+	if (draft.data.renoteId) {
+		promises.push(os.api('notes/show', { noteId: draft.data.renoteId }).then(_renote => renote = _renote));
+	}
+	if (draft.data.channelId) {
+		promises.push(os.api('channels/show', { channelId: draft.data.channelId }).then(_channel => channel = _channel));
+	}
+
+	text = draft.data.text;
+	useCw = draft.data.useCw;
+	cw = draft.data.cw;
+	visibility = draft.data.visibility;
+	localOnly = draft.data.localOnly;
+	files = draft.data.files;
+	poll = draft.data.poll;
+
+	Promise.allSettled(promises).then(() => loading = false);
+}, { deep: true });
+
 const typing = throttle(3000, () => {
-	if (props.channel) {
-		stream.send('typingOnChannel', { channel: props.channel.id });
+	if (channel) {
+		stream.send('typingOnChannel', { channel: channel.id });
 	}
 });
 
-let draftKey = $computed((): string | null => {
+const draftKey = $computed((): string | null => {
+	if (draft) return draft.id;
 	if (!$i?.id) return null;
 
-	let key = props.channel ? `ch:${props.channel.id}/` : '';
+	let key = channel ? `ch:${channel.id}/` : '';
 
-	if (props.renote) {
-		key += `rn:${props.renote.id}`;
-	} else if (props.reply) {
-		key += `re:${props.reply.id}`;
+	if (renote) {
+		key += `rn:${renote.id}`;
+	} else if (reply) {
+		key += `re:${reply.id}`;
 	} else {
 		key += `note:${$i.id}`;
 	}
@@ -202,11 +237,11 @@ let draftKey = $computed((): string | null => {
 });
 
 const placeholder = $computed((): string => {
-	if (props.renote) {
+	if (renote) {
 		return i18n.ts._postForm.quotePlaceholder;
-	} else if (props.reply) {
+	} else if (reply) {
 		return i18n.ts._postForm.replyPlaceholder;
-	} else if (props.channel) {
+	} else if (channel) {
 		return i18n.ts._postForm.channelPlaceholder;
 	} else {
 		const xs = [
@@ -222,9 +257,9 @@ const placeholder = $computed((): string => {
 });
 
 const submitText = $computed((): string => {
-	return props.renote
+	return renote
 		? i18n.ts.quote
-		: props.reply
+		: reply
 			? i18n.ts.reply
 			: i18n.ts.note;
 });
@@ -239,7 +274,7 @@ const maxTextLength = $computed((): number => {
 
 const canPost = $computed((): boolean => {
 	return !posting && !posted &&
-		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
+		(1 <= textLength || 1 <= files.length || !!poll || !!renote) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
 });
@@ -272,13 +307,13 @@ if (props.mention) {
 	text += ' ';
 }
 
-if (props.reply && (props.reply.user.username !== $i?.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
-	text = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
+if (reply && (reply.user.username !== $i?.username || (reply.user.host != null && reply.user.host !== host))) {
+	text = `@${reply.user.username}${reply.user.host != null ? '@' + toASCII(reply.user.host) : ''} `;
 }
 
-if (props.reply && props.reply.text != null) {
-	const ast = mfm.parse(props.reply.text);
-	const otherHost = props.reply.user.host;
+if (reply && reply.text != null) {
+	const ast = mfm.parse(reply.text);
+	const otherHost = reply.user.host;
 
 	for (const x of extractMentions(ast)) {
 		const mention = x.host ?
@@ -297,32 +332,32 @@ if (props.reply && props.reply.text != null) {
 	}
 }
 
-if (props.channel) {
+if (channel) {
 	visibility = 'public';
 	localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 }
 
 // 公開以外へのリプライ時は元の公開範囲を引き継ぐ
-if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visibility)) {
-	if (props.reply.visibility === 'home' && visibility === 'followers') {
+if (reply && ['home', 'followers', 'specified'].includes(reply.visibility)) {
+	if (reply.visibility === 'home' && visibility === 'followers') {
 		visibility = 'followers';
-	} else if (['home', 'followers'].includes(props.reply.visibility) && visibility === 'specified') {
+	} else if (['home', 'followers'].includes(reply.visibility) && visibility === 'specified') {
 		visibility = 'specified';
 	} else {
-		visibility = props.reply.visibility;
+		visibility = reply.visibility;
 	}
 
 	if (visibility === 'specified') {
-		if (props.reply.visibleUserIds) {
+		if (reply.visibleUserIds) {
 			os.api('users/show', {
-				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i?.id && uid !== props.reply?.userId),
+				userIds: reply.visibleUserIds.filter(uid => uid !== $i?.id && uid !== reply?.userId),
 			}).then(users => {
 				users.forEach(pushVisibleUser);
 			});
 		}
 
-		if (props.reply.userId !== $i?.id) {
-			os.api('users/show', { userId: props.reply.userId }).then(user => {
+		if (reply.userId !== $i?.id) {
+			os.api('users/show', { userId: reply.userId }).then(user => {
 				pushVisibleUser(user);
 			});
 		}
@@ -335,27 +370,20 @@ if (props.specified) {
 }
 
 // keep cw when reply
-if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
+if (defaultStore.state.keepCw && reply && reply.cw) {
 	useCw = true;
-	cw = props.reply.cw;
+	cw = reply.cw;
 }
 
 const chooseDraft = (): void => {
 	new Promise<DraftWithId>(resolve => {
 		os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {}, {
-			chosen: (draft: DraftWithId) => {
-				resolve(draft);
+			chosen: (_draft: DraftWithId) => {
+				resolve(_draft);
 			},
 		}, 'closed');
-	}).then((draft: DraftWithId) => {
-		draftKey = draft.id;
-		text = draft.data.text;
-		useCw = draft.data.useCw;
-		cw = draft.data.cw;
-		visibility = draft.data.visibility;
-		localOnly = draft.data.localOnly;
-		files = draft.data.files;
-		poll = draft.data.poll;
+	}).then((_draft: DraftWithId) => {
+		draft = _draft;
 	});
 };
 
@@ -471,7 +499,7 @@ const upload = (file: File, name?: string): void => {
 };
 
 const setVisibility = (): void => {
-	if (props.channel) {
+	if (channel) {
 		visibility = 'public';
 		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
@@ -536,7 +564,7 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	const paste = ev.clipboardData.getData('text');
 	const path = url + '/notes/';
 
-	if (!props.renote && !quoteId && paste.startsWith(path)) {
+	if (!renote && !quoteId && paste.startsWith(path)) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -608,7 +636,18 @@ const onDrop = (ev: DragEvent): void => {
 	//#endregion
 };
 
-const saveDraft = (): void => _setDraft(draftKey, { text, useCw, cw, visibility, localOnly, files, poll });
+const saveDraft = (): void => _setDraft(draftKey, {
+	text,
+	useCw,
+	cw,
+	visibility,
+	localOnly,
+	files,
+	poll,
+	replyId: reply?.id ?? null,
+	renoteId: renote?.id ?? quoteId ?? null,
+	channelId: channel?.id ?? null,
+});
 
 const deleteDraft = (): void => _deleteDraft(draftKey);
 
@@ -626,9 +665,9 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
-		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId ? quoteId : undefined,
-		channelId: props.channel ? props.channel.id : undefined,
+		replyId: reply ? reply.id : undefined,
+		renoteId: renote ? renote.id : quoteId ? quoteId : undefined,
+		channelId: channel ? channel.id : undefined,
 		poll: poll,
 		cw: useCw ? cw ?? '' : undefined,
 		localOnly: localOnly,
@@ -749,15 +788,15 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = _getDraft(draftKey);
-			if (draft) {
-				text = draft.data.text;
-				useCw = draft.data.useCw;
-				cw = draft.data.cw;
-				visibility = draft.data.visibility;
-				localOnly = draft.data.localOnly;
-				files = draft.data.files;
-				poll = draft.data.poll;
+			const draft_ = _getDraft(draftKey);
+			if (draft_) {
+				text = draft_.data.text;
+				useCw = draft_.data.useCw;
+				cw = draft_.data.cw;
+				visibility = draft_.data.visibility;
+				localOnly = draft_.data.localOnly;
+				files = draft_.data.files;
+				poll = draft_.data.poll;
 			}
 		}
 
@@ -800,6 +839,21 @@ defineExpose({
 	&.modal {
 		width: 100%;
 		max-width: 520px;
+	}
+
+	&.loading {
+		user-select: none;
+
+		::before {
+			content: "";
+			display: block;
+			position: absolute;
+			z-index: 10000;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+		}
 	}
 }
 
