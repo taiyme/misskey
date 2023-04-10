@@ -45,10 +45,10 @@ const bgCss = bg.toRgbString();
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--mention);
-  vertical-align: middle;
-  align-items: center;
-  overflow: hidden;
-  max-width: 100%;
+	vertical-align: middle;
+	align-items: center;
+	overflow: hidden;
+	max-width: 100%;
 	box-sizing: border-box;
 
 	&.isMe {

@@ -10,7 +10,7 @@ import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<RequiredNotNull<Pick<T, K>>>;
 type RequiredNotNull<T> = {
-  [P in keyof T]: NonNullable<T[P]>;
+	[P in keyof T]: NonNullable<T[P]>;
 };
 
 type PostDataBase = Partial<{

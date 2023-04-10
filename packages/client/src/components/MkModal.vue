@@ -321,6 +321,29 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.transition_send_enterActive, .transition_send_leaveActive {
+	> .bg {
+		transition: opacity 0.3s !important;
+	}
+
+	> .content {
+		transform: translateY(0px);
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(0.5, -0.5, 1, 0.5) !important;
+	}
+}
+
+.transition_send_enterFrom, .transition_send_leaveTo {
+	> .bg {
+		opacity: 0;
+	}
+
+	> .content {
+		pointer-events: none;
+		opacity: 0;
+		transform: translateY(-300px);
+	}
+}
+
 .modal-enter-active, .modal-leave-active {
 	> .bg {
 		transition: opacity 0.2s !important;

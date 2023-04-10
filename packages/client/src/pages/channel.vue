@@ -96,7 +96,7 @@ definePageMetadata(computed(() => channel ? {
 	> .toggle {
 		position: absolute;
 		z-index: 2;
-    top: 8px;
+		top: 8px;
 		right: 8px;
 		font-size: 1.2em;
 		width: 48px;
