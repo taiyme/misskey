@@ -15,6 +15,10 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
+			<button v-click-anime v-tooltip="i18n.ts._tms.drafts" class="_button" :class="$style.headerRightItem" @click="chooseDraft">
+				<span :class="$style.headerRightButtonIcon"><i class="ti ti-pencil"></i></span>
+				<span :class="$style.headerRightButtonText">{{ i18n.ts._tms.drafts }}</span>
+			</button>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="$style.headerRightItem" :disabled="channel != null || visibility === 'specified'" @click="localOnly = !localOnly">
 				<span v-if="!localOnly" :class="$style.headerRightButtonIcon"><i class="ti ti-rocket"></i></span>
 				<span v-else :class="$style.headerRightButtonIcon"><i class="ti ti-rocket-off" style="color: var(--error);"></i></span>
@@ -115,7 +119,7 @@ import { uploadFile } from '@/scripts/upload';
 import { deepClone } from '@/scripts/clone';
 import { parseObject, parseArray } from '@/scripts/tms/parse';
 import { imanonashi } from '@/scripts/tms/imanonashi';
-import { getDraft as _getDraft, setDraft as _setDraft, deleteDraft as _deleteDraft } from '@/scripts/tms/drafts';
+import { DraftWithId, getDraft as _getDraft, setDraft as _setDraft, deleteDraft as _deleteDraft } from '@/scripts/tms/drafts';
 
 const modal = inject('modal');
 
@@ -182,7 +186,7 @@ const typing = throttle(3000, () => {
 	}
 });
 
-const draftKey = $computed((): string | null => {
+let draftKey = $computed((): string | null => {
 	if (!$i?.id) return null;
 
 	let key = props.channel ? `ch:${props.channel.id}/` : '';
@@ -336,6 +340,25 @@ if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
 	useCw = true;
 	cw = props.reply.cw;
 }
+
+const chooseDraft = (): void => {
+	new Promise<DraftWithId>(resolve => {
+		os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {}, {
+			chosen: (draft: DraftWithId) => {
+				resolve(draft);
+			},
+		}, 'closed');
+	}).then((draft: DraftWithId) => {
+		draftKey = draft.id;
+		text = draft.data.text;
+		useCw = draft.data.useCw;
+		cw = draft.data.cw;
+		visibility = draft.data.visibility;
+		localOnly = draft.data.localOnly;
+		files = draft.data.files;
+		poll = draft.data.poll;
+	});
+};
 
 const watchForDraft = (): void => {
 	watch($$(text), saveDraft);

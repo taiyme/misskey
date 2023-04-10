@@ -25,9 +25,13 @@ type LsDraft = {
 	data: Partial<DraftData>;
 };
 
-type Draft = {
+export type Draft = {
 	updatedAt: string;
 	data: DraftData;
+};
+
+export type DraftWithId = Draft & {
+	id: string;
 };
 
 type MessageDraftData = {
@@ -40,9 +44,13 @@ type LsMessageDraft = {
 	data: Partial<MessageDraftData>;
 };
 
-type MessageDraft = {
+export type MessageDraft = {
 	updatedAt: string;
 	data: MessageDraftData;
+};
+
+export type MessageDraftWithId = MessageDraft & {
+	id: string;
 };
 
 const isEmptyObject = (obj: Record<string, unknown>): obj is Record<string, never> => !Object.values(obj).some(v => v !== undefined);
@@ -53,25 +61,43 @@ const getLocalOnly = (): boolean => defaultStore.state.rememberNoteVisibility ? 
 const loadLsDrafts = (): Record<string, LsDraft | undefined> => parseObject<Record<string, LsDraft | undefined>>(localStorage.getItem(LS_DRAFTS_KEY));
 const saveLsDrafts = (drafts: Record<string, LsDraft | undefined>): void => localStorage.setItem(LS_DRAFTS_KEY, JSON.stringify(drafts));
 
+const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
+	const { text, useCw, cw, visibility, localOnly, files, poll } = lsDraft;
+	return {
+		text: text ?? '',
+		useCw: useCw ?? false,
+		cw: cw ?? (useCw ? '' : null),
+		visibility: visibility ?? getVisibility(),
+		localOnly: localOnly ?? getLocalOnly(),
+		files: files ?? [],
+		poll: poll ?? null,
+	};
+};
+
+export const getAllDraft = (): DraftWithId[] => {
+	const drafts = loadLsDrafts();
+	return Object.entries(drafts).flatMap(([id, draft]) => {
+		if (!draft) return [];
+		const { updatedAt, data } = draft;
+		return [{
+			id,
+			updatedAt,
+			data: restoreDraftData(data),
+		}];
+	});
+};
+
 export const getDraft = (draftKey: string | null): Draft | null => {
 	if (!draftKey) return null;
 
 	const draft = loadLsDrafts()[draftKey];
 	if (!draft) return null;
 
-	const { updatedAt, data: { text, useCw, cw, visibility, localOnly, files, poll } } = draft;
+	const { updatedAt, data } = draft;
 
 	return {
 		updatedAt,
-		data: {
-			text: text ?? '',
-			useCw: useCw ?? false,
-			cw: cw ?? (useCw ? '' : null),
-			visibility: visibility ?? getVisibility(),
-			localOnly: localOnly ?? getLocalOnly(),
-			files: files ?? [],
-			poll: poll ?? null,
-		},
+		data: restoreDraftData(data),
 	};
 };
 
@@ -116,20 +142,38 @@ export const deleteDraft = (draftKey: string | null): void => {
 const loadLsMessageDrafts = (): Record<string, LsMessageDraft | undefined> => parseObject<Record<string, LsMessageDraft | undefined>>(localStorage.getItem(LS_MESSAGE_DRAFTS_KEY));
 const saveLsMessageDrafts = (drafts: Record<string, LsMessageDraft | undefined>): void => localStorage.setItem(LS_MESSAGE_DRAFTS_KEY, JSON.stringify(drafts));
 
+const restoreMessageDraftData = (lsDraft: Partial<MessageDraftData>): MessageDraftData => {
+	const { text, file } = lsDraft;
+	return {
+		text: text ?? '',
+		file: file ?? null,
+	};
+};
+
+export const getAllMessageDraft = (): MessageDraftWithId[] => {
+	const drafts = loadLsMessageDrafts();
+	return Object.entries(drafts).flatMap(([id, draft]) => {
+		if (!draft) return [];
+		const { updatedAt, data } = draft;
+		return [{
+			id,
+			updatedAt,
+			data: restoreMessageDraftData(data),
+		}];
+	});
+};
+
 export const getMessageDraft = (draftKey: string | null): MessageDraft | null => {
 	if (!draftKey) return null;
 
 	const draft = loadLsMessageDrafts()[draftKey];
 	if (!draft) return null;
 
-	const { updatedAt, data: { text, file } } = draft;
+	const { updatedAt, data } = draft;
 
 	return {
 		updatedAt,
-		data: {
-			text: text ?? '',
-			file: file ?? null,
-		},
+		data: restoreMessageDraftData(data),
 	};
 };
 
