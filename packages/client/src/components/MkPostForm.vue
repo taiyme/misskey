@@ -60,8 +60,8 @@
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
-	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-	<MkInfo v-if="annoyingPost" warn :class="$style.annoyingPost">{{ i18n.ts.thisPostMayBeAnnoying }}</MkInfo>
+	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.info">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="annoyingPost" warn :class="$style.info">{{ i18n.ts.thisPostMayBeAnnoying }}</MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
@@ -957,8 +957,12 @@ defineExpose({
 	background: var(--X4);
 }
 
-.hasNotSpecifiedMentions {
-	margin: 0 20px 16px 20px;
+.info {
+	margin: 0 20px 8px 20px;
+
+	&:last-child {
+		margin-bottom: 16px;
+	}
 }
 
 .cw,
