@@ -89,6 +89,7 @@ let transformOrigin = $ref('center');
 let showing = $ref(true);
 let content = $ref<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
+let useSendAnime = $ref(false);
 const type = $computed(() => {
 	if (props.preferType === 'auto') {
 		if (!defaultStore.state.disableDrawer && isTouchUsing && deviceKind === 'smartphone') {
@@ -102,21 +103,25 @@ const type = $computed(() => {
 });
 let transitionName = $computed((() =>
 	defaultStore.state.animation
-		? (type === 'drawer')
-			? 'modal-drawer'
-			: (type === 'popup')
-				? 'modal-popup'
-				: 'modal'
+		? useSendAnime
+			? 'send'
+			: type === 'drawer'
+				? 'modal-drawer'
+				: type === 'popup'
+					? 'modal-popup'
+					: 'modal'
 		: ''
 ));
 let transitionDuration = $computed((() =>
-	transitionName === 'modal-popup'
-		? 100
-		: transitionName === 'modal'
-			? 200
-			: transitionName === 'modal-drawer'
+	transitionName === 'send'
+		? 400
+		: transitionName === 'modal-popup'
+			? 100
+			: transitionName === 'modal'
 				? 200
-				: 0
+				: transitionName === 'modal-drawer'
+					? 200
+					: 0
 ));
 
 let contentClicking = false;
@@ -272,7 +277,11 @@ const onOpened = (): void => {
 	}, { passive: true });
 };
 
-const close = (): void => {
+const close = (opts: { useSendAnimation?: boolean } = {}): void => {
+	if (opts.useSendAnimation) {
+		useSendAnime = true;
+	}
+
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
