@@ -16,8 +16,7 @@
 		</div>
 		<div :class="$style.headerRight">
 			<button v-click-anime v-tooltip="i18n.ts._tms.drafts" class="_button" :class="$style.headerRightItem" @click="chooseDraft">
-				<span :class="$style.headerRightButtonIcon"><i class="ti ti-pencil"></i></span>
-				<span :class="$style.headerRightButtonText">{{ i18n.ts._tms.drafts }}</span>
+				<span :class="$style.headerRightButtonIcon"><i class="ti ti-notes"></i></span>
 			</button>
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="$style.headerRightItem" :disabled="channel != null || visibility === 'specified'" @click="localOnly = !localOnly">
 				<span v-if="!localOnly" :class="$style.headerRightButtonIcon"><i class="ti ti-rocket"></i></span>
