@@ -244,20 +244,6 @@ const canPost = $computed((): boolean => {
 const withHashtags = $computed(defaultStore.makeGetterSetter('postFormWithHashtags'));
 const hashtags = $computed(defaultStore.makeGetterSetter('postFormHashtags'));
 
-watch($$(text), () => {
-	checkMissingMention();
-}, { immediate: true });
-
-watch($$(visibleUsers), () => {
-	checkMissingMention();
-}, {
-	deep: true,
-});
-
-watch($$(text), () => checkAnnoyingPost());
-watch($$(useCw), () => checkAnnoyingPost());
-watch($$(visibility), () => checkAnnoyingPost());
-
 const pushVisibleUser = (user: misskey.entities.User): void => {
 	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
 		visibleUsers.push(user);
@@ -352,13 +338,13 @@ if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
 }
 
 const watchForDraft = (): void => {
-	watch($$(text), () => saveDraft());
-	watch($$(useCw), () => saveDraft());
-	watch($$(cw), () => saveDraft());
-	watch($$(poll), () => saveDraft());
-	watch($$(files), () => saveDraft(), { deep: true });
-	watch($$(visibility), () => saveDraft());
-	watch($$(localOnly), () => saveDraft());
+	watch($$(text), saveDraft);
+	watch($$(useCw), saveDraft);
+	watch($$(cw), saveDraft);
+	watch($$(poll), saveDraft);
+	watch($$(files), saveDraft, { deep: true });
+	watch($$(visibility), saveDraft);
+	watch($$(localOnly), saveDraft);
 };
 
 const checkMissingMention = (): void => {
@@ -400,6 +386,13 @@ const checkAnnoyingPost = (): void => {
 		annoyingPost = false;
 	}
 };
+
+watch($$(text), checkMissingMention, { immediate: true });
+watch($$(visibleUsers), checkMissingMention, { deep: true });
+
+watch($$(text), checkAnnoyingPost);
+watch($$(useCw), checkAnnoyingPost);
+watch($$(visibility), checkAnnoyingPost);
 
 const togglePoll = (): void => {
 	if (poll) {
