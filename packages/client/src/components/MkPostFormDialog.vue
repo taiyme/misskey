@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="modal?.close()" @closed="onModalClosed()">
-	<MkPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+	<MkPostForm :key="reloadCount" style="margin: 0 auto auto auto;" v-bind="{...props, reopen, draft}" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
 </MkModal>
 </template>
 
@@ -9,6 +9,7 @@ import { } from 'vue';
 import * as misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
+import { DraftWithId } from '@/scripts/tms/drafts';
 
 const props = defineProps<{
 	reply?: misskey.entities.Note;
@@ -31,8 +32,10 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+let reloadCount = $ref(0);
+let draft = $ref<DraftWithId>();
+
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
-const form = $shallowRef<InstanceType<typeof MkPostForm>>();
 
 const onPosted = (): void => {
 	modal?.close({
@@ -42,5 +45,10 @@ const onPosted = (): void => {
 
 const onModalClosed = (): void => {
 	emit('closed');
+};
+
+const reopen = (_draft: DraftWithId): void => {
+	draft = _draft;
+	reloadCount++;
 };
 </script>
