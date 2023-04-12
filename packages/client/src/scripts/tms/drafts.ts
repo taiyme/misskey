@@ -56,7 +56,9 @@ export type MessageDraftWithId = MessageDraft & {
 	id: string;
 };
 
-const isEmptyObject = (obj: Record<string, unknown>): obj is Record<string, never> => !Object.values(obj).some(v => v !== undefined);
+const isEmptyObject = <T extends Record<string, unknown>>(obj: T, ignoreKeys?: (keyof T)[]): obj is Record<keyof T, never> => {
+	return !Object.entries(obj).some(([k, v]) => !(ignoreKeys ?? []).includes(k) && typeof v !== 'undefined');
+};
 
 const getVisibility = (): Misskey.entities.Note['visibility'] => defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 const getLocalOnly = (): boolean => defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
@@ -127,7 +129,7 @@ export const setDraft = (draftKey: string | null, data: DraftData): void => {
 		channelId: channelId ?? undefined,
 	};
 
-	if (isEmptyObject(draftData)) return deleteDraft(draftKey);
+	if (isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId'])) return deleteDraft(draftKey);
 
 	saveLsDrafts({
 		...drafts,
@@ -198,7 +200,7 @@ export const setMessageDraft = (draftKey: string | null, data: MessageDraftData)
 		file: file ?? undefined,
 	};
 
-	if (isEmptyObject(draftData)) return deleteMessageDraft(draftKey);
+	if (isEmptyObject(draftData, [])) return deleteMessageDraft(draftKey);
 
 	saveLsMessageDrafts({
 		...drafts,
