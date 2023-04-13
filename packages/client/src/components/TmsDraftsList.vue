@@ -37,13 +37,7 @@ const emit = defineEmits<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let draftsList: DraftWithId[] = $ref([]);
-
-const init = (): void => {
-	draftsList = getAllDraft();
-};
-
-init();
+const draftsList = $ref<DraftWithId[]>(getAllDraft());
 
 const chosen = (draftId: DraftWithId['id']): void => {
 	const draft = draftsList.find(d => d.id === draftId);
@@ -53,7 +47,8 @@ const chosen = (draftId: DraftWithId['id']): void => {
 
 const deleted = (draftId: DraftWithId['id']): void => {
 	deleteDraft(draftId);
-	init();
+	const index = draftsList.findIndex(({ id }) => draftId === id);
+	if (index !== -1) draftsList.splice(index, 1);
 };
 </script>
 
