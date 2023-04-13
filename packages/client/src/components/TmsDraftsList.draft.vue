@@ -2,7 +2,15 @@
 <div :class="$style.root" @click="draftMenu">
 	<div :class="[$style.text, { [$style.textEmpty]: !text }]">{{ text || 'Empty' }}</div>
 	<div :class="$style.files">
-		<ImgWithBlurhash v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in props.draft.data.files" :key="fileId" :src="src" :hash="hash" :alt="comment || name" :title="comment || name"/>
+		<ImgWithBlurhash
+			v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in props.draft.data.files"
+			:key="fileId"
+			:src="src"
+			:hash="hash"
+			:alt="comment || name"
+			:title="comment || name"
+			:class="$style.file"
+		/>
 	</div>
 </div>
 </template>
@@ -89,5 +97,10 @@ const draftMenu = (ev: MouseEvent): void => {
 .files {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+	gap: 4px;
+}
+
+.file {
+	aspect-ratio: 1 / 1;
 }
 </style>
