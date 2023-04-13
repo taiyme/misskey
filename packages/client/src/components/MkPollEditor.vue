@@ -5,8 +5,7 @@
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :model-value="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:model-value="onInput(i, $event)">
-			</MkInput>
+			<MkInput class="input" small :model-value="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:model-value="onInput(i, $event as string)"/>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
 			</button>
@@ -57,21 +56,19 @@ import { formatDateTimeString } from '@/scripts/format-time-string';
 import { addTime } from '@/scripts/time';
 import { i18n } from '@/i18n';
 
+export type EditedPoll = {
+	choices: string[];
+	multiple: boolean;
+	expiresAt: number | null;
+	expiredAfter: number | null;
+};
+
 const props = defineProps<{
-	modelValue: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	};
+	modelValue: EditedPoll;
 }>();
+
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	}): void;
+	(ev: 'update:modelValue', v: EditedPoll): void;
 }>();
 
 const choices = ref(props.modelValue.choices);
@@ -80,14 +77,27 @@ const expiration = ref('infinite');
 const atDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const atTime = ref('00:00');
 const after = ref(0);
-const unit = ref('second');
+const unit = ref<'day' | 'hour' | 'minute' | 'second'>('second');
 
 if (props.modelValue.expiresAt) {
 	expiration.value = 'at';
-	atDate.value = atTime.value = props.modelValue.expiresAt;
+	atDate.value = formatDateTimeString(new Date(props.modelValue.expiresAt), 'yyyy-MM-dd');
+	atTime.value = formatDateTimeString(new Date(props.modelValue.expiresAt), 'HH:mm');
 } else if (typeof props.modelValue.expiredAfter === 'number') {
 	expiration.value = 'after';
-	after.value = props.modelValue.expiredAfter / 1000;
+	if (props.modelValue.expiredAfter % 86400000 === 0) {
+		unit.value = 'day';
+		after.value = props.modelValue.expiredAfter / 86400000;
+	} else if (props.modelValue.expiredAfter % 3600000 === 0) {
+		unit.value = 'hour';
+		after.value = props.modelValue.expiredAfter / 3600000;
+	} else if (props.modelValue.expiredAfter % 60000 === 0) {
+		unit.value = 'minute';
+		after.value = props.modelValue.expiredAfter / 60000;
+	} else {
+		unit.value = 'second';
+		after.value = props.modelValue.expiredAfter / 1000;
+	}
 } else {
 	expiration.value = 'infinite';
 }
@@ -98,31 +108,25 @@ const onInput = (i: number, value: string): void => {
 
 const add = (): void => {
 	choices.value.push('');
-	// TODO
-	// nextTick(() => {
-	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
-	// });
 };
 
 const remove = (i: number): void => {
 	choices.value = choices.value.filter((_, _i) => _i !== i);
 };
 
-const get = (): unknown => {
-	const calcAt = (): unknown => {
-		return new Date(`${atDate.value} ${atTime.value}`).getTime();
+const get = (): EditedPoll => {
+	const calcAt = (): number | null => {
+		const unixtime = new Date(`${atDate.value} ${atTime.value}`).getTime();
+		if (Number.isNaN(unixtime)) return null;
+		return unixtime;
 	};
 
-	const calcAfter = (): unknown => {
-		let base = parseInt(after.value);
+	const calcAfter = (): number | null => {
 		switch (unit.value) {
-			case 'day': base *= 24;
-				// fallthrough
-			case 'hour': base *= 60;
-				// fallthrough
-			case 'minute': base *= 60;
-				// fallthrough
-			case 'second': return base *= 1000;
+			case 'day': return after.value * 86400000;
+			case 'hour': return after.value * 3600000;
+			case 'minute': return after.value * 60000;
+			case 'second': return after.value * 1000;
 			default: return null;
 		}
 	};
@@ -130,10 +134,8 @@ const get = (): unknown => {
 	return {
 		choices: choices.value,
 		multiple: multiple.value,
-		...(
-			expiration.value === 'at' ? { expiresAt: calcAt() } :
-			expiration.value === 'after' ? { expiredAfter: calcAfter() } : {}
-		),
+		expiresAt: expiration.value === 'at' ? calcAt() : null,
+		expiredAfter: expiration.value === 'after' ? calcAfter() : null,
 	};
 };
 

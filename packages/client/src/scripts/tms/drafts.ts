@@ -1,6 +1,7 @@
 import * as Misskey from 'misskey-js';
 import { defaultStore } from '@/store';
 import { parseObject } from '@/scripts/tms/parse';
+import { EditedPoll } from '@/components/MkPollEditor.vue';
 
 const LS_DRAFTS_KEY = 'tmsDrafts';
 const LS_MESSAGE_DRAFTS_KEY = 'tmsMessageDrafts';
@@ -12,12 +13,7 @@ type DraftData = {
 	visibility: Misskey.entities.Note['visibility'];
 	localOnly: boolean;
 	files: Misskey.entities.DriveFile[];
-	poll: {
-		choices: string[];
-		multiple: boolean;
-		expiresAt: string | null;
-		expiredAfter: string | null;
-	} | null;
+	poll: EditedPoll | null;
 	replyId: string | null;
 	renoteId: string | null;
 	channelId: string | null;
