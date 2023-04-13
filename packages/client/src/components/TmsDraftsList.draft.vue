@@ -12,6 +12,10 @@
 			:class="$style.file"
 		/>
 	</div>
+	<div :class="$style.labels">
+		<span v-if="props.draft.data.renoteId" :class="$style.label">{{ i18n.ts.quote }}</span>
+		<span v-if="props.draft.data.poll" :class="$style.label">{{ i18n.ts.poll }}</span>
+	</div>
 </div>
 </template>
 
@@ -19,6 +23,7 @@
 import { } from 'vue';
 import * as os from '@/os';
 import { DraftWithId } from '@/scripts/tms/drafts';
+import { i18n } from '@/i18n';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
@@ -57,28 +62,15 @@ const draftMenu = (ev: MouseEvent): void => {
 
 <style lang="scss" module>
 .root {
+	display: grid;
+	grid-auto-flow: row;
+	gap: 4px;
 	padding: 16px;
 	background: var(--panel);
 	color: var(--fg);
 	border: solid 1px var(--divider);
 	border-radius: 8px;
 	user-select: none;
-	margin-bottom: var(--margin);
-}
-
-.labels {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	font-size: 0.9em;
-	margin-bottom: 4px;
-}
-
-.label {
-	border: solid 1px var(--divider);
-	border-radius: 999px;
-	margin-right: 4px;
-	padding: 3px 8px;
 }
 
 .text {
@@ -102,5 +94,18 @@ const draftMenu = (ev: MouseEvent): void => {
 
 .file {
 	aspect-ratio: 1 / 1;
+}
+
+.labels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	font-size: 0.9em;
+}
+
+.label {
+	border: solid 1px var(--divider);
+	border-radius: 999px;
+	padding: 3px 8px;
 }
 </style>

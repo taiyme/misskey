@@ -15,7 +15,7 @@
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
-			<div v-else>
+			<div v-else :class="$style.drastsList">
 				<TmsDraft v-for="draftItem in draftsList" :key="draftItem.id" :draft="draftItem" @chosen="chosen" @deleted="deleted"/>
 			</div>
 		</div>
@@ -58,4 +58,9 @@ const deleted = (draftId: DraftWithId['id']): void => {
 </script>
 
 <style lang="scss" module>
+.draftsList {
+	display: grid;
+	grid-auto-flow: row;
+	gap: var(--margin);
+}
 </style>
