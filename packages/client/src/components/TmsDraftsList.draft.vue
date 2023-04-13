@@ -1,12 +1,9 @@
 <template>
 <div :class="$style.root" @click="draftMenu">
-	<div :class="$style.labels">
-		<span v-if="props.draft.data.visibility !== 'public'" :class="$style.label">{{ i18n.ts._visibility[props.draft.data.visibility] }}</span>
-		<span v-if="props.draft.data.localOnly" :class="$style.label">{{ i18n.ts._visibility.disableFederation }}</span>
-		<span v-if="props.draft.data.replyId" :class="$style.label">{{ i18n.ts.reply }}</span>
-		<span v-if="props.draft.data.renoteId" :class="$style.label">{{ i18n.ts.quote }}</span>
-	</div>
 	<div :class="[$style.text, { [$style.textEmpty]: !text }]">{{ text || 'Empty' }}</div>
+	<div :class="$style.files">
+		<ImgWithBlurhash v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in props.draft.data.files" :key="fileId" :src="src" :hash="hash" :alt="comment || name" :title="comment || name"/>
+	</div>
 </div>
 </template>
 
@@ -14,7 +11,7 @@
 import { } from 'vue';
 import * as os from '@/os';
 import { DraftWithId } from '@/scripts/tms/drafts';
-import { i18n } from '@/i18n';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
 	draft: DraftWithId;
@@ -87,5 +84,10 @@ const draftMenu = (ev: MouseEvent): void => {
 
 .textEmpty {
 	opacity: 0.5;
+}
+
+.files {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
 }
 </style>
