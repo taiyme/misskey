@@ -64,7 +64,7 @@ const draftMenu = (ev: MouseEvent): void => {
 .root {
 	display: grid;
 	grid-auto-flow: row;
-	gap: 4px;
+	gap: 6px;
 	padding: 16px;
 	background: var(--panel);
 	color: var(--fg);
