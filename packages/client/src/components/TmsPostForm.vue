@@ -598,7 +598,7 @@ watch($$(draftId), () => {
 	channelId = draft?.data.channelId ?? null;
 
 	draftWatching = true;
-}, { immediate: true });
+});
 
 // ハッシュタグ
 const withHashtags = $computed<boolean>(defaultStore.makeGetterSetter('postFormWithHashtags'));
@@ -970,25 +970,32 @@ onMounted(() => {
 		}
 
 		if (props.initialNote) {
-			draftId = `edit:${Date.now()}`;
-			const init = props.initialNote;
-			text = init.text ?? '';
-			files = init.files;
-			useCw = init.cw != null;
-			cw = init.cw ?? '';
-			if (init.poll) {
-				poll = {
+			const init = props.initialNote as Misskey.entities.Note & {
+				channel?: Misskey.entities.Channel;
+			};
+			const _draftId = `edit:${Date.now()}`;
+			Draft.setDraft(_draftId, {
+				text: init.text ?? '',
+				useCw: init.cw != null,
+				cw: init.cw ?? '',
+				visibility: init.visibility,
+				localOnly: !!init.localOnly,
+				files: init.files,
+				poll: init.poll ? {
 					choices: init.poll.choices.map(x => x.text),
 					multiple: init.poll.multiple,
 					expiresAt: init.poll.expiresAt ? new Date(init.poll.expiresAt).getTime() : null,
 					expiredAfter: null,
-				};
-			}
-			visibility = init.visibility;
-			localOnly = !!init.localOnly;
-			renoteId = init.renote?.id ?? null;
+				} : null,
+				replyId: init.reply?.id ?? null,
+				renoteId: init.renote?.id ?? null,
+				channelId: init.channel?.id ?? null,
+			});
 			defaultStore.set('postFormWithHashtags', false);
+			draftId = _draftId;
 		}
+
+		draftWatching = true;
 	});
 });
 </script>
