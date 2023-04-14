@@ -492,7 +492,7 @@ watch($$(replyId), async () => {
 		.catch(updateReply);
 
 	popFetchList();
-}, { immediate: true });
+});
 
 // Renote, 引用
 let renoteId = $ref<string | null>(null);
