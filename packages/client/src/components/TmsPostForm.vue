@@ -582,7 +582,8 @@ watch([
 	if (!draftWatching) return;
 	saveDraft();
 }, { deep: true });
-watch($$(draftId), () => {
+
+const loadDraft = (): void => {
 	draftWatching = false;
 
 	draft = Draft.getDraft(draftId ?? autosaveDraftId);
@@ -598,6 +599,9 @@ watch($$(draftId), () => {
 	channelId = draft?.data.channelId ?? null;
 
 	draftWatching = true;
+};
+watch($$(draftId), () => {
+	loadDraft();
 });
 
 // ハッシュタグ
@@ -993,6 +997,8 @@ onMounted(() => {
 			});
 			defaultStore.set('postFormWithHashtags', false);
 			draftId = _draftId;
+		} else {
+			loadDraft();
 		}
 
 		draftWatching = true;
