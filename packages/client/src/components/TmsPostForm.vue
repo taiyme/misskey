@@ -306,7 +306,7 @@ const addMissingMention = (): void => {
 
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.some(u => (u.username === x.username) && (u.host === x.host))) {
-			os.api('users/show', { username: x.username, host: x.host ?? undefined }).then(user => {
+			os.api('users/show', { username: x.username, host: x.host ?? undefined }, token).then(user => {
 				visibleUsers.push(user);
 			});
 		}
@@ -345,7 +345,31 @@ watch($$(postAccount), async () => {
 		id: string;
 		token: string;
 	}[];
-	token = storedAccounts.find(x => x.id === postAccount?.id)?.token ?? null;
+	const newToken = storedAccounts.find(x => x.id === postAccount?.id)?.token ?? null;
+
+	if (token !== newToken) {
+		token = newToken;
+
+		const { popFetchList } = pushFetchList();
+
+		if (reply) {
+			await os.apiWithDialog('notes/show', { noteId: reply.id }, token)
+				.then(updateReply)
+				.catch(updateReply);
+		}
+		if (renote) {
+			await os.apiWithDialog('notes/show', { noteId: renote.id }, token)
+				.then(updateRenote)
+				.catch(updateRenote);
+		}
+		if (channel) {
+			await os.apiWithDialog('channels/show', { channelId: channel.id }, token)
+				.then(updateChannel)
+				.catch(updateChannel);
+		}
+
+		popFetchList();
+	}
 });
 const openAccountMenu = (ev: MouseEvent): void => {
 	openAccountMenu_({
@@ -395,7 +419,7 @@ const mergeVisibility = async (note: Misskey.entities.Note): Promise<void> => {
 
 			await os.api('users/show', {
 				userIds: visibleUserIds,
-			}).then(users => {
+			}, token).then(users => {
 				users.forEach(pushVisibleUser);
 			});
 
@@ -453,12 +477,12 @@ const updateReply = (_reply: Misskey.entities.Note | null): void => {
 
 	text = `${mentionText}${text}`;
 };
-watch([$$(replyId), $$(token)], async ([, newToken]) => {
+watch($$(replyId), async () => {
 	if (!replyId) {
 		updateReply(null);
 		return;
 	}
-	if (replyId === reply?.id && token === newToken) return;
+	if (replyId === reply?.id) return;
 
 	const { popFetchList } = pushFetchList();
 
@@ -476,12 +500,12 @@ const updateRenote = (_renote: Misskey.entities.Note | null): void => {
 	renote = _renote;
 	if (!renote) return;
 };
-watch([$$(renoteId), $$(token)], async ([, newToken]) => {
+watch($$(renoteId), async () => {
 	if (!renoteId) {
 		updateRenote(null);
 		return;
 	}
-	if (renoteId === renote?.id && token === newToken) return;
+	if (renoteId === renote?.id) return;
 
 	const { popFetchList } = pushFetchList();
 
@@ -502,12 +526,12 @@ const updateChannel = (_channel: unknown | Misskey.entities.Channel | null): voi
 	visibility = 'public';
 	localOnly = true;
 };
-watch([$$(channelId), $$(token)], async ([, newToken]) => {
+watch($$(channelId), async () => {
 	if (!channelId) {
 		updateChannel(null);
 		return;
 	}
-	if (channelId === channel?.id && token === newToken) return;
+	if (channelId === channel?.id) return;
 
 	const { popFetchList } = pushFetchList();
 
@@ -531,9 +555,9 @@ const saveDraft = (): void => {
 		localOnly,
 		files,
 		poll,
-		replyId,
-		renoteId,
-		channelId,
+		replyId: reply?.id ?? null,
+		renoteId: renote?.id ?? null,
+		channelId: channel?.id ?? null,
 	});
 };
 const deleteDraft = (): void => {
