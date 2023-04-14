@@ -495,7 +495,7 @@ watch([$$(channelId), $$(token)], async ([, newToken]) => {
 
 	const { popFetchList } = pushFetchList();
 
-	await os.apiWithDialog('channels/show', { noteId: channelId }, token)
+	await os.apiWithDialog('channels/show', { channelId: channelId }, token)
 		.then(_channel => {
 			channel = (_channel as Misskey.entities.Channel);
 			visibility = 'public';
@@ -942,14 +942,17 @@ onMounted(() => {
 		}
 
 		if (props.reply) {
+			reply = props.reply;
 			replyId = props.reply.id;
 		}
 
 		if (props.renote) {
+			renote = props.renote;
 			renoteId = props.renote.id;
 		}
 
 		if (props.channel) {
+			channel = props.channel;
 			channelId = props.channel.id;
 		}
 
