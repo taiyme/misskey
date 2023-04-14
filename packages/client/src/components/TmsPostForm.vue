@@ -2,7 +2,8 @@
 <div
 	ref="rootEl"
 	v-size="{ max: [310, 500] }"
-	:class="[$style.root, { [$style.modal]: modal, _popup: modal, '--tmsPostForm-counterWidth': `${textCountElWidth}px` }]"
+	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
+	:style="{ '--tmsPostForm-counterWidth': `${textCountElWidth}px` }"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -355,8 +356,8 @@ watch($$(postAccount), async () => {
 		id: string;
 		token: string;
 	}[];
-	token = storedAccounts.find(x => x.id === postAccount?.id)?.token ?? null;
-});
+	token = storedAccounts.find(x => x.id === (postAccount?.id ?? $i?.id))?.token ?? null;
+}, { immediate: true });
 const openAccountMenu = (ev: MouseEvent): void => {
 	openAccountMenu_({
 		withExtraOperation: false,
@@ -1108,6 +1109,10 @@ onMounted(() => {
 	flex-direction: column;
 	gap: 8px;
 	padding: 0 20px 16px 20px;
+
+	&:empty {
+		display: none;
+	}
 }
 
 .input {
@@ -1204,12 +1209,12 @@ onMounted(() => {
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 46px;
 	padding: 0 16px 16px 16px;
 	font-size: 1em;
 }
 
 .footerButton {
+	aspect-ratio: 1 / 1;
 	border-radius: 6px;
 
 	&:not(:disabled):hover,
