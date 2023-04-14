@@ -76,7 +76,7 @@
 			<div v-if="renote" :class="$style.quoteNote">
 				<div :class="$style.quoteNoteInner">
 					<MkNoteSimple :note="renote"/>
-					<button v-if="!props.renote" :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
+					<button v-if="!props.renote || !!draftId?.split('/').some(x => x.startsWith('rn:'))" :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
 				</div>
 			</div>
 			<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
