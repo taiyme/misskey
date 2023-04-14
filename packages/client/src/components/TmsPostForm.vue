@@ -383,6 +383,8 @@ const mergeVisibility = async (note: Misskey.entities.Note): Promise<void> => {
 	}
 
 	if (visibility === 'specified') {
+		localOnly = false;
+
 		const visibleUserIds = note.visibleUserIds?.filter(uid => uid !== $i?.id && uid !== note.userId) ?? [];
 		if (note.userId !== $i?.id) visibleUserIds.push(note.userId);
 
@@ -407,9 +409,53 @@ const mergeVisibility = async (note: Misskey.entities.Note): Promise<void> => {
 // 返信
 let replyId = $ref<string | null>(null);
 let reply = $ref<Misskey.entities.Note | null>(null);
+const updateReply = (_reply: Misskey.entities.Note | null): void => {
+	reply = _reply;
+	if (!reply) return;
+
+	mergeVisibility(reply);
+
+	// keep cw
+	if (defaultStore.state.keepCw && reply.cw) {
+		useCw = true;
+		cw = reply.cw;
+	}
+
+	let mentionText = '';
+	const addMention = ({ username, host: _host }: {
+		username: string;
+		host: string | null;
+	}): void => {
+		if ($i?.username === username && (_host == null || _host === host)) return;
+
+		const mention = `@${username}${(_host != null && _host !== host) ? `@${toASCII(_host)}` : ''}`;
+
+		if (`${mentionText}${text}`.includes(`${mention} `)) return;
+
+		mentionText += `${mention} `;
+	};
+
+	addMention({
+		username: reply.user.username,
+		host: reply.user.host,
+	});
+
+	if (reply.text != null) {
+		const ast = mfm.parse(reply.text);
+
+		for (const x of extractMentions(ast)) {
+			addMention({
+				username: x.username,
+				host: x.host,
+			});
+		}
+	}
+
+	text = `${mentionText}${text}`;
+};
 watch([$$(replyId), $$(token)], async ([, newToken]) => {
 	if (!replyId) {
-		reply = null;
+		updateReply(null);
 		return;
 	}
 	if (replyId === reply?.id && token === newToken) return;
@@ -417,49 +463,8 @@ watch([$$(replyId), $$(token)], async ([, newToken]) => {
 	const { popFetchList } = pushFetchList();
 
 	await os.apiWithDialog('notes/show', { noteId: replyId }, token)
-		.then(_reply => {
-			reply = _reply;
-			mergeVisibility(reply);
-
-			// keep cw
-			if (defaultStore.state.keepCw && reply.cw) {
-				useCw = true;
-				cw = reply.cw;
-			}
-
-			let mentionText = '';
-			const addMention = ({ username, host: _host }: {
-				username: string;
-				host: string | null;
-			}): void => {
-				if ($i?.username === username && (_host == null || _host === host)) return;
-
-				const mention = `@${username}${(_host != null && _host !== host) ? `@${toASCII(_host)}` : ''}`;
-
-				if (`${mentionText}${text}`.includes(`${mention} `)) return;
-
-				mentionText += `${mention} `;
-			};
-
-			addMention({
-				username: reply.user.username,
-				host: reply.user.host,
-			});
-
-			if (reply.text != null) {
-				const ast = mfm.parse(reply.text);
-
-				for (const x of extractMentions(ast)) {
-					addMention({
-						username: x.username,
-						host: x.host,
-					});
-				}
-			}
-
-			text = `${mentionText}${text}`;
-		})
-		.catch(() => reply = null);
+		.then(updateReply)
+		.catch(updateReply);
 
 	popFetchList();
 }, { immediate: true });
@@ -467,9 +472,13 @@ watch([$$(replyId), $$(token)], async ([, newToken]) => {
 // Renote, 引用
 let renoteId = $ref<string | null>(null);
 let renote = $ref<Misskey.entities.Note | null>(null);
+const updateRenote = (_renote: Misskey.entities.Note | null): void => {
+	renote = _renote;
+	if (!renote) return;
+};
 watch([$$(renoteId), $$(token)], async ([, newToken]) => {
 	if (!renoteId) {
-		renote = null;
+		updateRenote(null);
 		return;
 	}
 	if (renoteId === renote?.id && token === newToken) return;
@@ -477,8 +486,8 @@ watch([$$(renoteId), $$(token)], async ([, newToken]) => {
 	const { popFetchList } = pushFetchList();
 
 	await os.apiWithDialog('notes/show', { noteId: renoteId }, token)
-		.then(_renote => renote = _renote)
-		.catch(() => renote = null);
+		.then(updateRenote)
+		.catch(updateRenote);
 
 	popFetchList();
 });
@@ -486,9 +495,16 @@ watch([$$(renoteId), $$(token)], async ([, newToken]) => {
 // チャンネル
 let channelId = $ref<string | null>(null);
 let channel = $ref<Misskey.entities.Channel | null>(null);
+const updateChannel = (_channel: unknown | Misskey.entities.Channel | null): void => {
+	channel = (_channel as Misskey.entities.Channel | null);
+	if (!channel) return;
+
+	visibility = 'public';
+	localOnly = true;
+};
 watch([$$(channelId), $$(token)], async ([, newToken]) => {
 	if (!channelId) {
-		channel = null;
+		updateChannel(null);
 		return;
 	}
 	if (channelId === channel?.id && token === newToken) return;
@@ -496,12 +512,8 @@ watch([$$(channelId), $$(token)], async ([, newToken]) => {
 	const { popFetchList } = pushFetchList();
 
 	await os.apiWithDialog('channels/show', { channelId: channelId }, token)
-		.then(_channel => {
-			channel = (_channel as Misskey.entities.Channel);
-			visibility = 'public';
-			localOnly = true;
-		})
-		.catch(() => channel = null);
+		.then(updateChannel)
+		.catch(updateChannel);
 	
 	popFetchList();
 });
@@ -932,6 +944,7 @@ onMounted(() => {
 
 		if (props.specified) {
 			visibility = 'specified';
+			localOnly = false;
 			pushVisibleUser(props.specified);
 		}
 
@@ -942,17 +955,17 @@ onMounted(() => {
 		}
 
 		if (props.reply) {
-			reply = props.reply;
+			updateReply(props.reply);
 			replyId = props.reply.id;
 		}
 
 		if (props.renote) {
-			renote = props.renote;
+			updateRenote(props.renote);
 			renoteId = props.renote.id;
 		}
 
 		if (props.channel) {
-			channel = props.channel;
+			updateChannel(props.channel);
 			channelId = props.channel.id;
 		}
 
@@ -1030,6 +1043,7 @@ onMounted(() => {
 	grid-auto-columns: max-content;
 	align-items: center;
 	gap: 4px;
+	font-size: 0.9em;
 }
 
 .headerRightItem {
@@ -1253,10 +1267,6 @@ onMounted(() => {
 }
 
 :global(.max-width_500px) {
-	.headerRight {
-		font-size: 0.9em;
-	}
-
 	.headerRightButtonText {
 		display: none;
 	}
