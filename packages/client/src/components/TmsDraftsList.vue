@@ -15,7 +15,7 @@
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
-			<div v-else :class="$style.drastsList">
+			<div v-else :class="$style.draftsList">
 				<TmsDraft v-for="draftItem in draftsList" :key="draftItem.id" :draft="draftItem" @chosen="chosen" @deleted="deleted"/>
 			</div>
 		</div>

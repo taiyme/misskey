@@ -64,7 +64,8 @@ const saveLsDrafts = (drafts: Record<string, LsDraft | undefined>): void => loca
 
 const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId } = lsDraft;
-	return {
+
+	const draftData: DraftData = {
 		text: text ?? '',
 		useCw: useCw ?? false,
 		cw: cw ?? '',
@@ -76,10 +77,17 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 		renoteId: renoteId ?? null,
 		channelId: channelId ?? null,
 	};
+
+	if (draftData.channelId) {
+		draftData.localOnly = true;
+	}
+
+	return draftData;
 };
 
 export const getAllDraft = (): DraftWithId[] => {
 	const drafts = loadLsDrafts();
+
 	return Object.entries(drafts).flatMap(([id, draft]) => {
 		if (!draft) return [];
 		const { updatedAt, data } = draft;
@@ -125,6 +133,10 @@ export const setDraft = (draftKey: string | null, data: DraftData): void => {
 		channelId: channelId ?? undefined,
 	};
 
+	if (draftData.channelId) {
+		draftData.localOnly = undefined;
+	}
+
 	if (isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId'])) return deleteDraft(draftKey);
 
 	saveLsDrafts({
@@ -151,14 +163,18 @@ const saveLsMessageDrafts = (drafts: Record<string, LsMessageDraft | undefined>)
 
 const restoreMessageDraftData = (lsDraft: Partial<MessageDraftData>): MessageDraftData => {
 	const { text, file } = lsDraft;
-	return {
+
+	const draftData: MessageDraftData = {
 		text: text ?? '',
 		file: file ?? null,
 	};
+
+	return draftData;
 };
 
 export const getAllMessageDraft = (): MessageDraftWithId[] => {
 	const drafts = loadLsMessageDrafts();
+
 	return Object.entries(drafts).flatMap(([id, draft]) => {
 		if (!draft) return [];
 		const { updatedAt, data } = draft;
