@@ -76,7 +76,7 @@
 			<div v-if="renote" :class="$style.quoteNote">
 				<div :class="$style.quoteNoteInner">
 					<MkNoteSimple :note="renote"/>
-					<button :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
+					<button v-if="!props.renote" :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
 				</div>
 			</div>
 			<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
@@ -435,6 +435,7 @@ let replyId = $ref<string | null>(null);
 let reply = $ref<Misskey.entities.Note | null>(null);
 const updateReply = (_reply: Misskey.entities.Note | null): void => {
 	reply = _reply;
+	replyId = reply?.id ?? null;
 	if (!reply) return;
 
 	mergeVisibility(reply);
@@ -479,7 +480,7 @@ const updateReply = (_reply: Misskey.entities.Note | null): void => {
 };
 watch($$(replyId), async () => {
 	if (!replyId) {
-		updateReply(null);
+		reply = null;
 		return;
 	}
 	if (replyId === reply?.id) return;
@@ -498,11 +499,12 @@ let renoteId = $ref<string | null>(null);
 let renote = $ref<Misskey.entities.Note | null>(null);
 const updateRenote = (_renote: Misskey.entities.Note | null): void => {
 	renote = _renote;
+	renoteId = renote?.id ?? null;
 	if (!renote) return;
 };
 watch($$(renoteId), async () => {
 	if (!renoteId) {
-		updateRenote(null);
+		renote = null;
 		return;
 	}
 	if (renoteId === renote?.id) return;
@@ -521,6 +523,7 @@ let channelId = $ref<string | null>(null);
 let channel = $ref<Misskey.entities.Channel | null>(null);
 const updateChannel = (_channel: unknown | Misskey.entities.Channel | null): void => {
 	channel = (_channel as Misskey.entities.Channel | null);
+	channelId = channel?.id ?? null;
 	if (!channel) return;
 
 	visibility = 'public';
@@ -528,7 +531,7 @@ const updateChannel = (_channel: unknown | Misskey.entities.Channel | null): voi
 };
 watch($$(channelId), async () => {
 	if (!channelId) {
-		updateChannel(null);
+		channel = null;
 		return;
 	}
 	if (channelId === channel?.id) return;
@@ -955,17 +958,14 @@ onMounted(() => {
 
 		if (props.reply) {
 			updateReply(props.reply);
-			replyId = props.reply.id;
 		}
 
 		if (props.renote) {
 			updateRenote(props.renote);
-			renoteId = props.renote.id;
 		}
 
 		if (props.channel) {
 			updateChannel(props.channel);
-			channelId = props.channel.id;
 		}
 
 		if (props.initialNote) {
