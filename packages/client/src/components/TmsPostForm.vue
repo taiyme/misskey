@@ -356,8 +356,8 @@ watch($$(postAccount), async () => {
 		id: string;
 		token: string;
 	}[];
-	token = storedAccounts.find(x => x.id === (postAccount?.id ?? $i?.id))?.token ?? null;
-}, { immediate: true });
+	token = storedAccounts.find(x => x.id === postAccount?.id)?.token ?? null;
+});
 const openAccountMenu = (ev: MouseEvent): void => {
 	openAccountMenu_({
 		withExtraOperation: false,

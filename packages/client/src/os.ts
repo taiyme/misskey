@@ -26,7 +26,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
 		if ($i) data.i = $i.token;
-		if (token !== undefined) data.i = token;
+		if (token != null) data.i = token;
 
 		// Send request
 		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
