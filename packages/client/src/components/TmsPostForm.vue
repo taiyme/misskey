@@ -69,18 +69,20 @@
 		<MkInfo v-if="hasNotSpecifiedMentions" warn>{{ i18n.ts.notSpecifiedMentionWarning }}<span style="margin: 0 4px; user-select: none;">-</span><button class="_textButton" @click="addMissingMention">{{ i18n.ts.add }}</button></MkInfo>
 		<MkInfo v-if="hasAnnoyingText" warn>{{ i18n.ts.thisPostMayBeAnnoying }}</MkInfo>
 	</div>
-	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="[$style.input, $style.cw]" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-	<div :class="$style.textOuter">
-		<textarea ref="textareaEl" v-model="text" :class="[$style.input, $style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
-		<div v-if="renote" :class="$style.quoteNote">
-			<div :class="$style.quoteNoteInner">
-				<MkNoteSimple :note="renote"/>
-				<button :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
+	<div :class="$style.forms">
+		<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="[$style.input, $style.cw]" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
+		<div :class="$style.textOuter">
+			<textarea ref="textareaEl" v-model="text" :class="[$style.input, $style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"></textarea>
+			<div v-if="renote" :class="$style.quoteNote">
+				<div :class="$style.quoteNoteInner">
+					<MkNoteSimple :note="renote"/>
+					<button :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
+				</div>
 			</div>
+			<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 		</div>
-		<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
+		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="[$style.input, $style.hashtags]" :placeholder="i18n.ts.hashtags" list="hashtags">
 	</div>
-	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="[$style.input, $style.hashtags]" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<MkPostFormAttaches :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
@@ -206,9 +208,10 @@ onMounted(() => {
 	}
 	if (textCountEl) {
 		textCountElResizeObserver = new ResizeObserver(entries => {
-			entries.forEach(({ contentBoxSize }) => {
-				contentBoxSize.forEach(({ inlineSize }) => {
-					textCountElWidth = Math.ceil(inlineSize);
+			entries.forEach(({ borderBoxSize }) => {
+				borderBoxSize.forEach(({ inlineSize }) => {
+					const width = Math.ceil(inlineSize);
+					textCountElWidth = width + (width % 2);
 				});
 			});
 		});
@@ -282,20 +285,6 @@ const addVisibleUser = (): void => {
 const removeVisibleUser = (user: Misskey.entities.User): void => {
 	visibleUsers = erase(user, visibleUsers);
 };
-
-if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(user => pushVisibleUser(user));
-}
-
-if (props.specified) {
-	visibility = 'specified';
-	pushVisibleUser(props.specified);
-}
-
-if (props.mention) {
-	const mention = `@${props.mention.username}${(props.mention.host != null && props.mention.host !== host) ? `@${toASCII(props.mention.host)}` : ''}`;
-	text = `${mention} ${text}`;
-}
 
 // 宛先
 let hasNotSpecifiedMentions = $ref(false);
@@ -416,7 +405,7 @@ const mergeVisibility = async (note: Misskey.entities.Note): Promise<void> => {
 };
 
 // 返信
-let replyId = $ref(props.reply?.id ?? null);
+let replyId = $ref<string | null>(null);
 let reply = $ref<Misskey.entities.Note | null>(null);
 watch([$$(replyId), $$(token)], async ([, newToken]) => {
 	if (!replyId) {
@@ -476,7 +465,7 @@ watch([$$(replyId), $$(token)], async ([, newToken]) => {
 }, { immediate: true });
 
 // Renote, 引用
-let renoteId = $ref(props.renote?.id ?? null);
+let renoteId = $ref<string | null>(null);
 let renote = $ref<Misskey.entities.Note | null>(null);
 watch([$$(renoteId), $$(token)], async ([, newToken]) => {
 	if (!renoteId) {
@@ -492,10 +481,10 @@ watch([$$(renoteId), $$(token)], async ([, newToken]) => {
 		.catch(() => renote = null);
 
 	popFetchList();
-}, { immediate: true });
+});
 
 // チャンネル
-let channelId = $ref(props.channel?.id ?? null);
+let channelId = $ref<string | null>(null);
 let channel = $ref<Misskey.entities.Channel | null>(null);
 watch([$$(channelId), $$(token)], async ([, newToken]) => {
 	if (!channelId) {
@@ -515,7 +504,7 @@ watch([$$(channelId), $$(token)], async ([, newToken]) => {
 		.catch(() => channel = null);
 	
 	popFetchList();
-}, { immediate: true });
+});
 
 // 下書き
 let draftWatching = $ref(false);
@@ -543,14 +532,14 @@ const autosaveDraftId = $computed((): string | null => {
 
 	let key = '';
 
-	if (channelId) {
-		key += `ch:${channelId}/`;
+	if (channel) {
+		key += `ch:${channel.id}/`;
 	}
 
-	if (renoteId) {
-		key += `rn:${renoteId}`;
-	} else if (replyId) {
-		key += `re:${replyId}`;
+	if (renote) {
+		key += `rn:${renote.id}`;
+	} else if (reply) {
+		key += `re:${reply.id}`;
 	} else {
 		key += `new:${$i.id}`;
 	}
@@ -574,9 +563,9 @@ watch([
 	$$(localOnly),
 	$$(files),
 	$$(poll),
-	$$(replyId),
-	$$(renoteId),
-	$$(channelId),
+	$$(reply),
+	$$(renote),
+	$$(channel),
 ], () => {
 	if (!draftWatching) return;
 	saveDraft();
@@ -737,7 +726,7 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	const paste = ev.clipboardData.getData('text');
 	const path = url + '/notes/';
 
-	if (!renote && !renoteId && paste.startsWith(path)) {
+	if (!renote && paste.startsWith(path)) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -881,9 +870,9 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 	let postData = {
 		text: text || undefined,
 		fileIds: files.length !== 0 ? files.map(({ id }) => id) : undefined,
-		replyId: replyId || undefined,
-		renoteId: renoteId || undefined,
-		channelId: channelId || undefined,
+		replyId: reply?.id || undefined,
+		renoteId: renote?.id || undefined,
+		channelId: channel?.id || undefined,
 		poll: poll,
 		cw: useCw ? cw || '' : undefined,
 		localOnly: localOnly,
@@ -937,7 +926,33 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 
 onMounted(() => {
 	nextTick(() => {
-		// 削除して編集
+		if (props.initialVisibleUsers) {
+			props.initialVisibleUsers.forEach(user => pushVisibleUser(user));
+		}
+
+		if (props.specified) {
+			visibility = 'specified';
+			pushVisibleUser(props.specified);
+		}
+
+		if (props.mention) {
+			const { username, host: _host } = props.mention;
+			const mention = `@${username}${(_host != null && _host !== host) ? `@${toASCII(_host)}` : ''}`;
+			text = `${mention} ${text}`;
+		}
+
+		if (props.reply) {
+			replyId = props.reply.id;
+		}
+
+		if (props.renote) {
+			renoteId = props.renote.id;
+		}
+
+		if (props.channel) {
+			channelId = props.channel.id;
+		}
+
 		if (props.initialNote) {
 			draftId = `edit:${Date.now()}`;
 			const init = props.initialNote;
@@ -1041,12 +1056,16 @@ onMounted(() => {
 	&.headerRightButtonActive {
 		color: var(--accent);
 	}
-}
 
-.headerRightButtonText {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+	> .headerRightButtonText {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&:enabled > .headerRightButtonText {
+		opacity: 0.8;
+	}
 }
 
 .submit {
@@ -1115,8 +1134,11 @@ onMounted(() => {
 	}
 }
 
-.input {
+.forms {
 	--tmsPostForm-inputPadding: 24px;
+}
+
+.input {
 	display: block;
 	box-sizing: border-box;
 	padding: 0 var(--tmsPostForm-inputPadding);
@@ -1160,7 +1182,7 @@ onMounted(() => {
 	width: 100%;
 	min-height: 90px;
 	height: 100%;
-	padding-right: calc(var(--tmsPostForm-inputPadding) + var(--tmsPostForm-counterWidth, 0px));
+	padding-right: max(var(--tmsPostForm-inputPadding), var(--tmsPostForm-counterWidth, 0px));
 
 	&.withCw {
 		padding-top: 8px;
@@ -1188,8 +1210,8 @@ onMounted(() => {
 .textCount {
 	position: absolute;
 	top: 0;
-	right: 2px;
-	padding: 4px 6px;
+	right: 0;
+	padding: 4px 8px;
 	font-size: 0.9em;
 	color: var(--fg);
 	min-width: 1.6em;
@@ -1252,7 +1274,7 @@ onMounted(() => {
 		padding: 0 14px 16px 14px;
 	}
 
-	.input {
+	.forms {
 		--tmsPostForm-inputPadding: 16px;
 	}
 
