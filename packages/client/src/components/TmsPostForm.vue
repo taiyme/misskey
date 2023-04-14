@@ -586,16 +586,20 @@ const loadDraft = (): void => {
 	draftWatching = false;
 
 	draft = Draft.getDraft(draftId);
-	text = draft?.data.text ?? '';
-	useCw = draft?.data.useCw ?? false;
-	cw = draft?.data.cw ?? '';
-	visibility = draft?.data.visibility ?? Draft.getVisibility();
-	localOnly = draft?.data.localOnly ?? Draft.getLocalOnly();
-	files = draft?.data.files ?? [];
-	poll = draft?.data.poll ?? null;
-	replyId = draft?.data.replyId ?? null;
-	renoteId = draft?.data.renoteId ?? null;
-	channelId = draft?.data.channelId ?? null;
+	if (draft) {
+		text = draft.data.text;
+		useCw = draft.data.useCw;
+		cw = draft.data.cw;
+		visibility = draft.data.visibility;
+		localOnly = draft.data.localOnly;
+		files = draft.data.files;
+		poll = draft.data.poll;
+		replyId = draft.data.replyId;
+		renoteId = draft.data.renoteId;
+		channelId = draft.data.channelId;
+	} else {
+		clear();
+	}
 
 	draftWatching = true;
 };
