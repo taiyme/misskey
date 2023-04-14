@@ -523,7 +523,7 @@ let draftWatching = $ref(false);
 let draftId = $ref<string | null>(null);
 let draft = $ref<Draft.Draft | null>(null);
 const saveDraft = (): void => {
-	Draft.setDraft(draftId ?? autosaveDraftId, {
+	Draft.setDraft(draftId, {
 		text,
 		useCw,
 		cw,
@@ -537,36 +537,8 @@ const saveDraft = (): void => {
 	});
 };
 const deleteDraft = (): void => {
-	Draft.deleteDraft(draftId ?? autosaveDraftId);
+	Draft.deleteDraft(draftId);
 };
-const autosaveDraftId = $computed((): string | null => {
-	if (!$i?.id) return null;
-
-	let key = '';
-
-	if (channel) {
-		key += `ch:${channel.id}/`;
-	}
-
-	if (renote) {
-		key += `rn:${renote.id}`;
-	} else if (reply) {
-		key += `re:${reply.id}`;
-	} else {
-		key += `new:${$i.id}`;
-	}
-
-	// rename
-	if (!draftId || draftId === key) {
-		const _draft = Draft.getDraft(key);
-		if (_draft) {
-			Draft.deleteDraft(key);
-			Draft.setDraft(key, _draft.data);
-		}
-	}
-
-	return key;
-});
 watch([
 	$$(text),
 	$$(useCw),
@@ -586,7 +558,7 @@ watch([
 const loadDraft = (): void => {
 	draftWatching = false;
 
-	draft = Draft.getDraft(draftId ?? autosaveDraftId);
+	draft = Draft.getDraft(draftId);
 	text = draft?.data.text ?? '';
 	useCw = draft?.data.useCw ?? false;
 	cw = draft?.data.cw ?? '';
@@ -794,9 +766,8 @@ const cancel = (): void => {
 };
 
 const chooseDraft = (): void => {
-	const defaultDraftId = draftId ?? autosaveDraftId;
 	os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {
-		ignoreDraftIds: defaultDraftId ? [defaultDraftId] : [],
+		ignoreDraftIds: draftId ? [draftId] : [],
 	}, {
 		chosen: ({ id }: Draft.DraftWithId) => {
 			draftId = id;
@@ -998,7 +969,21 @@ onMounted(() => {
 			defaultStore.set('postFormWithHashtags', false);
 			draftId = _draftId;
 		} else {
-			loadDraft();
+			let _draftId = '';
+
+			if (props.channel) {
+				_draftId += `ch:${props.channel.id}/`;
+			}
+
+			if (props.renote) {
+				_draftId += `rn:${props.renote.id}`;
+			} else if (props.reply) {
+				_draftId += `re:${props.reply.id}`;
+			} else if ($i) {
+				_draftId += `new:${$i.id}`;
+			}
+
+			draftId = _draftId || null;
 		}
 
 		draftWatching = true;
