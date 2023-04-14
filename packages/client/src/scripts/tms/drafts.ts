@@ -9,7 +9,7 @@ const LS_MESSAGE_DRAFTS_KEY = 'tmsMessageDrafts';
 type DraftData = {
 	text: string;
 	useCw: boolean;
-	cw: string | null;
+	cw: string;
 	visibility: Misskey.entities.Note['visibility'];
 	localOnly: boolean;
 	files: Misskey.entities.DriveFile[];
@@ -56,8 +56,8 @@ const isEmptyObject = <T extends Record<string, unknown>>(obj: T, ignoreKeys?: (
 	return !Object.entries(obj).some(([k, v]) => !(ignoreKeys ?? []).includes(k) && typeof v !== 'undefined');
 };
 
-const getVisibility = (): Misskey.entities.Note['visibility'] => defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-const getLocalOnly = (): boolean => defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
+export const getVisibility = (): Misskey.entities.Note['visibility'] => defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
+export const getLocalOnly = (): boolean => defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
 const loadLsDrafts = (): Record<string, LsDraft | undefined> => parseObject<Record<string, LsDraft | undefined>>(localStorage.getItem(LS_DRAFTS_KEY));
 const saveLsDrafts = (drafts: Record<string, LsDraft | undefined>): void => localStorage.setItem(LS_DRAFTS_KEY, JSON.stringify(drafts));
@@ -67,7 +67,7 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 	return {
 		text: text ?? '',
 		useCw: useCw ?? false,
-		cw: cw ?? (useCw ? '' : null),
+		cw: cw ?? '',
 		visibility: visibility ?? getVisibility(),
 		localOnly: localOnly ?? getLocalOnly(),
 		files: files ?? [],

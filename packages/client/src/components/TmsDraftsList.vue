@@ -30,6 +30,12 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import TmsDraft from '@/components/TmsDraftsList.draft.vue';
 import { DraftWithId, getAllDraft, deleteDraft } from '@/scripts/tms/drafts';
 
+const props = withDefaults(defineProps<{
+	ignoreDraftIds?: string[];
+}>(), {
+	ignoreDraftIds: (): string[] => [],
+});
+
 const emit = defineEmits<{
 	(ev: 'chosen', draft: DraftWithId): void;
 	(ev: 'closed'): void;
@@ -37,7 +43,7 @@ const emit = defineEmits<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const draftsList = $ref<DraftWithId[]>(getAllDraft());
+const draftsList = $ref<DraftWithId[]>(getAllDraft().filter(({ id }) => !props.ignoreDraftIds.includes(id)));
 
 const chosen = (draftId: DraftWithId['id']): void => {
 	const draft = draftsList.find(d => d.id === draftId);

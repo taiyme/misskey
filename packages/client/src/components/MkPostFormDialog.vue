@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="modal?.close()" @closed="onModalClosed()">
-	<MkPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+	<TmsPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
 </MkModal>
 </template>
 
@@ -8,7 +8,7 @@
 import { } from 'vue';
 import * as misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
+import TmsPostForm from '@/components/TmsPostForm.vue';
 
 const props = defineProps<{
 	reply?: misskey.entities.Note;
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 }>();
 
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
-const form = $shallowRef<InstanceType<typeof MkPostForm>>();
+const form = $shallowRef<InstanceType<typeof TmsPostForm>>();
 
 const onPosted = (): void => {
 	modal?.close({

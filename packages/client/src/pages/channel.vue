@@ -23,7 +23,7 @@
 				</div>
 			</div>
 
-			<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
+			<TmsPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
 
 			<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
@@ -33,7 +33,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import XPostForm from '@/components/MkPostForm.vue';
+import TmsPostForm from '@/components/TmsPostForm.vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';

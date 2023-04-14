@@ -1,9 +1,9 @@
 <template>
 <div :class="$style.root" @click="draftMenu">
 	<div :class="[$style.text, { [$style.textEmpty]: !text }]">{{ text || 'Empty' }}</div>
-	<div :class="$style.files">
+	<div v-if="files.length !== 0" :class="$style.files">
 		<ImgWithBlurhash
-			v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in props.draft.data.files"
+			v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in files"
 			:key="fileId"
 			:src="src"
 			:hash="hash"
@@ -12,15 +12,15 @@
 			:class="$style.file"
 		/>
 	</div>
-	<div :class="$style.labels">
-		<span v-if="props.draft.data.renoteId" :class="$style.label">{{ i18n.ts.quote }}</span>
-		<span v-if="props.draft.data.poll" :class="$style.label">{{ i18n.ts.poll }}</span>
+	<div v-if="labels.length !== 0" :class="$style.labels">
+		<span v-for="label in labels" :key="label" :class="$style.label">{{ label }}</span>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { DraftWithId } from '@/scripts/tms/drafts';
 import { i18n } from '@/i18n';
@@ -37,6 +37,11 @@ const emit = defineEmits<{
 }>();
 
 const text = $ref(`${props.draft.data.cw || ''}\n${props.draft.data.text || ''}`.trim());
+const files = $ref<Misskey.entities.DriveFile[]>(props.draft.data.files);
+
+const labels = $ref<string[]>([]);
+if (props.draft.data.renoteId) labels.push(i18n.ts.quote);
+if (props.draft.data.poll) labels.push(i18n.ts.poll);
 
 const draftMenu = (ev: MouseEvent): void => {
 	const el = ev.currentTarget ?? ev.target;
