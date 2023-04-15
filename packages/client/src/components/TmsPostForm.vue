@@ -76,7 +76,7 @@
 			<div v-if="renote" :class="$style.quoteNote">
 				<div :class="$style.quoteNoteInner">
 					<MkNoteSimple :note="renote"/>
-					<button v-if="!props.renote || !!draftId?.split('/').some(x => x.startsWith('rn:'))" :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
+					<button v-if="quoteNoteCancel" :class="['_button', $style.quoteNoteCancel]" @click="renoteId = null"><i class="ti ti-x"></i></button>
 				</div>
 			</div>
 			<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
@@ -517,6 +517,7 @@ watch($$(renoteId), async () => {
 
 	popFetchList();
 });
+let quoteNoteCancel = $ref(true);
 
 // チャンネル
 let channelId = $ref<string | null>(null);
@@ -605,6 +606,7 @@ const loadDraft = (): void => {
 };
 watch($$(draftId), () => {
 	loadDraft();
+	quoteNoteCancel = !draftId?.split('/').some(x => x.startsWith('rn:'));
 });
 
 // ハッシュタグ
@@ -944,77 +946,88 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 
 onMounted(() => {
 	nextTick(() => {
-		if (props.initialVisibleUsers) {
-			props.initialVisibleUsers.forEach(user => pushVisibleUser(user));
-		}
+		const _initialVisibleUsers = $ref(props.initialVisibleUsers ?? []);
+		_initialVisibleUsers.forEach(pushVisibleUser);
 
-		if (props.specified) {
+		const _specified = $ref(props.specified);
+		if (_specified) {
 			visibility = 'specified';
 			localOnly = false;
-			pushVisibleUser(props.specified);
+			pushVisibleUser(_specified);
 		}
 
-		if (props.mention) {
-			const { username, host: _host } = props.mention;
+		const _mention = $ref(props.mention);
+		if (_mention) {
+			const { username, host: _host } = _mention;
 			const mention = `@${username}${(_host != null && _host !== host) ? `@${toASCII(_host)}` : ''}`;
 			text = `${mention} ${text}`;
 		}
 
-		if (props.reply) {
-			updateReply(props.reply);
+		const _reply = $ref(props.reply);
+		if (_reply) {
+			updateReply(_reply);
 		}
 
-		if (props.renote) {
-			updateRenote(props.renote);
+		const _renote = $ref(props.renote);
+		if (_renote) {
+			updateRenote(_renote);
+			quoteNoteCancel = false;
 		}
 
-		if (props.channel) {
-			updateChannel(props.channel);
+		const _channel = $ref(props.channel);
+		if (_channel) {
+			updateChannel(_channel);
 		}
 
-		if (props.initialNote) {
-			const init = props.initialNote as Misskey.entities.Note & {
+		nextTick(() => {
+			draftWatching = false;
+
+			const init = $ref(props.initialNote as Misskey.entities.Note & {
 				channel?: Misskey.entities.Channel;
-			};
-			const _draftId = `edit:${Date.now()}`;
-			Draft.setDraft(_draftId, {
-				text: init.text ?? '',
-				useCw: init.cw != null,
-				cw: init.cw ?? '',
-				visibility: init.visibility,
-				localOnly: !!init.localOnly,
-				files: init.files,
-				poll: init.poll ? {
-					choices: init.poll.choices.map(x => x.text),
-					multiple: init.poll.multiple,
-					expiresAt: init.poll.expiresAt ? new Date(init.poll.expiresAt).getTime() : null,
-					expiredAfter: null,
-				} : null,
-				replyId: init.reply?.id ?? null,
-				renoteId: init.renote?.id ?? null,
-				channelId: init.channel?.id ?? null,
 			});
-			defaultStore.set('postFormWithHashtags', false);
-			draftId = _draftId;
-		} else {
-			let _draftId = '';
+			if (init) {
+				const _draftId = `edit:${Date.now()}`;
+				Draft.setDraft(_draftId, {
+					text: init.text ?? '',
+					useCw: init.cw != null,
+					cw: init.cw ?? '',
+					visibility: init.visibility,
+					localOnly: !!init.localOnly,
+					files: init.files,
+					poll: init.poll ? {
+						choices: init.poll.choices.map(x => x.text),
+						multiple: init.poll.multiple,
+						expiresAt: init.poll.expiresAt ? new Date(init.poll.expiresAt).getTime() : null,
+						expiredAfter: null,
+					} : null,
+					replyId: init.reply?.id ?? null,
+					renoteId: init.renote?.id ?? null,
+					channelId: init.channel?.id ?? null,
+				});
+				defaultStore.set('postFormWithHashtags', false);
+				draftId = _draftId;
+			} else {
+				let _draftId = '';
 
-			if (props.channel) {
-				_draftId += `ch:${props.channel.id}/`;
+				if (_channel) {
+					_draftId += `ch:${_channel.id}/`;
+				}
+
+				if (_renote) {
+					_draftId += `rn:${_renote.id}`;
+				} else if (_reply) {
+					_draftId += `re:${_reply.id}`;
+				} else if ($i) {
+					_draftId += `new:${$i.id}`;
+				}
+
+				if (_draftId) {
+					draftId = _draftId;
+				}
 			}
 
-			if (props.renote) {
-				_draftId += `rn:${props.renote.id}`;
-			} else if (props.reply) {
-				_draftId += `re:${props.reply.id}`;
-			} else if ($i) {
-				_draftId += `new:${$i.id}`;
-			}
-
-			draftId = _draftId || null;
-		}
-
-		draftWatching = true;
+			draftWatching = true;
+		});
 	});
 });
 </script>
@@ -1237,7 +1250,7 @@ onMounted(() => {
 
 	> .quoteNoteInner {
 		position: relative;
-		padding: 16px;
+		padding: 16px 32px 16px 16px;
 		border: dashed 1px var(--renote);
 		border-radius: 8px;
 
@@ -1246,6 +1259,7 @@ onMounted(() => {
 			top: 0;
 			right: 0;
 			padding: 4px;
+			font-size: 16px;
 		}
 	}
 }
