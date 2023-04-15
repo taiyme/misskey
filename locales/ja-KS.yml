@@ -2304,3 +2304,5 @@ _tms:
   unreact: "リアクションやめる"
   pakuru: "パクる"
   numberquote: "数字引用する"
+  drafts: "下書き"
+  loadDraft: "下書きを読み込む"

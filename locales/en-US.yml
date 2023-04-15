@@ -2212,3 +2212,5 @@ _tms:
   unreact: "Unreact"
   pakuru: "Pakuru"
   numberquote: "Numberquote"
+  drafts: "Drafts"
+  loadDraft: "Load from draft"

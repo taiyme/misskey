@@ -16,7 +16,14 @@
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 			<div v-else :class="$style.draftsList">
-				<TmsDraft v-for="draftItem in draftsList" :key="draftItem.id" :draft="draftItem" @chosen="chosen" @deleted="deleted"/>
+				<TmsDraft
+					v-for="draftItem in draftsList"
+					:key="draftItem.id"
+					:draft="draftItem"
+					:active="draftItem.id === activeDraftId"
+					@chosen="chosen"
+					@deleted="deleted"
+				/>
 			</div>
 		</div>
 	</MkSpacer>
@@ -31,9 +38,9 @@ import TmsDraft from '@/components/TmsDraftsList.draft.vue';
 import { DraftWithId, getAllDraft, deleteDraft } from '@/scripts/tms/drafts';
 
 const props = withDefaults(defineProps<{
-	ignoreDraftIds?: string[];
+	activeDraftId?: string | null;
 }>(), {
-	ignoreDraftIds: (): string[] => [],
+	activeDraftId: null,
 });
 
 const emit = defineEmits<{
@@ -43,7 +50,11 @@ const emit = defineEmits<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const draftsList = $ref<DraftWithId[]>(getAllDraft().filter(({ id }) => !props.ignoreDraftIds.includes(id)));
+const draftsList = $ref<DraftWithId[]>(
+	getAllDraft()
+		.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+		.sort(({ id }) => id === props.activeDraftId ? -1 : 1),
+);
 
 const chosen = (draftId: DraftWithId['id']): void => {
 	const draft = draftsList.find(d => d.id === draftId);

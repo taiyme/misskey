@@ -798,7 +798,7 @@ const cancel = (): void => {
 
 const chooseDraft = (): void => {
 	os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {
-		ignoreDraftIds: draftId ? [draftId] : [],
+		activeDraftId: draftId,
 	}, {
 		chosen: ({ id }: Draft.DraftWithId) => {
 			draftId = id;

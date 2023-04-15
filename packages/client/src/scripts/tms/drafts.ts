@@ -137,7 +137,7 @@ export const setDraft = (draftKey: string | null, data: DraftData): void => {
 		draftData.localOnly = undefined;
 	}
 
-	if (isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId'])) return deleteDraft(draftKey);
+	if (isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId', 'visibility', 'localOnly'])) return deleteDraft(draftKey);
 
 	saveLsDrafts({
 		...drafts,

@@ -1,5 +1,5 @@
 <template>
-<div :class="$style.root" @click="draftMenu">
+<div :class="[$style.root, { [$style.active]: props.active }]" @click="draftMenu">
 	<div :class="[$style.text, { [$style.textEmpty]: !text }]">{{ text || 'Empty' }}</div>
 	<div v-if="files.length !== 0" :class="$style.files">
 		<ImgWithBlurhash
@@ -28,6 +28,7 @@ import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
 	draft: DraftWithId;
+	active?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -44,17 +45,19 @@ if (props.draft.data.renoteId) labels.push(i18n.ts.quote);
 if (props.draft.data.poll) labels.push(i18n.ts.poll);
 
 const draftMenu = (ev: MouseEvent): void => {
+	if (props.active) return;
+
 	const el = ev.currentTarget ?? ev.target;
 	if (!(el instanceof HTMLElement)) return;
 
 	const menu = [
 		{
-			text: '選択',
+			text: i18n.ts._tms.loadDraft,
 			icon: 'ti ti-check',
 			action: () => emit('chosen', props.draft.id),
 		},
 		{
-			text: '削除',
+			text: i18n.ts.delete,
 			icon: 'ti ti-trash',
 			action: () => emit('deleted', props.draft.id),
 			danger: true,
@@ -76,6 +79,22 @@ const draftMenu = (ev: MouseEvent): void => {
 	border: solid 1px var(--divider);
 	border-radius: 8px;
 	user-select: none;
+
+	&.active {
+		border-style: dashed;
+
+		> .text {
+			opacity: 0.5;
+		}
+
+		> .files {
+			display: none;
+		}
+
+		> .labels {
+			display: none;
+		}
+	}
 }
 
 .text {
