@@ -22,18 +22,19 @@
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
-import { DraftWithId } from '@/scripts/tms/drafts';
 import { i18n } from '@/i18n';
+import { Draft } from '@/scripts/tms/drafts';
+import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
-	draft: DraftWithId;
+	draft: Draft;
 	active?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'chosen', draftId: DraftWithId['id']): void;
-	(ev: 'deleted', draftId: DraftWithId['id']): void;
+	(ev: 'chosen', draftId: Draft['id']): void;
+	(ev: 'deleted', draftId: Draft['id']): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -47,8 +48,8 @@ if (props.draft.data.poll) labels.push(i18n.ts.poll);
 const draftMenu = (ev: MouseEvent): void => {
 	if (props.active) return;
 
-	const el = ev.currentTarget ?? ev.target;
-	if (!(el instanceof HTMLElement)) return;
+	const el = getHtmlElementFromEvent(ev);
+	if (!el) return;
 
 	const menu = [
 		{

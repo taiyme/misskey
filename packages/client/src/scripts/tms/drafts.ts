@@ -25,12 +25,9 @@ type LsDraft = {
 };
 
 export type Draft = {
+	id: string;
 	updatedAt: string;
 	data: DraftData;
-};
-
-export type DraftWithId = Draft & {
-	id: string;
 };
 
 type MessageDraftData = {
@@ -44,12 +41,80 @@ type LsMessageDraft = {
 };
 
 export type MessageDraft = {
+	id: string;
 	updatedAt: string;
 	data: MessageDraftData;
 };
 
-export type MessageDraftWithId = MessageDraft & {
-	id: string;
+type PartialNullable<T> = {
+	[P in keyof T]?: T[P] | null;
+};
+
+export const genDraftId = (data: PartialNullable<{
+	user: {
+		id: string;
+	};
+	reply: Misskey.entities.Note;
+	renote: Misskey.entities.Note;
+	channel: Misskey.entities.Channel;
+	isEdit: boolean;
+}>): Draft['id'] | null => {
+	const entries: [string, string | null][] = [];
+	const { user, reply, renote, channel, isEdit } = data;
+
+	if (!user) return null;
+	entries.push(['u', user.id]);
+
+	if (channel) {
+		entries.push(['ch', channel.id]);
+	}
+	if (renote) {
+		entries.push(['rn', renote.id]);
+	} else if (reply) {
+		entries.push(['re', reply.id]);
+	} else {
+		if (isEdit) {
+			entries.push(['edit', Date.now().toString()]);
+		} else {
+			entries.push(['new', null]);
+		}
+	}
+
+	return entries.map(([k, v]) => v ? `${k}:${v}` : k).join('/');
+};
+
+export const parseDraftId = (draftId: Draft['id'] | null): {
+	userId: string | null;
+	replyId: string | null;
+	renoteId: string | null;
+	channelId: string | null;
+	isNew: boolean;
+	isEdit: boolean;
+} => {
+	const result: ReturnType<typeof parseDraftId> = {
+		userId: null,
+		replyId: null,
+		renoteId: null,
+		channelId: null,
+		isNew: false,
+		isEdit: false,
+	};
+
+	const entries = draftId ? draftId.split('/').map<[string, string | null]>(kv => {
+		const [k, v = null] = kv.split(':');
+		return [k, v];
+	}) : [];
+
+	entries.forEach(([k, v]) => {
+		if (k === 'u') result.userId = v;
+		if (k === 're') result.replyId = v;
+		if (k === 'rn') result.renoteId = v;
+		if (k === 'ch') result.channelId = v;
+		if (k === 'new') result.isNew = true;
+		if (k === 'edit') result.isEdit = true;
+	});
+
+	return result;
 };
 
 const isEmptyObject = <T extends Record<string, unknown>>(obj: T, ignoreKeys?: (keyof T)[]): obj is Record<keyof T, never> => {
@@ -85,7 +150,7 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 	return draftData;
 };
 
-export const getAllDraft = (): DraftWithId[] => {
+export const getAllDraft = (): Draft[] => {
 	const drafts = loadLsDrafts();
 
 	return Object.entries(drafts).flatMap(([id, draft]) => {
@@ -108,6 +173,7 @@ export const getDraft = (draftKey: string | null): Draft | null => {
 	const { updatedAt, data } = draft;
 
 	return {
+		id: draftKey,
 		updatedAt,
 		data: restoreDraftData(data),
 	};
@@ -172,7 +238,7 @@ const restoreMessageDraftData = (lsDraft: Partial<MessageDraftData>): MessageDra
 	return draftData;
 };
 
-export const getAllMessageDraft = (): MessageDraftWithId[] => {
+export const getAllMessageDraft = (): MessageDraft[] => {
 	const drafts = loadLsMessageDrafts();
 
 	return Object.entries(drafts).flatMap(([id, draft]) => {
@@ -195,6 +261,7 @@ export const getMessageDraft = (draftKey: string | null): MessageDraft | null =>
 	const { updatedAt, data } = draft;
 
 	return {
+		id: draftKey,
 		updatedAt,
 		data: restoreMessageDraftData(data),
 	};

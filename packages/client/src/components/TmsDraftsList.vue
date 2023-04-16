@@ -20,7 +20,7 @@
 					v-for="draftItem in draftsList"
 					:key="draftItem.id"
 					:draft="draftItem"
-					:active="draftItem.id === activeDraftId"
+					:active="draftItem.id === active"
 					@chosen="chosen"
 					@deleted="deleted"
 				/>
@@ -33,36 +33,36 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { i18n } from '@/i18n';
+import { Draft, getAllDraft, deleteDraft } from '@/scripts/tms/drafts';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import TmsDraft from '@/components/TmsDraftsList.draft.vue';
-import { DraftWithId, getAllDraft, deleteDraft } from '@/scripts/tms/drafts';
 
 const props = withDefaults(defineProps<{
-	activeDraftId?: string | null;
+	active?: string | null;
 }>(), {
-	activeDraftId: null,
+	active: null,
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', draft: DraftWithId): void;
+	(ev: 'chosen', draft: Draft): void;
 	(ev: 'closed'): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const draftsList = $ref<DraftWithId[]>(
+const draftsList = $ref<Draft[]>(
 	getAllDraft()
 		.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-		.sort(({ id }) => id === props.activeDraftId ? -1 : 1),
+		.sort(({ id }) => id === props.active ? -1 : 1),
 );
 
-const chosen = (draftId: DraftWithId['id']): void => {
+const chosen = (draftId: Draft['id']): void => {
 	const draft = draftsList.find(d => d.id === draftId);
 	if (draft) emit('chosen', draft);
 	dialog?.close();
 };
 
-const deleted = (draftId: DraftWithId['id']): void => {
+const deleted = (draftId: Draft['id']): void => {
 	deleteDraft(draftId);
 	const index = draftsList.findIndex(({ id }) => draftId === id);
 	if (index !== -1) draftsList.splice(index, 1);

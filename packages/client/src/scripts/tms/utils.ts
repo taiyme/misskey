@@ -13,3 +13,12 @@ export const getRandomArrayElements = <T>(arr: T[], count: number): T[] => {
 
 	return result;
 };
+
+export const isHtmlElement = <T extends HTMLElement>(value: unknown): value is T => {
+	return value instanceof HTMLElement;
+};
+
+export const getHtmlElementFromEvent = <T extends HTMLElement>(event?: Event | null): T | null => {
+	const el = event?.currentTarget ?? event?.target;
+	return isHtmlElement<T>(el) ? el : null;
+};
