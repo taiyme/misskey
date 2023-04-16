@@ -451,18 +451,21 @@ onMounted(() => {
 		nextTick(focus);
 	}
 
-	if (!props.instant && !props.mention && !props.specified) {
-		if (draft) {
-			text = draft.data.text;
-			useCw = draft.data.useCw;
-			cw = draft.data.cw;
-			visibility = draft.data.visibility;
-			localOnly = draft.data.localOnly;
-			files = draft.data.files;
-			poll = draft.data.poll;
-			setQuote(draft.data.renoteId);
+	nextTick(() => {
+		if (!props.instant && !props.mention && !props.specified) {
+			const _draft = draft ?? Draft.getDraft(draftKey);
+			if (_draft) {
+				text = _draft.data.text;
+				useCw = _draft.data.useCw;
+				cw = _draft.data.cw;
+				visibility = _draft.data.visibility;
+				localOnly = _draft.data.localOnly;
+				files = _draft.data.files;
+				poll = _draft.data.poll;
+				setQuote(_draft.data.renoteId);
+			}
 		}
-	}
+	});
 });
 
 onUnmounted(() => {
