@@ -241,7 +241,7 @@ const clear = (): void => {
 };
 
 const placeholder = $computed((): string => {
-	if (renote) return i18n.ts._postForm.quotePlaceholder;
+	if (renote || quote) return i18n.ts._postForm.quotePlaceholder;
 	if (reply) return i18n.ts._postForm.replyPlaceholder;
 	if (channel) return i18n.ts._postForm.channelPlaceholder;
 	const xs = [
@@ -268,7 +268,7 @@ const maxTextLength = $computed((): number => {
 
 const canPost = $computed((): boolean => {
 	return !fetching && !posting && !posted &&
-		(1 <= textLength || 1 <= files.length || !!poll || !!renote) &&
+		(1 <= textLength || 1 <= files.length || !!poll || !!(renote || quote)) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
 });
@@ -352,8 +352,9 @@ const saveDraft = (): void => {
 		files,
 		poll,
 		replyId: reply?.id ?? null,
-		renoteId: renote?.id ?? quote?.id ?? null,
+		renoteId: renote?.id ?? null,
 		channelId: channel?.id ?? null,
+		quoteId: quote?.id ?? null,
 	});
 };
 
@@ -361,16 +362,18 @@ const deleteDraft = (): void => {
 	Draft.deleteDraft(draftKey);
 };
 
-watch([
-	$$(text),
-	$$(useCw),
-	$$(cw),
-	$$(visibility),
-	$$(localOnly),
-	$$(files),
-	$$(poll),
-	$$(quote),
-], saveDraft, { deep: true });
+const watchForDraft = (): void => {
+	watch([
+		$$(text),
+		$$(useCw),
+		$$(cw),
+		$$(visibility),
+		$$(localOnly),
+		$$(files),
+		$$(poll),
+		$$(quote),
+	], saveDraft, { deep: true });
+};
 //#endregion
 
 //#region credential
@@ -452,19 +455,21 @@ onMounted(() => {
 	}
 
 	nextTick(() => {
-		if (props.instant || props.fixed) return;
-	
-		const _draft = draft ?? Draft.getDraft(draftKey);
-		if (_draft) {
-			text = _draft.data.text;
-			useCw = _draft.data.useCw;
-			cw = _draft.data.cw;
-			visibility = _draft.data.visibility;
-			localOnly = _draft.data.localOnly;
-			files = _draft.data.files;
-			poll = _draft.data.poll;
-			setQuote(_draft.data.renoteId);
+		if (!props.instant && !props.fixed) {	
+			const _draft = draft ?? Draft.getDraft(draftKey);
+			if (_draft) {
+				text = _draft.data.text;
+				useCw = _draft.data.useCw;
+				cw = _draft.data.cw;
+				visibility = _draft.data.visibility;
+				localOnly = _draft.data.localOnly;
+				files = _draft.data.files;
+				poll = _draft.data.poll;
+				setQuote(_draft.data.quoteId);
+			}
 		}
+
+		watchForDraft();
 	});
 });
 
@@ -496,13 +501,15 @@ const pushVisibleUser = (user: Misskey.entities.User): void => {
 };
 
 const addVisibleUser = (): void => {
-	os.selectUser().then(user => {
-		pushVisibleUser(user);
+	fetchingWrapper(
+		os.selectUser().then(user => {
+			pushVisibleUser(user);
 
-		if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
-			text = `@${Acct.toString(user)} ${text}`;
-		}
-	});
+			if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
+				text = `@${Acct.toString(user)} ${text}`;
+			}
+		}),
+	);
 };
 
 const removeVisibleUser = (user: Misskey.entities.User): void => {
@@ -619,7 +626,9 @@ if (reply) {
 			fetchingWrapper(
 				os.api('users/show', { userIds: visibleUserIds }, token)
 					.then(users => {
-						users.forEach(pushVisibleUser);
+						users.forEach(user => {
+							pushVisibleUser(user);
+						});
 					}),
 			);
 		}
@@ -746,18 +755,20 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	if (!renote && !quote && paste.startsWith(path)) {
 		ev.preventDefault();
 
-		os.confirm({
-			type: 'info',
-			text: i18n.ts.quoteQuestion,
-		}).then(({ canceled }) => {
-			if (canceled) {
-				insertTextAtCursor(textareaEl, paste);
-				return;
-			}
+		fetchingWrapper(
+			os.confirm({
+				type: 'info',
+				text: i18n.ts.quoteQuestion,
+			}).then(({ canceled }) => {
+				if (canceled) {
+					insertTextAtCursor(textareaEl, paste);
+					return;
+				}
 
-			const quoteId = paste.slice(path.length).split(/[\/\?#]/, 1)[0] || null;
-			setQuote(quoteId);
-		});
+				const quoteId = paste.slice(path.length).split(/[\/\?#]/, 1)[0] || null;
+				setQuote(quoteId);
+			}),
+		);
 	}
 };
 //#endregion
@@ -904,11 +915,16 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 
 //#region footer buttons
 const chooseFileFrom = (ev: MouseEvent): void => {
-	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(_files => {
-		for (const file of _files) {
-			files.push(file);
-		}
-	});
+	const el = getHtmlElementFromEvent(ev);
+
+	fetchingWrapper(
+		selectFiles(el, i18n.ts.attachFile)
+			.then(_files => {
+				for (const file of _files) {
+					files.push(file);
+				}
+			}),
+	);
 };
 
 const togglePoll = (): void => {
@@ -929,9 +945,11 @@ const toggleUseCw = (): void => {
 };
 
 const insertMention = (): void => {
-	os.selectUser().then(user => {
-		insertTextAtCursor(textareaEl, `@${Acct.toString(user)} `);
-	});
+	fetchingWrapper(
+		os.selectUser().then(user => {
+			insertTextAtCursor(textareaEl, `@${Acct.toString(user)} `);
+		}),
+	);
 };
 
 const toggleWithHashtags = (): void => {

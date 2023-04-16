@@ -118,6 +118,7 @@ onMounted(() => {
 			replyId: init.reply?.id ?? null,
 			renoteId: init.renote?.id ?? null,
 			channelId: init.channel?.id ?? null,
+			quoteId: null,
 		});
 
 		bindProps.draft = Draft.getDraft(draftId);
@@ -149,14 +150,12 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 	bindProps.renote = await renote;
 	bindProps.channel = (await channel) as Misskey.entities.Channel | null;
 
-	Draft.setDraft(draft.id, {
+	bindProps.draft = Draft.setDraft(draft.id, {
 		...draft.data,
 		replyId: (await reply)?.id ?? null,
 		renoteId: (await renote)?.id ?? null,
 		channelId: (await channel)?.id ?? null,
 	});
-
-	bindProps.draft = Draft.getDraft(draft.id);
 
 	nextTick(() => showPostForm = true);
 };

@@ -42,7 +42,7 @@ const text = $ref(`${props.draft.data.cw || ''}\n${props.draft.data.text || ''}`
 const files = $ref<Misskey.entities.DriveFile[]>(props.draft.data.files);
 
 const labels = $ref<string[]>([]);
-if (props.draft.data.renoteId) labels.push(i18n.ts.quote);
+if (props.draft.data.renoteId || props.draft.data.quoteId) labels.push(i18n.ts.quote);
 if (props.draft.data.poll) labels.push(i18n.ts.poll);
 
 const draftMenu = (ev: MouseEvent): void => {
