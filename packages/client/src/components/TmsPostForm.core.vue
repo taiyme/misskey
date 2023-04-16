@@ -216,7 +216,7 @@ const setQuote = (quoteId?: string | null): void => {
 	}
 
 	fetchingWrapper(
-		os.apiWithDialog('notes/show', { noteId: quoteId }, token)
+		os.api('notes/show', { noteId: quoteId }, token)
 			.then(_quote => quote = _quote)
 			.catch(() => quote = null),
 	);
