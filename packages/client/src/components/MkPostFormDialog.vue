@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" @click="modal?.close()" @closed="onModalClosed()">
+<MkModal ref="modal" :prefer-type="'dialog'" @click="onClick" @closed="onModalClosed()">
 	<TmsPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
 </MkModal>
 </template>
@@ -33,6 +33,13 @@ const emit = defineEmits<{
 
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
 const form = $shallowRef<InstanceType<typeof TmsPostForm>>();
+
+const isFetching = (): boolean => !!form?.isFetching();
+
+const onClick = (): void => {
+	if (isFetching()) return;
+	modal?.close();
+};
 
 const onPosted = (): void => {
 	modal?.close({

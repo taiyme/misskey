@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, nextTick, onMounted } from 'vue';
+import { ref, shallowRef, nextTick, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -91,7 +91,13 @@ let bindProps = $ref<{
 	initialVisibleUsers: props.initialVisibleUsers,
 });
 
-const form = ref<InstanceType<typeof TmsPostFormCore> | null>(null);
+const form = shallowRef<InstanceType<typeof TmsPostFormCore> | null>(null);
+
+const isFetching = (): boolean => !!form.value?.isFetching();
+
+defineExpose({
+	isFetching,
+});
 
 const showPostForm = ref(false);
 
@@ -144,17 +150,17 @@ const posted = (): void => {
 };
 
 const cancel = (): void => {
-	if (form.value?.isFetching()) return;
+	if (isFetching()) return;
 	emit('cancel');
 };
 
 const esc = (): void => {
-	if (form.value?.isFetching()) return;
+	if (isFetching()) return;
 	emit('esc');
 };
 
 const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
-	if (form.value?.isFetching()) return;
+	if (isFetching()) return;
 
 	hidden();
 
