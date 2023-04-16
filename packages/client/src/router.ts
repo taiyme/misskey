@@ -474,7 +474,6 @@ export const mainRouter = new Router(routes, location.pathname + location.search
 type HistoryState = {
 	key: string | null;
 	historyId: string | null;
-	count: number;
 }
 
 const getHistoryState = (_state?: unknown): HistoryState => {
@@ -485,16 +484,14 @@ const getHistoryState = (_state?: unknown): HistoryState => {
 	return {
 		key: state.key ?? null,
 		historyId: state.historyId ?? null,
-		count: state.count ?? 0,
 	};
 };
 
-const mergeHistoryState = (newState: Partial<Omit<HistoryState, 'count'>>): HistoryState => {
+const mergeHistoryState = (newState: Partial<HistoryState>): HistoryState => {
 	const state = getHistoryState();
 	return {
 		key: newState.key ?? state.key,
 		historyId: newState.historyId ?? state.historyId,
-		count: state.count + 1,
 	};
 };
 
@@ -511,11 +508,7 @@ export const setHistoryBackHandler = (callback: () => void): void => {
 	historyIds.push(id);
 };
 
-window.history.replaceState({
-	key: mainRouter.getCurrentKey(),
-	historyId: null,
-	count: 0,
-}, '', location.href);
+window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), historyId: null }), '', location.href);
 
 // TODO: このファイルでスクロール位置も管理する設計だとdeckに対応できないのでなんとかする
 // スクロール位置取得+スクロール位置設定関数をprovideする感じでも良いかも
@@ -546,37 +539,28 @@ mainRouter.addListener('same', () => {
 	window.scroll({ top: 0, behavior: 'smooth' });
 });
 
-const actionedHistoryIds: string[] = [];
-let prevHistoryState: HistoryState = getHistoryState(window.history.state);
+const actionedHistories = new Map<string, 'forward' | 'backward'>();
 
 window.addEventListener('popstate', (event) => {
-	const historyState = getHistoryState(event.state);
-	const { historyId } = historyState;
-
-	let disableRouterReplace = false;
+	const { historyId } = getHistoryState(event.state);
 
 	if (historyId) {
-		if (actionedHistoryIds.includes(historyId)) {
-			disableRouterReplace = true;
+		const historyType = actionedHistories.get(historyId);
 
-			if (prevHistoryState.count > historyState.count) {
-				// backward
-				console.log('[router]: backward');
-			} else if (prevHistoryState.count < historyState.count) {
-				// forward
-				console.log('[router]: forward');
-			} else {
-				// stay
-				console.log('[router]: stay');
-			}
+		if (historyType === 'forward') {
+			actionedHistories.set(historyId, 'backward');
+			window.history.forward();
+		} else if (historyType === 'backward') {
+			actionedHistories.set(historyId, 'forward');
+			window.history.back();
 		} else {
 			const hasHistory = histories.has(historyId);
 			if (hasHistory) {
 				histories.get(historyId)?.();
 				histories.delete(historyId);
-				actionedHistoryIds.push(historyId);
+				actionedHistories.set(historyId, 'forward');
 			}
-	
+
 			historyIds = historyIds.filter(id => histories.has(id));
 			const newHistoryId = historyIds.pop() ?? null;
 			if (newHistoryId) {
@@ -585,16 +569,12 @@ window.addEventListener('popstate', (event) => {
 		}
 	}
 
-	prevHistoryState = historyState;
-
-	if (!disableRouterReplace) {
-		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
-		const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
+	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
+	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
+	window.scroll({ top: scrollPos, behavior: 'instant' });
+	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 		window.scroll({ top: scrollPos, behavior: 'instant' });
-		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
-			window.scroll({ top: scrollPos, behavior: 'instant' });
-		}, 100);
-	}
+	}, 100);
 });
 
 export function useRouter(): Router {
