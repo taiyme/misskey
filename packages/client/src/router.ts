@@ -474,7 +474,6 @@ export const mainRouter = new Router(routes, location.pathname + location.search
 type HistoryState = {
 	key: string | null;
 	historyId: string | null;
-	count: number;
 }
 
 const getHistoryState = (_state?: unknown): HistoryState => {
@@ -485,7 +484,6 @@ const getHistoryState = (_state?: unknown): HistoryState => {
 	return {
 		key: state.key ?? null,
 		historyId: state.historyId ?? null,
-		count: state.count ?? 0,
 	};
 };
 
@@ -494,7 +492,6 @@ const mergeHistoryState = (newState: Partial<HistoryState>): HistoryState => {
 	return {
 		key: newState.key ?? state.key,
 		historyId: newState.historyId ?? state.historyId,
-		count: state.count + 1,
 	};
 };
 
@@ -504,14 +501,14 @@ let historyIds: string[] = [];
 export const setHistoryBackHandler = (callback: () => void): void => {
 	const id = uuid();
 
-	history.replaceState(mergeHistoryState({ historyId: id }), '', location.href);
-	history.pushState(mergeHistoryState({ historyId: id }), '', location.href);
+	window.history.replaceState(mergeHistoryState({ historyId: id }), '', location.href);
+	window.history.pushState(mergeHistoryState({ historyId: id }), '', location.href);
 
 	histories.set(id, callback);
 	historyIds.push(id);
 };
 
-window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), historyId: null, count: 0 }), '', location.href);
+window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), historyId: null }), '', location.href);
 
 // TODO: このファイルでスクロール位置も管理する設計だとdeckに対応できないのでなんとかする
 // スクロール位置取得+スクロール位置設定関数をprovideする感じでも良いかも
@@ -542,40 +539,34 @@ mainRouter.addListener('same', () => {
 	window.scroll({ top: 0, behavior: 'smooth' });
 });
 
-let disableHistoryHandler = false;
+const actionedHistories = new Map<string, 'forward' | 'backward'>();
 
 window.addEventListener('popstate', (event) => {
-	if (disableHistoryHandler) return;
-
 	const { historyId } = getHistoryState(event.state);
 
 	if (historyId) {
-		disableHistoryHandler = true;
+		const historyType = actionedHistories.get(historyId);
 
-		if (historyId === '_used_backward_') {
-			history.replaceState(mergeHistoryState({ historyId: '_used_forward_' }), '', location.href);
-			history.forward();
-		} else if (historyId === '_used_forward_') {
-			history.replaceState(mergeHistoryState({ historyId: '_used_backward_' }), '', location.href);
-			history.back();
+		if (historyType === 'forward') {
+			actionedHistories.set(historyId, 'backward');
+			window.history.forward();
+		} else if (historyType === 'backward') {
+			actionedHistories.set(historyId, 'forward');
+			window.history.back();
 		} else {
 			const hasHistory = histories.has(historyId);
 			if (hasHistory) {
 				histories.get(historyId)?.();
 				histories.delete(historyId);
+				actionedHistories.set(historyId, 'forward');
 			}
 
 			historyIds = historyIds.filter(id => histories.has(id));
-			const newHistoryId = historyIds.pop() ?? '_used_backward_';
-
-			history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
-
-			if (hasHistory) {
-				history.back();
+			const newHistoryId = historyIds.pop() ?? null;
+			if (newHistoryId) {
+				window.history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
 			}
 		}
-
-		disableHistoryHandler = false;
 	}
 
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
