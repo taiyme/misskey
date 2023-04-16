@@ -102,7 +102,7 @@ onMounted(() => {
 			isEdit: true,
 		});
 
-		Draft.setDraft(draftId, {
+		bindProps.draft = Draft.setDraft(draftId, {
 			text: init.text ?? '',
 			useCw: init.cw != null,
 			cw: init.cw ?? '',
@@ -120,8 +120,6 @@ onMounted(() => {
 			channelId: init.channel?.id ?? null,
 			quoteId: null,
 		});
-
-		bindProps.draft = Draft.getDraft(draftId);
 	}
 
 	nextTick(() => showPostForm = true);
