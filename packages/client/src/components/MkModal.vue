@@ -40,7 +40,7 @@ import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
 import { deviceKind } from '@/scripts/device-kind';
-import { setHistoryBackHandler } from '@/router';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 const getFixedContainer = (el: HTMLElement | null): HTMLElement | null => {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -254,9 +254,14 @@ const onOpened = (): void => {
 	emit('opened');
 
 	if (type !== 'popup') {
-		setHistoryBackHandler(() => {
-			close();
+		window.addEventListener('popstate', () => {
+			if (!window.location.hash.endsWith(type) && !window.location.hash) {
+				close();
+				return;
+			}
 		});
+
+		history.pushState(null, '', pushHash(window.location.hash, type));
 	}
 
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
@@ -280,6 +285,10 @@ const close = (opts: { useSendAnimation?: boolean } = {}): void => {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
+
+	if (type !== 'popup' && window.location.hash.endsWith(type)) {
+		trimHash();
+	}
 
 	emit('close');
 };

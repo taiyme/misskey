@@ -59,10 +59,11 @@ import { defaultStore } from '@/store';
 import { navbarItemDef } from '@/navbar';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import { mainRouter, setHistoryBackHandler } from '@/router';
+import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { disableContextmenu } from '@/scripts/touch';
+import { pushHash, trimHash } from '@/scripts/tms/url-hash';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -138,26 +139,44 @@ onMounted(() => {
 });
 
 const openWidgets = (): void => {
-	setHistoryBackHandler(() => {
-		widgetsShowing = false;
+	window.addEventListener('popstate', () => {
+		if (!window.location.hash.endsWith('widgets')) {
+			widgetsShowing = false;
+			return;
+		}
 	});
 
 	widgetsShowing = true;
+
+	history.pushState(null, '', pushHash(window.location.hash, 'widgets'));
 };
 
 const closeWidgets = (): void => {
+	if (window.location.hash.endsWith('widgets')) {
+		trimHash();
+	}
+
 	widgetsShowing = false;
 };
 
 const openDrawerMenu = (): void => {
-	setHistoryBackHandler(() => {
-		drawerMenuShowing = false;
+	window.addEventListener('popstate', () => {
+		if (!window.location.hash.endsWith('menu')) {
+			drawerMenuShowing = false;
+			return;
+		}
 	});
 
 	drawerMenuShowing = true;
+
+	history.pushState(null, '', pushHash(window.location.hash, 'menu'));
 };
 
 const closeDrawerMenu = (): void => {
+	if (window.location.hash.endsWith('menu')) {
+		trimHash();
+	}
+
 	drawerMenuShowing = false;
 };
 

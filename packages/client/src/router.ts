@@ -1,5 +1,4 @@
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
-import { v4 as uuid } from 'uuid';
 import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
@@ -471,43 +470,7 @@ export const routes = [{
 
 export const mainRouter = new Router(routes, location.pathname + location.search + location.hash);
 
-type HistoryState = {
-	key: string | null;
-	historyId: string | null;
-	count: number;
-}
-
-const getHistoryState = (_state?: unknown): HistoryState => {
-	const state = typeof (_state ?? window.history.state) === 'object'
-		? (_state ?? window.history.state) as Partial<HistoryState>
-		: {};
-
-	return {
-		key: state.key ?? null,
-		historyId: state.historyId ?? null,
-		count: state.count ?? 0,
-	};
-};
-
-const mergeHistoryState = (newState: Partial<HistoryState>): HistoryState => {
-	const state = getHistoryState();
-	return {
-		key: newState.key ?? state.key,
-		historyId: newState.historyId ?? state.historyId,
-		count: state.count + 1,
-	};
-};
-
-const historyMap = new Map<string, () => void>();
-
-export const setHistoryBackHandler = (callback: () => void): void => {
-	const id = uuid();
-	historyMap.set(id, callback);
-	window.history.replaceState(mergeHistoryState({ historyId: id }), '', location.href);
-	window.history.pushState(mergeHistoryState({}), '', location.href);
-};
-
-window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), count: 0 }), '', location.href);
+window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
 
 // TODO: このファイルでスクロール位置も管理する設計だとdeckに対応できないのでなんとかする
 // スクロール位置取得+スクロール位置設定関数をprovideする感じでも良いかも
@@ -515,12 +478,11 @@ window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(),
 const scrollPosStore = new Map<string, number>();
 
 window.setInterval(() => {
-	const { key } = getHistoryState();
-	if (key) scrollPosStore.set(key, window.scrollY);
+	scrollPosStore.set(window.history.state?.key, window.scrollY);
 }, 1000);
 
 mainRouter.addListener('push', ctx => {
-	window.history.pushState(mergeHistoryState({ key: ctx.key }), '', ctx.path);
+	window.history.pushState({ key: ctx.key }, '', ctx.path);
 	const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });
 	if (scrollPos !== 0) {
@@ -531,7 +493,7 @@ mainRouter.addListener('push', ctx => {
 });
 
 mainRouter.addListener('replace', ctx => {
-	window.history.replaceState(mergeHistoryState({ key: ctx.key }), '', ctx.path);
+	window.history.replaceState({ key: ctx.key }, '', ctx.path);
 });
 
 mainRouter.addListener('same', () => {
@@ -539,14 +501,6 @@ mainRouter.addListener('same', () => {
 });
 
 window.addEventListener('popstate', (event) => {
-	const eventState = getHistoryState(event.state);
-	const isBack = getHistoryState().count > eventState.count;
-	if (isBack && eventState.historyId && historyMap.has(eventState.historyId)) {
-		historyMap.get(eventState.historyId)?.();
-		historyMap.delete(eventState.historyId);
-		window.history.go(-1);
-		return;
-	}
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });

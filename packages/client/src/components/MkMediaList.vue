@@ -21,9 +21,8 @@ import 'photoswipe/style.css';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-// import * as os from '@/os';
+import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { setHistoryBackHandler } from '@/router';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
@@ -31,7 +30,7 @@ const props = defineProps<{
 }>();
 
 const gallery = ref(null);
-// const pswpZIndex = os.claimZIndex('middle');
+const pswpZIndex = os.claimZIndex('middle');
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
 
 onMounted(() => {
@@ -114,8 +113,8 @@ onMounted(() => {
 	});
 
 	lightbox.init();
-
-	setHistoryBackHandler(() => {
+	
+	window.addEventListener('popstate', () => {
 		if (lightbox.pswp && lightbox.pswp.isOpen === true) {
 			lightbox.pswp.close();
 			return;
