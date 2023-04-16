@@ -48,8 +48,8 @@
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
-					<template v-else>{{ renote ? i18n.ts.quote : reply ? i18n.ts.reply : i18n.ts.note }}</template>
-					<i :style="{ marginLeft: !posted ? '6px' : undefined }" class="ti" :class="posted ? 'ti-check' : reply ? 'ti-arrow-back-up' : renote ? 'ti-quote' : 'ti-send'"></i>
+					<template v-else>{{ (renote || quote) ? i18n.ts.quote : reply ? i18n.ts.reply : i18n.ts.note }}</template>
+					<i :style="{ marginLeft: !posted ? '6px' : undefined }" class="ti" :class="posted ? 'ti-check' : reply ? 'ti-arrow-back-up' : (renote || quote) ? 'ti-quote' : 'ti-send'"></i>
 				</div>
 			</button>
 		</div>
@@ -571,40 +571,37 @@ const parseMention = ({ username, host }: {
 	return `@${username}@${toASCII(host)}`;
 };
 
+const addMention = ({ username, host }: {
+	username: string;
+	host?: string | null;
+}): void => {
+	const mention = parseMention({ username, host });
+
+	if ($i?.username === username && (host == null || host === Host)) return;
+	if (text.includes(`${mention} `)) return;
+
+	text += `${mention} `;
+};
+
 if (text === '') {
 	if (props.mention) {
-		const mention = parseMention({
+		addMention({
 			username: props.mention.username,
 			host: props.mention.host,
 		});
-		text += `${mention} `;
 	}
 
 	if (reply) {
-		const mention = parseMention({
+		addMention({
 			username: reply.user.username,
 			host: reply.user.host,
 		});
-		text += `${mention} `;
 	}
 
 	if (reply && reply.text) {
 		const ast = mfm.parse(reply.text);
 
-		for (const x of extractMentions(ast)) {
-			const mention = parseMention({
-				username: x.username,
-				host: x.host,
-			});
-
-			// 自分は除外
-			if ($i?.username === x.username && (x.host == null || x.host === Host)) continue;
-
-			// 重複は除外
-			if (text.includes(`${mention} `)) continue;
-
-			text += `${mention} `;
-		}
+		for (const x of extractMentions(ast)) addMention(x);
 	}
 }
 
@@ -795,7 +792,7 @@ const openAccountMenu = (ev: MouseEvent): void => {
 
 const chooseDraft = (): void => {
 	os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {
-		active: draft?.id,
+		active: draftKey,
 	}, {
 		chosen: (draft_: Draft.Draft) => {
 			emit('reopen', draft_);
@@ -1008,8 +1005,10 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 .headerLeft {
 	display: grid;
 	grid-auto-flow: column;
-	grid-auto-columns: minmax(36px, 50px);
-	grid-auto-rows: minmax(40px, 100%);
+	grid-auto-columns: max-content;
+	grid-template-columns: minmax(36px, 50px);
+	grid-template-rows: minmax(40px, 100%);
+	gap: 4px;
 }
 
 .cancel {
@@ -1304,6 +1303,10 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 
 :global(.max-width_310px) {
 	.header {
+		gap: 0;
+	}
+
+	.headerLeft {
 		gap: 0;
 	}
 
