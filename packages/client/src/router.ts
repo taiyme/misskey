@@ -498,20 +498,16 @@ const mergeHistoryState = (newState: Partial<HistoryState>): HistoryState => {
 	};
 };
 
-const histories = new Map<string, () => void>();
-let historyIds: string[] = [];
+const historyMap = new Map<string, () => void>();
 
 export const setHistoryBackHandler = (callback: () => void): void => {
 	const id = uuid();
-
-	history.replaceState(mergeHistoryState({ historyId: id }), '', location.href);
-	history.pushState(mergeHistoryState({ historyId: id }), '', location.href);
-
-	histories.set(id, callback);
-	historyIds.push(id);
+	historyMap.set(id, callback);
+	window.history.replaceState(mergeHistoryState({ historyId: id }), '', location.href);
+	window.history.pushState(mergeHistoryState({}), '', location.href);
 };
 
-window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), historyId: null, count: 0 }), '', location.href);
+window.history.replaceState(mergeHistoryState({ key: mainRouter.getCurrentKey(), count: 0 }), '', location.href);
 
 // TODO: このファイルでスクロール位置も管理する設計だとdeckに対応できないのでなんとかする
 // スクロール位置取得+スクロール位置設定関数をprovideする感じでも良いかも
@@ -543,18 +539,14 @@ mainRouter.addListener('same', () => {
 });
 
 window.addEventListener('popstate', (event) => {
-	const { historyId } = getHistoryState(event.state);
-	if (historyId) {
-		if (histories.has(historyId)) {
-			histories.get(historyId)?.();
-			histories.delete(historyId);
-		}
-		historyIds = historyIds.filter(id => historyId !== id);
-		const newHistoryId = historyIds.pop() ?? null;
-		history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '');
+	const eventState = getHistoryState(event.state);
+	const isBack = getHistoryState().count > eventState.count;
+	if (isBack && eventState.historyId && historyMap.has(eventState.historyId)) {
+		historyMap.get(eventState.historyId)?.();
+		historyMap.delete(eventState.historyId);
+		window.history.go(-1);
 		return;
 	}
-
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
 	const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
 	window.scroll({ top: scrollPos, behavior: 'instant' });
