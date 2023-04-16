@@ -525,21 +525,19 @@ const removeVisibleUser = (user: Misskey.entities.User): void => {
 
 //#region files
 // const upload = async (file: File): Promise<void> => {
-// 	const fileIndex = files.length;
 // 	return await fetchingWrapper(
 // 		uploadFile(file, defaultStore.state.uploadFolder)
 // 			.then(driveFile => {
-// 				files.splice(fileIndex, 0, driveFile);
+// 				files.push(driveFile);
 // 			}),
 // 	);
 // };
 
 const uploads = async (fileList: File[]): Promise<void> => {
-	const fileIndex = files.length;
 	return await fetchingWrapper(
 		Promise.all(fileList.map(file => uploadFile(file, defaultStore.state.uploadFolder)))
 			.then(driveFiles => {
-				files.splice(fileIndex, 0, ...driveFiles);
+				files.push(...driveFiles);
 			}),
 	);
 };
