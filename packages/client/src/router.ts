@@ -544,22 +544,15 @@ mainRouter.addListener('same', () => {
 
 window.addEventListener('popstate', (event) => {
 	const { historyId } = getHistoryState(event.state);
-
 	if (historyId) {
-		const hasHistory = histories.has(historyId);
-		if (hasHistory) {
+		if (histories.has(historyId)) {
 			histories.get(historyId)?.();
 			histories.delete(historyId);
 		}
-
-		historyIds = historyIds.filter(id => histories.has(id));
+		historyIds = historyIds.filter(id => historyId !== id);
 		const newHistoryId = historyIds.pop() ?? null;
-
-		history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
-
-		if (hasHistory) {
-			history.back();
-		}
+		history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '');
+		history.back();
 	}
 
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
