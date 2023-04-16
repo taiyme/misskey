@@ -321,7 +321,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.transition_send_enterActive, .transition_send_leaveActive {
+.send-enter-active, .send-leave-active {
 	> .bg {
 		transition: opacity 0.3s !important;
 	}
@@ -332,7 +332,7 @@ defineExpose({
 	}
 }
 
-.transition_send_enterFrom, .transition_send_leaveTo {
+.send-enter-from, .send-leave-to {
 	> .bg {
 		opacity: 0;
 	}
