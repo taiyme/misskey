@@ -546,19 +546,27 @@ window.addEventListener('popstate', (event) => {
 	const { historyId } = getHistoryState(event.state);
 
 	if (historyId) {
-		const hasHistory = histories.has(historyId);
-		if (hasHistory) {
-			histories.get(historyId)?.();
-			histories.delete(historyId);
-		}
-
-		historyIds = historyIds.filter(id => histories.has(id));
-		const newHistoryId = historyIds.pop() ?? null;
-
-		history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
-
-		if (hasHistory) {
+		if (historyId === '_used_backward_') {
+			history.replaceState(mergeHistoryState({ historyId: '_used_forward_' }), '', location.href);
+			history.forward();
+		} else if (historyId === '_used_forward_') {
+			history.replaceState(mergeHistoryState({ historyId: '_used_backward_' }), '', location.href);
 			history.back();
+		} else {
+			const hasHistory = histories.has(historyId);
+			if (hasHistory) {
+				histories.get(historyId)?.();
+				histories.delete(historyId);
+			}
+
+			historyIds = historyIds.filter(id => histories.has(id));
+			const newHistoryId = historyIds.pop() ?? '_used_backward_';
+
+			history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
+
+			if (hasHistory) {
+				history.back();
+			}
 		}
 	}
 
