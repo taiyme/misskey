@@ -538,34 +538,7 @@ mainRouter.addListener('push', ctx => {
 	}
 });
 
-const actionedHistories = new Map<string, 'forward' | 'backward'>();
-
 mainRouter.addListener('replace', ctx => {
-	const historyState = getHistoryState(window.history.state);
-	const { historyId } = historyState;
-
-	if (historyId) {
-		const historyType = actionedHistories.get(historyId);
-
-		if (historyType === 'forward') {
-			actionedHistories.set(historyId, 'backward');
-			window.history.forward();
-		} else if (historyType === 'backward') {
-			actionedHistories.set(historyId, 'forward');
-			window.history.back();
-		} else {
-			const hasHistory = histories.has(historyId);
-			if (hasHistory) {
-				histories.get(historyId)?.();
-				histories.delete(historyId);
-				actionedHistories.set(historyId, 'forward');
-			}
-
-			historyIds = historyIds.filter(id => histories.has(id));
-			if (hasHistory) window.history.back();
-		}
-	}
-
 	window.history.replaceState(mergeHistoryState({ key: ctx.key }), '', ctx.path);
 });
 
@@ -573,15 +546,54 @@ mainRouter.addListener('same', () => {
 	window.scroll({ top: 0, behavior: 'smooth' });
 });
 
+const actionedHistoryIds: string[] = [];
+let prevHistoryState: HistoryState = getHistoryState(window.history.state);
+
 window.addEventListener('popstate', (event) => {
 	const historyState = getHistoryState(event.state);
+	const { historyId } = historyState;
 
-	mainRouter.replace(location.pathname + location.search + location.hash, historyState.key, false);
-	const scrollPos = historyState.key ? scrollPosStore.get(historyState.key) ?? 0 : 0;
-	window.scroll({ top: scrollPos, behavior: 'instant' });
-	window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+	console.log('[router/curState]', historyState);
+	console.log('[router/prevState]', prevHistoryState);
+
+	if (historyId) {
+		if (actionedHistoryIds.includes(historyId)) {
+			if (prevHistoryState.count > historyState.count) {
+				// backward
+				console.log('[router]: backward');
+			} else if (prevHistoryState.count < historyState.count) {
+				// forward
+				console.log('[router]: forward');
+			} else {
+				// stay
+				console.log('[router]: stay');
+			}
+		} else {
+			const hasHistory = histories.has(historyId);
+			if (hasHistory) {
+				histories.get(historyId)?.();
+				histories.delete(historyId);
+				actionedHistoryIds.push(historyId);
+			}
+	
+			historyIds = historyIds.filter(id => histories.has(id));
+			const newHistoryId = historyIds.pop() ?? null;
+			if (newHistoryId) {
+				window.history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '', location.href);
+			}
+		}
+	}
+
+	if (historyState.key && historyState.key !== prevHistoryState.key) {
+		mainRouter.replace(location.pathname + location.search + location.hash, historyState.key, false);
+		const scrollPos = scrollPosStore.get(historyState.key) ?? 0;
 		window.scroll({ top: scrollPos, behavior: 'instant' });
-	}, 100);
+		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+			window.scroll({ top: scrollPos, behavior: 'instant' });
+		}, 100);
+	}
+
+	prevHistoryState = historyState;
 });
 
 export function useRouter(): Router {
