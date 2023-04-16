@@ -542,10 +542,16 @@ mainRouter.addListener('same', () => {
 	window.scroll({ top: 0, behavior: 'smooth' });
 });
 
+let disableHistoryHandler = false;
+
 window.addEventListener('popstate', (event) => {
+	if (disableHistoryHandler) return;
+
 	const { historyId } = getHistoryState(event.state);
 
 	if (historyId) {
+		disableHistoryHandler = true;
+
 		if (historyId === '_used_backward_') {
 			history.replaceState(mergeHistoryState({ historyId: '_used_forward_' }), '', location.href);
 			history.forward();
@@ -568,6 +574,8 @@ window.addEventListener('popstate', (event) => {
 				history.back();
 			}
 		}
+
+		disableHistoryHandler = false;
 	}
 
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
