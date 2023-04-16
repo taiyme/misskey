@@ -263,7 +263,7 @@ function del(): void {
 				::selection {
 					color: var(--accent);
 					background-color: #fff;
-				} 
+				}
 
 				&.noText {
 					background: transparent;

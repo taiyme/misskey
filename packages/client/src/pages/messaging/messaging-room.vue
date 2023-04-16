@@ -100,7 +100,7 @@ async function fetch() {
 		const acct = Acct.parse(props.userAcct);
 		user = await os.api('users/show', { username: acct.username, host: acct.host || undefined });
 		group = null;
-		
+
 		pagination = {
 			endpoint: 'messaging/messages',
 			limit: 20,

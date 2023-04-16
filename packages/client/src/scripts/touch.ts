@@ -33,7 +33,7 @@ if (isTouchSupported) {
 
 		dmcHandler();
 	}, { passive: true });
-	
+
 	window.addEventListener('touchend', () => {
 		// 子要素のtouchstartイベントでstopPropagation()が呼ばれると親要素に伝搬されずタッチされたと判定されないため、
 		// touchendイベントでもtouchstartイベントと同様にtrueにする

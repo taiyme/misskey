@@ -51,7 +51,7 @@ onMounted(() => {
 const { collapseNote, collapseNoteHeight } = tmsStore.state;
 const isLong = $computed(() => {
 	return collapseNote && !!(
-		props.note.cw == null && 
+		props.note.cw == null &&
 		props.note.text != null && (
 			// textElHeight: null の場合は文字数で判定する
 			(!!collapseNoteHeight && (textElHeight == null ? props.note.text.length > 500 : textElHeight >= collapseNoteHeight))

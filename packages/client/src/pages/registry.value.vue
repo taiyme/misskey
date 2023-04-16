@@ -19,7 +19,7 @@
 					<template #value>{{ key }}</template>
 				</MkKeyValue>
 			</FormSplit>
-			
+
 			<FormTextarea v-model="valueForEditor" tall class="_formBlock _monospace">
 				<template #label>{{ i18n.ts.value }} (JSON)</template>
 			</FormTextarea>

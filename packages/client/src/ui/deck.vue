@@ -394,7 +394,7 @@ async function deleteProfile() {
 			&:active {
 				background: var(--X2);
 			}
-			
+
 			&.post {
 				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 				color: var(--fgOnAccent);

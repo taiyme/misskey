@@ -188,7 +188,7 @@ export default defineComponent({
 
 			> .post {
 				display: inline-block;
-			
+
 				> .button {
 					width: 40px;
 					height: 40px;

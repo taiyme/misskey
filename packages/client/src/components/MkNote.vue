@@ -191,7 +191,7 @@ const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : n
 const { collapseNote, collapseNoteHeight, collapseNoteFile, collapseNoteUrl, collapseNotePoll } = tmsStore.state;
 const isLong = $computed(() => {
 	return collapseNote && !!(
-		appearNote.cw == null && 
+		appearNote.cw == null &&
 		appearNote.text != null && (
 			// textElHeight: null の場合は文字数で判定する
 			(!!collapseNoteHeight && (textElHeight == null ? appearNote.text.length > 500 : textElHeight >= collapseNoteHeight)) ||

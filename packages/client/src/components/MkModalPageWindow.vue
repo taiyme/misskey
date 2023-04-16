@@ -45,7 +45,6 @@ defineEmits<{
 const router = new Router(routes, props.initialPath);
 
 router.addListener('push', ctx => {
-	
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();

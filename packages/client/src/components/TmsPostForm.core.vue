@@ -461,7 +461,7 @@ onMounted(() => {
 	}
 
 	nextTick(() => {
-		if (!props.instant && !props.fixed) {	
+		if (!props.instant && !props.fixed) {
 			const _draft = draft ?? Draft.getDraft(draftKey);
 			if (_draft) {
 				text = _draft.data.text;

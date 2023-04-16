@@ -155,7 +155,7 @@ const search = async (): Promise<void> => {
 			break;
 		}
 	}
-	
+
 	if (location.pathname === '/search') {
 		window.history.replaceState(null, '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
 	}

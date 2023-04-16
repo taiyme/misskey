@@ -7,7 +7,7 @@
 
 	--margin: var(--marginFull);
 	--minBottomSpacing: 0px;
-	
+
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
 		--minBottomSpacing: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
@@ -19,7 +19,7 @@
 ::selection {
 	color: #fff;
 	background-color: var(--accent);
-} 
+}
 
 html {
 	touch-action: manipulation;
@@ -365,11 +365,11 @@ hr {
 	._section:not(:empty) {
 		box-sizing: border-box;
 		padding: var(--root-margin, 32px);
-	
+
 		@media (max-width: 500px) {
 			--root-margin: 10px;
 		}
-	
+
 		& + ._section:not(:empty) {
 			border-top: solid 0.5px var(--divider);
 		}

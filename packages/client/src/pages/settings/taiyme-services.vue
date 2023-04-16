@@ -337,7 +337,7 @@ const save = async (): Promise<void> => {
 			text: errors.join('\n'),
 		});
 	}
-	
+
 	type Store = typeof tmsStore.state;
 	type StoreKeys = keyof Store;
 

@@ -82,7 +82,7 @@ defineProps<{
 			opacity: 0.7;
 		}
 	}
-	
+
 	> .followed {
 		position: absolute;
 		top: 12px;
@@ -93,7 +93,7 @@ defineProps<{
 		font-size: 0.7em;
 		border-radius: 6px;
 	}
-	
+
 	> .description {
 		padding: 16px;
 		font-size: 0.8em;

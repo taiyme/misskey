@@ -18,7 +18,7 @@
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFolder>
-	
+
 	<MkFolder v-for="category in customEmojiCategories" :key="category" class="emojis">
 		<template #header>{{ category || $ts.other }}</template>
 		<div class="zuvgdzyt">

@@ -60,7 +60,7 @@ const getReactionName = (reaction: string): string => {
 		}
 
 		> .mk-emoji-fallback {
-			display: none;				
+			display: none;
 		}
 
 		> .name {

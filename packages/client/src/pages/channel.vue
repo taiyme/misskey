@@ -104,12 +104,12 @@ definePageMetadata(computed(() => channel ? {
 		color: #fff;
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 100%;
-		
+
 		> i {
 			vertical-align: middle;
 		}
 	}
-	
+
 	> .banner {
 		position: relative;
 		height: 200px;
