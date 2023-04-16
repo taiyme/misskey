@@ -552,7 +552,7 @@ window.addEventListener('popstate', (event) => {
 		historyIds = historyIds.filter(id => historyId !== id);
 		const newHistoryId = historyIds.pop() ?? null;
 		history.replaceState(mergeHistoryState({ historyId: newHistoryId }), '');
-		return;
+		history.back();
 	}
 
 	mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
