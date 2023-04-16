@@ -452,18 +452,16 @@ onMounted(() => {
 	}
 
 	nextTick(() => {
-		if (!props.instant && !props.mention && !props.specified) {
-			const _draft = draft ?? Draft.getDraft(draftKey);
-			if (_draft) {
-				text = _draft.data.text;
-				useCw = _draft.data.useCw;
-				cw = _draft.data.cw;
-				visibility = _draft.data.visibility;
-				localOnly = _draft.data.localOnly;
-				files = _draft.data.files;
-				poll = _draft.data.poll;
-				setQuote(_draft.data.renoteId);
-			}
+		const _draft = draft ?? Draft.getDraft(draftKey);
+		if (_draft) {
+			text = _draft.data.text;
+			useCw = _draft.data.useCw;
+			cw = _draft.data.cw;
+			visibility = _draft.data.visibility;
+			localOnly = _draft.data.localOnly;
+			files = _draft.data.files;
+			poll = _draft.data.poll;
+			setQuote(_draft.data.renoteId);
 		}
 	});
 });
