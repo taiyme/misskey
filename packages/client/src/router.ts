@@ -479,7 +479,7 @@ type HistoryState = {
 
 const getHistoryState = (_state?: unknown): HistoryState => {
 	const state = typeof (_state ?? window.history.state) === 'object'
-		? (_state ?? window.history.state ?? {}) as Partial<HistoryState>
+		? (_state ?? window.history.state) as Partial<HistoryState>
 		: {};
 
 	return {
