@@ -8,7 +8,7 @@ import { defaultStore } from '@/store';
 import { uploadFile } from '@/scripts/upload';
 
 function select(src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> {
-	return new Promise((res, rej) => {
+	return new Promise(async (res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
 		const chooseFileFromPc = () => {
@@ -72,7 +72,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			});
 		};
 
-		os.popupMenu([label ? {
+		const { canceled } = await os.popupMenu([label ? {
 			text: label,
 			type: 'label',
 		} : undefined, {
@@ -92,6 +92,8 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			icon: 'ti ti-link',
 			action: chooseFileFromUrl,
 		}], src);
+
+		if (canceled) rej();
 	});
 }
 

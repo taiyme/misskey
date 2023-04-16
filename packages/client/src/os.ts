@@ -535,8 +535,8 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;
-}): Promise<void> => {
-	return new Promise((resolve, _reject) => {
+}): Promise<{ canceled: boolean }> => {
+	return new Promise(resolve => {
 		let dispose: () => void;
 		popup(defineAsyncComponent(() => import('@/components/MkPopupMenu.vue')), {
 			items,
@@ -545,8 +545,10 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 			align: options?.align,
 			viaKeyboard: options?.viaKeyboard,
 		}, {
-			closed: () => {
-				resolve();
+			done: (result: unknown) => {
+				resolve({
+					canceled: !result,
+				});
 				dispose();
 			},
 		}).then(res => {
