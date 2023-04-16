@@ -553,12 +553,11 @@ window.addEventListener('popstate', (event) => {
 	const historyState = getHistoryState(event.state);
 	const { historyId } = historyState;
 
-	let disableRouterReplace = false;
+	console.log('[router/curState]', historyState);
+	console.log('[router/prevState]', prevHistoryState);
 
 	if (historyId) {
 		if (actionedHistoryIds.includes(historyId)) {
-			disableRouterReplace = true;
-
 			if (prevHistoryState.count > historyState.count) {
 				// backward
 				console.log('[router]: backward');
@@ -585,16 +584,16 @@ window.addEventListener('popstate', (event) => {
 		}
 	}
 
-	prevHistoryState = historyState;
-
-	if (!disableRouterReplace) {
-		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key, false);
-		const scrollPos = scrollPosStore.get(event.state?.key) ?? 0;
+	if (historyState.key && historyState.key !== prevHistoryState.key) {
+		mainRouter.replace(location.pathname + location.search + location.hash, historyState.key, false);
+		const scrollPos = scrollPosStore.get(historyState.key) ?? 0;
 		window.scroll({ top: scrollPos, behavior: 'instant' });
 		window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
 			window.scroll({ top: scrollPos, behavior: 'instant' });
 		}, 100);
 	}
+
+	prevHistoryState = historyState;
 });
 
 export function useRouter(): Router {
