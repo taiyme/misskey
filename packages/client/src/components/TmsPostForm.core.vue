@@ -192,6 +192,12 @@ const fetchingWrapper = <T>(prom: Promise<T>): Promise<T> => {
 	return prom;
 };
 const fetching = $computed<boolean>(() => fetchingList.length !== 0);
+
+defineExpose({
+	isFetching(): boolean {
+		return fetching;
+	},
+});
 //#endregion
 
 //#region params, flags

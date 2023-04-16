@@ -1,14 +1,15 @@
 <template>
 <TmsPostFormCore
 	v-if="showPostForm"
+	ref="form"
 	v-bind="bindProps"
 	:instant="props.instant"
 	:fixed="props.fixed"
 	:autofocus="props.autofocus"
 	:freeze-after-posted="props.freezeAfterPosted"
-	@posted="emit('posted')"
-	@cancel="emit('cancel')"
-	@esc="emit('esc')"
+	@posted="posted"
+	@cancel="cancel"
+	@esc="esc"
 	@reopen="reopen"
 />
 </template>
@@ -22,8 +23,6 @@ import { $i } from '@/account';
 import * as Draft from '@/scripts/tms/drafts';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import TmsPostFormCore from '@/components/TmsPostForm.core.vue';
-
-let showPostForm = $ref(false);
 
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note | null;
@@ -92,7 +91,21 @@ let bindProps = $ref<{
 	initialVisibleUsers: props.initialVisibleUsers,
 });
 
+const form = ref<InstanceType<typeof TmsPostFormCore> | null>(null);
+
+const showPostForm = ref(false);
+
+const shown = (): void => {
+	showPostForm.value = true;
+};
+
+const hidden = (): void => {
+	showPostForm.value = false;
+};
+
 onMounted(() => {
+	hidden();
+
 	if (props.initialNote) {
 		const init = props.initialNote as Misskey.entities.Note & {
 			channel?: Misskey.entities.Channel;
@@ -123,15 +136,32 @@ onMounted(() => {
 		});
 	}
 
-	nextTick(() => showPostForm = true);
+	nextTick(shown);
 });
 
+const posted = (): void => {
+	emit('posted');
+};
+
+const cancel = (): void => {
+	if (form.value?.isFetching()) return;
+	emit('cancel');
+};
+
+const esc = (): void => {
+	if (form.value?.isFetching()) return;
+	emit('esc');
+};
+
 const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
-	showPostForm = false;
+	if (form.value?.isFetching()) return;
+
+	hidden();
+
+	bindProps = {};
 
 	if (!draft) {
-		bindProps = {};
-		nextTick(() => showPostForm = true);
+		nextTick(shown);
 		return;
 	}
 
@@ -152,8 +182,6 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 		text: i18n.ts.processing,
 	}, {}, 'closed');
 
-	bindProps = {};
-
 	bindProps.reply = await reply;
 	bindProps.renote = await renote;
 	bindProps.channel = await channel;
@@ -165,6 +193,6 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 		channelId: bindProps.channel?.id ?? null,
 	});
 
-	nextTick(() => showPostForm = true);
+	nextTick(shown);
 };
 </script>
