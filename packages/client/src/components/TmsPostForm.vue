@@ -14,12 +14,13 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import * as Draft from '@/scripts/tms/drafts';
+import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import TmsPostFormCore from '@/components/TmsPostForm.core.vue';
 
 let showPostForm = $ref(false);
@@ -138,21 +139,30 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 
 	const reply = replyId ? os.api('notes/show', { noteId: replyId }).catch(() => null) : null;
 	const renote = renoteId ? os.api('notes/show', { noteId: renoteId }).catch(() => null) : null;
-	const channel = channelId ? os.api('channels/show', { channelId: channelId }).catch(() => null) : null;
+	const channel = channelId ? (os.api('channels/show', { channelId: channelId }) as Promise<Misskey.entities.Channel>).catch(() => null) : null;
 
-	os.promiseDialog(Promise.allSettled([reply, renote, channel]), null, null, i18n.ts.processing);
+	const showing = ref(true);
+	Promise.allSettled([reply, renote, channel]).then(() => {
+		showing.value = false;
+	});
+
+	os.popup(MkWaitingDialog, {
+		success: false,
+		showing,
+		text: i18n.ts.processing,
+	}, {}, 'closed');
 
 	bindProps = {};
 
 	bindProps.reply = await reply;
 	bindProps.renote = await renote;
-	bindProps.channel = (await channel) as Misskey.entities.Channel | null;
+	bindProps.channel = await channel;
 
 	bindProps.draft = Draft.setDraft(draft.id, {
 		...draft.data,
-		replyId: (await reply)?.id ?? null,
-		renoteId: (await renote)?.id ?? null,
-		channelId: (await channel)?.id ?? null,
+		replyId: bindProps.reply?.id ?? null,
+		renoteId: bindProps.renote?.id ?? null,
+		channelId: bindProps.channel?.id ?? null,
 	});
 
 	nextTick(() => showPostForm = true);
