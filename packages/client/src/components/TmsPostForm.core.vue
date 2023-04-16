@@ -19,7 +19,7 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<button v-tooltip="i18n.ts._tms.drafts" :class="['_button', $style.headerRightButton]" @click="chooseDraft">
+			<button v-if="!channel && !fixed" v-tooltip="i18n.ts._tms.drafts" :class="['_button', $style.headerRightButton]" @click="chooseDraft">
 				<span><i class="ti ti-notes"></i></span>
 			</button>
 			<template v-if="!(channel && fixed)">

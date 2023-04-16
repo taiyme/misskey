@@ -11,14 +11,14 @@
 	@esc="emit('esc')"
 	@reopen="reopen"
 />
-<div v-else style="display: grid; place-items: center;"><MkEllipsis/></div>
 </template>
 
 <script lang="ts" setup>
 import { nextTick, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import { $i } from '@/account';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
 import * as Draft from '@/scripts/tms/drafts';
 import TmsPostFormCore from '@/components/TmsPostForm.core.vue';
 
@@ -137,15 +137,26 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 
 	const { replyId, renoteId, channelId } = Draft.parseDraftId(draft.id);
 
-	const reply = replyId ? os.api('notes/show', { noteId: replyId }) : null;
-	const renote = renoteId ? os.api('notes/show', { noteId: renoteId }) : null;
-	const channel = channelId ? os.api('channels/show', { channelId: channelId }) : null;
+	const reply = replyId ? os.api('notes/show', { noteId: replyId }).catch(() => null) : null;
+	const renote = renoteId ? os.api('notes/show', { noteId: renoteId }).catch(() => null) : null;
+	const channel = channelId ? os.api('channels/show', { channelId: channelId }).catch(() => null) : null;
+
+	os.promiseDialog(Promise.allSettled([reply, renote, channel]), null, null, i18n.ts.processing);
 
 	bindProps = {};
 
 	bindProps.reply = await reply;
 	bindProps.renote = await renote;
 	bindProps.channel = (await channel) as Misskey.entities.Channel | null;
+
+	Draft.setDraft(draft.id, {
+		...draft.data,
+		replyId: (await reply)?.id ?? null,
+		renoteId: (await renote)?.id ?? null,
+		channelId: (await channel)?.id ?? null,
+	});
+
+	bindProps.draft = Draft.getDraft(draft.id);
 
 	nextTick(() => showPostForm = true);
 };
