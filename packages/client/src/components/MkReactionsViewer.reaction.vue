@@ -1,14 +1,21 @@
 <template>
-<button
-	v-if="count > 0"
-	ref="buttonRef"
-	class="hkzvhatu _button"
-	:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'easy' : 'normal']"
-	@click="react"
+<Transition
+	:enter-active-class="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
 >
-	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
-	<span class="count">{{ count }}</span>
-</button>
+	<button
+		v-if="count > 0"
+		ref="buttonRef"
+		class="hkzvhatu _button"
+		:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'easy' : 'normal']"
+		@click="react"
+	>
+		<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
+		<span class="count">{{ count }}</span>
+	</button>
+</Transition>
 </template>
 
 <script lang="ts" setup>
@@ -182,5 +189,22 @@ useTooltip(buttonRef, async (showing) => {
 			font-size: 0.9em;
 		}
 	}
+}
+</style>
+
+<style lang="scss" module>
+.transition_x_enterActive, .transition_x_leaveActive {
+	transition: opacity 0.1s cubic-bezier(0, 0.5, 0.5, 1), transform 0.1s cubic-bezier(0, 0.5, 0.5, 1) !important;
+}
+
+.transition_x_enterFrom, .transition_x_leaveTo {
+	opacity: 0;
+	transform: scale(0.9);
+}
+
+.transition_x_leaveActive {
+	position: absolute;
+	visibility: hidden;
+	pointer-events: none;
 }
 </style>
