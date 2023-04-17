@@ -6,21 +6,22 @@
 	:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
 	appear
 >
-	<button
-		v-if="count > 0"
-		ref="buttonRef"
-		class="hkzvhatu _button"
-		:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'easy' : 'normal']"
-		@click="react"
-	>
-		<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
-		<span class="count">{{ count }}</span>
-	</button>
+	<div v-if="count > 0">
+		<button
+			ref="buttonRef"
+			class="hkzvhatu mk-reactions-viewer-reaction"
+			:class="['_button', useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: note.myReaction === reaction, [$style.canToggle]: canToggle }]"
+			@click="react"
+		>
+			<XReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
+			<span :class="$style.reactionCount">{{ count }}</span>
+		</button>
+	</div>
 </Transition>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
@@ -41,7 +42,7 @@ const props = defineProps<{
 
 const useEasyReactionsViewer = computed(() => tmsStore.state.useEasyReactionsViewer);
 
-const buttonRef = ref<HTMLElement>();
+const buttonRef = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
 
@@ -107,92 +108,6 @@ useTooltip(buttonRef, async (showing) => {
 }, 100);
 </script>
 
-<style lang="scss" scoped>
-.hkzvhatu {
-	&.normal {
-		display: inline-block;
-		height: 32px;
-		padding: 0 6px;
-		border-radius: 4px;
-
-		&.canToggle {
-			background-color: rgba(0, 0, 0, 0.05);
-
-			&:hover {
-				background-color: rgba(0, 0, 0, 0.1);
-			}
-		}
-
-		&:not(.canToggle) {
-			cursor: default;
-		}
-
-		&.reacted {
-			background-color: var(--accent);
-
-			&:hover {
-				background-color: var(--accent);
-			}
-
-			> .count {
-				color: var(--fgOnAccent);
-			}
-
-			> .icon {
-				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-			}
-		}
-
-		> .count {
-			font-size: 0.9em;
-			line-height: 32px;
-			margin: 0 0 0 4px;
-		}
-	}
-
-	&.easy {
-		background-color: var(--panel);
-		color: var(--fgTransparentWeak);
-		box-sizing: border-box;
-		display: grid;
-		grid-template-columns: auto auto;
-		grid-template-rows: 32px;
-		align-items: center;
-		border-radius: 4px;
-		box-shadow: 0 4px 14px -8px var(--shadow);
-		overflow: hidden;
-
-		&.canToggle {
-			box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
-		}
-
-		&.canToggle:hover,
-		&.reacted {
-			background-color: var(--accent);
-			color: var(--fgOnAccent);
-		}
-
-		&:not(.canToggle) {
-			cursor: default;
-		}
-
-		> .icon {
-			background-color: #fff;
-			box-sizing: border-box;
-			padding: 4px;
-			max-width: 100%; // はみ出し防止
-			height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
-		}
-
-		> .count {
-			box-sizing: border-box;
-			padding: 0 6px;
-			font-size: 0.9em;
-		}
-	}
-}
-</style>
-
 <style lang="scss" module>
 .transition_x_enterActive, .transition_x_leaveActive {
 	transition: opacity 0.1s cubic-bezier(0, 0.5, 0.5, 1), transform 0.1s cubic-bezier(0, 0.5, 0.5, 1) !important;
@@ -207,5 +122,87 @@ useTooltip(buttonRef, async (showing) => {
 	position: absolute;
 	visibility: hidden;
 	pointer-events: none;
+}
+
+.viewTypeNormal {
+	display: inline-block;
+	height: 32px;
+	padding: 0 6px;
+	border-radius: 4px;
+
+	&.canToggle {
+		background-color: rgba(0, 0, 0, 0.05);
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	&:not(.canToggle) {
+		cursor: default;
+	}
+
+	&.reacted {
+		background-color: var(--accent);
+
+		&:hover {
+			background-color: var(--accent);
+		}
+
+		> .reactionCount {
+			color: var(--fgOnAccent);
+		}
+
+		> .reactionIcon {
+			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+		}
+	}
+
+	> .reactionCount {
+		font-size: 0.9em;
+		line-height: 32px;
+		margin: 0 0 0 4px;
+	}
+}
+
+.viewTypeEasy {
+	background-color: var(--panel);
+	color: var(--fgTransparentWeak);
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: 32px;
+	align-items: center;
+	border-radius: 4px;
+	box-shadow: 0 4px 14px -8px var(--shadow);
+	overflow: hidden;
+
+	&.canToggle {
+		box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
+	}
+
+	&.canToggle:hover,
+	&.reacted {
+		background-color: var(--accent);
+		color: var(--fgOnAccent);
+	}
+
+	&:not(.canToggle) {
+		cursor: default;
+	}
+
+	> .reactionIcon {
+		background-color: #fff;
+		box-sizing: border-box;
+		padding: 4px;
+		max-width: 100%; // はみ出し防止
+		height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
+	}
+
+	> .reactionCount {
+		box-sizing: border-box;
+		padding: 0 6px;
+		font-size: 0.9em;
+	}
 }
 </style>

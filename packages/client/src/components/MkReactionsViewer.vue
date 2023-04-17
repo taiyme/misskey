@@ -1,5 +1,5 @@
 <template>
-<div :class="$style.root" class="tdflqwzn">
+<div :class="$style.root" class="tdflqwzn mk-reactions-viewer">
 	<XReaction
 		v-for="[reaction, count] in reactions"
 		:key="reaction"
