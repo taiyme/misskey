@@ -6,7 +6,7 @@
 	:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
 	appear
 >
-	<div v-if="count > 0">
+	<div v-if="count > 0" :class="$style.root">
 		<button
 			ref="buttonRef"
 			class="hkzvhatu mk-reactions-viewer-reaction"
@@ -124,85 +124,87 @@ useTooltip(buttonRef, async (showing) => {
 	pointer-events: none;
 }
 
-.viewTypeNormal {
-	display: inline-block;
-	height: 32px;
-	padding: 0 6px;
-	border-radius: 4px;
+.root {
+	.viewTypeNormal {
+		display: inline-block;
+		height: 32px;
+		padding: 0 6px;
+		border-radius: 4px;
 
-	&.canToggle {
-		background-color: rgba(0, 0, 0, 0.05);
+		&.canToggle {
+			background-color: rgba(0, 0, 0, 0.05);
 
-		&:hover {
-			background-color: rgba(0, 0, 0, 0.1);
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.1);
+			}
 		}
-	}
 
-	&:not(.canToggle) {
-		cursor: default;
-	}
+		&:not(.canToggle) {
+			cursor: default;
+		}
 
-	&.reacted {
-		background-color: var(--accent);
-
-		&:hover {
+		&.reacted {
 			background-color: var(--accent);
+
+			&:hover {
+				background-color: var(--accent);
+			}
+
+			> .reactionCount {
+				color: var(--fgOnAccent);
+			}
+
+			> .reactionIcon {
+				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			}
 		}
 
 		> .reactionCount {
+			font-size: 0.9em;
+			line-height: 32px;
+			margin: 0 0 0 4px;
+		}
+	}
+
+	.viewTypeEasy {
+		background-color: var(--panel);
+		color: var(--fgTransparentWeak);
+		box-sizing: border-box;
+		display: grid;
+		grid-template-columns: auto auto;
+		grid-template-rows: 32px;
+		align-items: center;
+		border-radius: 4px;
+		box-shadow: 0 4px 14px -8px var(--shadow);
+		overflow: hidden;
+
+		&.canToggle {
+			box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
+		}
+
+		&.canToggle:hover,
+		&.reacted {
+			background-color: var(--accent);
 			color: var(--fgOnAccent);
 		}
 
-		> .reactionIcon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+		&:not(.canToggle) {
+			cursor: default;
 		}
-	}
 
-	> .reactionCount {
-		font-size: 0.9em;
-		line-height: 32px;
-		margin: 0 0 0 4px;
-	}
-}
+		> .reactionIcon {
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 4px;
+			max-width: 100%; // はみ出し防止
+			height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
+		}
 
-.viewTypeEasy {
-	background-color: var(--panel);
-	color: var(--fgTransparentWeak);
-	box-sizing: border-box;
-	display: grid;
-	grid-template-columns: auto auto;
-	grid-template-rows: 32px;
-	align-items: center;
-	border-radius: 4px;
-	box-shadow: 0 4px 14px -8px var(--shadow);
-	overflow: hidden;
-
-	&.canToggle {
-		box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
-	}
-
-	&.canToggle:hover,
-	&.reacted {
-		background-color: var(--accent);
-		color: var(--fgOnAccent);
-	}
-
-	&:not(.canToggle) {
-		cursor: default;
-	}
-
-	> .reactionIcon {
-		background-color: #fff;
-		box-sizing: border-box;
-		padding: 4px;
-		max-width: 100%; // はみ出し防止
-		height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
-	}
-
-	> .reactionCount {
-		box-sizing: border-box;
-		padding: 0 6px;
-		font-size: 0.9em;
+		> .reactionCount {
+			box-sizing: border-box;
+			padding: 0 6px;
+			font-size: 0.9em;
+		}
 	}
 }
 </style>
