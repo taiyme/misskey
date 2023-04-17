@@ -4,6 +4,7 @@
 	:leave-active-class="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
 	:enter-from-class="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
 	:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
+	appear
 >
 	<button
 		v-if="count > 0"
