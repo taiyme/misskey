@@ -918,14 +918,12 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 const chooseFileFrom = (ev: MouseEvent): void => {
 	const el = getHtmlElementFromEvent(ev);
 
-	fetchingWrapper(
-		selectFiles(el, i18n.ts.attachFile)
-			.then(_files => {
-				for (const file of _files) {
-					files.push(file);
-				}
-			}),
-	);
+	selectFiles(el, i18n.ts.attachFile, fetchingWrapper)
+		.then(_files => {
+			for (const file of _files) {
+				files.push(file);
+			}
+		});
 };
 
 const togglePoll = (): void => {

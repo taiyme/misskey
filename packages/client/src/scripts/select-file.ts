@@ -13,7 +13,11 @@ declare global {
 	}
 }
 
-const select = (src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> => {
+type FetchingWrapper = {
+	<T>(prom: Promise<T>): Promise<T>;
+};
+
+const select = (src: any, label: string | null, multiple: boolean, fetchingWrapper?: FetchingWrapper): Promise<DriveFile | DriveFile[]> => {
 	return new Promise(async (res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
@@ -31,6 +35,10 @@ const select = (src: any, label: string | null, multiple: boolean): Promise<Driv
 					rej();
 				});
 
+				if (fetchingWrapper) {
+					fetchingWrapper(Promise.all(promises));
+				}
+
 				// 一応廃棄
 				window.__misskey_input_ref__ = null;
 			};
@@ -43,11 +51,15 @@ const select = (src: any, label: string | null, multiple: boolean): Promise<Driv
 		};
 
 		const chooseFileFromDrive = (): void => {
-			os.selectDriveFile(multiple).then(files => {
+			const promise = os.selectDriveFile(multiple).then(files => {
 				res(files);
 			}).catch((): void => {
 				rej();
 			});
+
+			if (fetchingWrapper) {
+				fetchingWrapper(promise);
+			}
 		};
 
 		const chooseFileFromUrl = (): void => {
@@ -60,22 +72,30 @@ const select = (src: any, label: string | null, multiple: boolean): Promise<Driv
 
 				const marker = uuid();
 
-				const connection = stream.useChannel('main');
-				connection.on('urlUploadFinished', urlResponse => {
-					if (urlResponse.marker === marker) {
-						res(multiple ? [urlResponse.file] : urlResponse.file);
+				const promise = new Promise<void>(r => {
+					const connection = stream.useChannel('main');
+					connection.on('urlUploadFinished', urlResponse => {
+						if (urlResponse.marker === marker) {
+							r();
+							res(multiple ? [urlResponse.file] : urlResponse.file);
+							connection.dispose();
+						}
+					});
+
+					os.api('drive/files/upload-from-url', {
+						url: url,
+						folderId: defaultStore.state.uploadFolder,
+						marker,
+					}).catch(() => {
+						r();
+						rej();
 						connection.dispose();
-					}
+					});
 				});
 
-				os.api('drive/files/upload-from-url', {
-					url: url,
-					folderId: defaultStore.state.uploadFolder,
-					marker,
-				}).catch((): void => {
-					rej();
-					connection.dispose();
-				});
+				if (fetchingWrapper) {
+					fetchingWrapper(promise);
+				}
 
 				os.alert({
 					title: i18n.ts.uploadFromUrlRequested,
@@ -109,10 +129,10 @@ const select = (src: any, label: string | null, multiple: boolean): Promise<Driv
 	});
 };
 
-export const selectFile = (src: any, label: string | null = null): Promise<DriveFile> => {
-	return select(src, label, false) as Promise<DriveFile>;
+export const selectFile = (src: any, label: string | null = null, fetchingWrapper?: FetchingWrapper): Promise<DriveFile> => {
+	return select(src, label, false, fetchingWrapper) as Promise<DriveFile>;
 };
 
-export const selectFiles = (src: any, label: string | null = null): Promise<DriveFile[]> => {
-	return select(src, label, true) as Promise<DriveFile[]>;
+export const selectFiles = (src: any, label: string | null = null, fetchingWrapper?: FetchingWrapper): Promise<DriveFile[]> => {
+	return select(src, label, true, fetchingWrapper) as Promise<DriveFile[]>;
 };
