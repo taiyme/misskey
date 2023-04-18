@@ -33,7 +33,7 @@ const openNotificationSetting = (): void => {
 		}) => {
 			const { includingTypes } = res;
 			updateColumn(props.column.id, {
-				includingTypes: includingTypes ?? [],
+				includingTypes: includingTypes,
 			});
 		},
 	}, 'closed');

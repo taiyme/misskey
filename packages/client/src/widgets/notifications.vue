@@ -64,7 +64,7 @@ const configureNotification = (): void => {
 			includingTypes: typeof notificationTypes[number][] | null;
 		}) => {
 			const { includingTypes } = res;
-			widgetProps.includingTypes = includingTypes ?? [];
+			widgetProps.includingTypes = includingTypes;
 			save();
 		},
 	}, 'closed');

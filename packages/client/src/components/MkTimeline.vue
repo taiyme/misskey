@@ -54,8 +54,8 @@ const onChangeFollowing = (): void => {
 
 let endpoint: keyof Misskey.Endpoints | undefined;
 let query: Misskey.Endpoints[keyof Misskey.Endpoints]['req'] | undefined;
-let connection: Misskey.ChannelConnection | undefined;
-let connection2: Misskey.ChannelConnection | undefined;
+let connection: Misskey.ChannelConnection | null = null;
+let connection2: Misskey.ChannelConnection | null = null;
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
@@ -135,8 +135,14 @@ const pagination = {
 };
 
 onUnmounted(() => {
-	connection?.dispose();
-	connection2?.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
+	if (connection2) {
+		connection2.dispose();
+		connection2 = null;
+	}
 });
 
 // const timetravel = (date?: Date) => {

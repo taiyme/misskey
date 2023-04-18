@@ -113,8 +113,8 @@ const props = withDefaults(defineProps<{
 const rootEl = ref<HTMLElement | null>(null);
 const reactionRef = ref<InstanceType<typeof MkReactionIcon> | null>(null);
 
-let readObserver: IntersectionObserver | undefined;
-let connection: misskey.ChannelConnection | undefined;
+let readObserver: IntersectionObserver | null = null;
+let connection: misskey.ChannelConnection | null = null;
 
 onMounted(() => {
 	if (rootEl.value && !props.notification.isRead) {
@@ -140,8 +140,14 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	readObserver?.disconnect();
-	connection?.dispose();
+	if (readObserver) {
+		readObserver.disconnect();
+		readObserver = null;
+	}
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 });
 
 const followRequestDone = ref(false);

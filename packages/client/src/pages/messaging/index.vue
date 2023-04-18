@@ -44,6 +44,7 @@
 
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted } from 'vue';
+import { ChannelConnection } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/MkButton.vue';
 import { acct } from '@/filters/user';
@@ -59,7 +60,7 @@ const router = useRouter();
 let fetching = $ref(true);
 let moreFetching = $ref(false);
 let messages = $ref([]);
-let connection = $ref(null);
+let connection = $ref<ChannelConnection | null>(null);
 
 const getAcct = Acct.toString;
 
@@ -149,7 +150,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 });
 
 const headerActions = $computed(() => []);

@@ -89,7 +89,10 @@ const {
 let pagination: Paging | null = $ref(null);
 
 watch([() => props.userAcct, () => props.groupId], () => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 	fetch();
 });
 
@@ -276,7 +279,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	connection?.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 	document.removeEventListener('visibilitychange', onVisibilitychange);
 	if (scrollRemove) scrollRemove();
 });

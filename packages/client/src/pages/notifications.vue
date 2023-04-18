@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-if="tab === 'all' || tab === 'unread'">
-			<MkNotifications class="notifications" :include-types="includeTypes ?? []" :unread-only="unreadOnly"/>
+			<MkNotifications class="notifications" :include-types="includeTypes" :unread-only="unreadOnly"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
 			<MkNotes :pagination="mentionsPagination"/>

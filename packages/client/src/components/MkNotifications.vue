@@ -28,7 +28,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	includeTypes?: typeof Misskey.notificationTypes[number][];
+	includeTypes?: typeof Misskey.notificationTypes[number][] | null;
 	unreadOnly?: boolean;
 }>();
 
@@ -38,14 +38,17 @@ const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
 	limit: 10,
 	params: computed(() => ({
-		includeTypes: props.includeTypes ?? undefined,
-		excludeTypes: props.includeTypes ? undefined : $i?.mutingNotificationTypes,
+		includeTypes: props.includeTypes ? props.includeTypes : undefined,
+		excludeTypes: !props.includeTypes ? $i?.mutingNotificationTypes : undefined,
 		unreadOnly: props.unreadOnly,
 	})),
 };
 
 const onNotification = (notification: Misskey.entities.Notification): void => {
-	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : !!$i?.mutingNotificationTypes.includes(notification.type);
+	const isMuted = props.includeTypes
+		? !props.includeTypes.includes(notification.type)
+		: !!$i?.mutingNotificationTypes.includes(notification.type);
+
 	if (isMuted || document.visibilityState === 'visible') {
 		stream.send('readNotification', {
 			id: notification.id,
@@ -60,7 +63,7 @@ const onNotification = (notification: Misskey.entities.Notification): void => {
 	}
 };
 
-let connection: Misskey.ChannelConnection | undefined;
+let connection: Misskey.ChannelConnection | null = null;
 
 onMounted(() => {
 	connection = stream.useChannel('main');
@@ -92,7 +95,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	connection?.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 });
 </script>
 
