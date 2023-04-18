@@ -1,4 +1,5 @@
 import * as Misskey from 'misskey-js';
+import { $i } from '@/account';
 import { defaultStore } from '@/store';
 import { parseObject } from '@/scripts/tms/parse';
 import { EditedPoll } from '@/components/MkPollEditor.vue';
@@ -152,6 +153,33 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 	return draftData;
 };
 
+export const createDraft = (): Draft => {
+	const draftId = genDraftId({
+		user: $i,
+		isEdit: true,
+	});
+
+	if (!draftId) throw new Error();
+
+	const draftData: LsDraft['data'] = {};
+
+	const updatedAt = new Date().toJSON();
+
+	saveLsDrafts({
+		...loadLsDrafts(),
+		[draftId]: {
+			updatedAt,
+			data: draftData,
+		},
+	});
+
+	return {
+		id: draftId,
+		updatedAt,
+		data: restoreDraftData(draftData),
+	};
+};
+
 export const getAllDraft = (): Draft[] => {
 	const drafts = loadLsDrafts();
 
@@ -166,25 +194,23 @@ export const getAllDraft = (): Draft[] => {
 	});
 };
 
-export const getDraft = (draftKey: string | null): Draft | null => {
-	if (!draftKey) return null;
+export const getDraft = (draftId: string | null): Draft | null => {
+	if (!draftId) return null;
 
-	const draft = loadLsDrafts()[draftKey];
+	const draft = loadLsDrafts()[draftId];
 	if (!draft) return null;
 
 	const { updatedAt, data } = draft;
 
 	return {
-		id: draftKey,
+		id: draftId,
 		updatedAt,
 		data: restoreDraftData(data),
 	};
 };
 
-export const setDraft = (draftKey: string | null, data: DraftData): Draft | null => {
-	if (!draftKey) return null;
-
-	const drafts = loadLsDrafts();
+export const setDraft = (draftId: string | null, data: DraftData, force = false): Draft | null => {
+	if (!draftId) return null;
 
 	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId, quoteId } = data;
 
@@ -206,34 +232,34 @@ export const setDraft = (draftKey: string | null, data: DraftData): Draft | null
 		draftData.localOnly = undefined;
 	}
 
-	if (isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId', 'visibility', 'localOnly'])) {
-		deleteDraft(draftKey);
+	if (!force && isEmptyObject(draftData, ['replyId', 'renoteId', 'channelId', 'visibility', 'localOnly'])) {
+		deleteDraft(draftId);
 		return null;
 	}
 
 	const updatedAt = new Date().toJSON();
 
 	saveLsDrafts({
-		...drafts,
-		[draftKey]: {
+		...loadLsDrafts(),
+		[draftId]: {
 			updatedAt,
 			data: draftData,
 		},
 	});
 
 	return {
-		id: draftKey,
+		id: draftId,
 		updatedAt,
 		data: restoreDraftData(draftData),
 	};
 };
 
-export const deleteDraft = (draftKey: string | null): void => {
-	if (!draftKey) return;
+export const deleteDraft = (draftId: string | null): void => {
+	if (!draftId) return;
 
 	const drafts = loadLsDrafts();
 
-	delete drafts[draftKey];
+	delete drafts[draftId];
 
 	saveLsDrafts(drafts);
 };
@@ -266,25 +292,23 @@ export const getAllMessageDraft = (): MessageDraft[] => {
 	});
 };
 
-export const getMessageDraft = (draftKey: string | null): MessageDraft | null => {
-	if (!draftKey) return null;
+export const getMessageDraft = (draftId: string | null): MessageDraft | null => {
+	if (!draftId) return null;
 
-	const draft = loadLsMessageDrafts()[draftKey];
+	const draft = loadLsMessageDrafts()[draftId];
 	if (!draft) return null;
 
 	const { updatedAt, data } = draft;
 
 	return {
-		id: draftKey,
+		id: draftId,
 		updatedAt,
 		data: restoreMessageDraftData(data),
 	};
 };
 
-export const setMessageDraft = (draftKey: string | null, data: MessageDraftData): MessageDraft | null => {
-	if (!draftKey) return null;
-
-	const drafts = loadLsMessageDrafts();
+export const setMessageDraft = (draftId: string | null, data: MessageDraftData, force = false): MessageDraft | null => {
+	if (!draftId) return null;
 
 	const { text, file } = data;
 
@@ -293,34 +317,34 @@ export const setMessageDraft = (draftKey: string | null, data: MessageDraftData)
 		file: file ?? undefined,
 	};
 
-	if (isEmptyObject(draftData, [])) {
-		deleteMessageDraft(draftKey);
+	if (!force && isEmptyObject(draftData, [])) {
+		deleteMessageDraft(draftId);
 		return null;
 	}
 
 	const updatedAt = new Date().toJSON();
 
 	saveLsMessageDrafts({
-		...drafts,
-		[draftKey]: {
+		...loadLsMessageDrafts(),
+		[draftId]: {
 			updatedAt,
 			data: draftData,
 		},
 	});
 
 	return {
-		id: draftKey,
+		id: draftId,
 		updatedAt,
 		data: restoreMessageDraftData(draftData),
 	};
 };
 
-export const deleteMessageDraft = (draftKey: string | null): void => {
-	if (!draftKey) return;
+export const deleteMessageDraft = (draftId: string | null): void => {
+	if (!draftId) return;
 
 	const drafts = loadLsMessageDrafts();
 
-	delete drafts[draftKey];
+	delete drafts[draftId];
 
 	saveLsMessageDrafts(drafts);
 };

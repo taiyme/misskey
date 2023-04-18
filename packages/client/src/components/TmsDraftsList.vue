@@ -11,11 +11,10 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="tms-drafts-list _gaps">
-			<div v-if="draftsList.length === 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
+			<div style="padding: 8px; text-align: center;">
+				<MkButton primary gradate rounded inline @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			</div>
-			<div v-else :class="$style.draftsList">
+			<div v-if="draftsList.length !== 0" :class="$style.draftsList">
 				<TmsDraft
 					v-for="draftItem in draftsList"
 					:key="draftItem.id"
@@ -33,8 +32,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { i18n } from '@/i18n';
-import { Draft, getAllDraft, deleteDraft } from '@/scripts/tms/drafts';
+import { Draft, getAllDraft, deleteDraft, createDraft } from '@/scripts/tms/drafts';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkButton from '@/components/MkButton.vue';
 import TmsDraft from '@/components/TmsDraftsList.draft.vue';
 
 const props = withDefaults(defineProps<{
@@ -55,6 +55,11 @@ const draftsList = $ref<Draft[]>(
 		.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
 		.sort(({ id }) => id === props.active ? -1 : 1),
 );
+
+const create = (): void => {
+	const draft = createDraft();
+	emit('chosen', draft);
+};
 
 const chosen = (draftId: Draft['id']): void => {
 	const draft = draftsList.find(d => d.id === draftId);

@@ -188,8 +188,9 @@ const getMenu = (): MenuItem[] => {
 		},
 	}];
 
-	items.unshift(null);
-	items = props.menu.concat(items);
+	if (props.menu.length !== 0) {
+		items = [...props.menu, null, ...items];
+	}
 
 	return items;
 };

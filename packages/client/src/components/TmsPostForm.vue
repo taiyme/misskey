@@ -139,7 +139,7 @@ onMounted(() => {
 			renoteId: init.renote?.id ?? null,
 			channelId: init.channel?.id ?? null,
 			quoteId: null,
-		});
+		}, true);
 	}
 
 	nextTick(shown);
@@ -171,7 +171,7 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 		return;
 	}
 
-	const { replyId, renoteId, channelId } = Draft.parseDraftId(draft.id);
+	const { replyId, renoteId, channelId, isEdit } = Draft.parseDraftId(draft.id);
 
 	const reply = replyId ? os.api('notes/show', { noteId: replyId }).catch(() => null) : null;
 	const renote = renoteId ? os.api('notes/show', { noteId: renoteId }).catch(() => null) : null;
@@ -197,7 +197,7 @@ const reopen = async (draft?: Draft.Draft | null): Promise<void> => {
 		replyId: bindProps.reply?.id ?? null,
 		renoteId: bindProps.renote?.id ?? null,
 		channelId: bindProps.channel?.id ?? null,
-	});
+	}, isEdit);
 
 	nextTick(shown);
 };

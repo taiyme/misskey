@@ -340,7 +340,7 @@ watch($$(visibility), checkAnnoyingText);
 
 //#region draft
 const draft = $ref<Draft.Draft | null>(props.draft);
-const draftKey = $computed<string | null>(() => {
+const draftId = $computed<string | null>(() => {
 	if (draft) return draft.id;
 	return Draft.genDraftId({
 		user: $i,
@@ -350,8 +350,12 @@ const draftKey = $computed<string | null>(() => {
 	});
 });
 
+const isEdit = $computed<boolean>(() => {
+	return Draft.parseDraftId(draftId).isEdit;
+});
+
 const saveDraft = (): void => {
-	Draft.setDraft(draftKey, {
+	Draft.setDraft(draftId, {
 		text,
 		useCw,
 		cw,
@@ -363,11 +367,11 @@ const saveDraft = (): void => {
 		renoteId: renote?.id ?? null,
 		channelId: channel?.id ?? null,
 		quoteId: quote?.id ?? null,
-	});
+	}, isEdit);
 };
 
 const deleteDraft = (): void => {
-	Draft.deleteDraft(draftKey);
+	Draft.deleteDraft(draftId);
 };
 
 const watchForDraft = (): void => {
@@ -464,7 +468,7 @@ onMounted(() => {
 
 	nextTick(() => {
 		if (!props.instant && !props.fixed) {
-			const _draft = draft ?? Draft.getDraft(draftKey);
+			const _draft = draft ?? Draft.getDraft(draftId);
 			if (_draft) {
 				text = _draft.data.text;
 				useCw = _draft.data.useCw;
@@ -794,7 +798,7 @@ const openAccountMenu = (ev: MouseEvent): void => {
 
 const chooseDraft = (): void => {
 	os.popup(defineAsyncComponent(() => import('@/components/TmsDraftsList.vue')), {
-		active: draftKey,
+		active: draftId,
 	}, {
 		chosen: (draft_: Draft.Draft) => {
 			emit('reopen', draft_);
