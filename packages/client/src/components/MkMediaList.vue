@@ -113,13 +113,27 @@ onMounted(() => {
 	});
 
 	lightbox.init();
-	
-	window.addEventListener('popstate', () => {
+
+	const close = (): void => {
 		if (lightbox.pswp && lightbox.pswp.isOpen === true) {
+			removeListener();
 			lightbox.pswp.close();
 			return;
 		}
-	});
+	};
+
+	const popstateHandler = (): void => close();
+	const keydownHandler = (ev: KeyboardEvent): void => {
+		if (ev.key === 'Escape' || ev.key === 'Esc') close();
+	};
+
+	const removeListener = (): void => {
+		window.removeEventListener('popstate', popstateHandler);
+		window.removeEventListener('keydown', keydownHandler);
+	};
+
+	window.addEventListener('popstate', popstateHandler);
+	window.addEventListener('keydown', keydownHandler);
 
 	lightbox.on('beforeOpen', () => {
 		history.pushState(null, '', '#pswp');
@@ -127,6 +141,7 @@ onMounted(() => {
 
 	lightbox.on('close', () => {
 		if (window.location.hash === '#pswp') {
+			removeListener();
 			history.back();
 		}
 	});
