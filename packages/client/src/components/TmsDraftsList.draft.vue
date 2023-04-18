@@ -1,19 +1,23 @@
 <template>
 <div :class="[$style.root, { [$style.active]: props.active }]" @click="draftMenu">
-	<div :class="[$style.text, { [$style.textEmpty]: !text }]">{{ text || 'Empty' }}</div>
-	<div v-if="files.length !== 0" :class="$style.files">
-		<ImgWithBlurhash
-			v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in files"
-			:key="fileId"
-			:src="src"
-			:hash="hash"
-			:alt="comment || name"
-			:title="comment || name"
-			:class="$style.file"
-		/>
-	</div>
-	<div v-if="labels.length !== 0" :class="$style.labels">
-		<span v-for="label in labels" :key="label" :class="$style.label">{{ label }}</span>
+	<div :class="$style.inner">
+		<div :class="$style.text">
+			<span v-if="hasReply" :class="$style.replyMark"><i class="ti ti-arrow-back-up"></i></span>
+			<span v-if="text">{{ text }}</span>
+			<span v-else :class="$style.textEmpty">Empty</span>
+			<span v-if="hasRenote" :class="$style.quoteMark">RN:</span>
+		</div>
+		<div v-if="files.length !== 0" :class="$style.files">
+			<ImgWithBlurhash
+				v-for="{ id: fileId, url: src, blurhash: hash, comment, name } in files"
+				:key="fileId"
+				:src="src"
+				:hash="hash"
+				:alt="comment || name"
+				:title="comment || name"
+				:class="$style.file"
+			/>
+		</div>
 	</div>
 </div>
 </template>
@@ -38,12 +42,11 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const text = $ref(`${props.draft.data.cw || ''}\n${props.draft.data.text || ''}`.trim());
+const text = $ref(`${props.draft.data.cw || ''}\n${props.draft.data.text || ''}${props.draft.data.poll ? ` (${i18n.ts.poll})` : ''}`.trim());
 const files = $ref<Misskey.entities.DriveFile[]>(props.draft.data.files);
 
-const labels = $ref<string[]>([]);
-if (props.draft.data.renoteId || props.draft.data.quoteId) labels.push(i18n.ts.quote);
-if (props.draft.data.poll) labels.push(i18n.ts.poll);
+const hasReply = $ref(!!props.draft.data.replyId);
+const hasRenote = $ref(!!props.draft.data.renoteId || !!props.draft.data.quoteId);
 
 const draftMenu = (ev: MouseEvent): void => {
 	if (props.active) return;
@@ -71,9 +74,6 @@ const draftMenu = (ev: MouseEvent): void => {
 
 <style lang="scss" module>
 .root {
-	display: grid;
-	grid-auto-flow: row;
-	gap: 6px;
 	padding: 16px;
 	background: var(--panel);
 	color: var(--fg);
@@ -81,19 +81,17 @@ const draftMenu = (ev: MouseEvent): void => {
 	border-radius: 8px;
 	user-select: none;
 
+	.inner {
+		display: grid;
+		grid-auto-flow: row;
+		gap: 6px;
+	}
+
 	&.active {
 		border-style: dashed;
 
-		> .text {
+		> .inner {
 			opacity: 0.5;
-		}
-
-		> .files {
-			display: none;
-		}
-
-		> .labels {
-			display: none;
 		}
 	}
 }
@@ -102,13 +100,24 @@ const draftMenu = (ev: MouseEvent): void => {
 	overflow: hidden;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 3;
+	// display: -webkit-box;
+	// -webkit-box-orient: vertical;
+	// -webkit-line-clamp: 3;
 }
 
 .textEmpty {
 	opacity: 0.5;
+}
+
+.replyMark {
+	margin-right: 0.5em;
+	color: var(--accent);
+}
+
+.quoteMark {
+	margin-left: 0.5em;
+	font-style: oblique;
+	color: var(--accent);
 }
 
 .files {
@@ -119,18 +128,5 @@ const draftMenu = (ev: MouseEvent): void => {
 
 .file {
 	aspect-ratio: 1 / 1;
-}
-
-.labels {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	font-size: 0.9em;
-}
-
-.label {
-	border: solid 1px var(--divider);
-	border-radius: 999px;
-	padding: 3px 8px;
 }
 </style>
