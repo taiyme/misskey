@@ -80,7 +80,7 @@
 					<button v-if="quote" :class="['_button', $style.quoteCancel]" @click="quote = null"><i class="ti ti-x"></i></button>
 				</div>
 			</div>
-			<div ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
+			<div v-if="counter.ok" ref="textCountEl" :class="[$style.textCount, { [$style.textOver]: counter.isOver }]">{{ counter.remainingChars }}</div>
 		</div>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="[$style.input, $style.hashtags]" :placeholder="i18n.ts.hashtags" list="hashtags">
 	</div>
@@ -108,7 +108,6 @@ import * as Misskey from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import * as mfm from 'mfm-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import { throttle } from 'throttle-debounce';
 import { v4 as uuid } from 'uuid';
@@ -128,6 +127,7 @@ import { deepClone } from '@/scripts/clone';
 import { parseObject, parseArray } from '@/scripts/tms/parse';
 import * as Draft from '@/scripts/tms/drafts';
 import { imanonashi } from '@/scripts/tms/imanonashi';
+import { textCounter } from '@/scripts/tms/text-counter';
 import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -261,21 +261,16 @@ const placeholder = $computed((): string => {
 	return xs[Math.floor(Math.random() * xs.length)];
 });
 
-const textLength = $computed((): number => {
-	return length((text + imeText).trim());
-});
-
-const maxTextLength = $computed((): number => {
-	const instanceTyped = instance as {
-		maxNoteTextLength?: number;
-	} | null | undefined;
-	return instanceTyped?.maxNoteTextLength ?? 1000;
+const counter = textCounter({
+	text: $$((text + imeText).trim()),
+	maxChars: (instance.maxNoteTextLength as number | undefined) ?? 1000,
 });
 
 const canPost = $computed((): boolean => {
+	if (!counter.value.ok) return false;
 	return !fetching && !posting && !posted &&
-		(1 <= textLength || 1 <= files.length || !!poll || !!(renote || quote)) &&
-		(textLength <= maxTextLength) &&
+		(1 <= counter.value.chars || 1 <= files.length || !!poll || !!(renote || quote)) &&
+		(!counter.value.isOver) &&
 		(!poll || poll.choices.length >= 2);
 });
 
