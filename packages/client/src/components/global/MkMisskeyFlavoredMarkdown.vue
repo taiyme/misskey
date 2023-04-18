@@ -18,7 +18,7 @@ withDefaults(defineProps<{
 	plain: false,
 	nowrap: false,
 	author: null,
-	customEmojis: () => [],
+	customEmojis: undefined,
 	isNote: true,
 });
 </script>
