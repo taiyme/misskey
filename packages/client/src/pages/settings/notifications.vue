@@ -19,38 +19,37 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-async function readAllUnreadNotes() {
+const readAllUnreadNotes = async (): Promise<void> => {
 	await os.api('i/read-all-unread-notes');
-}
+};
 
-async function readAllMessagingMessages() {
+const readAllMessagingMessages = async (): Promise<void> => {
 	await os.api('i/read-all-messaging-messages');
-}
+};
 
-async function readAllNotifications() {
+const readAllNotifications = async (): Promise<void> => {
 	await os.api('notifications/mark-all-as-read');
-}
+};
 
-function configure() {
+const configure = (): void => {
 	const includingTypes = notificationTypes.filter(x => !$i!.mutingNotificationTypes.includes(x));
 	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
 		includingTypes,
 		showGlobalToggle: false,
 	}, {
-		done: async (res) => {
+		done: async (res: {
+			includingTypes: typeof notificationTypes[number][] | null;
+		}) => {
 			const { includingTypes: value } = res;
 			await os.apiWithDialog('i/update', {
-				mutingNotificationTypes: notificationTypes.filter(x => !value.includes(x)),
+				mutingNotificationTypes: notificationTypes.filter(x => !value?.includes(x)),
 			}).then(i => {
-				$i!.mutingNotificationTypes = i.mutingNotificationTypes;
+				if (!$i) return;
+				$i.mutingNotificationTypes = i.mutingNotificationTypes;
 			});
 		},
 	}, 'closed');
-}
-
-const headerActions = $computed(() => []);
-
-const headerTabs = $computed(() => []);
+};
 
 definePageMetadata({
 	title: i18n.ts.notifications,

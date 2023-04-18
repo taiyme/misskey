@@ -14,7 +14,7 @@
 			<MkEmoji :normal="true" :no-style="true" emoji="🍮"/>
 		</div>
 		<div class="main">
-			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
 			<button class="_button _acrylic menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<div class="fg">
 				<h1>
@@ -49,13 +49,14 @@
 import { } from 'vue';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
-import XSigninDialog from '@/components/MkSigninDialog.vue';
-import XSignupDialog from '@/components/MkSignupDialog.vue';
+import MkSigninDialog from '@/components/MkSigninDialog.vue';
+import MkSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 let meta = $ref();
 let stats = $ref();
@@ -90,13 +91,13 @@ os.api('federation/instances', {
 });
 
 function signin() {
-	os.popup(XSigninDialog, {
+	os.popup(MkSigninDialog, {
 		autoSet: true,
 	}, {}, 'closed');
 }
 
 function signup() {
-	os.popup(XSignupDialog, {
+	os.popup(MkSignupDialog, {
 		autoSet: true,
 	}, {}, 'closed');
 }

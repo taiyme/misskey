@@ -4,15 +4,15 @@
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<XTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => emit('loaded')"/>
+	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -26,14 +26,17 @@ const emit = defineEmits<{
 	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
-let timeline = $ref<InstanceType<typeof XTimeline>>();
+const timeline = $ref<InstanceType<typeof MkTimeline>>();
 
-if (props.column.listId == null) {
-	setList();
-}
+onMounted(() => {
+	if (props.column.listId == null) {
+		setList();
+	}
+});
 
-async function setList() {
+const setList = async (): Promise<void> => {
 	const lists = await os.api('users/lists/list');
+
 	const { canceled, result: list } = await os.select({
 		title: i18n.ts.selectList,
 		items: lists.map(x => ({
@@ -42,10 +45,11 @@ async function setList() {
 		default: props.column.listId,
 	});
 	if (canceled) return;
+
 	updateColumn(props.column.id, {
 		listId: list.id,
 	});
-}
+};
 
 const menu = [{
 	icon: 'ti ti-pencil',
@@ -53,6 +57,3 @@ const menu = [{
 	action: setList,
 }];
 </script>
-
-<style lang="scss" scoped>
-</style>

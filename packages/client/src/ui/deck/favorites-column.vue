@@ -13,7 +13,7 @@
 		<template #default="{ items }">
 			<div :class="$style.notes">
 				<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
-					<XNote :key="item.id" :note="item.note"/>
+					<MkNote :key="item.id" :note="item.note"/>
 				</XList>
 			</div>
 		</template>
@@ -26,7 +26,7 @@ import { ref } from 'vue';
 import XColumn from './column.vue';
 import { Column } from './deck-store';
 import MkPagination from '@/components/MkPagination.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n';
 

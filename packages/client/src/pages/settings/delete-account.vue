@@ -14,6 +14,7 @@ import * as os from '@/os';
 import { signout } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 async function deleteAccount() {
 	{

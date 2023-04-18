@@ -4,7 +4,7 @@
 
 	<div class="wtdtxvec">
 		<div v-if="!(column.widgets && column.widgets.length > 0) && !edit" class="intro">{{ i18n.ts._deck.widgetsIntroduction }}</div>
-		<XWidgets :edit="edit" :widgets="column.widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
+		<MkWidgets :edit="edit" :widgets="column.widgets ?? []" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="edit = false"/>
 	</div>
 </XColumn>
 </template>
@@ -13,7 +13,7 @@
 import { } from 'vue';
 import XColumn from './column.vue';
 import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store';
-import XWidgets from '@/components/MkWidgets.vue';
+import MkWidgets, { Widget, EditedWidget } from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -27,30 +27,30 @@ const emit = defineEmits<{
 
 let edit = $ref(false);
 
-function addWidget(widget) {
+const addWidget = (widget: Widget): void => {
 	addColumnWidget(props.column.id, widget);
-}
+};
 
-function removeWidget(widget) {
+const removeWidget = (widget: Widget): void => {
 	removeColumnWidget(props.column.id, widget);
-}
+};
 
-function updateWidget({ id, data }) {
+const updateWidget = ({ id, data }: EditedWidget): void => {
 	updateColumnWidget(props.column.id, id, data);
-}
+};
 
-function updateWidgets(widgets) {
+const updateWidgets = (widgets: Widget[]): void => {
 	setColumnWidgets(props.column.id, widgets);
-}
+};
 
-function func() {
+const toggleWidgetEdit = (): void => {
 	edit = !edit;
-}
+};
 
 const menu = [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.editWidgets,
-	action: func,
+	action: toggleWidgetEdit,
 }];
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-<Transition :name="$store.state.animation ? 'fade' : ''" appear>
+<Transition :name="defaultStore.state.animation ? 'fade' : ''" appear>
 	<div ref="rootEl" class="nvlagfpb" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
 	</div>
@@ -12,6 +12,7 @@ import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	items: MenuItem[];

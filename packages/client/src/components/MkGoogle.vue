@@ -1,12 +1,13 @@
 <template>
 <div class="mk-google">
 	<input v-model="query" type="search" :placeholder="q">
-	<button @click="search"><i class="ti ti-search"></i> {{ $ts.searchByGoogle }}</button>
+	<button @click="search"><i class="ti ti-search"></i> {{ i18n.ts.searchByGoogle }}</button>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	q: string;

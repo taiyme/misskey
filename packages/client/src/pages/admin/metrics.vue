@@ -1,6 +1,6 @@
 <template>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-cpu"></i> {{ $ts.cpuAndMemory }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-cpu"></i> {{ i18n.ts.cpuAndMemory }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="cpumem"></canvas>
@@ -17,7 +17,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-database"></i> {{ $ts.disk }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-database"></i> {{ i18n.ts.disk }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="disk"></canvas>
@@ -34,7 +34,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-arrows-right-left"></i> {{ $ts.network }}</div>
+	<div class="_debobigegoLabel"><i class="ti ti-arrows-right-left"></i> {{ i18n.ts.network }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="net"></canvas>
@@ -77,6 +77,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 Chart.register(
 	ArcElement,
@@ -133,13 +135,14 @@ export default defineComponent({
 			overviewHeight: '1fr',
 			queueHeight: '1fr',
 			paused: false,
+			i18n,
 		};
 	},
 
 	computed: {
 		gridColor() {
 			// TODO: var(--panel)の色が暗いか明るいかで判定する
-			return this.$store.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+			return defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 		},
 	},
 

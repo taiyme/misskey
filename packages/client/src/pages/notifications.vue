@@ -3,13 +3,13 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-if="tab === 'all' || tab === 'unread'">
-			<XNotifications class="notifications" :include-types="includeTypes" :unread-only="unreadOnly"/>
+			<MkNotifications class="notifications" :include-types="includeTypes ?? []" :unread-only="unreadOnly"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
-			<XNotes :pagination="mentionsPagination"/>
+			<MkNotes :pagination="mentionsPagination"/>
 		</div>
 		<div v-else-if="tab === 'directNotes'">
-			<XNotes :pagination="directNotesPagination"/>
+			<MkNotes :pagination="directNotesPagination"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -18,14 +18,15 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import XNotifications from '@/components/MkNotifications.vue';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotifications from '@/components/MkNotifications.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 
 let tab = $ref('all');
-let includeTypes = $ref<string[] | null>(null);
+let includeTypes = $ref<typeof notificationTypes[number][] | null>(null);
 let unreadOnly = $computed(() => tab === 'unread');
 
 const mentionsPagination = {
@@ -41,23 +42,24 @@ const directNotesPagination = {
 	},
 };
 
-function setFilter(ev) {
+const setFilter = (ev: MouseEvent): void => {
+	const el = getHtmlElementFromEvent(ev) ?? undefined;
 	const typeItems = notificationTypes.map(t => ({
 		text: i18n.t(`_notification._types.${t}`),
-		active: includeTypes && includeTypes.includes(t),
-		action: () => {
+		active: !!includeTypes?.includes(t),
+		action: (): void => {
 			includeTypes = [t];
 		},
 	}));
 	const items = includeTypes != null ? [{
 		icon: 'ti ti-x',
 		text: i18n.ts.clear,
-		action: () => {
+		action: (): void => {
 			includeTypes = null;
 		},
 	}, null, ...typeItems] : typeItems;
-	os.popupMenu(items, ev.currentTarget ?? ev.target);
-}
+	os.popupMenu(items, el);
+};
 
 const headerActions = $computed(() => [tab === 'all' ? {
 	text: i18n.ts.filter,
@@ -67,7 +69,7 @@ const headerActions = $computed(() => [tab === 'all' ? {
 } : undefined, tab === 'all' ? {
 	text: i18n.ts.markAllAsRead,
 	icon: 'ti ti-check',
-	handler: () => {
+	handler: (): void => {
 		os.apiWithDialog('notifications/mark-all-as-read');
 	},
 } : undefined].filter(x => x !== undefined));

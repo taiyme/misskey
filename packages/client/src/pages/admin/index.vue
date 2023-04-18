@@ -4,7 +4,7 @@
 		<MkSpacer :content-max="700" :margin-min="16">
 			<div class="lxpfedzu">
 				<div class="banner">
-					<img :src="$instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
+					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
 				</div>
 
 				<MkInfo v-if="thereIsUnresolvedAbuseReport" warn class="info">{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>

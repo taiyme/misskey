@@ -1,7 +1,7 @@
 <template>
 <MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="beeadbfb">
-		<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
+		<MkReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
 		<div class="name">{{ getReactionName(reaction) }}</div>
 	</div>
 </MkTooltip>
@@ -9,14 +9,15 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { CustomEmoji } from 'misskey-js/built/entities';
 import MkTooltip from './MkTooltip.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	emojis: any[]; // TODO
+	emojis: CustomEmoji[];
 	targetElement: HTMLElement;
 }>();
 

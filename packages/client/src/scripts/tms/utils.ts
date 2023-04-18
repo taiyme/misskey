@@ -22,3 +22,23 @@ export const getHtmlElementFromEvent = <T extends HTMLElement>(event?: Event | n
 	const el = event?.currentTarget ?? event?.target;
 	return isHtmlElement<T>(el) ? el : null;
 };
+
+type TypedKeys<T extends Record<string, unknown>> = (keyof T)[];
+
+type TypedValues<T extends Record<string, unknown>> = T[keyof T][];
+
+type TypedEntries<T extends Record<string, unknown>> = {
+	[K in keyof T]: [keyof Pick<T, K>, T[K]];
+}[keyof T][];
+
+export const typedKeys = <T extends Record<string, unknown>>(obj: T): TypedKeys<T> => {
+	return Object.keys(obj) as unknown as TypedKeys<T>;
+};
+
+export const typedValues = <T extends Record<string, unknown>>(obj: T): TypedValues<T> => {
+	return Object.values(obj) as unknown as TypedValues<T>;
+};
+
+export const typedEntries = <T extends Record<string, unknown>>(obj: T): TypedEntries<T> => {
+	return Object.entries(obj) as unknown as TypedEntries<T>;
+};

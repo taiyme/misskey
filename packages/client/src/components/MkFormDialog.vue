@@ -1,5 +1,5 @@
 <template>
-<XModalWindow
+<MkModalWindow
 	ref="dialog"
 	:width="450"
 	:can-close="false"
@@ -17,64 +17,65 @@
 	<MkSpacer :margin-min="20" :margin-max="32">
 		<div class="xkpnjxcv _formRoot">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)" :key="item">
-				<FormInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormInput>
-				<FormInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" :max="form[item].max" type="text" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				</MkInput>
+				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" :max="form[item].max" type="text" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormInput>
-				<FormTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :max="form[item].max" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				</MkInput>
+				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :max="form[item].max" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormTextarea>
-				<FormSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]" class="_formBlock">
+				</MkTextarea>
+				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]" class="_formBlock">
 					<span v-text="form[item].label || item"></span>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormSwitch>
-				<FormSelect v-else-if="form[item].type === 'enum'" v-model="values[item]" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				</MkSwitch>
+				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item_ in form[item].enum" :key="item_.value" :value="item_.value">{{ item_.label }}</option>
-				</FormSelect>
-				<FormRadios v-else-if="form[item].type === 'radio'" v-model="values[item]" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				</MkSelect>
+				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item_ in form[item].options" :key="item_.value" :value="item_.value">{{ item_.label }}</option>
-				</FormRadios>
-				<FormRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+				</MkRadios>
+				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter" class="_formBlock">
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
-				</FormRange>
+				</MkRange>
 				<MkButton v-else-if="form[item].type === 'button'" class="_formBlock" @click="form[item].action($event, values)">
 					<span v-text="form[item].content || item"></span>
 				</MkButton>
 			</template>
 		</div>
 	</MkSpacer>
-</XModalWindow>
+</MkModalWindow>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import FormInput from './form/input.vue';
-import FormTextarea from './form/textarea.vue';
-import FormSwitch from './form/switch.vue';
-import FormSelect from './form/select.vue';
-import FormRange from './form/range.vue';
+import MkInput from './form/input.vue';
+import MkTextarea from './form/textarea.vue';
+import MkSwitch from './form/switch.vue';
+import MkSelect from './form/select.vue';
+import MkRange from './form/range.vue';
 import MkButton from './MkButton.vue';
-import FormRadios from './form/radios.vue';
-import XModalWindow from '@/components/MkModalWindow.vue';
+import MkRadios from './form/radios.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
-		XModalWindow,
-		FormInput,
-		FormTextarea,
-		FormSwitch,
-		FormSelect,
-		FormRange,
+		MkModalWindow,
+		MkInput,
+		MkTextarea,
+		MkSwitch,
+		MkSelect,
+		MkRange,
 		MkButton,
-		FormRadios,
+		MkRadios,
 	},
 
 	props: {
@@ -88,11 +89,12 @@ export default defineComponent({
 		},
 	},
 
-	emits: ['done'],
+	emits: ['done', 'closed'],
 
 	data() {
 		return {
 			values: {},
+			i18n,
 		};
 	},
 
@@ -104,24 +106,22 @@ export default defineComponent({
 
 	methods: {
 		ok() {
+			const dialog = this.$refs.dialog as InstanceType<typeof MkModalWindow> | null | undefined;
 			this.$emit('done', {
+				canceled: false,
 				result: this.values,
 			});
-			this.$refs.dialog.close();
+			dialog?.close();
 		},
 
 		cancel() {
+			const dialog = this.$refs.dialog as InstanceType<typeof MkModalWindow> | null | undefined;
 			this.$emit('done', {
 				canceled: true,
+				result: undefined,
 			});
-			this.$refs.dialog.close();
+			dialog?.close();
 		},
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.xkpnjxcv {
-
-}
-</style>

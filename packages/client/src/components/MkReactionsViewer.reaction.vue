@@ -1,30 +1,22 @@
 <template>
-<Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
-	appear
->
-	<div v-if="count > 0" :class="$style.root">
-		<button
-			ref="buttonRef"
-			class="hkzvhatu mk-reactions-viewer-reaction"
-			:class="['_button', useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: note.myReaction === reaction, [$style.canToggle]: canToggle }]"
-			@click="react"
-		>
-			<XReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
-			<span :class="$style.reactionCount">{{ count }}</span>
-		</button>
-	</div>
-</Transition>
+<div v-if="count > 0" class="mk-reactions-viewer-reaction" :class="$style.root">
+	<button
+		ref="buttonRef"
+		class="hkzvhatu _button"
+		:class="[tmsStore.state.useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: reacted, [$style.canToggle]: canToggle }]"
+		@click="react"
+	>
+		<MkReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
+		<span :class="$style.reactionCount">{{ count }}</span>
+	</button>
+</div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
@@ -40,11 +32,11 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const useEasyReactionsViewer = computed(() => tmsStore.state.useEasyReactionsViewer);
-
 const buttonRef = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
+
+const reacted = computed(() => props.note.myReaction === props.reaction);
 
 const react = (): void => {
 	const param = {
@@ -109,21 +101,6 @@ useTooltip(buttonRef, async (showing) => {
 </script>
 
 <style lang="scss" module>
-.transition_x_enterActive, .transition_x_leaveActive {
-	transition: opacity 0.1s cubic-bezier(0, 0.5, 0.5, 1), transform 0.1s cubic-bezier(0, 0.5, 0.5, 1) !important;
-}
-
-.transition_x_enterFrom, .transition_x_leaveTo {
-	opacity: 0;
-	transform: scale(0.9);
-}
-
-.transition_x_leaveActive {
-	position: absolute;
-	visibility: hidden;
-	pointer-events: none;
-}
-
 .root {
 	.viewTypeNormal {
 		display: inline-block;

@@ -1,31 +1,23 @@
-<!-- eslint-disable vue/no-v-html -->
 <template>
+<!-- eslint-disable-next-line vue/no-v-html -->
 <div v-if="block" v-html="compiledFormula"></div>
+<!-- eslint-disable-next-line vue/no-v-html -->
 <span v-else v-html="compiledFormula"></span>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import katex from 'katex';
 
-export default defineComponent({
-	props: {
-		formula: {
-			type: String,
-			required: true
-		},
-		block: {
-			type: Boolean,
-			required: true
-		}
-	},
-	computed: {
-		compiledFormula(): any {
-			return katex.renderToString(this.formula, {
-				throwOnError: false
-			} as any);
-		}
-	}
+const props = defineProps<{
+	formula: string;
+	block: boolean;
+}>();
+
+const compiledFormula = computed(() => {
+	return katex.renderToString(props.formula, {
+		throwOnError: false,
+	});
 });
 </script>
 

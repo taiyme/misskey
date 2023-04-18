@@ -39,6 +39,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { disableContextmenu } from '@/scripts/touch';
 import { MenuItem } from '@/types/menu';
+import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<{
 	isStacked: false,
 	naked: false,
 	indicated: false,
+	menu: () => [],
 });
 
 const emit = defineEmits<{
@@ -76,10 +78,10 @@ const active = $computed(() => props.column.active !== false);
 watch($$(active), v => emit('change-active-state', v));
 
 const keymap = $computed(() => ({
-	'shift+up': () => emit('parent-focus', 'up'),
-	'shift+down': () => emit('parent-focus', 'down'),
-	'shift+left': () => emit('parent-focus', 'left'),
-	'shift+right': () => emit('parent-focus', 'right'),
+	'shift+up': (): void => emit('parent-focus', 'up'),
+	'shift+down': (): void => emit('parent-focus', 'down'),
+	'shift+left': (): void => emit('parent-focus', 'left'),
+	'shift+right': (): void => emit('parent-focus', 'right'),
 }));
 
 onMounted(() => {
@@ -96,39 +98,39 @@ const reload = (): void => {
 	reloadCount++;
 };
 
-function onOtherDragStart() {
+const onOtherDragStart = (): void => {
 	dropready = true;
-}
+};
 
-function onOtherDragEnd() {
+const onOtherDragEnd = (): void => {
 	dropready = false;
-}
+};
 
-function toggleActive() {
+const toggleActive = (): void => {
 	if (!props.isStacked) return;
 	updateColumn(props.column.id, {
 		active: !props.column.active,
 	});
-}
+};
 
-function getMenu() {
-	let items = [{
+const getMenu = (): MenuItem[] => {
+	let items: MenuItem[] = [{
 		icon: 'ti ti-settings',
 		text: i18n.ts._deck.configureColumn,
-		action: async () => {
-			const { canceled, result } = await os.form(props.column.name, {
+		action: async (): Promise<void> => {
+			const { canceled, result } = await os.form(props.column.name ?? '', {
 				name: {
-					type: 'string',
+					type: 'string' as const,
 					label: i18n.ts.name,
 					default: props.column.name,
 				},
 				width: {
-					type: 'number',
+					type: 'number' as const,
 					label: i18n.ts.width,
 					default: props.column.width,
 				},
 				flexible: {
-					type: 'boolean',
+					type: 'boolean' as const,
 					label: i18n.ts.flexible,
 					default: props.column.flexible,
 				},
@@ -143,89 +145,92 @@ function getMenu() {
 		children: [{
 			icon: 'ti ti-arrow-left',
 			text: i18n.ts._deck.swapLeft,
-			action: () => {
+			action: (): void => {
 				swapLeftColumn(props.column.id);
 			},
 		}, {
 			icon: 'ti ti-arrow-right',
 			text: i18n.ts._deck.swapRight,
-			action: () => {
+			action: (): void => {
 				swapRightColumn(props.column.id);
 			},
 		}, props.isStacked ? {
 			icon: 'ti ti-arrow-up',
 			text: i18n.ts._deck.swapUp,
-			action: () => {
+			action: (): void => {
 				swapUpColumn(props.column.id);
 			},
 		} : undefined, props.isStacked ? {
 			icon: 'ti ti-arrow-down',
 			text: i18n.ts._deck.swapDown,
-			action: () => {
+			action: (): void => {
 				swapDownColumn(props.column.id);
 			},
 		} : undefined],
 	}, {
 		icon: 'ti ti-stack-2',
 		text: i18n.ts._deck.stackLeft,
-		action: () => {
+		action: (): void => {
 			stackLeftColumn(props.column.id);
 		},
 	}, props.isStacked ? {
 		icon: 'ti ti-window-maximize',
 		text: i18n.ts._deck.popRight,
-		action: () => {
+		action: (): void => {
 			popRightColumn(props.column.id);
 		},
 	} : undefined, null, {
 		icon: 'ti ti-trash',
 		text: i18n.ts.remove,
 		danger: true,
-		action: () => {
+		action: (): void => {
 			removeColumn(props.column.id);
 		},
 	}];
 
-	if (props.menu) {
-		items.unshift(null);
-		items = props.menu.concat(items);
-	}
+	items.unshift(null);
+	items = props.menu.concat(items);
 
 	return items;
-}
+};
 
-function showSettingsMenu(ev: MouseEvent) {
-	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
-}
+const showSettingsMenu = (ev: MouseEvent): void => {
+	const el = getHtmlElementFromEvent(ev) ?? undefined;
+	os.popupMenu(getMenu(), el);
+};
 
-function onContextmenu(ev: MouseEvent) {
+const onContextmenu = (ev: MouseEvent): void => {
 	if (disableContextmenu) return;
 	os.contextMenu(getMenu(), ev);
-}
+};
 
-function goTop() {
-	body.scrollTo({
+const goTop = (): void => {
+	body?.scrollTo({
 		top: 0,
 		behavior: 'smooth',
 	});
-}
+};
 
-function onDragstart(ev) {
+const onDragstart = (ev: DragEvent): void => {
+	if (!ev.dataTransfer) return;
+
 	ev.dataTransfer.effectAllowed = 'move';
 	ev.dataTransfer.setData(_DATA_TRANSFER_DECK_COLUMN_, props.column.id);
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
-	window.setTimeout(() => {
+	window.setTimeout((): void => {
 		dragging = true;
 	}, 10);
-}
+};
 
-function onDragend(ev) {
+const onDragend = (_ev: DragEvent): void => {
 	dragging = false;
-}
+};
 
-function onDragover(ev) {
+const onDragover = (ev: DragEvent): void => {
+	if (!ev.dataTransfer) return;
+
 	// 自分自身がドラッグされている場合
 	if (dragging) {
 		// 自分自身にはドロップさせない
@@ -237,21 +242,23 @@ function onDragover(ev) {
 
 		if (isDeckColumn) draghover = true;
 	}
-}
+};
 
-function onDragleave() {
+const onDragleave = (): void => {
 	draghover = false;
-}
+};
 
-function onDrop(ev) {
+const onDrop = (ev: DragEvent): void => {
+	if (!ev.dataTransfer) return;
+
 	draghover = false;
 	os.deckGlobalEvents.emit('column.dragEnd');
 
 	const id = ev.dataTransfer.getData(_DATA_TRANSFER_DECK_COLUMN_);
-	if (id != null && id !== '') {
+	if (id) {
 		swapColumn(props.column.id, id);
 	}
-}
+};
 </script>
 
 <style lang="scss" scoped>

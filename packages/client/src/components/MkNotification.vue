@@ -1,8 +1,8 @@
 <template>
-<div ref="elRef" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
+<div ref="rootEl" v-size="{ max: [500, 600] }" class="qglefbjs" :class="notification.type">
 	<div class="head">
-		<MkAvatar v-if="notification.type === 'pollEnded'" class="icon" :user="notification.note.user"/>
-		<MkAvatar v-else-if="notification.user" class="icon" :user="notification.user"/>
+		<MkAvatar v-if="(notification.type as any) === 'pollEnded' && 'note' in notification" class="icon" :user="notification.note.user"/>
+		<MkAvatar v-else-if="'user' in notification" class="icon" :user="notification.user"/>
 		<img v-else-if="notification.icon" class="icon" :src="notification.icon" alt=""/>
 		<div class="sub-icon" :class="notification.type">
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
@@ -14,9 +14,9 @@
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollVote'" class="ti ti-chart-arrows"></i>
-			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
+			<i v-else-if="(notification.type as any) === 'pollEnded'" class="ti ti-chart-arrows"></i>
 			<!-- notification.reaction が null になることはまずないが、ここでoptional chaining使うと一部ブラウザで刺さるので念の為 -->
-			<XReactionIcon
+			<MkReactionIcon
 				v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
@@ -27,8 +27,8 @@
 	</div>
 	<div class="tail">
 		<header>
-			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
-			<MkA v-else-if="notification.user" v-user-preview="notification.user.id" class="name" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
+			<span v-if="(notification.type as any) === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
+			<MkA v-else-if="'user' in notification" v-user-preview="notification.user.id" class="name" :to="userPage(notification.user)"><MkUserName :user="notification.user"/></MkA>
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" class="time"/>
 		</header>
@@ -37,7 +37,7 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
-		<MkA v-if="notification.type === 'renote'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
+		<MkA v-if="notification.type === 'renote' && notification.note.renote" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
 			<i class="ti ti-quote"></i>
 			<Mfm :text="getNoteSummary(notification.note.renote)" :plain="true" :nowrap="true" :custom-emojis="notification.note.renote.emojis"/>
 			<i class="ti ti-quote"></i>
@@ -56,7 +56,7 @@
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
 			<i class="ti ti-quote"></i>
 		</MkA>
-		<MkA v-if="notification.type === 'pollEnded'" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
+		<MkA v-if="(notification.type as any) === 'pollEnded' && 'note' in notification" class="text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 			<i class="ti ti-quote"></i>
 			<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :custom-emojis="notification.note.emojis"/>
 			<i class="ti ti-quote"></i>
@@ -89,9 +89,9 @@
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import XReactionTooltip from '@/components/MkReactionTooltip.vue';
+import MkReactionTooltip from '@/components/MkReactionTooltip.vue';
 import MkButton from '@/components/MkButton.vue';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
@@ -110,67 +110,74 @@ const props = withDefaults(defineProps<{
 	full: false,
 });
 
-const elRef = ref<HTMLElement>(null);
-const reactionRef = ref(null);
+const rootEl = ref<HTMLElement | null>(null);
+const reactionRef = ref<InstanceType<typeof MkReactionIcon> | null>(null);
 
 let readObserver: IntersectionObserver | undefined;
-let connection;
+let connection: misskey.ChannelConnection | undefined;
 
 onMounted(() => {
-	if (!props.notification.isRead) {
+	if (rootEl.value && !props.notification.isRead) {
 		readObserver = new IntersectionObserver((entries, observer) => {
-			if (!entries.some(entry => entry.isIntersecting)) return;
+			if (!entries.some(({ isIntersecting }) => isIntersecting)) return;
 			stream.send('readNotification', {
 				id: props.notification.id,
 			});
 			observer.disconnect();
 		});
 
-		readObserver.observe(elRef.value);
+		readObserver.observe(rootEl.value);
 
 		connection = stream.useChannel('main');
-		connection.on('readAllNotifications', () => readObserver.disconnect());
+		connection.on('readAllNotifications', () => {
+			readObserver?.disconnect();
+		});
 
-		watch(props.notification.isRead, () => {
-			readObserver.disconnect();
+		watch($$(props.notification.isRead), () => {
+			readObserver?.disconnect();
 		});
 	}
 });
 
 onUnmounted(() => {
-	if (readObserver) readObserver.disconnect();
-	if (connection) connection.dispose();
+	readObserver?.disconnect();
+	connection?.dispose();
 });
 
 const followRequestDone = ref(false);
 const groupInviteDone = ref(false);
 
-const acceptFollowRequest = () => {
+const acceptFollowRequest = (): void => {
+	if (props.notification.type !== 'followRequestAccepted') return;
 	followRequestDone.value = true;
 	os.api('following/requests/accept', { userId: props.notification.user.id });
 };
 
-const rejectFollowRequest = () => {
+const rejectFollowRequest = (): void => {
+	if (props.notification.type !== 'followRequestAccepted') return;
 	followRequestDone.value = true;
 	os.api('following/requests/reject', { userId: props.notification.user.id });
 };
 
-const acceptGroupInvitation = () => {
+const acceptGroupInvitation = (): void => {
+	if (props.notification.type !== 'groupInvited') return;
 	groupInviteDone.value = true;
 	os.apiWithDialog('users/groups/invitations/accept', { invitationId: props.notification.invitation.id });
 };
 
-const rejectGroupInvitation = () => {
+const rejectGroupInvitation = (): void => {
+	if (props.notification.type !== 'groupInvited') return;
 	groupInviteDone.value = true;
 	os.api('users/groups/invitations/reject', { invitationId: props.notification.invitation.id });
 };
 
 useTooltip(reactionRef, (showing) => {
-	os.popup(XReactionTooltip, {
+	if (props.notification.type !== 'reaction') return;
+	os.popup(MkReactionTooltip, {
 		showing,
 		reaction: props.notification.reaction ? props.notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : props.notification.reaction,
 		emojis: props.notification.note.emojis,
-		targetElement: reactionRef.value.$el,
+		targetElement: reactionRef.value?.$el,
 	}, {}, 'closed');
 });
 </script>

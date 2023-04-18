@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions"/></template>
-		<MkSpacer :content-max="800">
+	<MkSpacer :content-max="800">
 		<div v-if="clip">
 			<div class="okzinsic _panel">
 				<div v-if="clip.description" class="description">
@@ -12,7 +12,7 @@
 				</div>
 			</div>
 
-			<XNotes :pagination="pagination" :detail="true"/>
+			<MkNotes :pagination="pagination" :detail="true"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { computed, watch, provide } from 'vue';
 import * as misskey from 'misskey-js';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
@@ -31,7 +31,7 @@ const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip: misskey.entities.Clip = $ref<misskey.entities.Clip>();
+let clip = $ref<misskey.entities.Clip | null>(null);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,

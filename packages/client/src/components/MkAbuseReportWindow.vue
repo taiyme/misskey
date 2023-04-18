@@ -1,5 +1,5 @@
 <template>
-<XWindow ref="uiWindow" :initial-width="400" :initial-height="500" :can-resize="true" @closed="emit('closed')">
+<MkWindow ref="uiWindow" :initial-width="400" :initial-height="500" :can-resize="true" @closed="emit('closed')">
 	<template #header>
 		<i class="ti ti-exclamation-circle" style="margin-right: 0.5em;"></i>
 		<I18n :src="i18n.ts.reportAbuseOf" tag="span">
@@ -19,13 +19,13 @@
 			<MkButton primary full :disabled="comment.length === 0" @click="send">{{ i18n.ts.send }}</MkButton>
 		</div>
 	</div>
-</XWindow>
+</MkWindow>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XWindow from '@/components/MkWindow.vue';
+import MkWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/form/textarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
@@ -40,22 +40,22 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const uiWindow = ref<InstanceType<typeof XWindow>>();
-const comment = ref(props.initialComment || '');
+const uiWindow = ref<InstanceType<typeof MkWindow>>();
+const comment = ref(props.initialComment ?? '');
 
-function send() {
+const send = (): void => {
 	os.apiWithDialog('users/report-abuse', {
 		userId: props.user.id,
 		comment: comment.value,
-	}, undefined).then(res => {
+	}, undefined).then(() => {
 		os.alert({
 			type: 'success',
-			text: i18n.ts.abuseReported
+			text: i18n.ts.abuseReported,
 		});
 		uiWindow.value?.close();
 		emit('closed');
 	});
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -11,7 +11,7 @@
 		</div>
 	</header>
 	<Transition
-		:name="$store.state.animation ? 'container-toggle' : ''"
+		:name="defaultStore.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -20,7 +20,7 @@
 		<div v-show="showBody" ref="content" class="content" :class="{ omitted }">
 			<slot></slot>
 			<button v-if="omitted" class="fade _button" @click="() => { ignoreOmit = true; omitted = false; }">
-				<span>{{ $ts.showMore }}</span>
+				<span>{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
 	</Transition>
@@ -29,6 +29,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	props: {
@@ -73,6 +75,8 @@ export default defineComponent({
 			showBody: this.expanded,
 			omitted: null,
 			ignoreOmit: false,
+			defaultStore,
+			i18n,
 		};
 	},
 	mounted() {

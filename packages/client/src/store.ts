@@ -374,10 +374,3 @@ export class ColdDeviceStorage {
 		};
 	}
 }
-
-// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
-declare module '@vue/runtime-core' {
-	interface ComponentCustomProperties {
-		$store: typeof defaultStore;
-	}
-}
