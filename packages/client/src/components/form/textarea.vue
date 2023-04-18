@@ -2,8 +2,8 @@
 <template>
 <div class="adhpbeos">
 	<div class="label" @click="focus">
-		<span v-if="$slots.label || (textLength != null && maxTextLength != null)" class="label-text"><slot name="label"></slot></span>
-		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
+		<span v-if="$slots.label || counter.isRemaining" class="label-text"><slot name="label"></slot></span>
+		<span v-if="counter.isRemaining" class="text-count" :class="{ over: counter.isOver }">{{ counter.remainingChars }}</span>
 	</div>
 	<div class="input" :class="{ disabled, focused, invalid, tall, pre }">
 		<textarea
@@ -33,9 +33,9 @@
 <script lang="ts" setup>
 import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
-import { length } from 'stringz';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
+import { textCounter } from '@/scripts/tms/text-counter';
 
 const props = defineProps<{
 	modelValue: string;
@@ -70,13 +70,9 @@ const changed = ref(false);
 const invalid = ref(false);
 const inputEl = ref<HTMLTextAreaElement>();
 
-const textLength = $computed((): number => {
-	if (typeof v.value !== 'string') return 0;
-	return length(v.value);
-});
-
-const maxTextLength = $computed((): number | null => {
-	return props.max ?? null;
+const counter = textCounter({
+	text: v,
+	maxChars: props.max ?? Infinity,
 });
 
 const focus = (): void => inputEl.value?.focus();
@@ -106,7 +102,7 @@ watch(modelValue, newValue => {
 });
 
 watch(v, () => {
-	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
+	invalid.value = !!inputEl.value?.validity.badInput || (counter.value.isRemaining && counter.value.isOver);
 
 	if (!props.manualSave) {
 		if (props.debounce) {
