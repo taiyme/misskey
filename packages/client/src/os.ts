@@ -424,10 +424,13 @@ export const form = <C extends Record<string, any>>(title: string, form_: C): Pr
 };
 
 export const selectUser = async (): Promise<Misskey.entities.UserDetailed> => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {}, {
 			ok: user => {
 				resolve(user);
+			},
+			cancel: () => {
+				reject();
 			},
 		}, 'closed');
 	});
@@ -436,7 +439,7 @@ export const selectUser = async (): Promise<Misskey.entities.UserDetailed> => {
 export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 	T extends true ? Misskey.entities.DriveFile[] : Misskey.entities.DriveFile
 > => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
 			multiple,
@@ -444,6 +447,8 @@ export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 			done: files => {
 				if (files) {
 					resolve(multiple ? files : files[0]);
+				} else {
+					reject();
 				}
 			},
 		}, 'closed');
@@ -453,7 +458,7 @@ export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 export const selectDriveFolder = async <T extends boolean>(multiple: T): Promise<
 	T extends true ? Misskey.entities.DriveFolder[] : Misskey.entities.DriveFolder
 > => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'folder',
 			multiple,
@@ -461,6 +466,8 @@ export const selectDriveFolder = async <T extends boolean>(multiple: T): Promise
 			done: folders => {
 				if (folders) {
 					resolve(multiple ? folders : folders[0]);
+				} else {
+					reject();
 				}
 			},
 		}, 'closed');

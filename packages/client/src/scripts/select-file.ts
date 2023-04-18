@@ -7,41 +7,50 @@ import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { uploadFile } from '@/scripts/upload';
 
-function select(src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> {
+declare global {
+	interface Window {
+		__misskey_input_ref__: HTMLInputElement | null;
+	}
+}
+
+const select = (src: any, label: string | null, multiple: boolean): Promise<DriveFile | DriveFile[]> => {
 	return new Promise(async (res, rej) => {
 		const keepOriginal = ref(defaultStore.state.keepOriginalUploading);
 
-		const chooseFileFromPc = () => {
+		const chooseFileFromPc = (): void => {
 			const input = document.createElement('input');
 			input.type = 'file';
 			input.multiple = multiple;
-			input.onchange = () => {
-				const promises = Array.from(input.files).map(file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
+			input.onchange = (): void => {
+				const promises = Array.from(input.files ?? []).map(file => uploadFile(file, defaultStore.state.uploadFolder, undefined, keepOriginal.value));
 
 				Promise.all(promises).then(driveFiles => {
 					res(multiple ? driveFiles : driveFiles[0]);
-				}).catch(err => {
+				}).catch((): void => {
 					// アップロードのエラーは uploadFile 内でハンドリングされているためアラートダイアログを出したりはしてはいけない
+					rej();
 				});
 
 				// 一応廃棄
-				(window as any).__misskey_input_ref__ = null;
+				window.__misskey_input_ref__ = null;
 			};
 
 			// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
 			// iOS Safari で正常に動かす為のおまじない
-			(window as any).__misskey_input_ref__ = input;
+			window.__misskey_input_ref__ = input;
 
 			input.click();
 		};
 
-		const chooseFileFromDrive = () => {
+		const chooseFileFromDrive = (): void => {
 			os.selectDriveFile(multiple).then(files => {
 				res(files);
+			}).catch((): void => {
+				rej();
 			});
 		};
 
-		const chooseFileFromUrl = () => {
+		const chooseFileFromUrl = (): void => {
 			os.inputText({
 				title: i18n.ts.uploadFromUrl,
 				type: 'url',
@@ -63,6 +72,9 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 					url: url,
 					folderId: defaultStore.state.uploadFolder,
 					marker,
+				}).catch((): void => {
+					rej();
+					connection.dispose();
 				});
 
 				os.alert({
@@ -95,12 +107,12 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 
 		if (canceled) rej();
 	});
-}
+};
 
-export function selectFile(src: any, label: string | null = null): Promise<DriveFile> {
+export const selectFile = (src: any, label: string | null = null): Promise<DriveFile> => {
 	return select(src, label, false) as Promise<DriveFile>;
-}
+};
 
-export function selectFiles(src: any, label: string | null = null): Promise<DriveFile[]> {
+export const selectFiles = (src: any, label: string | null = null): Promise<DriveFile[]> => {
 	return select(src, label, true) as Promise<DriveFile[]>;
-}
+};
