@@ -292,8 +292,9 @@ const checkMissingMention = (): void => {
 				return;
 			}
 		}
-		hasNotSpecifiedMentions = false;
 	}
+
+	hasNotSpecifiedMentions = false;
 };
 
 const addMissingMention = (): void => {
@@ -326,9 +327,10 @@ const checkAnnoyingText = (): void => {
 			text.includes('$[scale') ||
 			text.includes('$[position')
 		);
-	} else {
-		hasAnnoyingText = false;
+		return;
 	}
+
+	hasAnnoyingText = false;
 };
 
 watch($$(text), checkAnnoyingText, { immediate: true });
