@@ -11,7 +11,7 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="tms-drafts-list _gaps">
-			<div style="padding: 8px; text-align: center;">
+			<div style="margin-bottom: calc(var(--margin) * -1) auto var(--margin) auto; text-align: center;">
 				<MkButton primary gradate rounded inline @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			</div>
 			<div v-if="draftsList.length !== 0" :class="$style.draftsList">
@@ -59,6 +59,7 @@ const draftsList = $ref<Draft[]>(
 const create = (): void => {
 	const draft = createDraft();
 	emit('chosen', draft);
+	dialog?.close();
 };
 
 const chosen = (draftId: Draft['id']): void => {
