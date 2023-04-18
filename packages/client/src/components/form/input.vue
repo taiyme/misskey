@@ -2,7 +2,7 @@
 <template>
 <div class="matxzzsk">
 	<div class="label" @click="focus">
-		<span v-if="$slots.label" class="label-text"><slot name="label"></slot></span>
+		<span v-if="$slots.label || (textLength != null && maxTextLength != null)" class="label-text"><slot name="label"></slot></span>
 		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
 	</div>
 	<div class="input" :class="{ inline, disabled, focused, invalid }">
