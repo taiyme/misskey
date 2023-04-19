@@ -1228,6 +1228,7 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 	color: var(--fg);
 	min-width: 1.6em;
 	pointer-events: none;
+	white-space: nowrap;
 	opacity: 0.8;
 
 	&.textOver {

@@ -143,6 +143,7 @@ onMounted(() => {
 		}
 
 		> .text-count {
+			white-space: nowrap;
 			opacity: 0.7;
 
 			&.over {

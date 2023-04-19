@@ -5,11 +5,11 @@
 			<div class="mk-dialog">
 				<header>
 					<Mfm v-if="title" class="title" :text="title"/>
-					<span class="text-count" :class="{ over: remainingLength < 0 }">{{ remainingLength }}</span>
+					<span v-if="counter.isRemaining" class="text-count" :class="{ over: counter.isOver }">{{ counter.isRemaining }}</span>
 				</header>
 				<textarea v-model="inputValue" autofocus :placeholder="input.placeholder" @keydown="onInputKeydown"></textarea>
 				<div v-if="(showOkButton || showCancelButton)" class="buttons">
-					<MkButton inline primary :disabled="remainingLength < 0" @click="ok">{{ i18n.ts.ok }}</MkButton>
+					<MkButton inline primary @click="ok">{{ i18n.ts.ok }}</MkButton>
 					<MkButton inline @click="cancel">{{ i18n.ts.cancel }}</MkButton>
 				</div>
 			</div>
@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { length } from 'stringz';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
+import { textCounter } from '@/scripts/tms/text-counter';
 
 export default defineComponent({
 	components: {
@@ -72,7 +72,10 @@ export default defineComponent({
 
 	emits: ['done', 'closed'],
 
-	data() {
+	data(): ({
+		inputValue: string | null;
+		i18n: typeof i18n;
+	}) {
 		return {
 			inputValue: this.input.default ? this.input.default : null,
 			i18n,
@@ -80,9 +83,11 @@ export default defineComponent({
 	},
 
 	computed: {
-		remainingLength(): number {
-			if (typeof this.inputValue !== 'string') return 512;
-			return 512 - length(this.inputValue);
+		counter() {
+			return textCounter({
+				text: $$(this.inputValue),
+				maxChars: 512,
+			}).value;
 		},
 	},
 
@@ -183,9 +188,10 @@ export default defineComponent({
 		}
 
 		> .text-count {
-			opacity: 0.7;
 			position: absolute;
 			right: 0;
+			white-space: nowrap;
+			opacity: 0.7;
 		}
 	}
 
