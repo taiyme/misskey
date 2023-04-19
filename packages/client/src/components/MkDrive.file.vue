@@ -25,8 +25,8 @@
 	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 
 	<p class="name">
-		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
-		<span v-if="file.name.lastIndexOf('.') != -1" class="ext">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
+		<span>{{ fileName }}</span>
+		<span v-if="fileExt" class="ext">{{ fileExt }}</span>
 	</p>
 </div>
 </template>
@@ -62,6 +62,14 @@ const emit = defineEmits<{
 const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
+const fileName = computed<string>(() => {
+	const lio = props.file.name.lastIndexOf('.');
+	return lio !== -1 ? props.file.name.substring(0, lio) : props.file.name;
+});
+const fileExt = computed<string | null>(() => {
+	const lio = props.file.name.lastIndexOf('.');
+	return lio !== -1 ? props.file.name.substring(lio) : null;
+});
 
 const getMenu = (): MenuItem[] => {
 	return [{

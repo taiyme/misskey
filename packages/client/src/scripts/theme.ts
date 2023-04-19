@@ -96,7 +96,7 @@ function compile(theme: Theme): Record<string, string> {
 	function getColor(val: string): tinycolor.Instance {
 		// ref (prop)
 		if (val[0] === '@') {
-			return getColor(theme.props[val.substr(1)]);
+			return getColor(theme.props[val.slice(1)]);
 		}
 
 		// ref (const)
@@ -107,7 +107,7 @@ function compile(theme: Theme): Record<string, string> {
 		// func
 		else if (val[0] === ':') {
 			const parts = val.split('<');
-			const func = parts.shift().substr(1);
+			const func = parts.shift().slice(1);
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
 

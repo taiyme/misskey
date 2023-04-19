@@ -28,13 +28,13 @@ export default defineComponent({
 				parsed.push(str);
 				break;
 			} else {
-				if (nextBracketOpen > 0) parsed.push(str.substr(0, nextBracketOpen));
+				if (nextBracketOpen > 0) parsed.push(str.substring(0, nextBracketOpen));
 				parsed.push({
 					arg: str.substring(nextBracketOpen + 1, nextBracketClose),
 				});
 			}
 
-			str = str.substr(nextBracketClose + 1);
+			str = str.substring(nextBracketClose + 1);
 		}
 
 		return h(this.tag, parsed.map(x => typeof x === 'string' ? (this.textTag ? h(this.textTag, x) : x) : this.$slots[x.arg]()));
