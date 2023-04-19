@@ -14,7 +14,6 @@
 					class="tl"
 					:src="src"
 					:sound="true"
-					:remembering="true"
 					@queue="queueUpdated"
 				/>
 			</div>

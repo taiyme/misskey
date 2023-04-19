@@ -10,7 +10,6 @@ import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
-import { getRemembering, setRemembering } from '@/scripts/tms/remembering';
 
 const props = defineProps<{
 	src: string;
@@ -18,7 +17,6 @@ const props = defineProps<{
 	antenna?: string;
 	channel?: string;
 	sound?: boolean;
-	remembering?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -130,31 +128,6 @@ if (!endpoint) {
 	throw new Error();
 }
 
-let rememberingHandlerStop: (() => void) | null = null;
-
-if (props.remembering && (
-	endpoint === 'notes/timeline' ||
-	endpoint === 'notes/local-timeline' ||
-	endpoint === 'notes/hybrid-timeline' ||
-	endpoint === 'notes/global-timeline'
-)) {
-	const ep = endpoint;
-	const sinceDate = getRemembering(ep);
-	if (sinceDate) {
-		query = {
-			...(query as Misskey.Endpoints[typeof endpoint]['req']),
-			sinceDate,
-		};
-	}
-
-	const intervalId = window.setInterval(() => {
-		setRemembering(ep, Date.now());
-	}, 1000);
-	rememberingHandlerStop = (): void => {
-		window.clearInterval(intervalId);
-	};
-}
-
 const pagination = {
 	endpoint: endpoint,
 	limit: 10,
@@ -169,10 +142,6 @@ onUnmounted(() => {
 	if (connection2) {
 		connection2.dispose();
 		connection2 = null;
-	}
-	if (rememberingHandlerStop) {
-		rememberingHandlerStop();
-		rememberingHandlerStop = null;
 	}
 });
 
