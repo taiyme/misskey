@@ -84,7 +84,7 @@
 		</div>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="[$style.input, $style.hashtags]" :placeholder="i18n.ts.hashtags" list="hashtags">
 	</div>
-	<MkPostFormAttaches :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
+	<MkPostFormAttaches v-model="files" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 	<footer :class="$style.footer">
@@ -544,10 +544,6 @@ const uploads = async (fileList: File[]): Promise<void> => {
 
 const detachFile = (id: string): void => {
 	files = files.filter(x => x.id !== id);
-};
-
-const updateFiles = (_files: Misskey.entities.DriveFile[]): void => {
-	files = _files;
 };
 
 const updateFileSensitive = (file: Misskey.entities.DriveFile, sensitive: boolean): void => {
