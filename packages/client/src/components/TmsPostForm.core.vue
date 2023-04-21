@@ -105,7 +105,6 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, inject, watch, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
 import * as mfm from 'mfm-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
@@ -527,9 +526,10 @@ const addVisibleUser = (): void => {
 	fetchingWrapper(
 		os.selectUser().then(user => {
 			pushVisibleUser(user);
-
-			if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
-				text = `@${Acct.toString(user)} ${text}`;
+			
+			const mention = parseMention(user);
+			if (!text.toLowerCase().includes(mention)) {
+				text = `${mention} ${text}`;
 			}
 		}),
 	);
@@ -793,7 +793,7 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 				text: i18n.ts.quoteQuestion,
 			}).then(({ canceled }) => {
 				if (canceled) {
-					insertTextAtCursor(textareaEl, paste);
+					if (textareaEl) insertTextAtCursor(textareaEl, paste);
 					return;
 				}
 
@@ -978,7 +978,7 @@ const toggleUseCw = (): void => {
 const insertMention = (): void => {
 	fetchingWrapper(
 		os.selectUser().then(user => {
-			insertTextAtCursor(textareaEl, `@${Acct.toString(user)} `);
+			if (textareaEl) insertTextAtCursor(textareaEl, `${parseMention(user)} `);
 		}),
 	);
 };

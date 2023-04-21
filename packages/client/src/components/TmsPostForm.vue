@@ -139,6 +139,7 @@ onMounted(() => {
 			renoteId: init.renote?.id ?? null,
 			channelId: init.channel?.id ?? null,
 			quoteId: null,
+			visibleUserIds: init.visibleUserIds ?? [],
 		}, true);
 	}
 
