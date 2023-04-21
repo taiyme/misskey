@@ -42,3 +42,14 @@ export const typedValues = <T extends Record<string, unknown>>(obj: T): TypedVal
 export const typedEntries = <T extends Record<string, unknown>>(obj: T): TypedEntries<T> => {
 	return Object.entries(obj) as unknown as TypedEntries<T>;
 };
+
+// Array<T>.prototype.at(index: number): T | undefined;
+export const arrayAt = <T>(array: T[], index: number): T | undefined => {
+	if (typeof Array.prototype.at === 'function') {
+		return array.at(index);
+	} else {
+		const intIndex = Math.trunc(+index) || 0;
+		const absIndex = intIndex >= 0 ? intIndex : array.length + intIndex;
+		return (absIndex < 0 || absIndex >= array.length) ? undefined : array[absIndex];
+	}
+};

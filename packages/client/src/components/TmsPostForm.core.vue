@@ -128,6 +128,7 @@ import { parseObject, parseArray } from '@/scripts/tms/parse';
 import * as Draft from '@/scripts/tms/drafts';
 import { imanonashi } from '@/scripts/tms/imanonashi';
 import { textCounter } from '@/scripts/tms/text-counter';
+import { migrateNoteVisibility as _migrateNoteVisibility } from '@/scripts/tms/note-visibility';
 import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -215,17 +216,19 @@ const renote = $ref<Misskey.entities.Note | null>(props.renote);
 const channel = $ref<Misskey.entities.Channel | null>(props.channel);
 
 let quote = $ref<Misskey.entities.Note | null>(null);
-const setQuote = (quoteId?: string | null): void => {
+const setQuote = async (quoteId?: string | null): Promise<void> => {
 	if (!quoteId || renote) {
 		quote = null;
 		return;
 	}
 
-	fetchingWrapper(
+	await fetchingWrapper(
 		os.api('notes/show', { noteId: quoteId }, token)
 			.then(_quote => quote = _quote)
 			.catch(() => quote = null),
 	);
+
+	migrateNoteVisibility();
 };
 
 let withHashtags = $ref<boolean>(defaultStore.state.postFormWithHashtags);
@@ -602,44 +605,62 @@ if (text === '') {
 }
 
 // 公開範囲の引き継ぎ
-if (reply) {
-	if (reply.visibility !== 'specified') {
-		visibleUsers = [];
-
-		if (visibility === 'public' && reply.visibility === 'home') {
-			visibility = 'home';
-		}
-		if (visibility === 'home' && reply.visibility === 'followers') {
-			visibility = 'followers';
-		}
-	} else {
-		visibility = 'specified';
-		localOnly = false;
-
-		const visibleUserIds = reply.visibleUserIds?.filter(uid => uid !== $i?.id && uid !== reply?.userId) ?? [];
-		if (visibleUserIds.length === 0) {
-			visibleUsers = [];
-		} else {
-			fetchingWrapper(
-				os.api('users/show', { userIds: visibleUserIds }, token)
-					.then(users => {
-						users.forEach(user => {
-							pushVisibleUser(user);
-						});
-					}),
-			);
-		}
+let disabledVisibilities = $ref([] as Misskey.entities.Note['visibility'][]);
+const migrateNoteVisibility = (): void => {
+	if (channel) {
+		visibility = 'public';
+		localOnly = true;
+		return;
 	}
-}
+
+	const parseNoteVis = (_note: Misskey.entities.Note | null): {
+		visibility: typeof Misskey.noteVisibilities[number];
+		localOnly: boolean;
+		visibleUserIds: string[];
+	} | null => _note ? {
+		visibility: _note.visibility,
+		localOnly: !!_note.localOnly,
+		visibleUserIds: _note.visibleUserIds ?? [],
+	} : null;
+
+	const migrated = _migrateNoteVisibility({
+		note: {
+			visibility,
+			localOnly,
+			visibleUserIds: visibleUsers.map(({ id }) => id),
+		},
+		reply: parseNoteVis(reply),
+		renote: parseNoteVis(renote || quote),
+	});
+
+	visibility = migrated.visibility;
+	localOnly = migrated.localOnly;
+	disabledVisibilities = migrated.disabledVisibilities;
+
+	if (visibility !== 'specified') {
+		visibleUsers = [];
+	}
+
+	if (migrated.visibleUserIds.length !== 0) {
+		const visibleUserIds = migrated.visibleUserIds.filter(id => id !== $i?.id && id !== reply?.userId && !visibleUsers.some(x => id === x.id));
+		fetchingWrapper(
+			os.api('users/show', { userIds: visibleUserIds }, token)
+				.then(users => {
+					users.forEach(user => {
+						pushVisibleUser(user);
+					});
+				}),
+		);
+	} else {
+		visibleUsers = [];
+	}
+};
+
+migrateNoteVisibility();
 
 if (props.specified) {
 	visibility = 'specified';
 	pushVisibleUser(props.specified);
-}
-
-if (channel) {
-	visibility = 'public';
-	localOnly = true;
 }
 
 if (defaultStore.state.keepCw && reply && reply.cw) {
@@ -817,6 +838,7 @@ const openVisibilityPicker = (): void => {
 		currentVisibility: visibility,
 		currentLocalOnly: localOnly,
 		src: visibilityButton,
+		disabledVisibilities,
 	}, {
 		changeVisibility: (v: typeof visibility) => {
 			visibility = v;
