@@ -34,7 +34,7 @@ export const migrateNoteVisibility = (props: {
 		const orderNote = arrayAt(order, 0);
 		if (orderNote) return {
 			...orderNote,
-			disabledVisibilities: getDisabledVisibilities(orderNote.visibility),
+			disabledVisibilities: [],
 		};
 		throw new Error();
 	}

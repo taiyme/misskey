@@ -19,6 +19,7 @@ type DraftData = {
 	renoteId: string | null;
 	channelId: string | null;
 	quoteId: string | null;
+	visibleUserIds: string[];
 };
 
 type LsDraft = {
@@ -130,7 +131,7 @@ const loadLsDrafts = (): Record<string, LsDraft | undefined> => parseObject<Reco
 const saveLsDrafts = (drafts: Record<string, LsDraft | undefined>): void => localStorage.setItem(LS_DRAFTS_KEY, JSON.stringify(drafts));
 
 const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
-	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId, quoteId } = lsDraft;
+	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId, quoteId, visibleUserIds } = lsDraft;
 
 	const draftData: DraftData = {
 		text: text ?? '',
@@ -144,6 +145,7 @@ const restoreDraftData = (lsDraft: Partial<DraftData>): DraftData => {
 		renoteId: renoteId ?? null,
 		channelId: channelId ?? null,
 		quoteId: quoteId ?? null,
+		visibleUserIds: visibleUserIds ?? [],
 	};
 
 	if (draftData.channelId) {
@@ -212,7 +214,7 @@ export const getDraft = (draftId: string | null): Draft | null => {
 export const setDraft = (draftId: string | null, data: DraftData, force = false): Draft | null => {
 	if (!draftId) return null;
 
-	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId, quoteId } = data;
+	const { text, useCw, cw, visibility, localOnly, files, poll, replyId, renoteId, channelId, quoteId, visibleUserIds } = data;
 
 	const draftData: LsDraft['data'] = {
 		text: text || undefined,
@@ -226,6 +228,7 @@ export const setDraft = (draftId: string | null, data: DraftData, force = false)
 		renoteId: renoteId ?? undefined,
 		channelId: channelId ?? undefined,
 		quoteId: quoteId ?? undefined,
+		visibleUserIds: visibleUserIds.length ? visibleUserIds : undefined,
 	};
 
 	if (draftData.channelId) {

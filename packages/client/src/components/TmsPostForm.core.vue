@@ -364,6 +364,7 @@ const saveDraft = (): void => {
 		renoteId: renote?.id ?? null,
 		channelId: channel?.id ?? null,
 		quoteId: quote?.id ?? null,
+		visibleUserIds: visibleUsers.map(({ id }) => id),
 	}, isEdit);
 };
 
@@ -463,7 +464,7 @@ onMounted(() => {
 		nextTick(focus);
 	}
 
-	nextTick(() => {
+	nextTick(async () => {
 		if (!props.instant && !props.fixed) {
 			const _draft = draft ?? Draft.getDraft(draftId);
 			if (_draft) {
@@ -474,7 +475,17 @@ onMounted(() => {
 				localOnly = _draft.data.localOnly;
 				files = _draft.data.files;
 				poll = _draft.data.poll;
-				setQuote(_draft.data.quoteId);
+				if (_draft.data.visibleUserIds.length) {
+					await fetchingWrapper(
+						os.api('users/show', { userIds: _draft.data.visibleUserIds }, token)
+							.then(users => {
+								users.forEach(user => {
+									pushVisibleUser(user);
+								});
+							}),
+					);
+				}
+				await setQuote(_draft.data.quoteId);
 			}
 		}
 
