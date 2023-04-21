@@ -379,9 +379,12 @@ const watchForDraft = (): void => {
 		$$(cw),
 		$$(visibility),
 		$$(localOnly),
+	], saveDraft, { deep: false });
+	watch([
 		$$(files),
 		$$(poll),
 		$$(quote),
+		$$(visibleUsers),
 	], saveDraft, { deep: true });
 };
 //#endregion
