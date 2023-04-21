@@ -728,6 +728,9 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(vue@3.2.47)
     devDependencies:
+      '@types/autosize':
+        specifier: ^4.0.1
+        version: 4.0.1
       '@types/escape-regexp':
         specifier: 0.0.1
         version: 0.0.1
@@ -755,6 +758,9 @@ importers:
       '@types/seedrandom':
         specifier: 3.0.5
         version: 3.0.5
+      '@types/textarea-caret':
+        specifier: ^3.0.1
+        version: 3.0.1
       '@types/throttle-debounce':
         specifier: 5.0.0
         version: 5.0.0
@@ -2538,6 +2544,10 @@ packages:
     dependencies:
       '@types/node': 18.14.1
 
+  /@types/autosize@4.0.1:
+    resolution: {integrity: sha512-iPJT/FCaSO79G6j+9n6gmFc5nhxZ1gDrA2UAvb5FslJ6FJQZnDfbBU0qp5vpp0Cbjj7+gOyjuWZ7RrXvRuETaA==}
+    dev: true
+
   /@types/bcryptjs@2.4.2:
     resolution: {integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==}
     dev: true
@@ -2924,6 +2934,10 @@ packages:
     resolution: {integrity: sha512-JEcOhN2SQCoX86ZfiZEe8px84sVJtivBXMZfOVyARTYEj0hrwwbj1nF0FwEL3nJSoEV6uTbcdLllMKBgAYHWCQ==}
     dependencies:
       '@types/node': 18.14.1
+    dev: true
+
+  /@types/textarea-caret@3.0.1:
+    resolution: {integrity: sha512-JjrXYzk4t6dM/5nz1hHkZXmd3xSdJM6mOIDSBUrpg4xThwKNryiu4CqHx81LwUJHxEEoQWHTu4fMV4em+c5bXg==}
     dev: true
 
   /@types/throttle-debounce@5.0.0:
