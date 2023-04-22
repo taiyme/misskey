@@ -9,36 +9,43 @@ import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
-// const hash = (str: string, seed = 0): number => {
-// 	let h1 = 0xdeadbeef ^ seed;
-// 	let h2 = 0x41c6ce57 ^ seed;
+const pathToIdentifier = (_path: string): string => _path.replace(/[\\\/\.\?&=]/g, '-');
 
-// 	for (let i = 0; i < str.length; i++) {
-// 		const ch = str.charCodeAt(i);
-// 		h1 = Math.imul(h1 ^ ch, 2654435761);
-// 		h2 = Math.imul(h2 ^ ch, 1597334677);
-// 	}
+const kebabize = (str: string): string => {
+	return str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (m1: string, m2: unknown) => `${m2 ? '-' : ''}${m1.toLowerCase()}`);
+};
 
-// 	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-// 	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+const hash = (str: string, seed = 0): number => {
+	let h1 = 0xdeadbeef ^ seed;
+	let h2 = 0x41c6ce57 ^ seed;
 
-// 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
-// };
+	for (let i = 0; i < str.length; i++) {
+		const ch = str.charCodeAt(i);
+		h1 = Math.imul(h1 ^ ch, 2654435761);
+		h2 = Math.imul(h2 ^ ch, 1597334677);
+	}
 
-// const toBase62 = (n: number): string => {
-// 	if (n === 0) return '0';
+	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
 
-// 	const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-// 	let result = '';
+	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};
 
-// 	while (n > 0) {
-// 		result = chars[n % 62] + result;
-// 		// eslint-disable-next-line no-param-reassign
-// 		n = Math.floor(n / 62);
-// 	}
+const toBase62 = (n: number): string => {
+	if (n === 0) return '0';
 
-// 	return result;
-// };
+	const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	let result = '';
+
+	while (n > 0) {
+		result = chars[n % 62] + result;
+		// eslint-disable-next-line no-param-reassign
+		n = Math.floor(n / 62);
+	}
+
+	return result;
+};
+
 
 export default defineConfig(({ command, mode }) => {
 	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
@@ -65,14 +72,15 @@ export default defineConfig(({ command, mode }) => {
 
 		css: {
 			modules: {
-				generateScopedName(name, filename, _css): string {
-					const id = `${path.relative(__dirname, filename.split('?')[0])}-${name}`.replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
-					// if (process.env.NODE_ENV === 'production') {
-					// 	return `x${toBase62(hash(id)).substring(0, 4)}`;
-					// } else {
-					// 	return id;
-					// }
-					return id;
+				generateScopedName(name, _filename, _css): string {
+					const dir = path.relative(__dirname, _filename.split('?')[0]).replace(/^(src|vue)\//, '');
+
+					const componentsPath = 'components/';
+					if (dir.startsWith(componentsPath)) {
+						return `_${name}_${kebabize(pathToIdentifier(dir.slice(componentsPath.length)))}`;
+					}
+
+					return `_${name}__${toBase62(hash(pathToIdentifier(`${dir}-${name}`))).substring(0, 5)}`;
 				},
 			},
 		},
