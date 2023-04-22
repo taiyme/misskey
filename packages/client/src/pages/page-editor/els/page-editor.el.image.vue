@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
@@ -30,14 +30,18 @@ const props = withDefaults(defineProps<{
 	},
 });
 
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
+
 let file: any = $ref(null);
 
-async function choose() {
+const choose = (): void => {
 	os.selectDriveFile(false).then((fileResponse: any) => {
 		file = fileResponse;
 		props.value.fileId = fileResponse.id;
 	});
-}
+};
 
 onMounted(async () => {
 	if (props.value.fileId == null) {

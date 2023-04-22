@@ -8,7 +8,7 @@
 	:buttons-left="buttonsLeft"
 	:buttons-right="buttonsRight"
 	:contextmenu="contextmenu"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		<template v-if="pageMetadata?.value">
@@ -39,7 +39,7 @@ const props = defineProps<{
 	initialPath: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 

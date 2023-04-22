@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-question-mark"></i> {{ i18n.ts._pages.blocks.if }}</template>
 	<template #func>
 		<button class="_button" @click="add()">
@@ -46,18 +46,22 @@ const props = withDefaults(defineProps<{
 	},
 });
 
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
+
 const getPageBlockList = inject<(any) => any>('getPageBlockList');
 
-async function add() {
+const add = async (): Promise<void> => {
 	const { canceled, result: type } = await os.select({
 		title: i18n.ts._pages.chooseBlock,
-		groupedItems: getPageBlockList()
+		groupedItems: getPageBlockList(),
 	});
 	if (canceled) return;
 
 	const id = uuid();
 	props.value.children.push({ id, type });
-}
+};
 </script>
 
 <style lang="scss" scoped>

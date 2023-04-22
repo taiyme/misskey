@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.textarea }}</template>
 
 	<section class="ihymsbbe">
@@ -22,6 +22,10 @@ withDefaults(defineProps<{
 		text: '',
 	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

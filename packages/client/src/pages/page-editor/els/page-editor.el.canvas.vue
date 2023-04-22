@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-brush"></i> {{ i18n.ts._pages.blocks.canvas }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
@@ -28,7 +28,7 @@ import MkInput from '@/components/form/input.vue';
 import { i18n } from '@/i18n';
 
 withDefaults(defineProps<{
-	value: any
+	value: any;
 }>(), {
 	value: {
 		name: '',
@@ -36,4 +36,8 @@ withDefaults(defineProps<{
 		height: 200,
 	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 </script>

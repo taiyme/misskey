@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-bolt"></i> {{ i18n.ts._pages.blocks.radioButton }}</template>
 
 	<section style="padding: 0 16px 16px 16px;">
@@ -29,6 +29,10 @@ const props = withDefaults(defineProps<{
 		values: [],
 	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 
 let values = $ref<string>(props.value?.values.join('\n') ?? '');
 

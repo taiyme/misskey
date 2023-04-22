@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ value.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -28,36 +28,40 @@ import { i18n } from '@/i18n';
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
 const props = withDefaults(defineProps<{
-	value: any,
-	hpml: any
+	value: any;
+	hpml: any;
 }>(), {
 	value: {
 		title: null,
-		children: []
-	}
+		children: [],
+	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 
 const getPageBlockList = inject<(any) => any>('getPageBlockList');
 
-async function rename() {
+const rename = async (): Promise<void> => {
 	const { canceled, result: title } = await os.inputText({
 		title: 'Enter title',
-		default: props.value.title
+		default: props.value.title,
 	});
 	if (canceled) return;
 	props.value.title = title;
-}
+};
 
-async function add() {
+const add = async (): Promise<void> => {
 	const { canceled, result: type } = await os.select({
 		title: i18n.ts._pages.chooseBlock,
-		groupedItems: getPageBlockList()
+		groupedItems: getPageBlockList(),
 	});
 	if (canceled) return;
 
 	const id = uuid();
 	props.value.children.push({ id, type });
-}
+};
 
 onMounted(() => {
 	if (props.value.title == null) {

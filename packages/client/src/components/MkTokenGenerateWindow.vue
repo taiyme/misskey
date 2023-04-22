@@ -7,7 +7,7 @@
 	:ok-button-disabled="false"
 	:can-close="false"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>

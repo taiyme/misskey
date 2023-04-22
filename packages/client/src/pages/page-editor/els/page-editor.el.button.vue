@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-bolt"></i> {{ i18n.ts._pages.blocks.button }}</template>
 
 	<section class="xfhsjczc">
@@ -48,8 +48,8 @@ import MkSwitch from '@/components/form/switch.vue';
 import { i18n } from '@/i18n';
 
 withDefaults(defineProps<{
-	value: any,
-	hpml: any
+	value: any;
+	hpml: any;
 }>(), {
 	value: {
 		text: '',
@@ -62,6 +62,10 @@ withDefaults(defineProps<{
 		fn: null,
 	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

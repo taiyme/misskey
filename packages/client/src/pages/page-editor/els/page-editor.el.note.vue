@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
@@ -39,6 +39,10 @@ const props = withDefaults(defineProps<{
 		detailed: false,
 	}),
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 
 let id = $ref<string>(props.value.note ?? '');
 let note = $ref<Note | null>(null);

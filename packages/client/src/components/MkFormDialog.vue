@@ -8,7 +8,7 @@
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ title }}
@@ -54,8 +54,8 @@
 </MkModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 import MkInput from './form/input.vue';
 import MkTextarea from './form/textarea.vue';
 import MkSwitch from './form/switch.vue';
@@ -66,62 +66,37 @@ import MkRadios from './form/radios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkModalWindow,
-		MkInput,
-		MkTextarea,
-		MkSwitch,
-		MkSelect,
-		MkRange,
-		MkButton,
-		MkRadios,
-	},
+const props = defineProps<{
+	title: string;
+	form: Record<string, any>;
+}>();
 
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		form: {
-			type: Object,
-			required: true,
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'done', r: { canceled: false; result: Record<string, any>; }): void;
+	(ev: 'done', r: { canceled: true; result: undefined; }): void;
+	(ev: 'closed'): void;
+}>();
 
-	emits: ['done', 'closed'],
+const dialog = $ref<InstanceType<typeof MkModalWindow>>();
 
-	data() {
-		return {
-			values: {},
-			i18n,
-		};
-	},
+const values = $ref<Record<string, any>>({});
 
-	created() {
-		for (const item in this.form) {
-			this.values[item] = this.form[item].default ?? null;
-		}
-	},
+for (const item in props.form) {
+	values[item] = props.form[item].default ?? null;
+}
 
-	methods: {
-		ok() {
-			const dialog = this.$refs.dialog as InstanceType<typeof MkModalWindow> | null | undefined;
-			this.$emit('done', {
-				canceled: false,
-				result: this.values,
-			});
-			dialog?.close();
-		},
+const ok = (): void => {
+	emit('done', {
+		canceled: false,
+		result: values,
+	});
+	dialog?.close();
+};
 
-		cancel() {
-			const dialog = this.$refs.dialog as InstanceType<typeof MkModalWindow> | null | undefined;
-			this.$emit('done', {
-				canceled: true,
-				result: undefined,
-			});
-			dialog?.close();
-		},
-	},
-});
+const cancel = (): void => {
+	emit('done', {
+		canceled: true,
+		result: undefined,
+	});
+};
 </script>

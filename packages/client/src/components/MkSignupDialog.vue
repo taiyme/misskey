@@ -4,7 +4,7 @@
 	:width="366"
 	:height="500"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 

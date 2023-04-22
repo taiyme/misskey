@@ -7,7 +7,7 @@
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
 			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
+			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<XDraggable
 			v-model="widgets_"

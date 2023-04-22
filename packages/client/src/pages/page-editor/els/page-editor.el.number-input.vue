@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-bolt"></i> {{ i18n.ts._pages.blocks.numberInput }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
@@ -32,4 +32,8 @@ withDefaults(defineProps<{
 		name: '',
 	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 </script>

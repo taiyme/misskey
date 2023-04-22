@@ -4,7 +4,7 @@
 	:width="370"
 	:with-ok-button="true"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 	@ok="ok()"
 >
 	<template #header>:{{ emoji.name }}:</template>

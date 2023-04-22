@@ -6,7 +6,7 @@
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div class="tbhwbxda">
