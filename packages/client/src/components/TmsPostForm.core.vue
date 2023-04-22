@@ -467,7 +467,7 @@ onMounted(() => {
 	}
 
 	nextTick(async () => {
-		if (!props.instant && !props.fixed) {
+		if (!props.instant && !props.mention && !props.specified) {
 			const _draft = draft ?? Draft.getDraft(draftId);
 			if (_draft) {
 				text = _draft.data.text;
@@ -1262,6 +1262,7 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 	pointer-events: none;
 	white-space: nowrap;
 	opacity: 0.8;
+	font-variant: tabular-nums;
 
 	&.textOver {
 		color: var(--error);
