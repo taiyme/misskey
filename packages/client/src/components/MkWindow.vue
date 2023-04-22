@@ -552,7 +552,7 @@ defineExpose({
 
 .content {
 	flex: 1;
-	overflow: auto;
+	overflow: auto scroll; // overflow-yをautoにすると画面がガタガタすることがある
 	background: var(--panel);
 	container-type: inline-size;
 }
