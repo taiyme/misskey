@@ -293,6 +293,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 			sinceId: items.value[items.value.length - 1].id,
 		}),
 	}).then((res: MisskeyEntity[]) => {
+		if (contentEl && isTop()) scroll(contentEl, { top: 1 });
 		if (res.length === 0) {
 			items.value = items.value.concat(res);
 			more.value = false;
@@ -303,6 +304,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		offset.value += res.length;
 		moreFetching.value = false;
 	}, () => {
+		if (contentEl && isTop()) scroll(contentEl, { top: 1 });
 		moreFetching.value = false;
 	});
 };
