@@ -21,9 +21,10 @@
 
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_ahead_" class="_gap" :class="$style.loadMore">
+			<!-- 自動で読み込み続けてしまうので一旦削除 -->
+			<!-- v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" -->
 			<MkButton
 				v-if="!moreFetching"
-				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null"
 				:disabled="moreFetching"
 				:style="{ cursor: moreFetching ? 'wait' : 'pointer' }"
 				primary
@@ -293,7 +294,6 @@ const fetchMoreAhead = async (): Promise<void> => {
 			sinceId: items.value[items.value.length - 1].id,
 		}),
 	}).then((res: MisskeyEntity[]) => {
-		if (contentEl && isTop()) scroll(contentEl, { top: 1 });
 		if (res.length === 0) {
 			items.value = items.value.concat(res);
 			more.value = false;
@@ -304,7 +304,6 @@ const fetchMoreAhead = async (): Promise<void> => {
 		offset.value += res.length;
 		moreFetching.value = false;
 	}, () => {
-		if (contentEl && isTop()) scroll(contentEl, { top: 1 });
 		moreFetching.value = false;
 	});
 };
