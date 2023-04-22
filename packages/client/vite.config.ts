@@ -69,16 +69,16 @@ export default defineConfig(({ command, mode }) => {
 			modules: {
 				generateScopedName(name, _filename, _css): string {
 					const _path = path.relative(__dirname, _filename.split('?')[0]).replace(/^src\//, '');
-					const dir = path.dirname(_path);
+					const dir = `${path.dirname(_path)}/`;
 					const { name: filename } = path.parse(_path);
 
 					const componentsPath = 'components/';
 					if (dir.startsWith(componentsPath)) {
-						const id = pathToIdentifier(`${dir.slice(componentsPath.length)}/${filename}`);
+						const id = pathToIdentifier(`${dir.slice(componentsPath.length)}${filename}`);
 						return `_${name}_${id}`;
 					}
 
-					return `_${name}__${toBase62(hash(pathToIdentifier(`${dir}/${filename}`))).substring(0, 5)}`;
+					return `_${name}__${toBase62(hash(pathToIdentifier(`${dir}${filename}`))).substring(0, 5)}`;
 				},
 			},
 		},
