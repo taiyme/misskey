@@ -1,3 +1,4 @@
+import path from 'path';
 import * as fs from 'fs';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
@@ -7,6 +8,37 @@ import meta from '../../package.json';
 import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+// const hash = (str: string, seed = 0): number => {
+// 	let h1 = 0xdeadbeef ^ seed;
+// 	let h2 = 0x41c6ce57 ^ seed;
+
+// 	for (let i = 0; i < str.length; i++) {
+// 		const ch = str.charCodeAt(i);
+// 		h1 = Math.imul(h1 ^ ch, 2654435761);
+// 		h2 = Math.imul(h2 ^ ch, 1597334677);
+// 	}
+
+// 	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+// 	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+
+// 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+// };
+
+// const toBase62 = (n: number): string => {
+// 	if (n === 0) return '0';
+
+// 	const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// 	let result = '';
+
+// 	while (n > 0) {
+// 		result = chars[n % 62] + result;
+// 		// eslint-disable-next-line no-param-reassign
+// 		n = Math.floor(n / 62);
+// 	}
+
+// 	return result;
+// };
 
 export default defineConfig(({ command, mode }) => {
 	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
@@ -28,6 +60,20 @@ export default defineConfig(({ command, mode }) => {
 				'@/': __dirname + '/src/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
+			},
+		},
+
+		css: {
+			modules: {
+				generateScopedName(name, filename, _css): string {
+					const id = `${path.relative(__dirname, filename.split('?')[0])}-${name}`.replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
+					// if (process.env.NODE_ENV === 'production') {
+					// 	return `x${toBase62(hash(id)).substring(0, 4)}`;
+					// } else {
+					// 	return id;
+					// }
+					return id;
+				},
 			},
 		},
 
