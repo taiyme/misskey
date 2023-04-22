@@ -11,10 +11,6 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
 
 const pathToIdentifier = (_path: string): string => _path.replace(/[\\\/\.\?&=]/g, '-');
 
-const kebabize = (str: string): string => {
-	return str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (m1: string, m2: unknown) => `${m2 ? '-' : ''}${m1.toLowerCase()}`);
-};
-
 const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed;
 	let h2 = 0x41c6ce57 ^ seed;
@@ -46,7 +42,6 @@ const toBase62 = (n: number): string => {
 	return result;
 };
 
-
 export default defineConfig(({ command, mode }) => {
 	fs.mkdirSync(__dirname + '/../../built', { recursive: true });
 	fs.writeFileSync(__dirname + '/../../built/meta.json', JSON.stringify({ version: meta.version }), 'utf-8');
@@ -73,14 +68,17 @@ export default defineConfig(({ command, mode }) => {
 		css: {
 			modules: {
 				generateScopedName(name, _filename, _css): string {
-					const dir = path.relative(__dirname, _filename.split('?')[0]).replace(/^(src|vue)\//, '');
+					const _path = path.relative(__dirname, _filename.split('?')[0]).replace(/^src\//, '');
+					const dir = path.dirname(_path);
+					const { name: filename } = path.parse(_path);
 
 					const componentsPath = 'components/';
 					if (dir.startsWith(componentsPath)) {
-						return `_${name}_${kebabize(pathToIdentifier(dir.slice(componentsPath.length)))}`;
+						const id = pathToIdentifier(`${dir.slice(componentsPath.length)}/${filename}`);
+						return `_${name}_${id}`;
 					}
 
-					return `_${name}__${toBase62(hash(pathToIdentifier(`${dir}-${name}`))).substring(0, 5)}`;
+					return `_${name}__${toBase62(hash(pathToIdentifier(`${dir}/${filename}`))).substring(0, 5)}`;
 				},
 			},
 		},
