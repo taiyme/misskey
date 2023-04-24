@@ -2369,3 +2369,4 @@ _tms:
   numberquote: "数字引用する"
   drafts: "下書き"
   loadDraft: "下書きを読み込む"
+  nyaizeWarning: "この投稿はnyaizeに感染しているかもしれんよ。"

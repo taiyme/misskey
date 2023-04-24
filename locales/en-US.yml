@@ -2263,3 +2263,4 @@ _tms:
   numberquote: "Numberquote"
   drafts: "Drafts"
   loadDraft: "Load from draft"
+  nyaizeWarning: "This post may be infected with nyaize."
