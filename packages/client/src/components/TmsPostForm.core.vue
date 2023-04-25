@@ -1081,8 +1081,8 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 .headerRightButton {
 	display: flex;
 	gap: 6px;
-	margin: 0;
-	padding: 8px;
+	margin: 0 !important; // ._buttonを上書き
+	padding: 8px !important; // ._buttonを上書き
 	border-radius: 6px;
 	overflow: hidden;
 	white-space: nowrap;
@@ -1108,7 +1108,7 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 }
 
 .submit {
-	margin: 12px 12px 12px 6px;
+	margin: 12px 12px 12px 6px !important; // ._buttonを上書き
 	vertical-align: bottom;
 
 	&:disabled {
@@ -1301,7 +1301,7 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 	}
 
 	.submit {
-		margin: 8px 8px 8px 4px;
+		margin: 8px 8px 8px 4px !important; // ._buttonを上書き
 	}
 
 	.replyNote {
