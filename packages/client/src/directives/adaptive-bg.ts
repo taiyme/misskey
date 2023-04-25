@@ -22,12 +22,12 @@ export default {
 
 		const parentBg = getBgColor(src.parentElement);
 
-		const myBg = window.getComputedStyle(document.documentElement).getPropertyValue('--panel');
+		const { backgroundColor: myBg } = window.getComputedStyle(src);
 
 		if (parentBg === myBg) {
 			src.style.backgroundColor = 'var(--bg)';
 		} else {
-			src.style.backgroundColor = 'var(--panel)';
+			src.style.backgroundColor = myBg;
 		}
 	},
 } as Directive<HTMLElement>;

@@ -4,7 +4,7 @@ const map = new WeakMap<HTMLElement, ResizeObserver>();
 
 // eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el: HTMLElement) {
+	mounted(el) {
 		const ro = new ResizeObserver(() => {
 			el.style.setProperty('--containerHeight', `${el.offsetHeight}px`);
 		});
@@ -12,11 +12,11 @@ export default {
 		map.set(el, ro);
 	},
 
-	unmounted(el: HTMLElement) {
+	unmounted(el) {
 		const ro = map.get(el);
 		if (ro) {
 			ro.disconnect();
 			map.delete(el);
 		}
 	},
-} as Directive;
+} as Directive<HTMLElement>;

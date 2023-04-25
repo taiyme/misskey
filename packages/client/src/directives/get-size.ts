@@ -1,12 +1,12 @@
 import { Directive } from 'vue';
 
-const mountings = new Map<Element, {
+const mountings = new Map<HTMLElement, {
 	resize: ResizeObserver;
 	intersection?: IntersectionObserver;
 	fn: (w: number, h: number) => void;
 }>();
 
-function calc(src: Element) {
+const calc = (src: HTMLElement): void => {
 	const info = mountings.get(src);
 	const height = src.clientHeight;
 	const width = src.clientWidth;
@@ -30,25 +30,26 @@ function calc(src: Element) {
 	}
 
 	info.fn(width, height);
-}
+};
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding, vn) {
-		const resize = new ResizeObserver((entries, observer) => {
+	mounted(src, binding) {
+		const resize = new ResizeObserver(() => {
 			calc(src);
 		});
 		resize.observe(src);
 
-		mountings.set(src, { resize, fn: binding.value, });
+		mountings.set(src, { resize, fn: binding.value });
 		calc(src);
 	},
 
-	unmounted(src, binding, vn) {
+	unmounted(src, binding) {
 		binding.value(0, 0);
 		const info = mountings.get(src);
 		if (!info) return;
 		info.resize.disconnect();
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
-	}
-} as Directive<Element, (w: number, h: number) => void>;
+	},
+} as Directive<HTMLElement, (w: number, h: number) => void>;

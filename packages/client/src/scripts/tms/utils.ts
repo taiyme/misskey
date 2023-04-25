@@ -44,7 +44,8 @@ export const typedEntries = <T extends Record<string, unknown>>(obj: T): TypedEn
 };
 
 // Array<T>.prototype.at(index: number): T | undefined;
-export const arrayAt = <T>(array: T[], index: number): T | undefined => {
+export const arrayAt = <T>(arrayLike: T[] | ArrayLike<T>, index: number): T | undefined => {
+	const array = Array.isArray(arrayLike) ? arrayLike : Array.from(arrayLike);
 	if (typeof Array.prototype.at === 'function') {
 		return array.at(index);
 	} else {

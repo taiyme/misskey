@@ -1,17 +1,19 @@
 import { Directive } from 'vue';
 import { defaultStore } from '@/store';
+import { arrayAt } from '@/scripts/tms/utils';
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el: HTMLElement, binding, vn) {
+	mounted(src) {
 		if (!defaultStore.state.animation) return;
 
-		const target = el.children[0];
+		const target = arrayAt(src.children, 0);
 
 		if (target == null) return;
 
 		target.classList.add('_anime_bounce_standBy');
 
-		el.addEventListener('mousedown', () => {
+		src.addEventListener('mousedown', () => {
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -22,14 +24,14 @@ export default {
 			});
 		});
 
-		el.addEventListener('click', () => {
+		src.addEventListener('click', () => {
 			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
 		});
 
-		el.addEventListener('animationend', () => {
+		src.addEventListener('animationend', () => {
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
 		});
 	},
-} as Directive;
+} as Directive<HTMLElement>;
