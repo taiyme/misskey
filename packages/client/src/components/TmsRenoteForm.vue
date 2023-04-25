@@ -37,7 +37,7 @@
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
-					<template v-else>{{ i18n.ts.quote }}</template>
+					<template v-else>{{ i18n.ts.renote }}</template>
 					<i :style="{ marginLeft: !posted ? '6px' : undefined }" class="ti" :class="posted ? 'ti-check' : 'ti-send'"></i>
 				</div>
 			</button>
@@ -430,7 +430,7 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 }
 
 .submit {
-	margin: 12px 12px 12px 6px;
+	margin: 12px 12px 12px 6px !important; // ._buttonを上書き
 	vertical-align: bottom;
 
 	&:disabled {
@@ -482,6 +482,7 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 
 .forms {
 	--tmsPostForm-inputPadding: 24px;
+	padding-bottom: var(--tmsPostForm-inputPadding);
 }
 
 .textOuter {
@@ -506,7 +507,7 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 	}
 
 	.submit {
-		margin: 8px 8px 8px 4px;
+		margin: 8px 8px 8px 4px !important; // ._buttonを上書き
 	}
 
 	.toSpecified {
