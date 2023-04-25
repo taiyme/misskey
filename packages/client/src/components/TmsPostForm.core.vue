@@ -1081,8 +1081,8 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 .headerRightButton {
 	display: flex;
 	gap: 6px;
-	margin: 0;
-	padding: 8px;
+	margin: 0 !important; // ._buttonを上書き
+	padding: 8px !important; // ._buttonを上書き
 	border-radius: 6px;
 	overflow: hidden;
 	white-space: nowrap;
