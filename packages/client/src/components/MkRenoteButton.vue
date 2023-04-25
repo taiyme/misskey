@@ -13,6 +13,7 @@ import { computed, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkUsersTooltip.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import TmsRenoteFormDialog from '@/components/TmsRenoteFormDialog.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import * as os from '@/os';
 import { $i } from '@/account';
@@ -71,10 +72,18 @@ const renote = (viaKeyboard = false): void => {
 			text: i18n.ts.renote,
 			icon: 'ti ti-repeat',
 			action: (): void => {
-				renoteAnime();
-
-				os.api('notes/create', {
-					renoteId: props.note.id,
+				let dispose: () => void;
+				os.popup(TmsRenoteFormDialog, {
+					renote: props.note,
+				}, {
+					posted: () => {
+						renoteAnime();
+					},
+					closed: () => {
+						dispose();
+					},
+				}).then(res => {
+					dispose = res.dispose;
 				});
 			},
 		},
