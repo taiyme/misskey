@@ -173,7 +173,7 @@ watch([$$(backed), $$(contentEl)], () => {
 });
 
 if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
+	watch(props.pagination.params, () => init(), { deep: true });
 }
 
 watch(queue, (a, b) => {
@@ -181,7 +181,7 @@ watch(queue, (a, b) => {
 	emit('queue', queue.value.length);
 }, { deep: true });
 
-async function init(): Promise<void> {
+const init = async (): Promise<void> => {
 	queue.value = [];
 	fetching.value = true;
 	const params = props.pagination.params ? unref(props.pagination.params) : {};
@@ -210,7 +210,7 @@ async function init(): Promise<void> {
 		error.value = true;
 		fetching.value = false;
 	});
-}
+};
 
 const reload = (): Promise<void> => {
 	items.value = [];
