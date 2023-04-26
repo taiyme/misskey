@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
 }>(), {
 	tab: undefined,
 	actions: undefined,
-	tabs: (): Tab[] => [],
+	tabs: undefined,
 });
 
 const emit = defineEmits<{
@@ -71,7 +71,7 @@ const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
 let el = $shallowRef<HTMLElement>();
 const bg = ref<string>();
 let narrow = $ref(false);
-const hasTabs = $computed(() => props.tabs.length > 0);
+const hasTabs = $computed(() => props.tabs && props.tabs.length > 0);
 const hasActions = $computed(() => props.actions && props.actions.length > 0);
 const show = $computed(() => {
 	return !hideTitle || hasTabs || hasActions;
