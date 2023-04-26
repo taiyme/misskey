@@ -66,8 +66,8 @@ export default defineComponent({
 
 	> .body {
 		display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+		gap: 12px;
+		flex-wrap: wrap;
 	}
 
 	> .caption {

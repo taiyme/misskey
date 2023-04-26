@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="ti ti-align-left"></i> {{ $ts._pages.blocks.text }}</template>
+<XContainer :draggable="true" @remove="() => emit('remove')">
+	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section class="vckmsadr">
 		<textarea v-model="value.text"></textarea>
@@ -13,14 +13,19 @@
 /* eslint-disable vue/no-mutating-props */
 import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
+import { i18n } from '@/i18n';
 
 withDefaults(defineProps<{
-	value: any
+	value: any;
 }>(), {
 	value: {
-		text: ''
-	}
+		text: '',
+	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

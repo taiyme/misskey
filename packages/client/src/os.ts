@@ -26,7 +26,7 @@ export const api = ((endpoint: string, data: Record<string, any> = {}, token?: s
 	const promise = new Promise((resolve, reject) => {
 		// Append a credential
 		if ($i) data.i = $i.token;
-		if (token !== undefined) data.i = token;
+		if (token != null) data.i = token;
 
 		// Send request
 		fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
@@ -395,21 +395,42 @@ export const waiting = (): Promise<void> => {
 	});
 };
 
-export const form = (title: string, form: Record<string, any>): Promise<void> => {
+type GetFormResultType<TForm extends Record<string, any>> = {
+	[K in keyof TForm]:
+		TForm[K]['type'] extends 'number' ? number :
+		TForm[K]['type'] extends 'string' ? string :
+		TForm[K]['type'] extends 'boolean' ? boolean :
+		TForm[K]['type'] extends 'enum' ? string :
+		TForm[K]['type'] extends 'radio' ? unknown : // TODO
+		TForm[K]['type'] extends 'range' ? number :
+		never;
+};
+
+export const form = <C extends Record<string, any>>(title: string, form_: C): Promise<
+	| { canceled: false; result: GetFormResultType<C>; }
+	| { canceled: true; result: undefined; }
+> => {
 	return new Promise((resolve, _reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form }, {
-			done: result => {
-				resolve(result);
+		popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form: form_ }, {
+			done: (result: (
+				| { canceled: false; result: GetFormResultType<C>; }
+				| { canceled: true; result: undefined }
+				| null | undefined
+			)) => {
+				resolve(result ? result : { canceled: true, result: undefined });
 			},
 		}, 'closed');
 	});
 };
 
 export const selectUser = async (): Promise<Misskey.entities.UserDetailed> => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {}, {
 			ok: user => {
 				resolve(user);
+			},
+			cancel: () => {
+				reject();
 			},
 		}, 'closed');
 	});
@@ -418,7 +439,7 @@ export const selectUser = async (): Promise<Misskey.entities.UserDetailed> => {
 export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 	T extends true ? Misskey.entities.DriveFile[] : Misskey.entities.DriveFile
 > => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
 			multiple,
@@ -426,6 +447,8 @@ export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 			done: files => {
 				if (files) {
 					resolve(multiple ? files : files[0]);
+				} else {
+					reject();
 				}
 			},
 		}, 'closed');
@@ -435,7 +458,7 @@ export const selectDriveFile = async <T extends boolean>(multiple: T): Promise<
 export const selectDriveFolder = async <T extends boolean>(multiple: T): Promise<
 	T extends true ? Misskey.entities.DriveFolder[] : Misskey.entities.DriveFolder
 > => {
-	return new Promise((resolve, _reject) => {
+	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'folder',
 			multiple,
@@ -443,6 +466,8 @@ export const selectDriveFolder = async <T extends boolean>(multiple: T): Promise
 			done: folders => {
 				if (folders) {
 					resolve(multiple ? folders : folders[0]);
+				} else {
+					reject();
 				}
 			},
 		}, 'closed');
@@ -535,8 +560,8 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	align?: string;
 	width?: number;
 	viaKeyboard?: boolean;
-}): Promise<void> => {
-	return new Promise((resolve, _reject) => {
+}): Promise<{ canceled: boolean }> => {
+	return new Promise(resolve => {
 		let dispose: () => void;
 		popup(defineAsyncComponent(() => import('@/components/MkPopupMenu.vue')), {
 			items,
@@ -545,8 +570,10 @@ export const popupMenu = (items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 			align: options?.align,
 			viaKeyboard: options?.viaKeyboard,
 		}, {
-			closed: () => {
-				resolve();
+			done: (result: unknown) => {
+				resolve({
+					canceled: !result,
+				});
 				dispose();
 			},
 		}).then(res => {

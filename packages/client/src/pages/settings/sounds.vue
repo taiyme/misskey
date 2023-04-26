@@ -7,7 +7,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<FormLink v-for="type in Object.keys(sounds)" :key="type" style="margin-bottom: 8px;" @click="edit(type)">
-			{{ $t('_sfx.' + type) }}
+			{{ i18n.t('_sfx.' + type) }}
 			<template #suffix>{{ sounds[type].type || i18n.ts.none }}</template>
 			<template #suffixIcon><i class="ti ti-chevron-down"></i></template>
 		</FormLink>

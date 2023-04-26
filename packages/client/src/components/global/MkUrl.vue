@@ -1,7 +1,7 @@
 <template>
 <MkA v-if="props.url.startsWith(local)" ref="selfEl" :class="$style.root" class="ieqqeuvs _link" :to="props.url.substring(local.length)" :rel="rel" @contextmenu.stop="() => {}">
 	<span v-if="pathname === '/'" :class="$style.self" class="self">{{ hostname }}</span>
-	<span v-if="pathname" :class="$style.pathname" class="pathname">{{ pathname.substring(1) }}</span>
+	<span v-if="pathname" :class="$style.pathname" class="pathname">{{ pathname.slice(1) }}</span>
 	<span v-if="query" :class="$style.query" class="query">{{ query }}</span>
 	<span v-if="hash" :class="$style.hash" class="hash">{{ hash }}</span>
 </MkA>

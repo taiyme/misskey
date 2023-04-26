@@ -1,9 +1,9 @@
 <template>
-<Transition :name="$store.state.animation ? 'popup' : ''" appear @after-leave="emit('closed')">
+<Transition :name="defaultStore.state.animation ? 'popup' : ''" appear @after-leave="emit('closed')">
 	<div v-if="showing" class="fxxzrfni _popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null" class="info">
 			<div class="banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''">
-				<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+				<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 			</div>
 			<MkAvatar class="avatar" :user="user" :disable-preview="true" :show-indicator="true"/>
 			<div class="title">
@@ -15,13 +15,13 @@
 			</div>
 			<div class="status">
 				<div>
-					<p>{{ $ts.notes }}</p><span>{{ user.notesCount }}</span>
+					<p>{{ i18n.ts.notes }}</p><span>{{ user.notesCount }}</span>
 				</div>
 				<div>
-					<p>{{ $ts.following }}</p><span>{{ user.followingCount }}</span>
+					<p>{{ i18n.ts.following }}</p><span>{{ user.followingCount }}</span>
 				</div>
 				<div>
-					<p>{{ $ts.followers }}</p><span>{{ user.followersCount }}</span>
+					<p>{{ i18n.ts.followers }}</p><span>{{ user.followersCount }}</span>
 				</div>
 			</div>
 			<MkFollowButton v-if="$i && user.id != $i.id" class="koudoku-button" :user="user" mini/>
@@ -40,6 +40,9 @@ import * as misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
+import { $i } from '@/account';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	showing: boolean;
@@ -63,7 +66,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Acct.parse(props.q.substr(1)) :
+			Acct.parse(props.q.slice(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {

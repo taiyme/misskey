@@ -3,17 +3,17 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div class="fcuexfpr">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
 					<div v-if="showNext" class="_gap">
-						<XNotes class="_content" :pagination="nextPagination" :no-gap="true"/>
+						<MkNotes class="_content" :pagination="nextPagination" :no-gap="true"/>
 					</div>
 
 					<div class="main _gap">
 						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
 						<div class="note _gap">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<XNoteDetailed :key="note.id" v-model:note="note" class="note"/>
+							<MkNoteDetailed :key="note.id" v-model:note="note" class="note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_content clips _gap">
 							<div class="title">{{ i18n.ts.clip }}</div>
@@ -29,7 +29,7 @@
 					</div>
 
 					<div v-if="showPrev" class="_gap">
-						<XNotes class="_content" :pagination="prevPagination" :no-gap="true"/>
+						<MkNotes class="_content" :pagination="prevPagination" :no-gap="true"/>
 					</div>
 				</div>
 				<MkError v-else-if="error" @retry="fetch()"/>
@@ -43,20 +43,21 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import XNoteDetailed from '@/components/MkNoteDetailed.vue';
-import XNotes from '@/components/MkNotes.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = $ref<null | misskey.entities.Note>();
-let clips = $ref();
+let note = $ref<misskey.entities.Note | null>();
+let clips = $ref<misskey.entities.Clip | null>();
 let hasPrev = $ref(false);
 let hasNext = $ref(false);
 let showPrev = $ref(false);
@@ -82,7 +83,7 @@ const nextPagination = {
 	}) : null),
 };
 
-function fetchNote() {
+const fetchNote = (): void => {
 	hasPrev = false;
 	hasNext = false;
 	showPrev = false;
@@ -114,7 +115,7 @@ function fetchNote() {
 	}).catch(err => {
 		error = err;
 	});
-}
+};
 
 watch(() => props.noteId, fetchNote, {
 	immediate: true,

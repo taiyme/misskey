@@ -2,7 +2,7 @@ import keyCode from './keycode';
 
 type Callback = (ev: KeyboardEvent) => void;
 
-type Keymap = Record<string, Callback>;
+export type Keymap = Record<string, Callback>;
 
 type Pattern = {
 	which: string[];
@@ -17,12 +17,12 @@ type Action = {
 	allowRepeat: boolean;
 };
 
-const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, callback]): Action => {
-	const result = {
+const parseKeymap = (keymap: Keymap): Action[] => Object.entries(keymap).map(([patterns, callback]): Action => {
+	const result: Action = {
 		patterns: [],
 		callback,
-		allowRepeat: true
-	} as Action;
+		allowRepeat: true,
+	};
 
 	if (patterns.match(/^\(.*\)$/) !== null) {
 		result.allowRepeat = false;
@@ -34,7 +34,7 @@ const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, c
 			which: [],
 			ctrl: false,
 			alt: false,
-			shift: false
+			shift: false,
 		} as Pattern;
 
 		const keys = part.trim().split('+').map(x => x.trim().toLowerCase());
@@ -61,11 +61,11 @@ function match(ev: KeyboardEvent, patterns: Action['patterns']): boolean {
 		pattern.ctrl === ev.ctrlKey &&
 		pattern.shift === ev.shiftKey &&
 		pattern.alt === ev.altKey &&
-		!ev.metaKey
+		!ev.metaKey,
 	);
 }
 
-export const makeHotkey = (keymap: Keymap) => {
+export const makeHotkey = (keymap: Keymap): ((ev: KeyboardEvent) => void) => {
 	const actions = parseKeymap(keymap);
 
 	return (ev: KeyboardEvent) => {

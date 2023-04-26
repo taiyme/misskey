@@ -203,14 +203,6 @@ import { mainRouter } from '@/router';
 		app.config.performance = true;
 	}
 
-	app.config.globalProperties = {
-		$i,
-		$store: defaultStore,
-		$instance: instance,
-		$t: i18n.t,
-		$ts: i18n.ts,
-	};
-
 	widgets(app);
 	directives(app);
 	components(app);

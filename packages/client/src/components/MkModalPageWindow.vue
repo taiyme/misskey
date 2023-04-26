@@ -1,14 +1,14 @@
 <template>
-<MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
+<MkModal ref="modal" @click="emit('click')" @closed="emit('closed')">
 	<div ref="rootEl" class="hrmcaedk _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
-			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
+			<button v-if="history.length > 0" v-tooltip="i18n.ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
 			<span v-if="pageMetadata?.value" class="title">
 				<i v-if="pageMetadata?.value.icon" class="icon" :class="pageMetadata?.value.icon"></i>
 				<span>{{ pageMetadata?.value.title }}</span>
 			</span>
-			<button class="_button" @click="$refs.modal.close()"><i class="ti ti-x"></i></button>
+			<button class="_button" @click="modal?.close()"><i class="ti ti-x"></i></button>
 		</div>
 		<div class="body">
 			<MkStickyContainer>
@@ -32,12 +32,13 @@ import { i18n } from '@/i18n';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { disableContextmenu } from '@/scripts/touch';
 import { Router } from '@/nirax';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	initialPath: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(ev: 'closed'): void;
 	(ev: 'click'): void;
 }>();
@@ -45,16 +46,15 @@ defineEmits<{
 const router = new Router(routes, props.initialPath);
 
 router.addListener('push', ctx => {
-	
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-let rootEl = $ref();
-let modal = $ref<InstanceType<typeof MkModal>>();
+const rootEl = $ref<HTMLElement>();
+const modal = $ref<InstanceType<typeof MkModal>>();
 let path = $ref(props.initialPath);
 let width = $ref(860);
 let height = $ref(660);
-const history = [];
+const history: string[] = [];
 
 provide('router', router);
 provideMetadataReceiver((info) => {
@@ -64,7 +64,7 @@ provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 
 const pageUrl = $computed(() => url + path);
-const contextmenu = $computed(() => {
+const contextmenu = $computed<MenuItem[]>(() => {
 	return [{
 		type: 'label',
 		text: path,
@@ -79,42 +79,44 @@ const contextmenu = $computed(() => {
 	}, null, {
 		icon: 'ti ti-external-link',
 		text: i18n.ts.openInNewTab,
-		action: () => {
+		action: (): void => {
 			window.open(pageUrl, '_blank');
-			modal.close();
+			modal?.close();
 		},
 	}, {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
-		action: () => {
+		action: (): void => {
 			copyText(pageUrl);
 		},
 	}];
 });
 
-function navigate(path, record = true) {
+const navigate = (_path: string, record = true): void => {
 	if (record) history.push(router.getCurrentPath());
-	router.push(path);
-}
+	router.push(_path);
+};
 
-function back() {
-	navigate(history.pop(), false);
-}
+const back = (): void => {
+	const popped = history.pop();
+	if (popped == null) return;
+	navigate(popped, false);
+};
 
-function expand() {
+const expand = (): void => {
 	mainRouter.push(path);
-	modal.close();
-}
+	modal?.close();
+};
 
-function popout() {
+const popout = (): void => {
 	_popout(path, rootEl);
-	modal.close();
-}
+	modal?.close();
+};
 
-function onContextmenu(ev: MouseEvent) {
+const onContextmenu = (ev: MouseEvent): void => {
 	if (disableContextmenu) return;
 	os.contextMenu(contextmenu, ev);
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -61,7 +61,7 @@ export class Autocomplete {
 	 */
 	private onInput() {
 		const caretPos = this.textarea.selectionStart;
-		const text = this.text.substr(0, caretPos).split('\n').pop()!;
+		const text = this.text.substring(0, caretPos).split('\n').pop()!;
 
 		const mentionIndex = text.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
@@ -87,7 +87,7 @@ export class Autocomplete {
 		let opened = false;
 
 		if (isMention) {
-			const username = text.substr(mentionIndex + 1);
+			const username = text.substring(mentionIndex + 1);
 			if (username !== '' && username.match(/^[a-zA-Z0-9_]+$/)) {
 				this.open('user', username);
 				opened = true;
@@ -98,7 +98,7 @@ export class Autocomplete {
 		}
 
 		if (isHashtag && !opened) {
-			const hashtag = text.substr(hashtagIndex + 1);
+			const hashtag = text.substring(hashtagIndex + 1);
 			if (!hashtag.includes(' ')) {
 				this.open('hashtag', hashtag);
 				opened = true;
@@ -106,7 +106,7 @@ export class Autocomplete {
 		}
 
 		if (isEmoji && !opened) {
-			const emoji = text.substr(emojiIndex + 1);
+			const emoji = text.substring(emojiIndex + 1);
 			if (!emoji.includes(' ')) {
 				this.open('emoji', emoji);
 				opened = true;
@@ -114,7 +114,7 @@ export class Autocomplete {
 		}
 
 		if (isMfmTag && !opened) {
-			const mfmTag = text.substr(mfmTagIndex + 1);
+			const mfmTag = text.substring(mfmTagIndex + 1);
 			if (!mfmTag.includes(' ')) {
 				this.open('mfmTag', mfmTag.replace('[', ''));
 				opened = true;
@@ -204,9 +204,9 @@ export class Autocomplete {
 		if (type === 'user') {
 			const source = this.text;
 
-			const before = source.substr(0, caret);
+			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
-			const after = source.substr(caret);
+			const after = source.substring(caret);
 
 			const acct = value.host === null ? value.username : `${value.username}@${toASCII(value.host)}`;
 
@@ -222,9 +222,9 @@ export class Autocomplete {
 		} else if (type === 'hashtag') {
 			const source = this.text;
 
-			const before = source.substr(0, caret);
+			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf('#'));
-			const after = source.substr(caret);
+			const after = source.substring(caret);
 
 			// 挿入
 			this.text = `${trimmedBefore}#${value} ${after}`;
@@ -238,9 +238,9 @@ export class Autocomplete {
 		} else if (type === 'emoji') {
 			const source = this.text;
 
-			const before = source.substr(0, caret);
+			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf(':'));
-			const after = source.substr(caret);
+			const after = source.substring(caret);
 
 			// 挿入
 			this.text = trimmedBefore + value + after;
@@ -254,9 +254,9 @@ export class Autocomplete {
 		} else if (type === 'mfmTag') {
 			const source = this.text;
 
-			const before = source.substr(0, caret);
+			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf('$'));
-			const after = source.substr(caret);
+			const after = source.substring(caret);
 
 			// 挿入
 			this.text = `${trimmedBefore}$[${value} ]${after}`;

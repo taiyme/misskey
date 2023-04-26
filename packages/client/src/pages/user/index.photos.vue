@@ -1,6 +1,6 @@
 <template>
 <MkContainer :max-height="300" :foldable="true">
-	<template #header><i class="ti ti-photo" style="margin-right: 0.5em;"></i>{{ $ts.images }}</template>
+	<template #header><i class="ti ti-photo" style="margin-right: 0.5em;"></i>{{ i18n.ts.images }}</template>
 	<div class="ujigsodd">
 		<MkLoading v-if="fetching"/>
 		<div v-if="!fetching && images.length > 0" class="stream">
@@ -13,7 +13,7 @@
 				<ImgWithBlurhash :hash="image.file.blurhash" :src="thumbnail(image.file)" :title="image.file.name"/>
 			</MkA>
 		</div>
-		<p v-if="!fetching && images.length == 0" class="empty">{{ $ts.nothing }}</p>
+		<p v-if="!fetching && images.length == 0" class="empty">{{ i18n.ts.nothing }}</p>
 	</div>
 </MkContainer>
 </template>
@@ -27,6 +27,7 @@ import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	user: misskey.entities.UserDetailed;

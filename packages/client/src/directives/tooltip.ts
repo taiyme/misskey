@@ -8,19 +8,20 @@ import { popup, alert } from '@/os';
 const start = isTouchUsing ? 'touchstart' : 'mouseover';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el: HTMLElement, binding, vn) {
+	mounted(src, binding) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;
 
-		const self = (el as any)._tooltipDirective_ = {} as any;
+		const self = (src as any)._tooltipDirective_ = {} as any;
 
-		self.text = binding.value as string;
+		self.text = binding.value;
 		self._close = null;
 		self.showTimer = null;
 		self.hideTimer = null;
 		self.checkTimer = null;
 
-		self.close = () => {
+		self.close = (): void => {
 			if (self._close) {
 				window.clearInterval(self.checkTimer);
 				self._close();
@@ -29,7 +30,7 @@ export default {
 		};
 
 		if (binding.arg === 'dialog') {
-			el.addEventListener('click', (ev) => {
+			src.addEventListener('click', (ev: MouseEvent) => {
 				ev.preventDefault();
 				ev.stopPropagation();
 				alert({
@@ -40,8 +41,8 @@ export default {
 			});
 		}
 
-		self.show = () => {
-			if (!document.body.contains(el)) return;
+		self.show = (): void => {
+			if (!document.body.contains(src)) return;
 			if (self._close) return;
 			if (self.text == null) return;
 
@@ -51,43 +52,43 @@ export default {
 				text: self.text,
 				asMfm: binding.modifiers.mfm,
 				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
-				targetElement: el,
+				targetElement: src,
 			}, {}, 'closed');
 
-			self._close = () => {
+			self._close = (): void => {
 				showing.value = false;
 			};
 		};
 
-		el.addEventListener('selectstart', ev => {
+		src.addEventListener('selectstart', ev => {
 			ev.preventDefault();
 		});
 
-		el.addEventListener(start, () => {
+		src.addEventListener(start, () => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			self.showTimer = window.setTimeout(self.show, delay);
 		}, { passive: true });
 
-		el.addEventListener(end, () => {
+		src.addEventListener(end, () => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			self.hideTimer = window.setTimeout(self.close, delay);
 		}, { passive: true });
 
-		el.addEventListener('click', () => {
+		src.addEventListener('click', () => {
 			window.clearTimeout(self.showTimer);
 			self.close();
 		});
 	},
 
-	updated(el, binding) {
-		const self = el._tooltipDirective_;
-		self.text = binding.value as string;
+	updated(src, binding) {
+		const self = (src as any)._tooltipDirective_;
+		self.text = binding.value;
 	},
 
-	unmounted(el, binding, vn) {
-		const self = el._tooltipDirective_;
+	unmounted(src) {
+		const self = (src as any)._tooltipDirective_;
 		window.clearInterval(self.checkTimer);
 	},
-} as Directive;
+} as Directive<HTMLElement, string>;

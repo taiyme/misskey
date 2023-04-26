@@ -58,14 +58,14 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 .change-enter-active, .change-leave-active {
 	position: absolute;
 	top: 0;
-  transition: all 1s ease;
+	transition: all 1s ease;
 }
 .change-enter-from {
-  opacity: 0;
+	opacity: 0;
 	transform: translateY(-100%);
 }
 .change-leave-to {
-  opacity: 0;
+	opacity: 0;
 	transform: translateY(100%);
 }
 

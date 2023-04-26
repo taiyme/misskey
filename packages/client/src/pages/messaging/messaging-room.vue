@@ -89,7 +89,10 @@ const {
 let pagination: Paging | null = $ref(null);
 
 watch([() => props.userAcct, () => props.groupId], () => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 	fetch();
 });
 
@@ -100,7 +103,7 @@ async function fetch() {
 		const acct = Acct.parse(props.userAcct);
 		user = await os.api('users/show', { username: acct.username, host: acct.host || undefined });
 		group = null;
-		
+
 		pagination = {
 			endpoint: 'messaging/messages',
 			limit: 20,
@@ -276,7 +279,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	connection?.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 	document.removeEventListener('visibilitychange', onVisibilitychange);
 	if (scrollRemove) scrollRemove();
 });

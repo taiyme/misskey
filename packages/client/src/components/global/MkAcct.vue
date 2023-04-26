@@ -1,7 +1,7 @@
 <template>
 <span class="mk-acct">
 	<span class="name">@{{ user.username }}</span>
-	<span v-if="user.host || detail || $store.state.showFullAcct" class="host">@{{ user.host || host }}</span>
+	<span v-if="user.host || detail || defaultStore.state.showFullAcct" class="host">@{{ user.host || host }}</span>
 </span>
 </template>
 
@@ -9,6 +9,7 @@
 import { User, UserLite, UserDetailed } from 'misskey-js/built/entities';
 import { toUnicode } from 'punycode/';
 import { host as hostRaw } from '@/config';
+import { defaultStore } from '@/store';
 
 defineProps<{
 	user: User | UserLite | UserDetailed;

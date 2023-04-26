@@ -66,16 +66,16 @@ onMounted(() => {
 	color: var(--accent);
 	font-size: 18px;
 	font-weight: bold;
-  // Original: translateY(-30px);
-  transform: translateY(-20px);
-  // Original: transform 1s cubic-bezier(0, 0.5, 0, 1), opacity 1s cubic-bezier(0.5, 0, 1, 0.5);
+	// Original: translateY(-30px);
+	transform: translateY(-20px);
+	// Original: transform 1s cubic-bezier(0, 0.5, 0, 1), opacity 1s cubic-bezier(0.5, 0, 1, 0.5);
 	transition: transform 1s cubic-bezier(0, 0.5, 0, 1), opacity 1s cubic-bezier(0.5, 0, 1, 1);
 	will-change: opacity, transform;
 
 	&.up {
 		opacity: 0;
 		// Original: translateY(-50px) rotateZ(v-bind(angle));
-    transform: translateY(-40px) rotateZ(v-bind(angle));
+		transform: translateY(-40px) rotateZ(v-bind(angle));
 	}
 }
 </style>

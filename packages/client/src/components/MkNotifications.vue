@@ -9,8 +9,8 @@
 
 	<template #default="{ items: notifications }">
 		<XList v-slot="{ item: notification }" class="elsfgstc" :items="notifications" :no-gap="true">
-			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
-			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
+			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
+			<MkNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
 		</XList>
 	</template>
 </MkPagination>
@@ -18,17 +18,17 @@
 
 <script lang="ts" setup>
 import { onUnmounted, onMounted, computed, ref } from 'vue';
-import { notificationTypes } from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
-import XNotification from '@/components/MkNotification.vue';
+import MkNotification from '@/components/MkNotification.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	includeTypes?: typeof notificationTypes[number][];
+	includeTypes?: typeof Misskey.notificationTypes[number][] | null;
 	unreadOnly?: boolean;
 }>();
 
@@ -38,14 +38,17 @@ const pagination: Paging = {
 	endpoint: 'i/notifications' as const,
 	limit: 10,
 	params: computed(() => ({
-		includeTypes: props.includeTypes ?? undefined,
-		excludeTypes: props.includeTypes ? undefined : $i.mutingNotificationTypes,
+		includeTypes: props.includeTypes ? props.includeTypes : undefined,
+		excludeTypes: !props.includeTypes ? $i?.mutingNotificationTypes : undefined,
 		unreadOnly: props.unreadOnly,
 	})),
 };
 
-const onNotification = (notification) => {
-	const isMuted = props.includeTypes ? !props.includeTypes.includes(notification.type) : $i.mutingNotificationTypes.includes(notification.type);
+const onNotification = (notification: Misskey.entities.Notification): void => {
+	const isMuted = props.includeTypes
+		? !props.includeTypes.includes(notification.type)
+		: !!$i?.mutingNotificationTypes.includes(notification.type);
+
 	if (isMuted || document.visibilityState === 'visible') {
 		stream.send('readNotification', {
 			id: notification.id,
@@ -53,14 +56,14 @@ const onNotification = (notification) => {
 	}
 
 	if (!isMuted) {
-		pagingComponent.value.prepend({
+		pagingComponent.value?.prepend({
 			...notification,
 			isRead: document.visibilityState === 'visible',
 		});
 	}
 };
 
-let connection;
+let connection: Misskey.ChannelConnection | null = null;
 
 onMounted(() => {
 	connection = stream.useChannel('main');
@@ -92,7 +95,10 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (connection) connection.dispose();
+	if (connection) {
+		connection.dispose();
+		connection = null;
+	}
 });
 </script>
 

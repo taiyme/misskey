@@ -6,7 +6,7 @@
 		<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
-	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 	<div class="description">
 		<div v-if="user.description" class="mfm">
 			<Mfm :text="user.description" :author="user" :i="$i" :custom-emojis="user.emojis"/>
@@ -33,6 +33,7 @@ import * as misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 defineProps<{
 	user: misskey.entities.UserDetailed;
@@ -82,7 +83,7 @@ defineProps<{
 			opacity: 0.7;
 		}
 	}
-	
+
 	> .followed {
 		position: absolute;
 		top: 12px;
@@ -93,7 +94,7 @@ defineProps<{
 		font-size: 0.7em;
 		border-radius: 6px;
 	}
-	
+
 	> .description {
 		padding: 16px;
 		font-size: 0.8em;
@@ -102,7 +103,7 @@ defineProps<{
 		> .mfm {
 			display: -webkit-box;
 			-webkit-line-clamp: 3;
-			-webkit-box-orient: vertical;  
+			-webkit-box-orient: vertical;
 			overflow: hidden;
 		}
 	}

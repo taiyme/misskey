@@ -51,7 +51,7 @@
 						</dl>
 						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.t('yearsOld', { age }) }})</dd>
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
@@ -87,7 +87,7 @@
 
 			<div class="contents">
 				<div v-if="user.pinnedNotes.length > 0" class="_gap">
-					<XNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
+					<MkNote v-for="note in user.pinnedNotes" :key="note.id" class="note _block" :note="note" :pinned="true"/>
 				</div>
 				<MkInfo v-else-if="$i && $i.id === user.id">{{ i18n.ts.userPagePinTip }}</MkInfo>
 				<template v-if="narrow">
@@ -112,7 +112,7 @@ import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import XUserTimeline from './index.timeline.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkInfo from '@/components/MkInfo.vue';

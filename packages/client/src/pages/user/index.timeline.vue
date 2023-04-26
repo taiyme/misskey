@@ -7,14 +7,14 @@
 			<option value="files">{{ i18n.ts.withFiles }}</option>
 		</MkTab>
 	</template>
-	<XNotes :no-gap="true" :pagination="pagination"/>
+	<MkNotes :no-gap="true" :pagination="pagination"/>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import * as misskey from 'misskey-js';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
 

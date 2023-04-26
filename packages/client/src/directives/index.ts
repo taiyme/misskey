@@ -11,18 +11,31 @@ import anim from './anim';
 import clickAnime from './click-anime';
 import panel from './panel';
 import adaptiveBorder from './adaptive-border';
+import adaptiveBg from './adaptive-bg';
+import container from './container';
 
-export default function(app: App) {
-	app.directive('userPreview', userPreview);
-	app.directive('user-preview', userPreview);
-	app.directive('size', size);
-	app.directive('get-size', getSize);
-	app.directive('ripple', ripple);
-	app.directive('tooltip', tooltip);
-	app.directive('hotkey', hotkey);
-	app.directive('appear', appear);
-	app.directive('anim', anim);
-	app.directive('click-anime', clickAnime);
-	app.directive('panel', panel);
-	app.directive('adaptive-border', adaptiveBorder);
-}
+import { typedEntries } from '@/scripts/tms/utils';
+
+// eslint-disable-next-line import/no-default-export
+export default (app: App): void => {
+	for (const [key, value] of typedEntries(directives)) {
+		app.directive(key, value);
+	}
+};
+
+export const directives = {
+	'userPreview': userPreview,
+	'user-preview': userPreview,
+	'size': size,
+	'get-size': getSize,
+	'ripple': ripple,
+	'tooltip': tooltip,
+	'hotkey': hotkey,
+	'appear': appear,
+	'anim': anim,
+	'click-anime': clickAnime,
+	'panel': panel,
+	'adaptive-border': adaptiveBorder,
+	'adaptive-bg': adaptiveBg,
+	'container': container,
+};

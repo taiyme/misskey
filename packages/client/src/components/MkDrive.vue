@@ -27,7 +27,8 @@
 		<button class="menu _button" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</nav>
 	<div
-		ref="main" class="main"
+		ref="main"
+		class="main"
 		:class="{ uploading: uploadings.length > 0, fetching }"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"

@@ -1,26 +1,28 @@
 <template>
 <div class="ddiqwdnk">
-	<XWidgets class="widgets" :edit="editMode" :widgets="$store.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+	<MkWidgets class="widgets" :edit="editMode" :widgets="defaultStore.reactiveState.widgets.value.filter(w => w.place === place)" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 	<MkAd class="a" :prefer="['square']"/>
 
-	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ $ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ $ts.editWidgets }}</button>
+	<button v-if="editMode" class="_textButton edit" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
+	<button v-else class="_textButton edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import XWidgets from '@/components/MkWidgets.vue';
+import MkWidgets from '@/components/MkWidgets.vue';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
-		XWidgets
+		MkWidgets,
 	},
 
 	props: {
 		place: {
 			type: String,
-		}
+		},
 	},
 
 	emits: ['mounted'],
@@ -28,6 +30,8 @@ export default defineComponent({
 	data() {
 		return {
 			editMode: false,
+			defaultStore,
+			i18n,
 		};
 	},
 
@@ -37,30 +41,30 @@ export default defineComponent({
 
 	methods: {
 		addWidget(widget) {
-			this.$store.set('widgets', [{
+			defaultStore.set('widgets', [{
 				...widget,
 				place: this.place,
-			}, ...this.$store.state.widgets]);
+			}, ...defaultStore.state.widgets]);
 		},
 
 		removeWidget(widget) {
-			this.$store.set('widgets', this.$store.state.widgets.filter(w => w.id !== widget.id));
+			defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
 		},
 
 		updateWidget({ id, data }) {
-			this.$store.set('widgets', this.$store.state.widgets.map(w => w.id === id ? {
+			defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
 				...w,
 				data,
 			} : w));
 		},
 
 		updateWidgets(widgets) {
-			this.$store.set('widgets', [
-				...this.$store.state.widgets.filter(w => w.place !== this.place),
-				...widgets
+			defaultStore.set('widgets', [
+				...defaultStore.state.widgets.filter(w => w.place !== this.place),
+				...widgets,
 			]);
-		}
-	}
+		},
+	},
 });
 </script>
 

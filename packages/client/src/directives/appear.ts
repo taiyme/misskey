@@ -1,7 +1,10 @@
 import { Directive } from 'vue';
 
+const map = new WeakMap<HTMLElement, IntersectionObserver>();
+
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding, vn) {
+	mounted(src, binding) {
 		const fn = binding.value;
 		if (fn == null) return;
 
@@ -10,13 +13,15 @@ export default {
 				fn();
 			}
 		});
-
 		observer.observe(src);
-
-		src._observer_ = observer;
+		map.set(src, observer);
 	},
 
-	unmounted(src, binding, vn) {
-		if (src._observer_) src._observer_.disconnect();
-	}
-} as Directive;
+	unmounted(src) {
+		const observer = map.get(src);
+		if (observer) {
+			observer.disconnect();
+			map.delete(src);
+		}
+	},
+} as Directive<HTMLElement, (() => void) | null | undefined>;

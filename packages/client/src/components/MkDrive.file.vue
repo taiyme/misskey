@@ -25,8 +25,8 @@
 	<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
 
 	<p class="name">
-		<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
-		<span v-if="file.name.lastIndexOf('.') != -1" class="ext">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
+		<span>{{ fileName }}</span>
+		<span v-if="fileExt" class="ext">{{ fileExt }}</span>
 	</p>
 </div>
 </template>
@@ -41,6 +41,8 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { disableContextmenu } from '@/scripts/touch';
+import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
+import { MenuItem } from '@/types/menu';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -60,8 +62,16 @@ const emit = defineEmits<{
 const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
+const fileName = computed<string>(() => {
+	const lio = props.file.name.lastIndexOf('.');
+	return lio !== -1 ? props.file.name.substring(0, lio) : props.file.name;
+});
+const fileExt = computed<string | null>(() => {
+	const lio = props.file.name.lastIndexOf('.');
+	return lio !== -1 ? props.file.name.substring(lio) : null;
+});
 
-function getMenu() {
+const getMenu = (): MenuItem[] => {
 	return [{
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
@@ -72,7 +82,7 @@ function getMenu() {
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'ti ti-forms',
+		icon: 'ti ti-text-caption',
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,
@@ -91,22 +101,23 @@ function getMenu() {
 		danger: true,
 		action: deleteFile,
 	}];
-}
+};
 
-function onClick(ev: MouseEvent) {
+const onClick = (ev: MouseEvent): void => {
+	const el = getHtmlElementFromEvent(ev) ?? undefined;
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+		os.popupMenu(getMenu(), el);
 	}
-}
+};
 
-function onContextmenu(ev: MouseEvent) {
+const onContextmenu = (ev: MouseEvent): void => {
 	if (disableContextmenu) return;
 	os.contextMenu(getMenu(), ev);
-}
+};
 
-function onDragstart(ev: DragEvent) {
+const onDragstart = (ev: DragEvent): void => {
 	if (ev.dataTransfer) {
 		ev.dataTransfer.effectAllowed = 'move';
 		ev.dataTransfer.setData(_DATA_TRANSFER_DRIVE_FILE_, JSON.stringify(props.file));
@@ -114,14 +125,14 @@ function onDragstart(ev: DragEvent) {
 	isDragging.value = true;
 
 	emit('dragstart');
-}
+};
 
-function onDragend() {
+const onDragend = (): void => {
 	isDragging.value = false;
 	emit('dragend');
-}
+};
 
-function rename() {
+const rename = (): void => {
 	os.inputText({
 		title: i18n.ts.renameFile,
 		placeholder: i18n.ts.inputNewFileName,
@@ -133,45 +144,39 @@ function rename() {
 			name: name,
 		});
 	});
-}
+};
 
-function describe() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkMediaCaption.vue')), {
-		title: i18n.ts.describeFile,
-		input: {
-			placeholder: i18n.ts.inputNewDescription,
-			default: props.file.comment != null ? props.file.comment : '',
-		},
-		image: props.file,
+const describe = (): void => {
+	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+		default: props.file.comment != null ? props.file.comment : '',
+		file: props.file,
 	}, {
-		done: result => {
-			if (!result || result.canceled) return;
-			let comment = result.result;
+		done: (caption: string) => {
 			os.api('drive/files/update', {
 				fileId: props.file.id,
-				comment: comment.length === 0 ? null : comment,
+				comment: caption.length === 0 ? null : caption,
 			});
 		},
 	}, 'closed');
-}
+};
 
-function toggleSensitive() {
+const toggleSensitive = (): void => {
 	os.api('drive/files/update', {
 		fileId: props.file.id,
 		isSensitive: !props.file.isSensitive,
 	});
-}
+};
 
-function copyUrl() {
+const copyUrl = (): void => {
 	copyText(props.file.url);
 	os.success();
-}
-/*
-function addApp() {
-	alert('not implemented yet');
-}
-*/
-async function deleteFile() {
+};
+
+// const addApp = (): void => {
+// 	alert('not implemented yet');
+// };
+
+const deleteFile = async (): Promise<void> => {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.t('driveFileDeleteConfirm', { name: props.file.name }),
@@ -181,7 +186,7 @@ async function deleteFile() {
 	os.api('drive/files/delete', {
 		fileId: props.file.id,
 	});
-}
+};
 </script>
 
 <style lang="scss" scoped>

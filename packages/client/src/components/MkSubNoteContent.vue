@@ -8,12 +8,12 @@
 		<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
 	<details v-if="note.files.length > 0">
-		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>
-		<XMediaList :media-list="note.files"/>
+		<summary>({{ i18n.t('withNFiles', { n: note.files.length }) }})</summary>
+		<MkMediaList :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<XPoll :note="note"/>
+		<MkPoll :note="note"/>
 	</details>
 	<button v-if="isLong && collapsed" class="fade _button" @click="collapsedFlag = false">
 		<span>{{ i18n.ts.showMore }}</span>
@@ -27,8 +27,8 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as misskey from 'misskey-js';
-import XMediaList from '@/components/MkMediaList.vue';
-import XPoll from '@/components/MkPoll.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
+import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { tmsStore } from '@/tms/store';
@@ -51,7 +51,7 @@ onMounted(() => {
 const { collapseNote, collapseNoteHeight } = tmsStore.state;
 const isLong = $computed(() => {
 	return collapseNote && !!(
-		props.note.cw == null && 
+		props.note.cw == null &&
 		props.note.text != null && (
 			// textElHeight: null の場合は文字数で判定する
 			(!!collapseNoteHeight && (textElHeight == null ? props.note.text.length > 500 : textElHeight >= collapseNoteHeight))

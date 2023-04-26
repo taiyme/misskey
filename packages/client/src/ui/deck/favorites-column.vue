@@ -11,9 +11,11 @@
 		</template>
 
 		<template #default="{ items }">
-			<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
-				<XNote :key="item.id" :note="item.note" :class="$style.note"/>
-			</XList>
+			<div :class="$style.notes">
+				<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="true" :ad="false">
+					<MkNote :key="item.id" :note="item.note"/>
+				</XList>
+			</div>
 		</template>
 	</MkPagination>
 </XColumn>
@@ -24,7 +26,7 @@ import { ref } from 'vue';
 import XColumn from './column.vue';
 import { Column } from './deck-store';
 import MkPagination from '@/components/MkPagination.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n';
 
@@ -46,7 +48,7 @@ const pagination = {
 </script>
 
 <style lang="scss" module>
-.note {
+.notes {
 	background: var(--panel);
 }
 </style>

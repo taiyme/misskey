@@ -1,5 +1,5 @@
 <template>
-<div v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" class="nsbbhtug" @click="resetDisconnected">
+<div v-if="hasDisconnected && defaultStore.state.serverDisconnectedBehavior === 'quiet'" class="nsbbhtug" @click="resetDisconnected">
 	<div>{{ i18n.ts.disconnectedFromServer }}</div>
 	<div class="command">
 		<button class="_textButton" @click="reload">{{ i18n.ts.reload }}</button>
@@ -12,6 +12,7 @@
 import { onUnmounted } from 'vue';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 let hasDisconnected = $ref(false);
 

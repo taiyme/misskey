@@ -2,18 +2,18 @@
 <div class="azykntjl">
 	<div class="body">
 		<div class="left">
-			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
+			<MkA v-click-anime v-tooltip="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
 			</MkA>
 			<template v-for="item in menu" :key="item">
 				<div v-if="item === '-'" class="divider"></div>
-				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="$ts[navbarItemDef[item].title]" class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
+				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime v-tooltip="i18n.ts[navbarItemDef[item].title]" class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 					<i class="ti-fw" :class="navbarItemDef[item].icon"></i>
 					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="_indicatorCircle"></i></span>
 				</component>
 			</template>
 			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip="$ts.controlPanel" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
+			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip="i18n.ts.controlPanel" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="ti ti-dashboard ti-fw"></i>
 			</MkA>
 			<button v-click-anime class="item _button" @click="more">
@@ -22,7 +22,7 @@
 			</button>
 		</div>
 		<div class="right">
-			<MkA v-click-anime v-tooltip="$ts.settings" class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
+			<MkA v-click-anime v-tooltip="i18n.ts.settings" class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="ti ti-settings ti-fw"></i>
 			</MkA>
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
@@ -43,9 +43,11 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu } from '@/account';
+import { $i, openAccountMenu } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { mainRouter } from '@/router';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -59,12 +61,14 @@ export default defineComponent({
 			connection: null,
 			navbarItemDef: navbarItemDef,
 			settingsWindowed: false,
+			i18n,
+			$i,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.menu;
+			return defaultStore.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -77,7 +81,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
+		'defaultStore.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 	},
@@ -188,7 +192,7 @@ export default defineComponent({
 
 			> .post {
 				display: inline-block;
-			
+
 				> .button {
 					width: 40px;
 					height: 40px;

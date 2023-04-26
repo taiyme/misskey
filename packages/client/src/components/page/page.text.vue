@@ -11,6 +11,7 @@ import * as mfm from 'mfm-js';
 import { TextBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
+import { $i } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -23,12 +24,13 @@ export default defineComponent({
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true
-		}
+			required: true,
+		},
 	},
 	data() {
 		return {
 			text: this.hpml.interpolate(this.block.text),
+			$i,
 		};
 	},
 	computed: {
@@ -38,15 +40,15 @@ export default defineComponent({
 			} else {
 				return [];
 			}
-		}
+		},
 	},
 	watch: {
 		'hpml.vars': {
 			handler() {
 				this.text = this.hpml.interpolate(this.block.text);
 			},
-			deep: true
-		}
+			deep: true,
+		},
 	},
 });
 </script>

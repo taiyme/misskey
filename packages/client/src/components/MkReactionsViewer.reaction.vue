@@ -1,21 +1,22 @@
 <template>
-<button
-	v-if="count > 0"
-	ref="buttonRef"
-	class="hkzvhatu _button"
-	:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'easy' : 'normal']"
-	@click="react"
->
-	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
-	<span class="count">{{ count }}</span>
-</button>
+<div v-if="count > 0" class="mk-reactions-viewer-reaction" :class="$style.root">
+	<button
+		ref="buttonRef"
+		class="hkzvhatu _button"
+		:class="[tmsStore.state.useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: reacted, [$style.canToggle]: canToggle }]"
+		@click="react"
+	>
+		<MkReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
+		<span :class="$style.reactionCount">{{ count }}</span>
+	</button>
+</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
-import XReactionIcon from '@/components/MkReactionIcon.vue';
+import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
@@ -31,11 +32,11 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const useEasyReactionsViewer = computed(() => tmsStore.state.useEasyReactionsViewer);
-
-const buttonRef = ref<HTMLElement>();
+const buttonRef = shallowRef<HTMLElement>();
 
 const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
+
+const reacted = computed(() => props.note.myReaction === props.reaction);
 
 const react = (): void => {
 	const param = {
@@ -99,9 +100,9 @@ useTooltip(buttonRef, async (showing) => {
 }, 100);
 </script>
 
-<style lang="scss" scoped>
-.hkzvhatu {
-	&.normal {
+<style lang="scss" module>
+.root {
+	.viewTypeNormal {
 		display: inline-block;
 		height: 32px;
 		padding: 0 6px;
@@ -126,23 +127,23 @@ useTooltip(buttonRef, async (showing) => {
 				background-color: var(--accent);
 			}
 
-			> .count {
+			> .reactionCount {
 				color: var(--fgOnAccent);
 			}
 
-			> .icon {
+			> .reactionIcon {
 				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 			}
 		}
 
-		> .count {
+		> .reactionCount {
 			font-size: 0.9em;
 			line-height: 32px;
 			margin: 0 0 0 4px;
 		}
 	}
 
-	&.easy {
+	.viewTypeEasy {
 		background-color: var(--panel);
 		color: var(--fgTransparentWeak);
 		box-sizing: border-box;
@@ -168,7 +169,7 @@ useTooltip(buttonRef, async (showing) => {
 			cursor: default;
 		}
 
-		> .icon {
+		> .reactionIcon {
 			background-color: #fff;
 			box-sizing: border-box;
 			padding: 4px;
@@ -176,7 +177,7 @@ useTooltip(buttonRef, async (showing) => {
 			height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
 		}
 
-		> .count {
+		> .reactionCount {
 			box-sizing: border-box;
 			padding: 0 6px;
 			font-size: 0.9em;

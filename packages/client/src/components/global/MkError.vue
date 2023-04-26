@@ -1,9 +1,9 @@
 <template>
-<Transition :name="$store.state.animation ? 'zoom' : ''" appear>
+<Transition :name="defaultStore.state.animation ? 'zoom' : ''" appear>
 	<div class="mjndxjcg">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
-		<MkButton class="button" @click="() => $emit('retry')">{{ i18n.ts.retry }}</MkButton>
+		<MkButton class="button" @click="emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>
 </transition>
 </template>
@@ -11,6 +11,11 @@
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
+
+const emit = defineEmits<{
+	(ev: 'retry'): void;
+}>();
 </script>
 
 <style lang="scss" scoped>

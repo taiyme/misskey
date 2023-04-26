@@ -1,24 +1,28 @@
 import { Directive } from 'vue';
-import { makeHotkey } from '../scripts/hotkey';
+import { Keymap, makeHotkey } from '../scripts/hotkey';
 
+const map = new WeakMap<HTMLElement, () => void>();
+
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el, binding) {
-		el._hotkey_global = binding.modifiers.global === true;
+	mounted(src, binding) {
+		const global = binding.modifiers.global === true;
+		const handler = makeHotkey(binding.value);
 
-		el._keyHandler = makeHotkey(binding.value);
-
-		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler);
+		if (global) {
+			document.addEventListener('keydown', handler);
+			map.set(src, () => document.removeEventListener('keydown', handler));
 		} else {
-			el.addEventListener('keydown', el._keyHandler);
+			src.addEventListener('keydown', handler);
+			map.set(src, () => src.removeEventListener('keydown', handler));
 		}
 	},
 
-	unmounted(el) {
-		if (el._hotkey_global) {
-			document.removeEventListener('keydown', el._keyHandler);
-		} else {
-			el.removeEventListener('keydown', el._keyHandler);
+	unmounted(src) {
+		const stopHandler = map.get(src);
+		if (stopHandler) {
+			stopHandler();
+			map.delete(src);
 		}
-	}
-} as Directive;
+	},
+} as Directive<HTMLElement, Keymap>;

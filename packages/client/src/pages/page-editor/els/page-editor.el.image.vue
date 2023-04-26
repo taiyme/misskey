@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="ti ti-photo"></i> {{ $ts._pages.blocks.image }}</template>
+<XContainer :draggable="true" @remove="() => emit('remove')">
+	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
 			<i class="ti ti-folder"></i>
@@ -20,30 +20,35 @@ import { onMounted } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
-	value: any
+	value: any;
 }>(), {
 	value: {
-		fileId: null
-	}
+		fileId: null,
+	},
 });
+
+const emit = defineEmits<{
+	(ev: 'remove'): void;
+}>();
 
 let file: any = $ref(null);
 
-async function choose() {
+const choose = (): void => {
 	os.selectDriveFile(false).then((fileResponse: any) => {
 		file = fileResponse;
 		props.value.fileId = fileResponse.id;
 	});
-}
+};
 
 onMounted(async () => {
 	if (props.value.fileId == null) {
 		await choose();
 	} else {
 		os.api('drive/files/show', {
-			fileId: props.value.fileId
+			fileId: props.value.fileId,
 		}).then(fileResponse => {
 			file = fileResponse;
 		});

@@ -1,8 +1,8 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
 	<div>
-		<b><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
-		<span>{{ $ts.clickToShow }}</span>
+		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
 <div v-else class="kkjnbbplepmiyuadieoenjgutgcmtsvu">
@@ -14,8 +14,8 @@
 		controls
 		@contextmenu.stop
 	>
-		<source 
-			:src="video.url" 
+		<source
+			:src="video.url"
 			:type="video.type"
 		>
 	</video>
@@ -27,6 +27,7 @@
 import { ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	video: misskey.entities.DriveFile;

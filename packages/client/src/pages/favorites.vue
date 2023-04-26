@@ -12,7 +12,7 @@
 
 			<template #default="{ items }">
 				<XList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false">
-					<XNote :key="item.id" :note="item.note" :class="$style.note"/>
+					<MkNote :key="item.id" :note="item.note" :class="$style.note"/>
 				</XList>
 			</template>
 		</MkPagination>
@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

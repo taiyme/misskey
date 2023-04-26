@@ -28,7 +28,7 @@
 			scrolling="no"
 			frameborder="no"
 			:style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }"
-			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
+			:src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"
 		/>
 	</div>
 	<div :class="$style.action">
@@ -38,7 +38,7 @@
 	</div>
 </div>
 <div v-else v-size="{ max: [400, 350] }" :class="$style.urlPreview">
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
@@ -84,6 +84,7 @@ import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
+import { defaultStore } from '@/store';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

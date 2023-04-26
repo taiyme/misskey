@@ -1,10 +1,10 @@
 <template>
 <Transition
-	mode="out-in"
 	:enter-active-class="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
 	:leave-active-class="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
 	:enter-from-class="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
 	:leave-to-class="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>
 
@@ -21,9 +21,10 @@
 
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_ahead_" class="_gap" :class="$style.loadMore">
+			<!-- 自動で読み込み続けてしまうので一旦削除 -->
+			<!-- v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" -->
 			<MkButton
 				v-if="!moreFetching"
-				v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null"
 				:disabled="moreFetching"
 				:style="{ cursor: moreFetching ? 'wait' : 'pointer' }"
 				primary
@@ -66,7 +67,7 @@ import { i18n } from '@/i18n';
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
-	limit: number;
+	limit?: number;
 	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
 
 	/**
@@ -100,7 +101,7 @@ const emit = defineEmits<{
 	(ev: 'queue', count: number): void;
 }>();
 
-let rootEl = $shallowRef<HTMLElement>();
+const rootEl = $shallowRef<HTMLElement>();
 
 // 遡り中かどうか
 let backed = $ref(false);
@@ -126,9 +127,7 @@ const more = ref(false);
 const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
-const {
-	enableInfiniteScroll,
-} = defaultStore.reactiveState;
+const { enableInfiniteScroll } = defaultStore.reactiveState;
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl ?? null));
@@ -173,27 +172,37 @@ watch([$$(backed), $$(contentEl)], () => {
 	}
 });
 
+if (props.pagination.params && isRef(props.pagination.params)) {
+	watch(props.pagination.params, () => init(), { deep: true });
+}
+
+watch(queue, (a, b) => {
+	if (a.length === 0 && b.length === 0) return;
+	emit('queue', queue.value.length);
+}, { deep: true });
+
 const init = async (): Promise<void> => {
 	queue.value = [];
 	fetching.value = true;
-	const params = unref(props.pagination.params);
+	const params = props.pagination.params ? unref(props.pagination.params) : {};
 	await os.api(props.pagination.endpoint, {
 		...params,
-		limit: props.pagination.noPaging ? (props.pagination.limit || 10) : (props.pagination.limit || 10) + 1,
-	}).then(res => {
+		limit: props.pagination.limit ?? 10,
+	}).then((res: MisskeyEntity[]) => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
 		}
-		if (!props.pagination.noPaging && (res.length > (props.pagination.limit || 10))) {
-			res.pop();
+
+		if (res.length === 0 || props.pagination.noPaging) {
+			items.value = res;
+			more.value = false;
+		} else {
 			if (props.pagination.reversed) moreFetching.value = true;
 			items.value = res;
 			more.value = true;
-		} else {
-			items.value = res;
-			more.value = false;
 		}
+
 		offset.value = res.length;
 		error.value = false;
 		fetching.value = false;
@@ -203,15 +212,6 @@ const init = async (): Promise<void> => {
 	});
 };
 
-if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
-}
-
-watch(queue, (a, b) => {
-	if (a.length === 0 && b.length === 0) return;
-	emit('queue', queue.value.length);
-}, { deep: true });
-
 const reload = (): Promise<void> => {
 	items.value = [];
 	return init();
@@ -220,22 +220,22 @@ const reload = (): Promise<void> => {
 const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
-	const params = unref(props.pagination.params);
+	const params = props.pagination.params ? unref(props.pagination.params) : {};
 	await os.api(props.pagination.endpoint, {
 		...params,
-		limit: SECOND_FETCH_LIMIT + 1,
+		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
 			untilId: items.value[items.value.length - 1].id,
 		}),
-	}).then(res => {
+	}).then((res: MisskeyEntity[]) => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = (_res): Promise<void> => {
+		const reverseConcat = (_res: MisskeyEntity[]): Promise<void> => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
@@ -252,20 +252,7 @@ const fetchMore = async (): Promise<void> => {
 			});
 		};
 
-		if (res.length > SECOND_FETCH_LIMIT) {
-			res.pop();
-
-			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = true;
-					moreFetching.value = false;
-				});
-			} else {
-				items.value = items.value.concat(res);
-				more.value = true;
-				moreFetching.value = false;
-			}
-		} else {
+		if (res.length === 0) {
 			if (props.pagination.reversed) {
 				reverseConcat(res).then(() => {
 					more.value = false;
@@ -274,6 +261,17 @@ const fetchMore = async (): Promise<void> => {
 			} else {
 				items.value = items.value.concat(res);
 				more.value = false;
+				moreFetching.value = false;
+			}
+		} else {
+			if (props.pagination.reversed) {
+				reverseConcat(res).then(() => {
+					more.value = true;
+					moreFetching.value = false;
+				});
+			} else {
+				items.value = items.value.concat(res);
+				more.value = true;
 				moreFetching.value = false;
 			}
 		}
@@ -286,23 +284,22 @@ const fetchMore = async (): Promise<void> => {
 const fetchMoreAhead = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
 	moreFetching.value = true;
-	const params = unref(props.pagination.params);
+	const params = props.pagination.params ? unref(props.pagination.params) : {};
 	await os.api(props.pagination.endpoint, {
 		...params,
-		limit: SECOND_FETCH_LIMIT + 1,
+		limit: SECOND_FETCH_LIMIT,
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
 			sinceId: items.value[items.value.length - 1].id,
 		}),
-	}).then(res => {
-		if (res.length > SECOND_FETCH_LIMIT) {
-			res.pop();
-			items.value = items.value.concat(res);
-			more.value = true;
-		} else {
+	}).then((res: MisskeyEntity[]) => {
+		if (res.length === 0) {
 			items.value = items.value.concat(res);
 			more.value = false;
+		} else {
+			items.value = items.value.concat(res);
+			more.value = true;
 		}
 		offset.value += res.length;
 		moreFetching.value = false;

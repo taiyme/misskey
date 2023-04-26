@@ -16,7 +16,7 @@ export async function search() {
 	}
 
 	if (q.startsWith('#')) {
-		mainRouter.push(`/tags/${encodeURIComponent(q.substr(1))}`);
+		mainRouter.push(`/tags/${encodeURIComponent(q.slice(1))}`);
 		return;
 	}
 
