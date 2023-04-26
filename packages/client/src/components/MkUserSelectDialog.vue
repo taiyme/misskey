@@ -1,12 +1,12 @@
 <template>
-<MkModalWindow
+<XModalWindow
 	ref="dialogEl"
 	:with-ok-button="true"
 	:ok-button-disabled="selected == null"
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div class="tbhwbxda">
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 	</div>
-</MkModalWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
@@ -56,7 +56,7 @@ import { onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import MkInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -72,7 +72,7 @@ let host = $ref('');
 let users: misskey.entities.UserDetailed[] = $ref([]);
 let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
 let selected: misskey.entities.UserDetailed | null = $ref(null);
-let dialogEl = $ref<InstanceType<typeof MkModalWindow>>();
+let dialogEl = $ref<InstanceType<typeof XModalWindow>>();
 
 const search = (): void => {
 	if (username === '' && host === '') {

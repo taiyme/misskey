@@ -54,7 +54,7 @@
 		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
 	</div>
 
-	<Transition :name="defaultStore.state.animation ? 'menu-back' : ''">
+	<Transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
@@ -63,7 +63,7 @@
 		></div>
 	</transition>
 
-	<Transition :name="defaultStore.state.animation ? 'menu' : ''">
+	<Transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
 	</transition>
 
@@ -88,7 +88,6 @@ import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
 import { disableContextmenu } from '@/scripts/touch';
-import { defaultStore } from '@/store';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 const isNoMainColumn = (): boolean => !deckStore.state.columns.some(x => x.type === 'main');
@@ -395,7 +394,7 @@ async function deleteProfile() {
 			&:active {
 				background: var(--X2);
 			}
-
+			
 			&.post {
 				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 				color: var(--fgOnAccent);

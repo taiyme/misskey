@@ -2,7 +2,7 @@
 <XColumn :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header><i class="ti ti-at" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
-	<MkNotes :pagination="pagination" no-gap/>
+	<XNotes :pagination="pagination"/>
 </XColumn>
 </template>
 
@@ -10,7 +10,7 @@
 import { } from 'vue';
 import XColumn from './column.vue';
 import { Column } from './deck-store';
-import MkNotes from '@/components/MkNotes.vue';
+import XNotes from '@/components/MkNotes.vue';
 
 defineProps<{
 	column: Column;

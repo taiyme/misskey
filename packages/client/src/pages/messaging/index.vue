@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-size="{ max: [400] }" class="yweeujhr">
-			<MkButton primary class="start" @click="start"><i class="ti ti-plus"></i> {{ i18n.ts.startMessaging }}</MkButton>
+			<MkButton primary class="start" @click="start"><i class="ti ti-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 			<div v-if="messages.length > 0" class="history">
 				<MkA
@@ -27,14 +27,14 @@
 							<MkTime :time="message.createdAt" class="time"/>
 						</header>
 						<div class="body">
-							<p class="text"><span v-if="isMe(message)" class="me">{{ i18n.ts.you }}:</span>{{ message.text }}</p>
+							<p class="text"><span v-if="isMe(message)" class="me">{{ $ts.you }}:</span>{{ message.text }}</p>
 						</div>
 					</div>
 				</MkA>
 			</div>
 			<div v-if="!fetching && messages.length == 0" class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.noHistory }}</div>
+				<div>{{ $ts.noHistory }}</div>
 			</div>
 			<MkLoading v-if="fetching"/>
 		</div>
@@ -44,7 +44,6 @@
 
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted } from 'vue';
-import { ChannelConnection } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/MkButton.vue';
 import { acct } from '@/filters/user';
@@ -60,7 +59,7 @@ const router = useRouter();
 let fetching = $ref(true);
 let moreFetching = $ref(false);
 let messages = $ref([]);
-let connection = $ref<ChannelConnection | null>(null);
+let connection = $ref(null);
 
 const getAcct = Acct.toString;
 
@@ -150,10 +149,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (connection) {
-		connection.dispose();
-		connection = null;
-	}
+	if (connection) connection.dispose();
 });
 
 const headerActions = $computed(() => []);

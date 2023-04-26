@@ -8,17 +8,16 @@
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
+		<XTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
 	</template>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import { } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -33,21 +32,17 @@ const emit = defineEmits<{
 	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
-const timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = $shallowRef<misskey.entities.Channel>();
+let timeline = $ref<InstanceType<typeof XTimeline>>();
 
-onMounted(() => {
-	if (props.column.channelId == null) {
-		setChannel();
-	}
-});
+if (props.column.channelId == null) {
+	setChannel();
+}
 
-const setChannel = async (): Promise<void> => {
+async function setChannel() {
 	const channels = await os.api('channels/followed', {
 		limit: 100,
 	});
-
-	const { canceled, result: _channel } = await os.select({
+	const { canceled, result: channel } = await os.select({
 		title: i18n.ts.selectChannel,
 		items: channels.map(x => ({
 			value: x, text: x.name,
@@ -55,24 +50,20 @@ const setChannel = async (): Promise<void> => {
 		default: props.column.channelId,
 	});
 	if (canceled) return;
-
 	updateColumn(props.column.id, {
-		channelId: _channel.id,
-		name: _channel.name,
+		channelId: channel.id,
+		name: channel.name,
 	});
-};
+}
 
-const post = async (): Promise<void> => {
-	if (!channel || channel.id !== props.column.channelId) {
-		channel = await os.api('channels/show', {
-			channelId: props.column.channelId,
-		});
-	}
-
+function post() {
 	os.post({
-		channel,
+		channel: {
+			id: props.column.channelId,
+		},
+		instant: true,
 	});
-};
+}
 
 const menu = [{
 	icon: 'ti ti-pencil',

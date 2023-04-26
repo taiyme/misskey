@@ -9,9 +9,9 @@
 	<div v-else class="menu">
 		<div class="body">
 			<div>Ads by {{ host }}</div>
-			<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
-			<MkButton v-if="chosen.ratio !== 0" class="button" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
-			<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
+			<!--<MkButton class="button" primary>{{ $ts._ad.like }}</MkButton>-->
+			<MkButton v-if="chosen.ratio !== 0" class="button" @click="reduceFrequency">{{ $ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+			<button class="_textButton" @click="toggleMenu">{{ $ts._ad.back }}</button>
 		</div>
 	</div>
 </div>
@@ -25,7 +25,6 @@ import { host } from '@/config';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
-import { i18n } from '@/i18n';
 
 type Ad = (typeof instance)['ads'][number];
 

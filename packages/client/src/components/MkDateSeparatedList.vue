@@ -38,14 +38,14 @@ export default defineComponent({
 
 	setup(props, { slots, expose }) {
 		const $style = useCssModule();
-		const getDateText = (time: string): string => {
+		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
 			return i18n.t('monthAndDay', {
 				month: month.toString(),
 				day: date.toString(),
 			});
-		};
+		}
 
 		if (props.items.length === 0) return;
 
@@ -113,14 +113,14 @@ export default defineComponent({
 			return children;
 		};
 
-		const onBeforeLeave = (el: HTMLElement): void => {
+		function onBeforeLeave(el: HTMLElement) {
 			el.style.top = `${el.offsetTop}px`;
 			el.style.left = `${el.offsetLeft}px`;
-		};
-		const onLeaveCanceled = (el: HTMLElement): void => {
+		}
+		function onLeaveCanceled(el: HTMLElement) {
 			el.style.top = '';
 			el.style.left = '';
-		};
+		}
 
 		return () => h(
 			defaultStore.state.animation ? TransitionGroup : 'div',
@@ -180,13 +180,6 @@ export default defineComponent({
 
 		&:not(:last-child) {
 			border-bottom: solid 0.5px var(--divider);
-		}
-	}
-
-	&.reversed > * {
-		&:not(:last-child) {
-			border-bottom: none;
-			border-top: solid 0.5px var(--divider);
 		}
 	}
 }

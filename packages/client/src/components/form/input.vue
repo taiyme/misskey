@@ -2,8 +2,8 @@
 <template>
 <div class="matxzzsk">
 	<div class="label" @click="focus">
-		<span v-if="$slots.label || counter.isRemaining" class="label-text"><slot name="label"></slot></span>
-		<span v-if="counter.isRemaining" class="text-count" :class="{ over: counter.isOver }">{{ counter.remainingChars }}</span>
+		<span v-if="$slots.label" class="label-text"><slot name="label"></slot></span>
+		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
 	</div>
 	<div class="input" :class="{ inline, disabled, focused, invalid }">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
@@ -40,11 +40,11 @@
 <script lang="ts" setup>
 import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
+import { length } from 'stringz';
 import { v4 as uuid } from 'uuid';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
-import { textCounter } from '@/scripts/tms/text-counter';
 
 const props = defineProps<{
 	modelValue: string | number;
@@ -88,9 +88,13 @@ const height =
 	props.large ? 40 :
 	38;
 
-const counter = textCounter({
-	text: v,
-	maxChars: props.max ?? Infinity,
+const textLength = $computed((): number => {
+	if (typeof v.value !== 'string') return 0;
+	return length(v.value);
+});
+
+const maxTextLength = $computed((): number | null => {
+	return props.max ?? null;
 });
 
 const focus = (): void => inputEl.value?.focus();
@@ -124,7 +128,7 @@ watch(modelValue, newValue => {
 });
 
 watch(v, () => {
-	invalid.value = !!inputEl.value?.validity.badInput || (counter.value.isRemaining && counter.value.isOver);
+	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
 
 	if (!props.manualSave) {
 		if (props.debounce) {
@@ -184,7 +188,6 @@ onMounted(() => {
 		}
 
 		> .text-count {
-			white-space: nowrap;
 			opacity: 0.7;
 
 			&.over {

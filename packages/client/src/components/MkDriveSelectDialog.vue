@@ -1,5 +1,5 @@
 <template>
-<MkModalWindow
+<XModalWindow
 	ref="dialog"
 	:width="800"
 	:height="500"
@@ -14,15 +14,15 @@
 		{{ multiple ? ((type === 'file') ? i18n.ts.selectFiles : i18n.ts.selectFolders) : ((type === 'file') ? i18n.ts.selectFile : i18n.ts.selectFolder) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
-	<MkDrive :multiple="multiple" :select="type" @change-selection="onChangeSelection" @selected="ok()"/>
-</MkModalWindow>
+	<XDrive :multiple="multiple" :select="type" @change-selection="onChangeSelection" @selected="ok()"/>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { DriveFile } from 'misskey-js/built/entities';
-import MkDrive from '@/components/MkDrive.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XDrive from '@/components/MkDrive.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
 
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = ref<InstanceType<typeof MkModalWindow>>();
+const dialog = ref<InstanceType<typeof XModalWindow>>();
 
 const selected = ref<DriveFile[]>([]);
 

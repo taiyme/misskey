@@ -8,13 +8,13 @@
 			<i v-else-if="widgetProps.src === 'global'" class="ti ti-whirl"></i>
 			<i v-else-if="widgetProps.src === 'list'" class="ti ti-list"></i>
 			<i v-else-if="widgetProps.src === 'antenna'" class="ti ti-antenna"></i>
-			<span style="margin-left: 8px;">{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : i18n.t('_timelines.' + widgetProps.src) }}</span>
+			<span style="margin-left: 8px;">{{ widgetProps.src === 'list' ? widgetProps.list.name : widgetProps.src === 'antenna' ? widgetProps.antenna.name : $t('_timelines.' + widgetProps.src) }}</span>
 			<i :class="menuOpened ? 'ti ti-chevron-up' : 'ti ti-chevron-down'" style="margin-left: 8px;"></i>
 		</button>
 	</template>
 
 	<div>
-		<MkTimeline :key="widgetProps.src === 'list' ? `list:${widgetProps.list.id}` : widgetProps.src === 'antenna' ? `antenna:${widgetProps.antenna.id}` : widgetProps.src" :src="widgetProps.src" :list="widgetProps.list ? widgetProps.list.id : null" :antenna="widgetProps.antenna ? widgetProps.antenna.id : null"/>
+		<XTimeline :key="widgetProps.src === 'list' ? `list:${widgetProps.list.id}` : widgetProps.src === 'antenna' ? `antenna:${widgetProps.antenna.id}` : widgetProps.src" :src="widgetProps.src" :list="widgetProps.list ? widgetProps.list.id : null" :antenna="widgetProps.antenna ? widgetProps.antenna.id : null"/>
 	</div>
 </MkContainer>
 </template>
@@ -25,9 +25,8 @@ import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import { i18n } from '@/i18n';
-import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 
 const name = 'timeline';
 
@@ -48,12 +47,12 @@ const widgetPropsDef = {
 	antenna: {
 		type: 'object' as const,
 		default: null,
-		hidden: true as const,
+		hidden: true,
 	},
 	list: {
 		type: 'object' as const,
 		default: null,
-		hidden: true as const,
+		hidden: true,
 	},
 };
 
@@ -62,13 +61,8 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 // 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
 //const props = defineProps<WidgetComponentProps<WidgetProps>>();
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{
-	widget?: Widget<WidgetProps>;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'updateProps', props_: WidgetProps): void;
-}>();
+const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
+const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
 
 const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	widgetPropsDef,
@@ -78,13 +72,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const menuOpened = ref(false);
 
-const setSrc = (src: string): void => {
+const setSrc = (src) => {
 	widgetProps.src = src;
 	save();
 };
 
-const choose = async (ev: MouseEvent): Promise<void> => {
-	const el = getHtmlElementFromEvent(ev) ?? undefined;
+const choose = async (ev) => {
 	menuOpened.value = true;
 	const [antennas, lists] = await Promise.all([
 		os.api('antennas/list'),
@@ -93,36 +86,36 @@ const choose = async (ev: MouseEvent): Promise<void> => {
 	const antennaItems = antennas.map(antenna => ({
 		text: antenna.name,
 		icon: 'ti ti-antenna',
-		action: (): void => {
+		action: () => {
 			widgetProps.antenna = antenna;
 			setSrc('antenna');
-		},
+		}
 	}));
 	const listItems = lists.map(list => ({
 		text: list.name,
 		icon: 'ti ti-list',
-		action: (): void => {
+		action: () => {
 			widgetProps.list = list;
 			setSrc('list');
-		},
+		}
 	}));
 	os.popupMenu([{
 		text: i18n.ts._timelines.home,
 		icon: 'ti ti-home',
-		action: (): void => { setSrc('home'); }
+		action: () => { setSrc('home'); }
 	}, {
 		text: i18n.ts._timelines.local,
 		icon: 'ti ti-planet',
-		action: (): void => { setSrc('local'); },
+		action: () => { setSrc('local'); },
 	}, {
 		text: i18n.ts._timelines.social,
 		icon: 'ti ti-rocket',
-		action: (): void => { setSrc('social'); },
+		action: () => { setSrc('social'); },
 	}, {
 		text: i18n.ts._timelines.global,
 		icon: 'ti ti-whirl',
-		action: (): void => { setSrc('global'); },
-	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], el).then(() => {
+		action: () => { setSrc('global'); },
+	}, antennaItems.length > 0 ? null : undefined, ...antennaItems, listItems.length > 0 ? null : undefined, ...listItems], ev.currentTarget ?? ev.target).then(() => {
 		menuOpened.value = false;
 	});
 };

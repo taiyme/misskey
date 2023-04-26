@@ -1,5 +1,5 @@
 <template>
-<MkWindow
+<XWindow
 	ref="window"
 	:initial-width="800"
 	:initial-height="500"
@@ -9,15 +9,15 @@
 	<template #header>
 		{{ i18n.ts.drive }}
 	</template>
-	<MkDrive :initial-folder="initialFolder"/>
-</MkWindow>
+	<XDrive :initial-folder="initialFolder"/>
+</XWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkDrive from '@/components/MkDrive.vue';
-import MkWindow from '@/components/MkWindow.vue';
+import XDrive from '@/components/MkDrive.vue';
+import XWindow from '@/components/MkWindow.vue';
 import { i18n } from '@/i18n';
 
 defineProps<{

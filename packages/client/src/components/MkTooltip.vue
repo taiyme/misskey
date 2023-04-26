@@ -1,5 +1,5 @@
 <template>
-<Transition :name="defaultStore.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
+<Transition :name="$store.state.animation ? 'tooltip' : ''" appear @after-leave="emit('closed')">
 	<div v-show="showing" ref="el" class="buebdbiu _acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
 			<Mfm v-if="asMfm" :text="text"/>
@@ -13,7 +13,6 @@
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 import { calcPopupPosition } from '@/scripts/popup-position';
-import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;

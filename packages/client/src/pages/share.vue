@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<TmsPostForm
+		<XPostForm
 			v-if="state === 'writing'"
 			fixed
 			:instant="true"
@@ -29,7 +29,7 @@ import { noteVisibilities } from 'misskey-js';
 import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import TmsPostForm from '@/components/TmsPostForm.vue';
+import XPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';

@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, nextTick } from 'vue';
+import { onMounted, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import autosize from 'autosize';
 //import insertTextAtCursor from 'insert-text-at-cursor';
@@ -41,7 +41,6 @@ import { i18n } from '@/i18n';
 //import { Autocomplete } from '@/scripts/autocomplete';
 import { uploadFile } from '@/scripts/upload';
 import { parseObject } from '@/scripts/tms/parse';
-import { getMessageDraft as _getMessageDraft, setMessageDraft as _setMessageDraft, deleteMessageDraft as _deleteMessageDraft } from '@/scripts/tms/drafts';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -58,17 +57,10 @@ const typing = throttle(3000, () => {
 	stream.send('typingOnMessaging', props.user ? { partner: props.user.id } : { group: props.group?.id });
 });
 
-const draftKey = $computed(() => {
-	if (props.user) return `user:${props.user.id}`;
-	if (props.group) return `group:${props.group.id}`;
-	return null;
-});
-const canSend = $computed(() => (text != null && text !== '') || file != null);
+let draftKey = $computed(() => props.user ? 'user:' + props.user.id : 'group:' + props.group?.id);
+let canSend = $computed(() => (text != null && text !== '') || file != null);
 
-const watchForDraft = (): void => {
-	watch($$(text), () => saveDraft());
-	watch($$(file), () => saveDraft());
-};
+watch([$$(text), $$(file)], saveDraft);
 
 async function onPaste(ev: ClipboardEvent) {
 	if (!ev.clipboardData) return;
@@ -134,8 +126,9 @@ function onDrop(ev: DragEvent): void {
 
 function onKeydown(ev: KeyboardEvent) {
 	typing();
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canSend) send();
+	if ((ev.key === 'Enter') && (ev.ctrlKey || ev.metaKey) && canSend) {
+		send();
+	}
 }
 
 function onCompositionUpdate() {
@@ -180,9 +173,36 @@ function clear() {
 	deleteDraft();
 }
 
-const saveDraft = (): void => _setMessageDraft(draftKey, { text, file });
+type DraftData = {
+	updatedAt: string;
+	data: {
+		text: typeof text;
+		file: typeof file;
+	};
+};
 
-const deleteDraft = (): void => _deleteMessageDraft(draftKey);
+function saveDraft() {
+	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
+
+	drafts[draftKey] = {
+		updatedAt: new Date().toJSON(),
+		// eslint-disable-next-line id-denylist
+		data: {
+			text: text,
+			file: file,
+		},
+	};
+
+	localStorage.setItem('message_drafts', JSON.stringify(drafts));
+}
+
+function deleteDraft() {
+	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
+
+	delete drafts[draftKey];
+
+	localStorage.setItem('message_drafts', JSON.stringify(drafts));
+}
 
 async function insertEmoji(ev: MouseEvent) {
 	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textEl);
@@ -196,16 +216,11 @@ onMounted(() => {
 	//new Autocomplete(textEl, this, { model: 'text' });
 
 	// 書きかけの投稿を復元
-	const draft = _getMessageDraft(draftKey);
+	const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('message_drafts'))[draftKey];
 	if (draft) {
 		text = draft.data.text;
 		file = draft.data.file;
 	}
-
-	nextTick(() => {
-		saveDraft();
-		watchForDraft();
-	});
 });
 
 defineExpose({

@@ -1,6 +1,6 @@
 <template>
 <div class="mk-toast">
-	<Transition :name="defaultStore.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
+	<Transition :name="$store.state.animation ? 'toast' : ''" appear @after-leave="emit('closed')">
 		<div v-if="showing" class="body _acrylic" :style="{ zIndex }">
 			<div class="message">
 				{{ message }}
@@ -13,7 +13,6 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as os from '@/os';
-import { defaultStore } from '@/store';
 
 defineProps<{
 	message: string;

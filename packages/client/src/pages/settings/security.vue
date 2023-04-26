@@ -9,7 +9,7 @@
 		<template #label>{{ i18n.ts.twoStepAuthentication }}</template>
 		<X2fa/>
 	</FormSection>
-
+	
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
 		<MkPagination :pagination="pagination" disable-auto-load>
@@ -78,7 +78,7 @@ async function change() {
 		});
 		return;
 	}
-
+	
 	os.apiWithDialog('i/change-password', {
 		currentPassword,
 		newPassword,

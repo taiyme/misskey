@@ -8,7 +8,13 @@
 import { } from 'vue';
 import XValue from './MkObjectView.value.vue';
 
-defineProps<{
+const props = defineProps<{
 	value: Record<string, unknown>;
 }>();
 </script>
+
+<style lang="scss" scoped>
+.zhyxdalp {
+
+}
+</style>

@@ -2,7 +2,7 @@
 <MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
-			<MkReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
+			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
 			<div class="name">{{ getReactionName(reaction) }}</div>
 		</div>
 		<div class="users">
@@ -18,17 +18,16 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { UserDetailed, CustomEmoji } from 'misskey-js/built/entities';
 import MkTooltip from './MkTooltip.vue';
-import MkReactionIcon from '@/components/MkReactionIcon.vue';
+import XReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist';
 
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	users: UserDetailed[];
+	users: any[]; // TODO
 	count: number;
-	emojis: CustomEmoji[];
+	emojis: any[]; // TODO
 	targetElement: HTMLElement;
 }>();
 
@@ -61,7 +60,7 @@ const getReactionName = (reaction: string): string => {
 		}
 
 		> .mk-emoji-fallback {
-			display: none;
+			display: none;				
 		}
 
 		> .name {

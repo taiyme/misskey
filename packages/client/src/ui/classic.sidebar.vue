@@ -5,35 +5,35 @@
 	</button>
 	<div class="post" data-cy-open-post-form @click="post">
 		<MkButton class="button" gradate full rounded>
-			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ i18n.ts.note }}</span>
+			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ $ts.note }}</span>
 		</MkButton>
 	</div>
 	<div class="divider"></div>
 	<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-		<i class="ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
+		<i class="ti ti-home ti-fw"></i><span class="text">{{ $ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu" :key="item">
 		<div v-if="item === '-'" class="divider"></div>
 		<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="item" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
-			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ i18n.ts[navbarItemDef[item].title] }}</span>
+			<i class="ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ $ts[navbarItemDef[item].title] }}</span>
 			<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="_indicatorCircle"></i></span>
 		</component>
 	</template>
 	<div class="divider"></div>
-	<MkA v-if="$i?.isAdmin || $i?.isModerator" v-click-anime class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
+	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
+		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="more">
-		<i class="ti ti-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
+		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.more }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
 	</button>
 	<MkA v-click-anime class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
+		<i class="ti ti-settings ti-fw"></i><span class="text">{{ $ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
 	<div class="about">
 		<MkA v-click-anime class="link" to="/about">
-			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" class="_ghost"/>
+			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" class="_ghost"/>
 		</MkA>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
@@ -45,13 +45,10 @@ import { defineAsyncComponent, defineComponent } from 'vue';
 import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { $i, openAccountMenu } from '@/account';
+import { openAccountMenu } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { mainRouter } from '@/router';
-import { instance } from '@/instance';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
 //import MisskeyLogo from '@assets/client/misskey.svg';
 
 export default defineComponent({
@@ -59,8 +56,6 @@ export default defineComponent({
 		MkButton,
 		//MisskeyLogo,
 	},
-
-	emits: ['change-view-mode'],
 
 	data() {
 		return {
@@ -70,15 +65,12 @@ export default defineComponent({
 			navbarItemDef: navbarItemDef,
 			iconOnly: false,
 			settingsWindowed: false,
-			instance,
-			i18n,
-			$i,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return defaultStore.state.menu;
+			return this.$store.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -91,7 +83,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'defaultStore.reactiveState.menuDisplay.value'() {
+		'$store.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -116,7 +108,7 @@ export default defineComponent({
 
 	methods: {
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1400) || (defaultStore.state.menuDisplay === 'sideIcon');
+			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.menuDisplay === 'sideIcon');
 			this.settingsWindowed = (window.innerWidth > 1400);
 		},
 

@@ -34,7 +34,7 @@ export const fetchInstance = async (): Promise<void> => {
 
 export const emojiCategories = computed(() => {
 	if (instance.emojis == null) return [];
-	const categories = new Set<string>();
+	const categories = new Set();
 	for (const emoji of instance.emojis) {
 		categories.add(emoji.category);
 	}
@@ -43,7 +43,7 @@ export const emojiCategories = computed(() => {
 
 export const emojiTags = computed(() => {
 	if (instance.emojis == null) return [];
-	const tags = new Set<string>();
+	const tags = new Set();
 	for (const emoji of instance.emojis) {
 		for (const tag of emoji.aliases) {
 			tags.add(tag);
@@ -51,3 +51,10 @@ export const emojiTags = computed(() => {
 	}
 	return Array.from(tags);
 });
+
+// このファイルに書きたくないけどここに書かないと何故かVeturが認識しない
+declare module '@vue/runtime-core' {
+	interface ComponentCustomProperties {
+		$instance: typeof instance;
+	}
+}

@@ -1,6 +1,6 @@
 <template>
-<div v-show="props.modelValue.length != 0" class="skeikyzd">
-	<Sortable :model-value="props.modelValue" class="files" item-key="id" :animation="150" :delay="100" :delay-on-touch-only="true" @update:model-value="v => emit('update:modelValue', v)">
+<div v-show="files.length != 0" class="skeikyzd">
+	<XDraggable v-model="_files" class="files" item-key="id" animation="150" delay="100" delay-on-touch-only="true">
 		<template #item="{element}">
 			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
@@ -9,108 +9,130 @@
 				</div>
 			</div>
 		</template>
-	</Sortable>
-	<div v-if="props.modelValue.length <= 16" class="remain">{{ 16 - props.modelValue.length }}/16</div>
-	<div v-else class="remain over">{{ 16 - props.modelValue.length }}</div>
+	</XDraggable>
+	<p class="remain">{{ 16 - files.length }}/16</p>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
-import { DriveFile } from 'misskey-js/built/entities';
+<script lang="ts">
+import { defineComponent, defineAsyncComponent } from 'vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
+import { disableContextmenu } from '@/scripts/touch';
 
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+export default defineComponent({
+	components: {
+		XDraggable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
+		MkDriveFileThumbnail,
+	},
 
-const props = defineProps<{
-	modelValue: DriveFile[];
-	detachMediaFn?: (id: string) => void;
-}>();
+	props: {
+		files: {
+			type: Array,
+			required: true,
+		},
+		detachMediaFn: {
+			type: Function,
+			required: false,
+		},
+	},
 
-const emit = defineEmits<{
-	(ev: 'update:modelValue', value: DriveFile[]): void;
-	(ev: 'detach', id: string): void;
-	(ev: 'changeSensitive', file: DriveFile, isSensitive: boolean): void;
-	(ev: 'changeName', file: DriveFile, changedName: string): void;
-}>();
+	emits: ['updated', 'detach', 'changeSensitive', 'changeName'],
 
-let menuShowing = false;
+	data() {
+		return {
+			menu: null as Promise<null> | null,
+		};
+	},
 
-const detachMedia = (id: string): void => {
-	if (props.detachMediaFn) {
-		props.detachMediaFn(id);
-	} else {
-		emit('detach', id);
-	}
-};
+	computed: {
+		_files: {
+			get() {
+				return this.files;
+			},
+			set(value) {
+				this.$emit('updated', value);
+			},
+		},
+	},
 
-const toggleSensitive = (file: DriveFile): void => {
-	os.api('drive/files/update', {
-		fileId: file.id,
-		isSensitive: !file.isSensitive,
-	}).then(() => {
-		emit('changeSensitive', file, !file.isSensitive);
-	});
-};
-
-const rename = async (file: DriveFile): Promise<void> => {
-	const { canceled, result: changedName } = await os.inputText({
-		title: i18n.ts.enterFileName,
-		default: file.name,
-		allowEmpty: false,
-	});
-	if (canceled) return;
-	os.api('drive/files/update', {
-		fileId: file.id,
-		name: changedName,
-	}).then(() => {
-		emit('changeName', file, changedName);
-		file.name = changedName;
-	});
-};
-
-const describe = async (file: DriveFile): Promise<void> => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
-		default: file.comment !== null ? file.comment : '',
-		file: file,
-	}, {
-		done: (caption: string) => {
-			const comment = caption.length === 0 ? null : caption;
+	methods: {
+		detachMedia(id) {
+			if (this.detachMediaFn) {
+				this.detachMediaFn(id);
+			} else {
+				this.$emit('detach', id);
+			}
+		},
+		toggleSensitive(file) {
 			os.api('drive/files/update', {
 				fileId: file.id,
-				comment,
+				isSensitive: !file.isSensitive,
 			}).then(() => {
-				file.comment = comment;
+				this.$emit('changeSensitive', file, !file.isSensitive);
 			});
 		},
-	}, 'closed');
-};
+		async rename(file) {
+			const { canceled, result } = await os.inputText({
+				title: this.$ts.enterFileName,
+				default: file.name,
+				allowEmpty: false,
+			});
+			if (canceled) return;
+			os.api('drive/files/update', {
+				fileId: file.id,
+				name: result,
+			}).then(() => {
+				this.$emit('changeName', file, result);
+				file.name = result;
+			});
+		},
 
-const showFileMenu = (file: DriveFile, ev: MouseEvent): void => {
-	if (menuShowing) return;
-	const el = getHtmlElementFromEvent(ev) ?? undefined;
-	os.popupMenu([{
-		text: i18n.ts.renameFile,
-		icon: 'ti ti-forms',
-		action: () => rename(file),
-	}, {
-		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
-		action: () => toggleSensitive(file),
-	}, {
-		text: i18n.ts.describeFile,
-		icon: 'ti ti-text-caption',
-		action: () => describe(file),
-	}, {
-		text: i18n.ts.attachCancel,
-		icon: 'ti ti-circle-x',
-		action: () => detachMedia(file.id),
-	}], el).then(() => menuShowing = false);
-	menuShowing = true;
-};
+		async describe(file) {
+			os.popup(defineAsyncComponent(() => import('@/components/MkMediaCaption.vue')), {
+				title: this.$ts.describeFile,
+				input: {
+					placeholder: this.$ts.inputNewDescription,
+					default: file.comment !== null ? file.comment : '',
+				},
+				image: file,
+			}, {
+				done: result => {
+					if (!result || result.canceled) return;
+					let comment = result.result.length === 0 ? null : result.result;
+					os.api('drive/files/update', {
+						fileId: file.id,
+						comment: comment,
+					}).then(() => {
+						file.comment = comment;
+					});
+				},
+			}, 'closed');
+		},
+
+		showFileMenu(file, ev: MouseEvent) {
+			if (disableContextmenu && ev.type === 'contextmenu') return;
+			if (this.menu) return;
+			this.menu = os.popupMenu([{
+				text: this.$ts.renameFile,
+				icon: 'ti ti-forms',
+				action: () => { this.rename(file); },
+			}, {
+				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
+				icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
+				action: () => { this.toggleSensitive(file); },
+			}, {
+				text: this.$ts.describeFile,
+				icon: 'ti ti-forms',
+				action: () => { this.describe(file); },
+			}, {
+				text: this.$ts.attachCancel,
+				icon: 'ti ti-circle-x',
+				action: () => { this.detachMedia(file.id); },
+			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
+		},
+	},
+});
 </script>
 
 <style lang="scss" scoped>
@@ -167,23 +189,6 @@ const showFileMenu = (file: DriveFile, ev: MouseEvent): void => {
 		right: 8px;
 		margin: 0;
 		padding: 0;
-	}
-
-	> .remain {
-		position: absolute;
-		top: 0;
-		right: 0;
-		padding: 4px 8px;
-		font-size: 0.9em;
-		color: var(--fg);
-		min-width: 1.6em;
-		pointer-events: none;
-		white-space: nowrap;
-		opacity: 0.8;
-
-		&.over {
-			color: var(--error);
-		}
 	}
 }
 </style>

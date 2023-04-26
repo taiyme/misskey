@@ -13,10 +13,10 @@
 
 		<div v-if="searchType === 'note'">
 			<Transition
-				:enter-active-class="defaultStore.state.animation ? $style.transition_x_enterActive : ''"
-				:leave-active-class="defaultStore.state.animation ? $style.transition_x_leaveActive : ''"
-				:enter-from-class="defaultStore.state.animation ? $style.transition_x_enterFrom : ''"
-				:leave-to-class="defaultStore.state.animation ? $style.transition_x_leaveTo : ''"
+				:enter-active-class="$store.state.animation ? $style.transition_x_enterActive : ''"
+				:leave-active-class="$store.state.animation ? $style.transition_x_leaveActive : ''"
+				:enter-from-class="$store.state.animation ? $style.transition_x_enterFrom : ''"
+				:leave-to-class="$store.state.animation ? $style.transition_x_leaveTo : ''"
 			>
 				<div v-if="pickup" :class="$style.pickup">
 					<div :class="$style.pickupLabel">Pickup</div>
@@ -57,7 +57,6 @@ import FormRadios from '@/components/form/radios.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { defaultStore } from '@/store';
 
 type SearchType = 'note' | 'user';
 type SearchOrigin = 'combined' | 'local' | 'remote';
@@ -156,7 +155,7 @@ const search = async (): Promise<void> => {
 			break;
 		}
 	}
-
+	
 	if (location.pathname === '/search') {
 		window.history.replaceState(null, '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
 	}

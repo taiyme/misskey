@@ -4,9 +4,8 @@
 	<div ref="rootEl" v-size="{ min: [800] }" class="eqqrhokj">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
-			<MkTimeline
-				ref="tlEl"
-				:key="listId"
+			<XTimeline
+				ref="tlEl" :key="listId"
 				class="tl"
 				src="list"
 				:list="listId"
@@ -20,8 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import { UserList } from 'misskey-js/built/entities';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -34,10 +32,10 @@ const props = defineProps<{
 	listId: string;
 }>();
 
-let list = $ref<UserList | null>(null);
+let list = $ref(null);
 let queue = $ref(0);
-const tlEl = $ref<InstanceType<typeof MkTimeline>>();
-const rootEl = $ref<HTMLElement>();
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
+let rootEl = $ref<HTMLElement>();
 
 watch(() => props.listId, async () => {
 	list = await os.api('users/lists/show', {
@@ -45,35 +43,31 @@ watch(() => props.listId, async () => {
 	});
 }, { immediate: true });
 
-const queueUpdated = (q): void => {
+function queueUpdated(q) {
 	queue = q;
-};
+}
 
-const top = (): void => {
-	if (!rootEl) return;
+function top() {
 	scroll(rootEl, { top: 0 });
-};
+}
 
-const settings = (): void => {
+function settings() {
 	router.push(`/my/lists/${props.listId}`);
-};
+}
 
-// const timetravel = async (): Promise<void> => {
-// 	if (!tlEl) return;
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
 
-// 	const { canceled, result: date } = await os.inputDate({
-// 		title: i18n.ts.date,
-// 	});
-// 	if (canceled) return;
-
-// 	tlEl.timetravel(date);
-// };
+	tlEl.timetravel(date);
+}
 
 const headerActions = $computed(() => list ? [{
 	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
-	// handler: timetravel,
-	handler: (): void => {},
+	handler: timetravel,
 }, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,

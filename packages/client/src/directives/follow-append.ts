@@ -1,18 +1,13 @@
 import { Directive } from 'vue';
 import { getScrollContainer, getScrollPosition } from '@/scripts/scroll';
 
-const map = new WeakMap<HTMLElement, ResizeObserver>();
-
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
+	mounted(src, binding, vn) {
 		if (binding.value === false) return;
 
 		let isBottom = true;
 
-		const container = getScrollContainer(src);
-		if (!container) return;
-
+		const container = getScrollContainer(src)!;
 		container.addEventListener('scroll', () => {
 			const pos = getScrollPosition(container);
 			const viewHeight = container.clientHeight;
@@ -21,21 +16,20 @@ export default {
 		}, { passive: true });
 		container.scrollTop = container.scrollHeight;
 
-		const ro = new ResizeObserver(() => {
+		const ro = new ResizeObserver((entries, observer) => {
 			if (isBottom) {
 				const height = container.scrollHeight;
 				container.scrollTop = height;
 			}
 		});
+
 		ro.observe(src);
-		map.set(src, ro);
+
+		// TODO: 新たにプロパティを作るのをやめMapを使う
+		src._ro_ = ro;
 	},
 
-	unmounted(src) {
-		const ro = map.get(src);
-		if (ro) {
-			ro.disconnect();
-			map.delete(src);
-		}
-	},
-} as Directive<HTMLElement, boolean>;
+	unmounted(src, binding, vn) {
+		if (src._ro_) src._ro_.unobserve(src);
+	}
+} as Directive;

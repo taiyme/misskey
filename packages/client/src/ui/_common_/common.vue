@@ -9,7 +9,7 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup :name="defaultStore.state.animation ? 'notification' : ''" tag="div" class="notification-toast">
+<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notification-toast">
 	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" class="notification"/>
 </TransitionGroup>
 
@@ -33,7 +33,6 @@ import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));

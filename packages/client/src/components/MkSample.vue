@@ -36,7 +36,6 @@ import MkTextarea from '@/components/form/textarea.vue';
 import MkRadio from '@/components/form/radio.vue';
 import * as os from '@/os';
 import * as config from '@/config';
-import { $i } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -52,7 +51,7 @@ export default defineComponent({
 			text: '',
 			flag: true,
 			radio: 'misskey',
-			mfm: `Hello world! This is an @example mention. BTW you are @${$i ? $i.username : 'guest'}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
+			mfm: `Hello world! This is an @example mention. BTW you are @${this.$i ? this.$i.username : 'guest'}.\nAlso, here is ${config.url} and [example link](${config.url}). for more details, see https://example.com.\nAs you know #misskey is open-source software.`
 		};
 	},
 

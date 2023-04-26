@@ -2,8 +2,8 @@ import { Directive } from 'vue';
 
 type Value = { max?: number[]; min?: number[]; };
 
-//const observers = new Map<HTMLElement, ResizeObserver>();
-const mountings = new Map<HTMLElement, {
+//const observers = new Map<Element, ResizeObserver>();
+const mountings = new Map<Element, {
 	value: Value;
 	resize: ResizeObserver;
 	intersection?: IntersectionObserver;
@@ -17,9 +17,9 @@ type ClassOrder = {
 
 const cache = new Map<string, ClassOrder>();
 
-const getClassOrder = (width: number, queue: Value): ClassOrder => {
-	const getMaxClass = (v: number): `max-width_${typeof v}px` => `max-width_${v}px`;
-	const getMinClass = (v: number): `min-width_${typeof v}px` => `min-width_${v}px`;
+function getClassOrder(width: number, queue: Value): ClassOrder {
+	const getMaxClass = (v: number) => `max-width_${v}px`;
+	const getMinClass = (v: number) => `min-width_${v}px`;
 
 	return {
 		add: [
@@ -29,20 +29,20 @@ const getClassOrder = (width: number, queue: Value): ClassOrder => {
 		remove: [
 			...(queue.max ? queue.max.filter(v => width > v).map(getMaxClass) : []),
 			...(queue.min ? queue.min.filter(v => width < v).map(getMinClass) : []),
-		],
+		]
 	};
-};
+}
 
-const applyClassOrder = (el: HTMLElement, order: ClassOrder): void => {
+function applyClassOrder(el: Element, order: ClassOrder) {
 	el.classList.add(...order.add);
 	el.classList.remove(...order.remove);
-};
+}
 
-const getOrderName = (width: number, queue: Value): string => {
+function getOrderName(width: number, queue: Value): string {
 	return `${width}|${queue.max ? queue.max.join(',') : ''}|${queue.min ? queue.min.join(',') : ''}`;
-};
+}
 
-const calc = (el: HTMLElement): void => {
+function calc(el: Element) {
 	const info = mountings.get(el);
 	const width = el.clientWidth;
 
@@ -74,12 +74,11 @@ const calc = (el: HTMLElement): void => {
 		cache.set(getOrderName(width, info.value), order);
 		applyClassOrder(el, order);
 	}
-};
+}
 
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
-		const resize = new ResizeObserver(() => {
+	mounted(src, binding, vn) {
+		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});
 
@@ -93,16 +92,16 @@ export default {
 		resize.observe(src);
 	},
 
-	updated(src, binding) {
+	updated(src, binding, vn) {
 		mountings.set(src, Object.assign({}, mountings.get(src), { value: binding.value }));
 		calc(src);
 	},
 
-	unmounted(src) {
+	unmounted(src, binding, vn) {
 		const info = mountings.get(src);
 		if (!info) return;
 		info.resize.disconnect();
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
-	},
-} as Directive<HTMLElement, Value>;
+	}
+} as Directive<Element, Value>;

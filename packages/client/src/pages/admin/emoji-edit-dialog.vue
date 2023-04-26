@@ -1,10 +1,10 @@
 <template>
-<MkModalWindow
+<XModalWindow
 	ref="dialog"
 	:width="370"
 	:with-ok-button="true"
-	@close="dialog?.close()"
-	@closed="emit('closed')"
+	@close="$refs.dialog.close()"
+	@closed="$emit('closed')"
 	@ok="ok()"
 >
 	<template #header>:{{ emoji.name }}:</template>
@@ -25,41 +25,38 @@
 			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
-</MkModalWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { emojiCategories } from '@/instance';
 
-type EditedCustomEmoji = Omit<CustomEmoji, 'url'>;
-
 const props = defineProps<{
-	emoji: CustomEmoji;
+	emoji: any,
 }>();
 
-const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean, updated?: EditedCustomEmoji }): void,
-	(ev: 'closed'): void
-}>();
-
-const dialog = $ref<InstanceType<typeof MkModalWindow> | null>(null);
+let dialog = $ref(null);
 let name: string = $ref(props.emoji.name);
 let category: string = $ref(props.emoji.category);
 let aliases: string = $ref(props.emoji.aliases.join(' '));
-const categories: string[] = $ref(emojiCategories);
+let categories: string[] = $ref(emojiCategories);
 
-const ok = (): void => {
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,
+	(ev: 'closed'): void
+}>();
+
+function ok() {
 	update();
-};
+}
 
-const update = async (): Promise<void> => {
+async function update() {
 	await os.apiWithDialog('admin/emoji/update', {
 		id: props.emoji.id,
 		name,
@@ -76,10 +73,10 @@ const update = async (): Promise<void> => {
 		},
 	});
 
-	dialog?.close();
-};
+	dialog.close();
+}
 
-const del = async (): Promise<void> => {
+async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.t('removeAreYouSure', { x: name }),
@@ -92,9 +89,9 @@ const del = async (): Promise<void> => {
 		emit('done', {
 			deleted: true,
 		});
-		dialog?.close();
+		dialog.close();
 	});
-};
+}
 </script>
 
 <style lang="scss" scoped>

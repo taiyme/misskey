@@ -1,6 +1,6 @@
 <template>
-<div ref="rootEl" v-size="{ max: [380] }" class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
-	<header v-if="showHeader" ref="headerEl">
+<div v-size="{ max: [380] }" class="ukygtjoj _panel" :class="{ naked, thin, hideHeader: !showHeader, scrollable, closed: !showBody }">
+	<header v-if="showHeader" ref="header">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="sub">
 			<slot name="func"></slot>
@@ -11,107 +11,122 @@
 		</div>
 	</header>
 	<Transition
-		:name="defaultStore.state.animation ? 'container-toggle' : ''"
+		:name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
 		@after-leave="afterLeave"
 	>
-		<div v-show="showBody" ref="contentEl" class="content" :class="{ omitted }">
+		<div v-show="showBody" ref="content" class="content" :class="{ omitted }">
 			<slot></slot>
 			<button v-if="omitted" class="fade _button" @click="() => { ignoreOmit = true; omitted = false; }">
-				<span>{{ i18n.ts.showMore }}</span>
+				<span>{{ $ts.showMore }}</span>
 			</button>
 		</div>
 	</Transition>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, shallowRef, watch, onMounted } from 'vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-const props = withDefaults(defineProps<{
-	showHeader?: boolean;
-	thin?: boolean;
-	naked?: boolean;
-	foldable?: boolean;
-	expanded?: boolean;
-	scrollable?: boolean;
-	maxHeight?: number | null;
-}>(), {
-	showHeader: true,
-	thin: false,
-	naked: false,
-	foldable: false,
-	expanded: true,
-	scrollable: false,
-	maxHeight: null,
-});
-
-const rootEl = shallowRef<HTMLElement>();
-const headerEl = shallowRef<HTMLElement>();
-const contentEl = shallowRef<HTMLElement>();
-
-const showBody = ref(props.expanded);
-const omitted = ref<boolean | null>(null);
-const ignoreOmit = ref(false);
-
-onMounted(() => {
-	watch(showBody, _showBody => {
-		const headerHeight = props.showHeader ? headerEl.value?.offsetHeight ?? 0 : 0;
-		if (rootEl.value) {
-			rootEl.value.style.minHeight = `${headerHeight}px`;
-			if (showBody.value) {
-				rootEl.value.style.flexBasis = 'auto';
+export default defineComponent({
+	props: {
+		showHeader: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
+		thin: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		naked: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		foldable: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		expanded: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
+		scrollable: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		maxHeight: {
+			type: Number,
+			required: false,
+			default: null,
+		},
+	},
+	data() {
+		return {
+			showBody: this.expanded,
+			omitted: null,
+			ignoreOmit: false,
+		};
+	},
+	mounted() {
+		this.$watch('showBody', showBody => {
+			const headerHeight = this.showHeader ? this.$refs.header.offsetHeight : 0;
+			this.$el.style.minHeight = `${headerHeight}px`;
+			if (showBody) {
+				this.$el.style.flexBasis = 'auto';
 			} else {
-				rootEl.value.style.flexBasis = `${headerHeight}px`;
+				this.$el.style.flexBasis = `${headerHeight}px`;
 			}
-		}
-	}, { immediate: true });
+		}, {
+			immediate: true,
+		});
 
-	if (rootEl.value && props.maxHeight != null) {
-		rootEl.value.style.setProperty('--maxHeight', `${props.maxHeight}px`);
-	}
+		this.$el.style.setProperty('--maxHeight', this.maxHeight + 'px');
 
-	const calcOmit = (): void => {
-		if (omitted.value || ignoreOmit.value || props.maxHeight == null) return;
-		const height = contentEl.value?.offsetHeight ?? 0;
-		omitted.value = height > props.maxHeight;
-	};
+		const calcOmit = () => {
+			if (this.omitted || this.ignoreOmit || this.maxHeight == null) return;
+			const height = this.$refs.content.offsetHeight;
+			this.omitted = height > this.maxHeight;
+		};
 
-	calcOmit();
+		calcOmit();
+		new ResizeObserver((entries, observer) => {
+			calcOmit();
+		}).observe(this.$refs.content);
+	},
+	methods: {
+		toggleContent(show: boolean) {
+			if (!this.foldable) return;
+			this.showBody = show;
+		},
 
-	if (contentEl.value) new ResizeObserver(calcOmit).observe(contentEl.value);
+		enter(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = 0;
+			el.offsetHeight; // reflow
+			el.style.height = elementHeight + 'px';
+		},
+		afterEnter(el) {
+			el.style.height = null;
+		},
+		leave(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = elementHeight + 'px';
+			el.offsetHeight; // reflow
+			el.style.height = 0;
+		},
+		afterLeave(el) {
+			el.style.height = null;
+		},
+	},
 });
-
-// const toggleContent = (show: boolean): void => {
-// 	if (!props.foldable) return;
-// 	showBody.value = show;
-// };
-
-const enter = (el: HTMLElement): void => {
-	const { height: elementHeight } = el.getBoundingClientRect();
-	el.style.height = '0';
-	el.offsetHeight; // reflow
-	el.style.height = `${elementHeight}px`;
-};
-
-const afterEnter = (el: HTMLElement): void => {
-	el.style.height = '';
-};
-
-const leave = (el: HTMLElement): void => {
-	const { height: elementHeight } = el.getBoundingClientRect();
-	el.style.height = `${elementHeight}px`;
-	el.offsetHeight; // reflow
-	el.style.height = '0';
-};
-
-const afterLeave = (el: HTMLElement): void => {
-	el.style.height = '';
-};
 </script>
 
 <style lang="scss" scoped>
@@ -226,8 +241,8 @@ const afterLeave = (el: HTMLElement): void => {
 			}
 		}
 
-		// > .content {
-		// }
+		> .content {
+		}
 	}
 }
 

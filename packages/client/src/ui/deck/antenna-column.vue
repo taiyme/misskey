@@ -4,7 +4,7 @@
 		<i class="ti ti-antenna"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => emit('loaded')"/>
+	<XTimeline v-if="column.antennaId" ref="timeline" src="antenna" :antenna="column.antennaId" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
@@ -12,7 +12,7 @@
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -26,7 +26,7 @@ const emit = defineEmits<{
 	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
-const timeline = $ref<InstanceType<typeof MkTimeline>>();
+let timeline = $ref<InstanceType<typeof XTimeline>>();
 
 onMounted(() => {
 	if (props.column.antennaId == null) {
@@ -34,9 +34,8 @@ onMounted(() => {
 	}
 });
 
-const setAntenna = async (): Promise<void> => {
+async function setAntenna() {
 	const antennas = await os.api('antennas/list');
-
 	const { canceled, result: antenna } = await os.select({
 		title: i18n.ts.selectAntenna,
 		items: antennas.map(x => ({
@@ -45,11 +44,10 @@ const setAntenna = async (): Promise<void> => {
 		default: props.column.antennaId,
 	});
 	if (canceled) return;
-
 	updateColumn(props.column.id, {
 		antennaId: antenna.id,
 	});
-};
+}
 
 const menu = [{
 	icon: 'ti ti-pencil',
@@ -57,11 +55,16 @@ const menu = [{
 	action: setAntenna,
 }];
 
-// const focus = (): void => {
-// 	timeline?.focus();
-// };
+/*
+function focus() {
+	timeline.focus();
+}
 
-// defineExpose({
-// 	focus,
-// });
+defineExpose({
+	focus,
+});
+*/
 </script>
+
+<style lang="scss" scoped>
+</style>

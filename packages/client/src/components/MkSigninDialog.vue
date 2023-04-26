@@ -1,5 +1,5 @@
 <template>
-<MkModalWindow
+<XModalWindow
 	ref="dialog"
 	:width="370"
 	:height="400"
@@ -9,16 +9,16 @@
 	<template #header>{{ i18n.ts.login }}</template>
 
 	<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
-</MkModalWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 }>(), {
@@ -27,20 +27,20 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', r: any): void;
+	(ev: 'done'): void;
 	(ev: 'closed'): void;
 	(ev: 'cancelled'): void;
 }>();
 
-const dialog = $ref<InstanceType<typeof MkModalWindow>>();
+const dialog = $ref<InstanceType<typeof XModalWindow>>();
 
-const onClose = (): void => {
+function onClose() {
 	emit('cancelled');
-	dialog?.close();
-};
+	dialog.close();
+}
 
-const onLogin = (res: any): void => {
+function onLogin(res) {
 	emit('done', res);
-	dialog?.close();
-};
+	dialog.close();
+}
 </script>

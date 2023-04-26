@@ -7,7 +7,7 @@
 
 		<template v-if="enableGithubIntegration">
 			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/gh/cb` }}</FormInfo>
-
+		
 			<FormInput v-model="githubClientId" class="_formBlock">
 				<template #prefix><i class="ti ti-key"></i></template>
 				<template #label>Client ID</template>

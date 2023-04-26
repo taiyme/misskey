@@ -11,11 +11,11 @@
 	<div v-if="disabled" class="iwaalbte">
 		<p>
 			<i class="ti ti-minus-circle"></i>
-			{{ i18n.t('disabled-timeline.title') }}
+			{{ $t('disabled-timeline.title') }}
 		</p>
-		<p class="desc">{{ i18n.t('disabled-timeline.description') }}</p>
+		<p class="desc">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')" @queue="queueUpdated" @note="onNote"/>
+	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')" @queue="queueUpdated" @note="onNote"/>
 </XColumn>
 </template>
 
@@ -23,7 +23,7 @@
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { instance } from '@/instance';
@@ -53,21 +53,17 @@ onMounted(() => {
 	}
 });
 
-const setType = async (): Promise<void> => {
+async function setType() {
 	const { canceled, result: src } = await os.select({
 		title: i18n.ts.timeline,
 		items: [{
-			value: 'home' as const,
-			text: i18n.ts._timelines.home,
+			value: 'home' as const, text: i18n.ts._timelines.home,
 		}, {
-			value: 'local' as const,
-			text: i18n.ts._timelines.local,
+			value: 'local' as const, text: i18n.ts._timelines.local,
 		}, {
-			value: 'social' as const,
-			text: i18n.ts._timelines.social,
+			value: 'social' as const, text: i18n.ts._timelines.social,
 		}, {
-			value: 'global' as const,
-			text: i18n.ts._timelines.global,
+			value: 'global' as const, text: i18n.ts._timelines.global,
 		}],
 	});
 	if (canceled) {
@@ -79,27 +75,27 @@ const setType = async (): Promise<void> => {
 	updateColumn(props.column.id, {
 		tl: src,
 	});
-};
+}
 
-const queueUpdated = (q: number): void => {
+function queueUpdated(q) {
 	if (columnActive) {
 		indicated = q !== 0;
 	}
-};
+}
 
-const onNote = (): void => {
+function onNote() {
 	if (!columnActive) {
 		indicated = true;
 	}
-};
+}
 
-const onChangeActiveState = (state: boolean): void => {
+function onChangeActiveState(state) {
 	columnActive = state;
 
 	if (columnActive) {
 		indicated = false;
 	}
-};
+}
 
 const menu = [{
 	icon: 'ti ti-pencil',

@@ -1,8 +1,7 @@
 import { Directive } from 'vue';
 
-// eslint-disable-next-line import/no-default-export
 export default {
-	beforeMount(src) {
+	beforeMount(src, binding, vn) {
 		src.style.opacity = '0';
 		src.style.transform = 'scale(0.9)';
 		// ページネーションと相性が悪いので
@@ -10,10 +9,10 @@ export default {
 		src.classList.add('_zoom');
 	},
 
-	mounted(src) {
+	mounted(src, binding, vn) {
 		window.setTimeout(() => {
 			src.style.opacity = '1';
 			src.style.transform = 'none';
 		}, 1);
 	},
-} as Directive<HTMLElement, number>;
+} as Directive;

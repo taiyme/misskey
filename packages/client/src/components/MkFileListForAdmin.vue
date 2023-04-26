@@ -92,7 +92,7 @@ const props = defineProps<{
 		> .file {
 			position: relative;
 			aspect-ratio: 1;
-
+		
 			> .thumbnail {
 				width: 100%;
 				height: 100%;

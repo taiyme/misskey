@@ -22,7 +22,7 @@ export type Column = {
 	antennaId?: string;
 	listId?: string;
 	channelId?: string;
-	includingTypes?: typeof notificationTypes[number][] | null;
+	includingTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 };
 

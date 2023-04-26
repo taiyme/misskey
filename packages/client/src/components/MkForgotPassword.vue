@@ -1,9 +1,8 @@
 <template>
-<MkModalWindow
-	ref="dialog"
+<XModalWindow ref="dialog"
 	:width="370"
 	:height="400"
-	@close="dialog?.close()"
+	@close="dialog.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.forgotPassword }}</template>
@@ -29,12 +28,12 @@
 	<div v-else class="bafecedb">
 		{{ i18n.ts._forgotPassword.contactAdmin }}
 	</div>
-</MkModalWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import * as os from '@/os';
@@ -46,21 +45,21 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const dialog = $ref<InstanceType<typeof MkModalWindow>>();
+let dialog: InstanceType<typeof XModalWindow> = $ref();
 
 let username = $ref('');
 let email = $ref('');
 let processing = $ref(false);
 
-const onSubmit = async (): Promise<void> => {
+async function onSubmit() {
 	processing = true;
 	await os.apiWithDialog('request-reset-password', {
 		username,
 		email,
 	});
 	emit('done');
-	dialog?.close();
-};
+	dialog.close();
+}
 </script>
 
 <style lang="scss" scoped>

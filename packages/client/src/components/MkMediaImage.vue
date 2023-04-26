@@ -3,8 +3,8 @@
 	<ImgWithBlurhash class="bg" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div class="text">
 		<div class="wrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
+			<span style="display: block;">{{ $ts.clickToShow }}</span>
 		</div>
 	</div>
 </div>
@@ -16,9 +16,7 @@
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
 		<div v-if="image.type === 'image/gif'" class="gif">GIF</div>
 	</a>
-	<button v-tooltip="i18n.ts.hide" class="_button hide" @click="hide = true">
-		<div class="hideInner"><i class="ti ti-eye-off"></i></div>
-	</button>
+	<button v-tooltip="$ts.hide" class="_button hide" @click="hide = true"><i class="ti ti-eye-off"></i></button>
 </div>
 </template>
 
@@ -28,7 +26,6 @@ import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	image: misskey.entities.DriveFile;
@@ -90,24 +87,19 @@ watch(() => props.image, () => {
 	> .hide {
 		display: block;
 		position: absolute;
-		top: 0;
-		right: 0;
-		padding: 12px;
+		border-radius: 6px;
+		background-color: var(--accentedBg);
+		-webkit-backdrop-filter: var(--blur, blur(15px));
+		backdrop-filter: var(--blur, blur(15px));
+		color: var(--accent);
 		font-size: 0.8em;
+		padding: 6px 8px;
 		text-align: center;
+		top: 12px;
+		right: 12px;
 
-		.hideInner {
+		> i {
 			display: block;
-			border-radius: 6px;
-			background-color: var(--accentedBg);
-			-webkit-backdrop-filter: var(--blur, blur(15px));
-			backdrop-filter: var(--blur, blur(15px));
-			color: var(--accent);
-			padding: 6px 8px;
-
-			> i {
-				display: block;
-			}
 		}
 	}
 

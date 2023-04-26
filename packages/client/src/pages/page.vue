@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" v-size="{ max: [450] }" class="xcukqgmh">
 				<div class="_block main">
 					<!--
@@ -74,8 +74,6 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { defaultStore } from '@/store';
-import { $i } from '@/account';
 
 const props = defineProps<{
 	pageName: string;

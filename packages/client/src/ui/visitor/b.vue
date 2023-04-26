@@ -21,7 +21,7 @@
 		</div>
 	</div>
 
-	<Transition :name="defaultStore.state.animation ? 'tray-back' : ''">
+	<Transition :name="$store.state.animation ? 'tray-back' : ''">
 		<div
 			v-if="showMenu"
 			class="menu-back _modalBg"
@@ -30,15 +30,15 @@
 		></div>
 	</transition>
 
-	<Transition :name="defaultStore.state.animation ? 'tray' : ''">
+	<Transition :name="$store.state.animation ? 'tray' : ''">
 		<div v-if="showMenu" class="menu">
-			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ i18n.ts.home }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ i18n.ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="ti ti-flare icon"></i>{{ i18n.ts.featured }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ i18n.ts.channel }}</MkA>
+			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>
+			<MkA to="/featured" class="link" active-class="active"><i class="ti ti-flare icon"></i>{{ $ts.featured }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ $ts.channel }}</MkA>
 			<div class="action">
-				<button class="_buttonPrimary" @click="signup()">{{ i18n.ts.signup }}</button>
-				<button class="_button" @click="signin()">{{ i18n.ts.login }}</button>
+				<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
+				<button class="_button" @click="signin()">{{ $ts.login }}</button>
 			</div>
 		</div>
 	</transition>
@@ -51,12 +51,11 @@ import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
-import MkSigninDialog from '@/components/MkSigninDialog.vue';
-import MkSignupDialog from '@/components/MkSignupDialog.vue';
+import XSigninDialog from '@/components/MkSigninDialog.vue';
+import XSignupDialog from '@/components/MkSignupDialog.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -97,17 +96,17 @@ os.api('meta', { detail: true }).then(res => {
 	meta = res;
 });
 
-const signin = (): void => {
-	os.popup(MkSigninDialog, {
+function signin() {
+	os.popup(XSigninDialog, {
 		autoSet: true,
 	}, {}, 'closed');
-};
+}
 
-const signup = (): void => {
-	os.popup(MkSignupDialog, {
+function signup() {
+	os.popup(XSignupDialog, {
 		autoSet: true,
 	}, {}, 'closed');
-};
+}
 
 onMounted(() => {
 	if (!isDesktop) {

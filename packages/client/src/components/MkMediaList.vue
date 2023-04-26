@@ -204,7 +204,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 <style lang="scss">
 .pswp {
 	// なぜか機能しない
-	//z-index: v-bind(pswpZIndex);
+  //z-index: v-bind(pswpZIndex);
 	z-index: 2000000;
 	--pswp-bg: var(--modalBg);
 }

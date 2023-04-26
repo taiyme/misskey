@@ -7,7 +7,7 @@
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
 			<MkButton inline primary class="mk-widget-add" @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
+			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<XDraggable
 			v-model="widgets_"
@@ -40,15 +40,13 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { disableContextmenu } from '@/scripts/touch';
 
-export type Widget = {
+const XDraggable = defineAsyncComponent(() => import('vuedraggable'));
+
+type Widget = {
 	name: string;
 	id: string;
 	data: Record<string, any>;
 };
-
-export type EditedWidget = Pick<Widget, 'id' | 'data'>;
-
-const XDraggable = defineAsyncComponent(() => import('vuedraggable'));
 
 const props = defineProps<{
 	widgets: Widget[];
@@ -59,7 +57,7 @@ const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
 	(ev: 'addWidget', widget: Widget): void;
 	(ev: 'removeWidget', widget: Widget): void;
-	(ev: 'updateWidget', widget: EditedWidget): void;
+	(ev: 'updateWidget', widget: Partial<Widget>): void;
 	(ev: 'exit'): void;
 }>();
 

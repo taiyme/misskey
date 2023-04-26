@@ -7,11 +7,10 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { deepClone } from '@/scripts/clone';
 import { isPureRenote } from '@/scripts/tms/is-pure-renote';
-import { i18n } from '@/i18n';
 
 type SomeRequired<T, K extends keyof T> = Omit<T, K> & Required<RequiredNotNull<Pick<T, K>>>;
 type RequiredNotNull<T> = {
-	[P in keyof T]: NonNullable<T[P]>;
+  [P in keyof T]: NonNullable<T[P]>;
 };
 
 type PostDataBase = Partial<{
@@ -150,44 +149,17 @@ const _nqadd = (text: PostData['text']): PostData['text'] => {
 	return text.replace(/\-?\d+$/, (n => (BigInt(n) + 1n).toString(10)));
 };
 
-const confirmNyaize = async (note: Note): Promise<boolean> => {
-	const iAmCat = !!$i?.isCat;
-	const isCat = 'isCat' in note.user && !!note.user.isCat;
-
-	if (!iAmCat && !isCat) return true;
-
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.ts._tms.nyaizeWarning,
-	});
-
-	return !canceled;
-};
-
 export const pakuru = async (note: Note): Promise<{
-	canceled: false;
 	createdNote: Note;
-} | {
-	canceled: true;
-	createdNote: undefined;
 }> => {
-	if (!(await confirmNyaize(note))) return { canceled: true, createdNote: undefined };
-	const makedParams = await makeParams(note);
-	const { createdNote } = await os.api('notes/create', makedParams);
-	return { canceled: false, createdNote };
+	return os.api('notes/create', await makeParams(note));
 };
 
 export const numberquote = async (note: Note): Promise<{
-	canceled: false;
 	createdNote: Note;
-} | {
-	canceled: true;
-	createdNote: undefined;
 }> => {
-	if (!(await confirmNyaize(note))) return { canceled: true, createdNote: undefined };
-	const makedParams = await makeParams(note).then(params => {
-		return { ...params, text: _nqadd(params.text) };
-	});
-	const { createdNote } = await os.api('notes/create', makedParams);
-	return { canceled: false, createdNote };
+	return os.api('notes/create', await makeParams(note).then(params => {
+		const text = _nqadd(params.text);
+		return { ...params, text };
+	}));
 };

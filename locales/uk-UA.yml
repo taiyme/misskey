@@ -469,8 +469,6 @@ joinOrCreateGroup: "Отримуйте запрошення до груп або
 noHistory: "Історія порожня"
 signinHistory: "Історія входів"
 disableAnimatedMfm: "Відключити анімації MFM"
-enableAdvancedMfm: "Увімкнути розширений MFM"
-enableAnimatedMfm: "Увімкнути анімований MFM"
 doing: "Виконується"
 category: "Категорія"
 tags: "Теги"
@@ -1965,3 +1963,4 @@ _deck:
 _webhookSettings:
   name: "Ім'я"
   active: "Увімкнено"
+

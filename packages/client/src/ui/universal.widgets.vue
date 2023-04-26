@@ -1,6 +1,6 @@
 <template>
 <div class="efzpzdvf">
-	<MkWidgets :edit="editMode" :widgets="defaultStore.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
+	<XWidgets :edit="editMode" :widgets="defaultStore.reactiveState.widgets.value" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
 	<button v-else class="_textButton mk-widget-edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
@@ -9,42 +9,42 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import MkWidgets, { Widget, EditedWidget } from '@/components/MkWidgets.vue';
+import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
-	(ev: 'mounted', el: HTMLElement | null): void;
+	(ev: 'mounted', el: Element): void;
 }>();
 
 let editMode = $ref(false);
-const rootEl = $ref<HTMLDivElement>();
+let rootEl = $ref<HTMLDivElement>();
 
 onMounted(() => {
-	emit('mounted', rootEl ?? null);
+	emit('mounted', rootEl);
 });
 
-const addWidget = (widget: Widget): void => {
+function addWidget(widget) {
 	defaultStore.set('widgets', [{
 		...widget,
 		place: null,
 	}, ...defaultStore.state.widgets]);
-};
+}
 
-const removeWidget = (widget: Widget): void => {
+function removeWidget(widget) {
 	defaultStore.set('widgets', defaultStore.state.widgets.filter(w => w.id !== widget.id));
-};
+}
 
-const updateWidget = ({ id, data }: EditedWidget): void => {
+function updateWidget({ id, data }) {
 	defaultStore.set('widgets', defaultStore.state.widgets.map(w => w.id === id ? {
 		...w,
 		data,
 	} : w));
-};
+}
 
-const updateWidgets = (widgets: Widget[]): void => {
+function updateWidgets(widgets) {
 	defaultStore.set('widgets', widgets);
-};
+}
 </script>
 
 <style lang="scss" scoped>

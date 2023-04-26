@@ -2,11 +2,10 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div ref="rootEl" v-hotkey.global="keymap" v-size="{ min: [800] }" class="tqmomfks">
-		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ $ts.newNoteRecived }}</button></div>
 		<div class="tl _block">
-			<MkTimeline
-				ref="tlEl"
-				:key="antennaId"
+			<XTimeline
+				ref="tlEl" :key="antennaId"
 				class="tl"
 				src="antenna"
 				:antenna="antennaId"
@@ -20,8 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import { Antenna } from 'misskey-js/built/entities';
-import MkTimeline from '@/components/MkTimeline.vue';
+import XTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -34,41 +32,38 @@ const props = defineProps<{
 	antennaId: string;
 }>();
 
-let antenna = $ref<Antenna | null>(null);
+let antenna = $ref(null);
 let queue = $ref(0);
-const rootEl = $ref<HTMLElement>();
-const tlEl = $ref<InstanceType<typeof MkTimeline>>();
+let rootEl = $ref<HTMLElement>();
+let tlEl = $ref<InstanceType<typeof XTimeline>>();
 const keymap = $computed(() => ({
-	// 't': focus,
+	't': focus,
 }));
 
-const queueUpdated = (q: number): void => {
+function queueUpdated(q) {
 	queue = q;
-};
+}
 
-const top = (): void => {
-	if (!rootEl) return;
+function top() {
 	scroll(rootEl, { top: 0 });
-};
+}
 
-// const timetravel = async (): Promise<void> => {
-// 	if (!tlEl) return;
+async function timetravel() {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
 
-// 	const { canceled, result: date } = await os.inputDate({
-// 		title: i18n.ts.date,
-// 	});
-// 	if (canceled) return;
+	tlEl.timetravel(date);
+}
 
-// 	tlEl.timetravel(date);
-// };
-
-const settings = (): void => {
+function settings() {
 	router.push(`/my/antennas/${props.antennaId}`);
-};
+}
 
-// const focus = (): void => {
-// 	tlEl?.focus();
-// };
+function focus() {
+	tlEl.focus();
+}
 
 watch(() => props.antennaId, async () => {
 	antenna = await os.api('antennas/show', {
@@ -79,8 +74,7 @@ watch(() => props.antennaId, async () => {
 const headerActions = $computed(() => antenna ? [{
 	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
-	// handler: timetravel,
-	handler: (): void => {},
+	handler: timetravel,
 }, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,

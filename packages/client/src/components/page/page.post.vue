@@ -16,8 +16,6 @@ import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -27,16 +25,16 @@ export default defineComponent({
 	props: {
 		block: {
 			type: Object as PropType<PostBlock>,
-			required: true,
+			required: true
 		},
 		hpml: {
 			type: Object as PropType<Hpml>,
-			required: true,
-		},
+			required: true
+		}
 	},
 	data() {
 		return {
-			text: this.hpml.interpolate(this.block.text) ?? '',
+			text: this.hpml.interpolate(this.block.text),
 			posted: false,
 			posting: false,
 		};
@@ -44,23 +42,21 @@ export default defineComponent({
 	watch: {
 		'hpml.vars': {
 			handler() {
-				this.text = this.hpml.interpolate(this.block.text) ?? '';
+				this.text = this.hpml.interpolate(this.block.text);
 			},
-			deep: true,
-		},
+			deep: true
+		}
 	},
 	methods: {
 		upload() {
 			const promise = new Promise((ok) => {
 				const canvas = this.hpml.canvases[this.block.canvasId];
 				canvas.toBlob(blob => {
-					if (!blob) return;
-
 					const formData = new FormData();
 					formData.append('file', blob);
-					formData.append('i', $i?.token);
-					if (defaultStore.state.uploadFolder) {
-						formData.append('folderId', defaultStore.state.uploadFolder);
+					formData.append('i', this.$i.token);
+					if (this.$store.state.uploadFolder) {
+						formData.append('folderId', this.$store.state.uploadFolder);
 					}
 
 					fetch(apiUrl + '/drive/files/create', {
@@ -85,8 +81,8 @@ export default defineComponent({
 			}).then(() => {
 				this.posted = true;
 			});
-		},
-	},
+		}
+	}
 });
 </script>
 

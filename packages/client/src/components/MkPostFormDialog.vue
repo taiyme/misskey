@@ -1,53 +1,19 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" @click="onClick" @closed="onModalClosed()">
-	<TmsPostForm ref="form" style="margin: 0 auto auto auto;" v-bind="props" autofocus freeze-after-posted @posted="onPosted" @cancel="modal?.close()" @esc="modal?.close()"/>
+<MkModal ref="modal" :prefer-type="'dialog:top'" @click="$refs.modal.close()" @closed="$emit('closed')">
+	<MkPostForm v-bind="$attrs" @posted="$refs.modal.close()" @cancel="$refs.modal.close()" @esc="$refs.modal.close()"/>
 </MkModal>
 </template>
 
-<script lang="ts" setup>
-import { } from 'vue';
-import * as misskey from 'misskey-js';
+<script lang="ts">
+import { defineComponent } from 'vue';
 import MkModal from '@/components/MkModal.vue';
-import TmsPostForm from '@/components/TmsPostForm.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 
-const props = defineProps<{
-	reply?: misskey.entities.Note;
-	renote?: misskey.entities.Note;
-	channel?: misskey.entities.Channel; // TODO
-	mention?: misskey.entities.User;
-	specified?: misskey.entities.User;
-	initialText?: string;
-	initialVisibility?: 'public' | 'home' | 'followers' | 'specified';
-	initialFiles?: misskey.entities.DriveFile[];
-	initialLocalOnly?: boolean;
-	initialVisibleUsers?: misskey.entities.User[];
-	initialNote?: misskey.entities.Note;
-	instant?: boolean;
-	fixed?: boolean;
-	autofocus?: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'closed'): void;
-}>();
-
-const modal = $shallowRef<InstanceType<typeof MkModal>>();
-const form = $shallowRef<InstanceType<typeof TmsPostForm>>();
-
-const isFetching = (): boolean => !!form?.isFetching();
-
-const onClick = (): void => {
-	if (isFetching()) return;
-	modal?.close();
-};
-
-const onPosted = (): void => {
-	modal?.close({
-		useSendAnimation: true,
-	});
-};
-
-const onModalClosed = (): void => {
-	emit('closed');
-};
+export default defineComponent({
+	components: {
+		MkModal,
+		MkPostForm,
+	},
+	emits: ['closed'],
+});
 </script>

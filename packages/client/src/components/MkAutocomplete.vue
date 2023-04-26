@@ -285,7 +285,6 @@ function onKeydown(event: KeyboardEvent) {
 			break;
 
 		case 'Escape':
-		case 'Esc':
 			cancel();
 			props.close();
 			break;

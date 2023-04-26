@@ -1,14 +1,13 @@
 <template>
-<MkEmoji :emoji="reaction" :custom-emojis="customEmojis ?? []" :is-reaction="true" :normal="true" :no-style="noStyle" :use-fallback-icon="useFallbackIcon"/>
+<MkEmoji :emoji="reaction" :custom-emojis="customEmojis || []" :is-reaction="true" :normal="true" :no-style="noStyle" :use-fallback-icon="useFallbackIcon"/>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 
-defineProps<{
+const props = defineProps<{
 	reaction: string;
-	customEmojis?: CustomEmoji[];
+	customEmojis?: any[]; // TODO
 	noStyle?: boolean;
 	useFallbackIcon?: boolean;
 }>();

@@ -2,13 +2,22 @@
 <XFormula :formula="formula" :block="block"/>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+<script lang="ts">
+import { defineComponent, defineAsyncComponent } from 'vue';
 
-const XFormula = defineAsyncComponent(() => import('@/components/MkFormulaCore.vue'));
-
-defineProps<{
-	formula: string;
-	block: boolean;
-}>();
+export default defineComponent({
+	components: {
+		XFormula: defineAsyncComponent(() => import('@/components/MkFormulaCore.vue')),
+	},
+	props: {
+		formula: {
+			type: String,
+			required: true,
+		},
+		block: {
+			type: Boolean,
+			required: true,
+		},
+	},
+});
 </script>

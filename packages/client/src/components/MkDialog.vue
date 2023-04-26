@@ -132,7 +132,7 @@ function onBgClick() {
 }
 */
 function onKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Escape' || evt.key === 'Esc') cancel();
+	if (evt.key === 'Escape') cancel();
 }
 
 function onInputKeydown(evt: KeyboardEvent) {

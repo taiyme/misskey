@@ -1,12 +1,12 @@
 <template>
-<MkModalWindow
+<XModalWindow
 	ref="dialog"
 	:width="400"
 	:height="450"
 	:with-ok-button="true"
 	:ok-button-disabled="false"
 	@ok="ok()"
-	@close="dialog?.close()"
+	@close="dialog.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
@@ -24,7 +24,7 @@
 			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
 		</div>
 	</div>
-</MkModalWindow>
+</XModalWindow>
 </template>
 
 <script lang="ts" setup>
@@ -33,58 +33,55 @@ import { notificationTypes } from 'misskey-js';
 import MkSwitch from './form/switch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
+import XModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
-import { typedEntries } from '@/scripts/tms/utils';
-
-type NotificationType = typeof notificationTypes[number];
 
 const emit = defineEmits<{
-	(ev: 'done', v: { includingTypes: NotificationType[] | null }): void,
+	(ev: 'done', v: { includingTypes: string[] | null }): void,
 	(ev: 'closed'): void,
 }>();
 
 const props = withDefaults(defineProps<{
-	includingTypes?: NotificationType[] | null;
+	includingTypes?: typeof notificationTypes[number][] | null;
 	showGlobalToggle?: boolean;
 }>(), {
 	includingTypes: () => [],
 	showGlobalToggle: true,
 });
 
-const includingTypes = $computed(() => props.includingTypes || []);
+let includingTypes = $computed(() => props.includingTypes || []);
 
-const dialog = $ref<InstanceType<typeof MkModalWindow>>();
+const dialog = $ref<InstanceType<typeof XModalWindow>>();
 
-const typesMap = $ref({} as Record<NotificationType, boolean>);
-
-const useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);
+let typesMap = $ref<Record<typeof notificationTypes[number], boolean>>({});
+let useGlobalSetting = $ref((includingTypes === null || includingTypes.length === 0) && props.showGlobalToggle);
 
 for (const ntype of notificationTypes) {
 	typesMap[ntype] = includingTypes.includes(ntype);
 }
 
-const ok = (): void => {
+function ok() {
 	if (useGlobalSetting) {
 		emit('done', { includingTypes: null });
 	} else {
 		emit('done', {
-			includingTypes: typedEntries($$(typesMap).value).flatMap(([type, bool]) => bool ? [type] : []),
+			includingTypes: (Object.keys(typesMap) as typeof notificationTypes[number][])
+				.filter(type => typesMap[type]),
 		});
 	}
 
-	dialog?.close();
-};
+	dialog.close();
+}
 
-const disableAll = (): void => {
+function disableAll() {
 	for (const type in typesMap) {
-		typesMap[type] = false;
+		typesMap[type as typeof notificationTypes[number]] = false;
 	}
-};
+}
 
-const enableAll = (): void => {
+function enableAll() {
 	for (const type in typesMap) {
-		typesMap[type] = true;
+		typesMap[type as typeof notificationTypes[number]] = true;
 	}
-};
+}
 </script>

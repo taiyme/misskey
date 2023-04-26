@@ -10,7 +10,7 @@
 	<template #default="{ items: notes }">
 		<div class="giivymft" :class="{ noGap }">
 			<XList ref="notes" v-slot="{ item: note }" :items="notes" :direction="pagination.reversed ? 'up' : 'down'" :reversed="pagination.reversed" :no-gap="noGap" :ad="true" class="notes">
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note"/>
+				<XNote :key="note._featuredId_ || note._prId_ || note.id" class="qtqtichx" :note="note"/>
 			</XList>
 		</div>
 	</template>
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import MkNote from '@/components/MkNote.vue';
+import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';

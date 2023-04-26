@@ -4,7 +4,7 @@
 	<MkSpacer :content-max="700">
 		<div v-if="channel">
 			<div class="wpgynlbz _panel _gap" :class="{ hide: !showBanner }">
-				<MkChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
+				<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 				<button class="_button toggle" @click="() => showBanner = !showBanner">
 					<template v-if="showBanner"><i class="ti ti-chevron-up"></i></template>
 					<template v-else><i class="ti ti-chevron-down"></i></template>
@@ -23,9 +23,9 @@
 				</div>
 			</div>
 
-			<TmsPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
+			<XPostForm v-if="$i" :channel="channel" class="post-form _panel _gap" fixed/>
 
-			<MkTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
+			<XTimeline :key="channelId" class="_gap" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -33,10 +33,9 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import { Channel } from 'misskey-js/built/entities';
-import TmsPostForm from '@/components/TmsPostForm.vue';
-import MkTimeline from '@/components/MkTimeline.vue';
-import MkChannelFollowButton from '@/components/MkChannelFollowButton.vue';
+import XPostForm from '@/components/MkPostForm.vue';
+import XTimeline from '@/components/MkTimeline.vue';
+import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { $i } from '@/account';
@@ -49,7 +48,7 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
-let channel = $ref<Channel | null>(null);
+let channel = $ref(null);
 let showBanner = $ref(true);
 const pagination = {
 	endpoint: 'channels/timeline' as const,
@@ -60,15 +59,14 @@ const pagination = {
 };
 
 watch(() => props.channelId, async () => {
-	channel = (await os.api('channels/show', {
+	channel = await os.api('channels/show', {
 		channelId: props.channelId,
-	}) as Channel);
+	});
 }, { immediate: true });
 
-const edit = (): void => {
-	if (!channel) return;
+function edit() {
 	router.push(`/channels/${channel.id}/edit`);
-};
+}
 
 const headerActions = $computed(() => channel && channel.userId ? [{
 	icon: 'ti ti-settings',
@@ -98,7 +96,7 @@ definePageMetadata(computed(() => channel ? {
 	> .toggle {
 		position: absolute;
 		z-index: 2;
-		top: 8px;
+    top: 8px;
 		right: 8px;
 		font-size: 1.2em;
 		width: 48px;
@@ -106,12 +104,12 @@ definePageMetadata(computed(() => channel ? {
 		color: #fff;
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 100%;
-
+		
 		> i {
 			vertical-align: middle;
 		}
 	}
-
+	
 	> .banner {
 		position: relative;
 		height: 200px;

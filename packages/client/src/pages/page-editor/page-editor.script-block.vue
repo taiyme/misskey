@@ -9,7 +9,7 @@
 	</template>
 
 	<section v-if="modelValue.type === null" class="pbglfege" @click="changeType()">
-		{{ i18n.ts._pages.script.emptySlot }}
+		{{ $ts._pages.script.emptySlot }}
 	</section>
 	<section v-else-if="modelValue.type === 'text'" class="tbwccoaw">
 		<input v-model="modelValue.value"/>
@@ -18,7 +18,7 @@
 		<textarea v-model="modelValue.value"></textarea>
 	</section>
 	<section v-else-if="modelValue.type === 'textList'" class="tbwccoaw">
-		<textarea v-model="modelValue.value" :placeholder="i18n.ts._pages.script.blocks._textList.info"></textarea>
+		<textarea v-model="modelValue.value" :placeholder="$ts._pages.script.blocks._textList.info"></textarea>
 	</section>
 	<section v-else-if="modelValue.type === 'number'" class="tbwccoaw">
 		<input v-model="modelValue.value" type="number"/>
@@ -26,13 +26,13 @@
 	<section v-else-if="modelValue.type === 'ref'" class="hpdwcrvs">
 		<select v-model="modelValue.value">
 			<option v-for="(v, i) in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :key="i" :value="v.name">{{ v.name }}</option>
-			<optgroup :label="i18n.ts._pages.script.argVariables">
+			<optgroup :label="$ts._pages.script.argVariables">
 				<option v-for="(v, i) in fnSlots" :key="i" :value="v.name">{{ v.name }}</option>
 			</optgroup>
-			<optgroup :label="i18n.ts._pages.script.pageVariables">
+			<optgroup :label="$ts._pages.script.pageVariables">
 				<option v-for="(v, i) in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
 			</optgroup>
-			<optgroup :label="i18n.ts._pages.script.enviromentVariables">
+			<optgroup :label="$ts._pages.script.enviromentVariables">
 				<option v-for="(v, i) in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
@@ -42,16 +42,16 @@
 	</section>
 	<section v-else-if="modelValue.type === 'fn'" class="" style="padding:0 16px 16px 16px;">
 		<MkTextarea v-model="slots">
-			<template #label>{{ i18n.ts._pages.script.blocks._fn.slots }}</template>
-			<template #caption>{{ i18n.t('_pages.script.blocks._fn.slots-info') }}</template>
+			<template #label>{{ $ts._pages.script.blocks._fn.slots }}</template>
+			<template #caption>{{ $t('_pages.script.blocks._fn.slots-info') }}</template>
 		</MkTextarea>
-		<XV v-if="modelValue.value.expression" v-model="modelValue.value.expression" :title="i18n.t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="modelValue.value.slots" :name="name"/>
+		<XV v-if="modelValue.value.expression" v-model="modelValue.value.expression" :title="$t(`_pages.script.blocks._fn.arg1`)" :get-expected-type="() => null" :hpml="hpml" :fn-slots="modelValue.value.slots" :name="name"/>
 	</section>
 	<section v-else-if="modelValue.type.startsWith('fn:')" class="" style="padding:16px;">
 		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="hpml.getVarByName(modelValue.type.split(':')[1]).value.slots[i].name" :get-expected-type="() => null" :hpml="hpml" :name="name"/>
 	</section>
 	<section v-else class="" style="padding:16px;">
-		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="i18n.t(`_pages.script.blocks._${modelValue.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots"/>
+		<XV v-for="(x, i) in modelValue.args" :key="i" v-model="modelValue.args[i]" :title="$t(`_pages.script.blocks._${modelValue.type}.arg${i + 1}`)" :get-expected-type="() => _getExpectedType(i)" :hpml="hpml" :name="name" :fn-slots="fnSlots"/>
 	</section>
 </XContainer>
 </template>
@@ -66,7 +66,6 @@ import { blockDefs } from '@/scripts/hpml/index';
 import * as os from '@/os';
 import { isLiteralValue } from '@/scripts/hpml/expr';
 import { funcDefs } from '@/scripts/hpml/lib';
-import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -79,17 +78,17 @@ export default defineComponent({
 	props: {
 		getExpectedType: {
 			required: false,
-			default: null,
+			default: null
 		},
 		modelValue: {
-			required: true,
+			required: true
 		},
 		title: {
-			required: false,
+			required: false
 		},
 		removable: {
 			required: false,
-			default: false,
+			default: false
 		},
 		hpml: {
 			required: true,
@@ -102,8 +101,8 @@ export default defineComponent({
 		},
 		draggable: {
 			required: false,
-			default: false,
-		},
+			default: false
+		}
 	},
 
 	data() {
@@ -111,7 +110,6 @@ export default defineComponent({
 			error: null,
 			warn: null,
 			slots: '',
-			i18n,
 		};
 	},
 
@@ -124,7 +122,7 @@ export default defineComponent({
 		typeText(): any {
 			if (this.modelValue.type === null) return null;
 			if (this.modelValue.type.startsWith('fn:')) return this.modelValue.type.split(':')[1];
-			return i18n.t(`_pages.script.blocks.${this.modelValue.type}`);
+			return this.$t(`_pages.script.blocks.${this.modelValue.type}`);
 		},
 	},
 
@@ -133,11 +131,11 @@ export default defineComponent({
 			handler() {
 				this.modelValue.value.slots = this.slots.split('\n').map(x => ({
 					name: x,
-					type: null,
+					type: null
 				}));
 			},
-			deep: true,
-		},
+			deep: true
+		}
 	},
 
 	created() {
@@ -152,7 +150,7 @@ export default defineComponent({
 				const id = uuid();
 				this.modelValue.value = {
 					slots: [],
-					expression: { id, type: null },
+					expression: { id, type: null }
 				};
 				return;
 			}
@@ -196,13 +194,13 @@ export default defineComponent({
 			const emptySlotIndex = args.findIndex(x => x.type === null);
 			if (emptySlotIndex !== -1 && emptySlotIndex < args.length) {
 				this.warn = {
-					slot: emptySlotIndex,
+					slot: emptySlotIndex
 				};
 			} else {
 				this.warn = null;
 			}
 		}, {
-			deep: true,
+			deep: true
 		});
 
 		this.$watch(() => this.hpml.variables, () => {
@@ -210,15 +208,15 @@ export default defineComponent({
 				this.error = this.hpml.typeCheck(this.modelValue);
 			}
 		}, {
-			deep: true,
+			deep: true
 		});
 	},
 
 	methods: {
 		async changeType() {
 			const { canceled, result: type } = await os.select({
-				title: i18n.ts._pages.selectType,
-				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null),
+				title: this.$ts._pages.selectType,
+				groupedItems: this.getScriptBlockList(this.getExpectedType ? this.getExpectedType() : null)
 			});
 			if (canceled) return;
 			this.modelValue.type = type;
@@ -226,8 +224,8 @@ export default defineComponent({
 
 		_getExpectedType(slot: number) {
 			return this.hpml.getExpectedType(this.modelValue, slot);
-		},
-	},
+		}
+	}
 });
 </script>
 

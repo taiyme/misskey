@@ -1,17 +1,20 @@
 <template>
 <div>
-	<MkDrive ref="drive" @cd="x => folder = x"/>
+	<XDrive ref="drive" @cd="x => folder = x"/>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { DriveFolder } from 'misskey-js/built/entities';
-import MkDrive from '@/components/MkDrive.vue';
+import XDrive from '@/components/MkDrive.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-let folder = $ref<DriveFolder | null>(null);
+let folder = $ref(null);
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: folder ? folder.name : i18n.ts.drive,

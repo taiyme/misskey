@@ -3,14 +3,13 @@
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="headerTabs" :display-my-avatar="true"/></template>
 	<MkSpacer :content-max="800">
 		<div ref="rootEl" v-hotkey.global="keymap" class="cmuxhskf">
-			<XTutorial v-if="defaultStore.reactiveState.tutorial.value != -1" class="tutorial _block"/>
-			<TmsPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
+			<XTutorial v-if="$store.reactiveState.tutorial.value != -1" class="tutorial _block"/>
+			<XPostForm v-if="$store.reactiveState.showFixedPostForm.value" class="post-form _block" fixed/>
 
 			<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div class="tl _block">
-				<MkTimeline
-					ref="tl"
-					:key="src"
+				<XTimeline
+					ref="tl" :key="src"
 					class="tl"
 					:src="src"
 					:sound="true"
@@ -24,8 +23,8 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch, provide } from 'vue';
-import MkTimeline from '@/components/MkTimeline.vue';
-import TmsPostForm from '@/components/TmsPostForm.vue';
+import XTimeline from '@/components/MkTimeline.vue';
+import XPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -33,7 +32,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { getHtmlElementFromEvent } from '@/scripts/tms/utils';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -41,11 +39,11 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = !instance.disableLocalTimeline || ($i != null && ($i.isModerator || $i.isAdmin));
 const isGlobalTimelineAvailable = !instance.disableGlobalTimeline || ($i != null && ($i.isModerator || $i.isAdmin));
-const keymap = $computed(() => ({
-	// 't': focus,
-}));
+const keymap = {
+	't': focus,
+};
 
-// const tlComponent = $ref<InstanceType<typeof MkTimeline>>();
+const tlComponent = $ref<InstanceType<typeof XTimeline>>();
 const rootEl = $ref<HTMLElement>();
 
 let queue = $ref(0);
@@ -53,28 +51,25 @@ const src = $computed({ get: () => defaultStore.reactiveState.tl.value.src, set:
 
 watch ($$(src), () => queue = 0);
 
-const queueUpdated = (q: number): void => {
+function queueUpdated(q: number): void {
 	queue = q;
-};
+}
 
-const top = (): void => {
-	if (!rootEl) return;
+function top(): void {
 	scroll(rootEl, { top: 0 });
-};
+}
 
-const chooseList = async (ev: MouseEvent): Promise<void> => {
-	const el = getHtmlElementFromEvent(ev) ?? undefined;
+async function chooseList(ev: MouseEvent): Promise<void> {
 	const lists = await os.api('users/lists/list');
 	const items = lists.map(list => ({
 		type: 'link' as const,
 		text: list.name,
 		to: `/timeline/list/${list.id}`,
 	}));
-	os.popupMenu(items, el);
-};
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
+}
 
-const chooseAntenna = async (ev: MouseEvent): Promise<void> => {
-	const el = getHtmlElementFromEvent(ev) ?? undefined;
+async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	const antennas = await os.api('antennas/list');
 	const items = antennas.map(antenna => ({
 		type: 'link' as const,
@@ -82,44 +77,41 @@ const chooseAntenna = async (ev: MouseEvent): Promise<void> => {
 		indicate: antenna.hasUnreadNote,
 		to: `/timeline/antenna/${antenna.id}`,
 	}));
-	os.popupMenu(items, el);
-};
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
+}
 
-const chooseChannel = async (ev: MouseEvent): Promise<void> => {
-	const el = getHtmlElementFromEvent(ev) ?? undefined;
+async function chooseChannel(ev: MouseEvent): Promise<void> {
 	const channels = await os.api('channels/followed', {
 		limit: 100,
 	});
-	const items = channels?.map(channel => ({
+	const items = channels.map(channel => ({
 		type: 'link' as const,
 		text: channel.name,
 		indicate: channel.hasUnreadNote,
 		to: `/channels/${channel.id}`,
-	})) ?? [];
-	os.popupMenu(items, el);
-};
+	}));
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
+}
 
-const saveSrc = (newSrc: 'home' | 'local' | 'social' | 'global'): void => {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
 	defaultStore.set('tl', {
 		...defaultStore.state.tl,
 		src: newSrc,
 	});
-};
+}
 
-// const timetravel = async (): Promise<void> => {
-// 	if (!tlComponent) return;
+async function timetravel(): Promise<void> {
+	const { canceled, result: date } = await os.inputDate({
+		title: i18n.ts.date,
+	});
+	if (canceled) return;
 
-// 	const { canceled, result: date } = await os.inputDate({
-// 		title: i18n.ts.date,
-// 	});
-// 	if (canceled) return;
+	tlComponent.timetravel(date);
+}
 
-// 	tlComponent.timetravel(date);
-// };
-
-// const focus = (): void => {
-// 	tlComponent?.focus();
-// };
+function focus(): void {
+	tlComponent.focus();
+}
 
 const headerActions = $computed(() => []);
 

@@ -1,15 +1,13 @@
 <template>
-<MkNotes ref="tlComponent" :no-gap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<XNotes ref="tlComponent" :no-gap="!$store.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
-import * as Misskey from 'misskey-js';
-import MkNotes from '@/components/MkNotes.vue';
+import XNotes from '@/components/MkNotes.vue';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	src: string;
@@ -26,10 +24,10 @@ const emit = defineEmits<{
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
-const tlComponent = $ref<InstanceType<typeof MkNotes>>();
+const tlComponent: InstanceType<typeof XNotes> = $ref();
 
-const prepend = (note: Misskey.entities.Note): void => {
-	tlComponent?.pagingComponent?.prepend(note);
+const prepend = note => {
+	tlComponent.pagingComponent?.prepend(note);
 
 	emit('note');
 
@@ -38,24 +36,24 @@ const prepend = (note: Misskey.entities.Note): void => {
 	}
 };
 
-const onUserAdded = (): void => {
-	tlComponent?.pagingComponent?.reload();
+const onUserAdded = () => {
+	tlComponent.pagingComponent?.reload();
 };
 
-const onUserRemoved = (): void => {
-	tlComponent?.pagingComponent?.reload();
+const onUserRemoved = () => {
+	tlComponent.pagingComponent?.reload();
 };
 
-const onChangeFollowing = (): void => {
-	if (!tlComponent?.pagingComponent?.backed) {
-		tlComponent?.pagingComponent?.reload();
+const onChangeFollowing = () => {
+	if (!tlComponent.pagingComponent?.backed) {
+		tlComponent.pagingComponent?.reload();
 	}
 };
 
-let endpoint: keyof Misskey.Endpoints | undefined;
-let query: Misskey.Endpoints[keyof Misskey.Endpoints]['req'] | undefined;
-let connection: Misskey.ChannelConnection | null = null;
-let connection2: Misskey.ChannelConnection | null = null;
+let endpoint;
+let query;
+let connection;
+let connection2;
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
@@ -95,7 +93,7 @@ if (props.src === 'antenna') {
 	query = {
 		visibility: 'specified',
 	};
-	const onNote = (note: Misskey.entities.Note): void => {
+	const onNote = note => {
 		if (note.visibility === 'specified') {
 			prepend(note);
 		}
@@ -124,10 +122,6 @@ if (props.src === 'antenna') {
 	connection.on('note', prepend);
 }
 
-if (!endpoint) {
-	throw new Error();
-}
-
 const pagination = {
 	endpoint: endpoint,
 	limit: 10,
@@ -135,18 +129,14 @@ const pagination = {
 };
 
 onUnmounted(() => {
-	if (connection) {
-		connection.dispose();
-		connection = null;
-	}
-	if (connection2) {
-		connection2.dispose();
-		connection2 = null;
-	}
+	connection.dispose();
+	if (connection2) connection2.dispose();
 });
 
-// const timetravel = (date?: Date) => {
-// 	this.date = date;
-// 	this.$refs.tl.reload();
-// };
+/* TODO
+const timetravel = (date?: Date) => {
+	this.date = date;
+	this.$refs.tl.reload();
+};
+*/
 </script>

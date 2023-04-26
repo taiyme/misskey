@@ -1,8 +1,7 @@
 <template>
 <div>
 	<div
-		ref="itemsEl"
-		v-hotkey="keymap"
+		ref="itemsEl" v-hotkey="keymap"
 		class="rrevdjwt _popup _shadow"
 		:class="{ center: align === 'center', asDrawer }"
 		:style="{ width: (width && !asDrawer) ? width + 'px' : '', maxHeight: maxHeight ? maxHeight + 'px' : '' }"

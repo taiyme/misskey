@@ -1,19 +1,19 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
-	<template #header><i class="ti ti-brush"></i> {{ i18n.ts._pages.blocks.canvas }}</template>
+<XContainer :draggable="true" @remove="() => $emit('remove')">
+	<template #header><i class="ti ti-brush"></i> {{ $ts._pages.blocks.canvas }}</template>
 
 	<section style="padding: 0 16px 0 16px;">
 		<MkInput v-model="value.name">
 			<template #prefix><i class="ti ti-wand"></i></template>
-			<template #label>{{ i18n.ts._pages.blocks._canvas.id }}</template>
+			<template #label>{{ $ts._pages.blocks._canvas.id }}</template>
 		</MkInput>
 		<MkInput v-model="value.width" type="number">
-			<template #label>{{ i18n.ts._pages.blocks._canvas.width }}</template>
+			<template #label>{{ $ts._pages.blocks._canvas.width }}</template>
 			<template #suffix>px</template>
 		</MkInput>
 		<MkInput v-model="value.height" type="number">
-			<template #label>{{ i18n.ts._pages.blocks._canvas.height }}</template>
+			<template #label>{{ $ts._pages.blocks._canvas.height }}</template>
 			<template #suffix>px</template>
 		</MkInput>
 	</section>
@@ -25,19 +25,14 @@
 import { } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/form/input.vue';
-import { i18n } from '@/i18n';
 
 withDefaults(defineProps<{
-	value: any;
+	value: any
 }>(), {
 	value: {
 		name: '',
 		width: 300,
-		height: 200,
-	},
+		height: 200
+	}
 });
-
-const emit = defineEmits<{
-	(ev: 'remove'): void;
-}>();
 </script>

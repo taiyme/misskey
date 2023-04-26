@@ -18,12 +18,12 @@
 			</div>
 		</div>
 		<div v-else class="_section">
-			<div v-if="name" class="_title">{{ i18n.t('_auth.shareAccess', { name: name }) }}</div>
+			<div v-if="name" class="_title">{{ $t('_auth.shareAccess', { name: name }) }}</div>
 			<div v-else class="_title">{{ i18n.ts._auth.shareAccessAsk }}</div>
 			<div class="_content">
 				<p>{{ i18n.ts._auth.permissionAsk }}</p>
 				<ul>
-					<li v-for="p in _permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+					<li v-for="p in _permissions" :key="p">{{ $t(`_permissions.${p}`) }}</li>
 				</ul>
 			</div>
 			<div class="_footer">

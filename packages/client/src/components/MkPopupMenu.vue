@@ -1,6 +1,6 @@
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="done(null)" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq" :class="{ drawer: type === 'drawer' }" @close="done"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :z-priority="'high'" :src="src" :transparent-bg="true" @click="modal.close()" @closed="emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :as-drawer="type === 'drawer'" class="sfhdhdhq" :class="{ drawer: type === 'drawer' }" @close="modal.close()"/>
 </MkModal>
 </template>
 
@@ -15,20 +15,14 @@ defineProps<{
 	align?: 'center' | string;
 	width?: number;
 	viaKeyboard?: boolean;
-	src?: HTMLElement;
+	src?: any;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', result: unknown): void;
 	(ev: 'closed'): void;
 }>();
 
-const modal = $ref<InstanceType<typeof MkModal>>();
-
-const done = (result: unknown): void => {
-	modal?.close();
-	emit('done', result);
-};
+let modal = $ref<InstanceType<typeof MkModal>>();
 </script>
 
 <style lang="scss" scoped>
