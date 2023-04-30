@@ -1,12 +1,15 @@
+<!-- eslint-disable-line vue/multi-word-component-names -->
 <template>
-<div>
-	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
-		<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap">
-			<b>{{ item.name }}</b>
-			<div v-if="item.description" class="description">{{ item.description }}</div>
-		</MkA>
+<MkSpacer :content-max="700">
+	<MkPagination v-slot="{items}" :pagination="pagination">
+		<div :class="$style.clips">
+			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" :class="[$style.clip, '_panel']">
+				<div :class="$style.clipName">{{ item.name }}</div>
+				<div v-if="item.description" :class="$style.clipDescription">{{ item.description }}</div>
+			</MkA>
+		</div>
 	</MkPagination>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -27,6 +30,30 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.clips {
+	display: grid;
+	grid-auto-flow: row;
+	gap: var(--margin);
+}
 
+.clip {
+	display: block;
+	padding: 16px;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+}
+
+.clipName {
+	font-weight: bold;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.clipDescription {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: solid 0.5px var(--divider);
+}
 </style>

@@ -1,16 +1,19 @@
+<!-- eslint-disable-line vue/multi-word-component-names -->
 <template>
-<div>
+<MkSpacer :content-max="700">
 	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
-		<div v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _gap afdcfbfb">
-			<div class="header">
-				<MkAvatar class="avatar" :user="user"/>
-				<MkReactionIcon class="reaction" :reaction="item.type" :custom-emojis="item.note.emojis" :no-style="true"/>
-				<MkTime :time="item.createdAt" class="createdAt"/>
+		<div :class="$style.reactions">
+			<div v-for="item in items" :key="item.id" :class="[$style.reaction, '_panel']">
+				<div :class="$style.header">
+					<MkAvatar :class="$style.avatar" :user="user"/>
+					<MkReactionIcon :class="$style.reactionIcon" :reaction="item.type" :custom-emojis="item.note.emojis" :no-style="true"/>
+					<MkTime :time="item.createdAt" :class="$style.createdAt"/>
+				</div>
+				<MkNote :key="item.id" :note="item.note"/>
 			</div>
-			<MkNote :key="item.id" :note="item.note"/>
 		</div>
 	</MkPagination>
-</div>
+</MkSpacer>
 </template>
 
 <script lang="ts" setup>
@@ -33,29 +36,35 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" scoped>
-.afdcfbfb {
-	> .header {
-		display: flex;
-		align-items: center;
-		padding: 8px 16px;
-		margin-bottom: 8px;
-		border-bottom: solid 2px var(--divider);
+<style lang="scss" module>
+.reactions {
+	display: grid;
+	grid-auto-flow: row;
+	gap: var(--margin);
+}
 
-		> .avatar {
-			width: 24px;
-			height: 24px;
-			margin-right: 8px;
-		}
+.header {
+	display: flex;
+	align-items: center;
+	padding: 8px 16px;
+	margin-bottom: 8px;
+	border-bottom: solid 0.5px var(--divider);
+}
 
-		> .reaction {
-			width: 32px;
-			height: 32px;
-		}
+.avatar {
+	width: 24px !important;
+	height: 24px !important;
+	margin-right: 8px;
+}
 
-		> .createdAt {
-			margin-left: auto;
-		}
-	}
+.reactionIcon {
+	width: 32px !important;
+	height: 32px !important;
+	margin-right: 4px;
+}
+
+.createdAt {
+	margin-left: auto;
+	font-size: 0.9em;
 }
 </style>
