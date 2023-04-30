@@ -79,6 +79,7 @@ const deleted = (draftId: Draft['id']): void => {
 .draftsList {
 	display: grid;
 	grid-auto-flow: row;
+	grid-template-columns: 100%;
 	gap: var(--margin);
 }
 </style>

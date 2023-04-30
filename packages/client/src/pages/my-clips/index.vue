@@ -26,6 +26,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
+	noPaging: true,
 	limit: 10,
 };
 

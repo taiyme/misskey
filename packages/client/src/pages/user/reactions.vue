@@ -40,6 +40,7 @@ const pagination = {
 .reactions {
 	display: grid;
 	grid-auto-flow: row;
+	grid-template-columns: 100%;
 	gap: var(--margin);
 }
 

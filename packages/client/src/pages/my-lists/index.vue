@@ -29,6 +29,7 @@ const pagingComponent = $ref<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'users/lists/list' as const,
+	noPaging: true,
 	limit: 10,
 };
 

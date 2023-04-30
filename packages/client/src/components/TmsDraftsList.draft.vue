@@ -84,6 +84,7 @@ const draftMenu = (ev: MouseEvent): void => {
 	.inner {
 		display: grid;
 		grid-auto-flow: row;
+		grid-template-columns: 100%;
 		gap: 6px;
 	}
 
