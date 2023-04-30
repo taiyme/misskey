@@ -116,7 +116,8 @@ const afterLeave = (el: HTMLElement): void => {
 
 <style lang="scss" scoped>
 .container-toggle-enter-active, .container-toggle-leave-active {
-	overflow-y: hidden;
+	overflow-y: hidden; // fallback (overflow: clip)
+	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
 .container-toggle-enter-from {
@@ -128,6 +129,7 @@ const afterLeave = (el: HTMLElement): void => {
 
 .ukygtjoj {
 	position: relative;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 

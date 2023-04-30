@@ -102,7 +102,8 @@ const collapsed = $computed(() => collapsedFlag.value && isLong);
 	&.collapsed {
 		position: relative;
 		max-height: 9em;
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		> .fade {
 			display: block;

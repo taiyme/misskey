@@ -130,7 +130,8 @@ function showMenu(ev) {
 	> .top {
 		display: flex;
 		text-align: center;
-		min-height: 100vh;
+		min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		min-height: 100dvh;
 		box-sizing: border-box;
 		padding: 16px;
 
@@ -150,7 +151,8 @@ function showMenu(ev) {
 			margin: auto;
 			width: 500px;
 			height: calc(100% - 128px);
-			overflow: hidden;
+			overflow: hidden; // fallback (overflow: clip)
+			overflow: clip;
 			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 
@@ -274,6 +276,7 @@ function showMenu(ev) {
 			-webkit-backdrop-filter: var(--blur, blur(15px));
 			backdrop-filter: var(--blur, blur(15px));
 			border-radius: 999px;
+			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			width: 800px;
 			padding: 8px 0;

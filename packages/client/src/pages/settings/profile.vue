@@ -193,6 +193,7 @@ definePageMetadata({
 	background-position: center;
 	border: solid 1px var(--divider);
 	border-radius: 10px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 
 	> .avatar {

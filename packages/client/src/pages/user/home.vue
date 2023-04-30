@@ -199,12 +199,14 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
-				overflow: hidden;
+				overflow: hidden; // fallback (overflow: clip)
+				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
-					overflow: hidden;
+					overflow: hidden; // fallback (overflow: clip)
+					overflow: clip;
 					background-size: cover;
 					background-position: center;
 

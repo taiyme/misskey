@@ -5,7 +5,8 @@ export const getRandomArrayElements = <T>(arr: T[], count: number): T[] => {
 
 	while (result.length < count) {
 		const randomIndex = Math.floor(Math.random() * arr.length);
-		const randomElement = arr[randomIndex];
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const randomElement = arrayAt(arr, randomIndex)!;
 		if (result.indexOf(randomElement) === -1) {
 			result.push(randomElement);
 		}
@@ -43,9 +44,11 @@ export const typedEntries = <T extends Record<string, unknown>>(obj: T): TypedEn
 	return Object.entries(obj) as unknown as TypedEntries<T>;
 };
 
+const toArray = <T>(arrayLike: T[] | ArrayLike<T>): T[] => Array.isArray(arrayLike) ? arrayLike : Array.from(arrayLike);
+
 // Array<T>.prototype.at(index: number): T | undefined;
 export const arrayAt = <T>(arrayLike: T[] | ArrayLike<T>, index: number): T | undefined => {
-	const array = Array.isArray(arrayLike) ? arrayLike : Array.from(arrayLike);
+	const array = toArray(arrayLike);
 	if (typeof Array.prototype.at === 'function') {
 		return array.at(index);
 	} else {

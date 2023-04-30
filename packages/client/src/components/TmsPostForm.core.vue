@@ -1035,7 +1035,6 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 .headerLeft {
 	display: grid;
 	grid-auto-flow: column;
-	grid-auto-columns: max-content;
 	grid-template-columns: minmax(36px, 50px);
 	grid-template-rows: minmax(40px, 100%);
 	gap: 4px;
@@ -1062,7 +1061,6 @@ const insertEmoji = async (ev: MouseEvent): Promise<void> => {
 	justify-self: end;
 	display: grid;
 	grid-auto-flow: column;
-	grid-auto-columns: max-content;
 	align-items: center;
 	gap: 4px;
 	font-size: 0.9em;

@@ -226,7 +226,8 @@ definePageMetadata({
 					align-items: center;
 					margin-bottom: 2px;
 					white-space: nowrap;
-					overflow: hidden;
+					overflow: hidden; // fallback (overflow: clip)
+					overflow: clip;
 
 					> .name {
 						margin: 0;

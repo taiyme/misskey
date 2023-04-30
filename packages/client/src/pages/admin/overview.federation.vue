@@ -69,7 +69,8 @@ useInterval(fetch, 1000 * 60, {
 
 			> .body {
 				flex: 1;
-				overflow: hidden;
+				overflow: hidden; // fallback (overflow: clip)
+				overflow: clip;
 				font-size: 0.9em;
 				color: var(--fg);
 				padding-right: 8px;

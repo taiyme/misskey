@@ -51,7 +51,8 @@ const updateWidgets = (widgets: Widget[]): void => {
 .efzpzdvf {
 	position: sticky;
 	height: min-content;
-	min-height: 100vh;
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+	min-height: 100dvh;
 	padding: var(--margin) 0;
 	box-sizing: border-box;
 

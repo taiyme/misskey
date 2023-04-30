@@ -136,7 +136,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .mk-app {
-	min-height: 100vh;
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+	min-height: 100dvh;
 
 	> .banner {
 		position: relative;

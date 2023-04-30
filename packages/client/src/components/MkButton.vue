@@ -119,6 +119,7 @@ const onMousedown = (evt: MouseEvent): void => {
 	text-decoration: none;
 	background: var(--buttonBg);
 	border-radius: 5px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
@@ -212,7 +213,8 @@ const onMousedown = (evt: MouseEvent): void => {
 		width: 100%;
 		height: 100%;
 		border-radius: 6px;
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		::v-deep(div) {
 			position: absolute;

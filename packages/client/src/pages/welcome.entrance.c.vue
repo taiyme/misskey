@@ -155,7 +155,8 @@ export default defineComponent({
 	> .top {
 		display: flex;
 		text-align: center;
-		min-height: 100vh;
+		min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		min-height: 100dvh;
 		box-sizing: border-box;
 		padding: 16px;
 

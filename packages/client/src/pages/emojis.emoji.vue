@@ -54,7 +54,8 @@ function menu(ev) {
 	> .body {
 		padding: 0 0 0 8px;
 		white-space: nowrap;
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		> .name {
 			text-overflow: ellipsis;

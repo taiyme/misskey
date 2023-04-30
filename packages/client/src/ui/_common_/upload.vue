@@ -112,7 +112,8 @@ const zIndex = os.claimZIndex('high');
 	background: transparent;
 	border: none;
 	border-radius: 4px;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	grid-column: 2/3;
 	grid-row: 2/3;
 	z-index: 2;

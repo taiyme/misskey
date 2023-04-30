@@ -76,7 +76,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .cpjygsrt {
 	position: relative;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	background: var(--panel);
 	border: solid 2px var(--X12);
 	border-radius: 6px;

@@ -134,7 +134,8 @@ definePageMetadata({
 		$size: 12px;
 		background: rgba(0, 0, 0, 0.1);
 		border-radius: math.div($size, 2);
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		> div {
 			height: $size;

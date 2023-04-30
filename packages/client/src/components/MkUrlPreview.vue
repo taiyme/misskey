@@ -223,6 +223,7 @@ onUnmounted(() => {
 	font-size: 14px;
 	box-shadow: 0 0 0 1px var(--divider);
 	border-radius: 8px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 
 	&:hover {

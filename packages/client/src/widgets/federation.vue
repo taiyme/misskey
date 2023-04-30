@@ -85,7 +85,8 @@ defineExpose<WidgetComponentExpose>({
 	$bodyInfoHieght: 16px;
 
 	height: (62px + 1px) + (62px + 1px) + (62px + 1px) + (62px + 1px) + 62px;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 
 	> .instances {
 		.chart-move {
@@ -109,7 +110,8 @@ defineExpose<WidgetComponentExpose>({
 
 			> .body {
 				flex: 1;
-				overflow: hidden;
+				overflow: hidden; // fallback (overflow: clip)
+				overflow: clip;
 				font-size: 0.9em;
 				color: var(--fg);
 				padding-right: 8px;

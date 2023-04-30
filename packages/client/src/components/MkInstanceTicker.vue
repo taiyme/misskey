@@ -59,7 +59,8 @@ const tickerColor = {
 .mk-instance-ticker {
 	background: var(--ticker-bg, #777777);
 	color: var(--ticker-fg, #ffffff);
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 
 	> .icon {
 		aspect-ratio: 1 / 1;

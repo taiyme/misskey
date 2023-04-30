@@ -352,6 +352,7 @@ const readPromo = (): void => {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 
@@ -582,7 +583,8 @@ const readPromo = (): void => {
 					&.collapsed {
 						position: relative;
 						max-height: 9em;
-						overflow: hidden;
+						overflow: hidden; // fallback (overflow: clip)
+						overflow: clip;
 
 						> .fade {
 							display: block;

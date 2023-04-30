@@ -268,7 +268,8 @@ const onDrop = (ev: DragEvent): void => {
 	--deckColumnHeaderHeight: 42px;
 
 	height: 100%;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	contain: strict;
 
 	&.draghover {
@@ -411,7 +412,7 @@ const onDrop = (ev: DragEvent): void => {
 	> div {
 		height: calc(100% - var(--deckColumnHeaderHeight));
 		overflow-y: auto;
-		overflow-x: hidden; // Safari does not supports clip
+		overflow-x: hidden; // fallback (overflow: clip)
 		overflow-x: clip;
 		-webkit-overflow-scrolling: touch;
 		box-sizing: border-box;

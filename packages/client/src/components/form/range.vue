@@ -191,6 +191,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				height: 3px;
 				background: rgba(0, 0, 0, 0.1);
 				border-radius: 999px;
+				overflow: hidden; // fallback (overflow: clip)
 				overflow: clip;
 
 				> .highlight {

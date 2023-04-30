@@ -206,7 +206,8 @@ definePageMetadata(computed(() => ({
 }
 
 .pickup {
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	background: var(--panel);
 	border-radius: var(--radius);
 	margin-bottom: var(--margin);

@@ -200,8 +200,8 @@ onMounted(() => {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
-	// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	min-height: calc(var(--vh, 1vh) * 100);
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+	min-height: 100dvh;
 	box-sizing: border-box;
 
 	&.wallpaper {
@@ -242,6 +242,7 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
+			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			--margin: 12px;
 		}
@@ -303,8 +304,8 @@ onMounted(() => {
 		top: 0;
 		right: 0;
 		z-index: 1001;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		height: 100dvh;
 		padding: var(--margin);
 		box-sizing: border-box;
 		overflow: auto;

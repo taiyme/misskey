@@ -110,6 +110,7 @@ const react = ({ reaction, canToggle }: {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 	background: var(--panel);

@@ -86,7 +86,8 @@ ytFetch();
 <style lang="scss" module>
 .root {
 	position: relative;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	height: 100%;
 }
 

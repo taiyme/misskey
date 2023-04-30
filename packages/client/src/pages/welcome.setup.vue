@@ -58,7 +58,8 @@ function submit() {
 .mk-setup {
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	max-width: 500px;
 	margin: 32px auto;
 

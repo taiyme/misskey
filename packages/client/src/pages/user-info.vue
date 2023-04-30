@@ -442,7 +442,8 @@ definePageMetadata(computed(() => ({
 
 	> .body {
 		flex: 1;
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		> .name {
 			display: block;

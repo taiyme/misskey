@@ -560,6 +560,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
+					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
 				}
 			}
@@ -619,6 +620,7 @@ definePageMetadata({
 				> .body {
 					background: var(--panel);
 					border-radius: var(--radius);
+					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
 				}
 			}

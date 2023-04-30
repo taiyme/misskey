@@ -104,7 +104,8 @@ defineProps<{
 			display: -webkit-box;
 			-webkit-line-clamp: 3;
 			-webkit-box-orient: vertical;
-			overflow: hidden;
+			overflow: hidden; // fallback (overflow: clip)
+			overflow: clip;
 		}
 	}
 

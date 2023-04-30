@@ -316,7 +316,8 @@ if (appearNote.replyId) {
 .lxwezrsl {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	contain: content;
 
 	&:focus-visible {

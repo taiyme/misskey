@@ -191,7 +191,8 @@ onUnmounted(() => {
 	font-size: 0.8em;
 	text-align: center;
 	overflow-x: auto;
-	overflow-y: hidden;
+	overflow-y: hidden; // fallback (overflow: clip)
+	overflow-y: clip;
 	scrollbar-width: none;
 
 	&::-webkit-scrollbar {
@@ -236,7 +237,8 @@ onUnmounted(() => {
 }
 
 .tabTitle {
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 
 	&.animate {
 		transition: width .15s linear, padding-left .15s linear;

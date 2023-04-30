@@ -489,6 +489,7 @@ defineExpose({
 }
 
 .body {
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	display: flex;
 	flex-direction: column;

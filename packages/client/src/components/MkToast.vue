@@ -55,6 +55,7 @@ onMounted(() => {
 		width: min-content;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 		border-radius: 8px;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 		text-align: center;
 		pointer-events: none;

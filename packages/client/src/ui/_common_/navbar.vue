@@ -168,10 +168,11 @@ function more(ev: MouseEvent) {
 		left: 0;
 		z-index: 1001;
 		width: $nav-icon-only-width;
-		// ほんとは単に 100vh と書きたいところだが... https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-		height: calc(var(--vh, 1vh) * 100);
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		height: 100dvh;
 		box-sizing: border-box;
 		overflow: auto;
+		overflow-x: hidden; // fallback (overflow: clip)
 		overflow-x: clip;
 		background: var(--navBg);
 		contain: strict;

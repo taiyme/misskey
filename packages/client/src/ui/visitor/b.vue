@@ -151,21 +151,24 @@ defineExpose({
 
 .mk-app {
 	display: flex;
-	min-height: 100vh;
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+	min-height: 100dvh;
 	background-position: center;
 	background-size: cover;
 	background-attachment: fixed;
 
 	> .side {
 		width: 500px;
-		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		height: 100dvh;
 
 		> .kanban {
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 500px;
-			height: 100vh;
+			height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+			height: 100dvh;
 			overflow: auto;
 		}
 	}
@@ -202,7 +205,8 @@ defineExpose({
 		top: 0;
 		left: 0;
 		width: 100vw;
-		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		height: 100dvh;
 	}
 
 	> .menu {
@@ -211,7 +215,8 @@ defineExpose({
 		top: 0;
 		left: 0;
 		width: 240px;
-		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
+		height: 100dvh;
 		background: var(--panel);
 
 		> .link {

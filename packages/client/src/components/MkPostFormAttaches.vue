@@ -128,7 +128,8 @@ const showFileMenu = (file: DriveFile, ev: MouseEvent): void => {
 			height: 64px;
 			margin-right: 4px;
 			border-radius: 4px;
-			overflow: hidden;
+			overflow: hidden; // fallback (overflow: clip)
+			overflow: clip;
 			cursor: move;
 
 			&:hover > .remove {

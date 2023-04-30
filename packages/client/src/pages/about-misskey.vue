@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<div style="overflow: clip;">
+	<div :class="$style.container">
 		<MkSpacer :content-max="600" :margin-min="20">
 			<div class="_formRoot znqjceqz">
 				<div id="debug"></div>
@@ -266,5 +266,12 @@ definePageMetadata({
 			}
 		}
 	}
+}
+</style>
+
+<style lang="scss" module>
+.container {
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 }
 </style>

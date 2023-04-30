@@ -139,12 +139,14 @@ definePageMetadata(computed(() => ({
 .fwhjspax {
 	text-align: center;
 	border-radius: 10px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	background-size: cover;
 	background-position: center center;
 
 	> .content {
-		overflow: hidden;
+		overflow: hidden; // fallback (overflow: clip)
+		overflow: clip;
 
 		> .icon {
 			display: block;

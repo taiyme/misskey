@@ -137,7 +137,8 @@ function del(): void {
 					display: block;
 					margin: 0;
 					padding: 0;
-					overflow: hidden;
+					overflow: hidden; // fallback (overflow: clip)
+					overflow: clip;
 					overflow-wrap: break-word;
 					font-size: 1em;
 					color: rgba(#000, 0.5);
@@ -147,7 +148,8 @@ function del(): void {
 					display: block;
 					margin: 0;
 					padding: 12px 18px;
-					overflow: hidden;
+					overflow: hidden; // fallback (overflow: clip)
+					overflow: clip;
 					overflow-wrap: break-word;
 					word-break: break-word;
 					font-size: 1em;
@@ -165,7 +167,8 @@ function del(): void {
 						display: block;
 						max-width: 100%;
 						border-radius: 16px;
-						overflow: hidden;
+						overflow: hidden; // fallback (overflow: clip)
+						overflow: clip;
 						text-decoration: none;
 
 						&:hover {

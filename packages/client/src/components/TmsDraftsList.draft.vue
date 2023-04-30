@@ -97,7 +97,8 @@ const draftMenu = (ev: MouseEvent): void => {
 }
 
 .text {
-	overflow: hidden;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 	// display: -webkit-box;

@@ -54,29 +54,27 @@ import { mainRouter } from '@/router';
 
 		console.info(`vue ${vueVersion}`);
 
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$i = $i;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$store = defaultStore;
 
 		window.addEventListener('error', event => {
 			console.error(event);
-			/*
-			alert({
-				type: 'error',
-				title: 'DEV: Unhandled error',
-				text: event.message
-			});
-			*/
+			// alert({
+			// 	type: 'error',
+			// 	title: 'DEV: Unhandled error',
+			// 	text: event.message,
+			// });
 		});
 
 		window.addEventListener('unhandledrejection', event => {
 			console.error(event);
-			/*
-			alert({
-				type: 'error',
-				title: 'DEV: Unhandled promise rejection',
-				text: event.reason
-			});
-			*/
+			// alert({
+			// 	type: 'error',
+			// 	title: 'DEV: Unhandled promise rejection',
+			// 	text: event.reason,
+			// });
 		});
 	}
 
@@ -106,12 +104,17 @@ import { mainRouter } from '@/router';
 	});
 
 	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	// TODO: いつの日にか消したい
-	const setViewportHeight = (): void => {
-		const vh = window.innerHeight * 0.01;
-		document.documentElement.style.setProperty('--vh', `${vh}px`);
-	};
-	window.addEventListener('resize', setViewportHeight);
+	try {
+		if (!window.CSS.supports('height', '1dvh')) throw new Error();
+		document.documentElement.style.setProperty('--vh', '1dvh'); // 後方互換
+	} catch {
+		// fallback (dvh units)
+		const setViewportHeight = (): void => {
+			const vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--vh', `${vh}px`);
+		};
+		window.addEventListener('resize', setViewportHeight);
+	}
 	//#endregion
 
 	// If mobile, insert the viewport meta tag

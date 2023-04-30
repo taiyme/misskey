@@ -180,7 +180,8 @@ defineExpose<WidgetComponentExpose>({
 
 			> .meter {
 				width: 100%;
-				overflow: hidden;
+				overflow: hidden; // fallback (overflow: clip)
+				overflow: clip;
 				background: var(--X11);
 				border-radius: 8px;
 
