@@ -771,16 +771,15 @@ const onCompositionEnd = (_ev: CompositionEvent): void => {
 const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	if (!ev.clipboardData) return;
 
-	ev.preventDefault();
-
 	const uploadItems = Array.from(ev.clipboardData.items).flatMap(item => {
 		if (item.kind !== 'file') return [];
 		const file = item.getAsFile();
-		if (!file) return [];
+		if (!file || file.type === '') return [];
 		return [file];
 	});
 
 	if (uploadItems.length !== 0) {
+		ev.preventDefault();
 		uploads(uploadItems);
 		return;
 	}
@@ -788,7 +787,10 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	const paste = ev.clipboardData.getData('text');
 	const path = `${url}/notes/`;
 
+	if (paste === '') return;
+
 	if (!renote && !quote && paste.startsWith(path)) {
+		ev.preventDefault();
 		fetchingWrapper(
 			os.confirm({
 				type: 'info',
@@ -803,8 +805,6 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 				setQuote(quoteId);
 			}),
 		);
-	} else {
-		if (textareaEl) insertTextAtCursor(textareaEl, paste);
 	}
 };
 //#endregion
