@@ -551,6 +551,7 @@ const removeVisibleUser = (user: Misskey.entities.User): void => {
 // };
 
 const uploads = async (fileList: File[]): Promise<void> => {
+	if (fileList.length === 0) return;
 	return await fetchingWrapper(
 		Promise.all(fileList.map(file => uploadFile(file, defaultStore.state.uploadFolder)))
 			.then(driveFiles => {
@@ -772,14 +773,16 @@ const onCompositionEnd = (_ev: CompositionEvent): void => {
 const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	if (!ev.clipboardData) return;
 
-	uploads(
-		Array.from(ev.clipboardData.items).flatMap(item => {
-			if (item.kind !== 'file') return [];
-			const file = item.getAsFile();
-			if (!file) return [];
-			return [file];
-		}),
-	);
+	const uploadItems = Array.from(ev.clipboardData.items).flatMap(item => {
+		if (item.kind !== 'file') return [];
+		const file = item.getAsFile();
+		if (!file) return [];
+		return [file];
+	});
+
+	if (uploadItems.length !== 0) {
+		uploads(uploadItems);
+	}
 
 	const paste = ev.clipboardData.getData('text');
 	const path = `${url}/notes/`;
