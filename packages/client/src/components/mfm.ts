@@ -1,5 +1,4 @@
 import { VNode, defineComponent, h, PropType } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 import * as mfm from 'mfm-js';
 import { v4 as uuid } from 'uuid';
 import MkUrl from '@/components/global/MkUrl.vue';
@@ -38,7 +37,10 @@ export default defineComponent({
 			default: null,
 		},
 		customEmojis: {
-			type: Array as PropType<CustomEmoji[]>,
+			type: Array as PropType<{
+				name: string;
+				url: string;
+			}[]>,
 			required: false,
 			default: undefined,
 		},

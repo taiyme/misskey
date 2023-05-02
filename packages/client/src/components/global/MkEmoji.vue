@@ -8,7 +8,6 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import { char2filePath } from '@/scripts/twemoji-base';
 import { defaultStore } from '@/store';
@@ -19,7 +18,10 @@ const props = withDefaults(defineProps<{
 	emoji: string;
 	normal?: boolean;
 	noStyle?: boolean;
-	customEmojis?: CustomEmoji[];
+	customEmojis?: {
+		name: string;
+		url: string;
+	}[];
 	isReaction?: boolean;
 	useFallbackIcon?: boolean;
 }>(), {

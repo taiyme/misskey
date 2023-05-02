@@ -4,7 +4,8 @@
 		ref="buttonRef"
 		class="hkzvhatu _button"
 		:class="[tmsStore.state.useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: reacted, [$style.canToggle]: canToggle }]"
-		@click="react"
+		@click="react()"
+		@dblclick="react({ disableMenu: true })"
 	>
 		<MkReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
 		<span :class="$style.reactionCount">{{ count }}</span>
@@ -14,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, shallowRef, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
@@ -29,7 +30,7 @@ const props = defineProps<{
 	reaction: string;
 	count: number;
 	isInitial: boolean;
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 }>();
 
 const buttonRef = shallowRef<HTMLElement>();
@@ -38,14 +39,16 @@ const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
 
 const reacted = computed(() => props.note.myReaction === props.reaction);
 
-const react = (): void => {
+const react = (opt: {
+	disableMenu?: boolean;
+} = {}): void => {
 	const param = {
 		reaction: props.reaction,
 		note: props.note,
 		canToggle: canToggle,
 		reactButton: buttonRef,
 	};
-	if (tmsStore.state.useReactionMenu) {
+	if (!opt.disableMenu && tmsStore.state.useReactionMenu) {
 		getReactMenu(param);
 	} else {
 		toggleReact(param);

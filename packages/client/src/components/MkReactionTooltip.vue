@@ -9,7 +9,6 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist';
@@ -17,7 +16,10 @@ import { getEmojiName } from '@/scripts/emojilist';
 defineProps<{
 	showing: boolean;
 	reaction: string;
-	emojis: CustomEmoji[];
+	emojis: {
+		name: string;
+		url: string;
+	}[];
 	targetElement: HTMLElement;
 }>();
 

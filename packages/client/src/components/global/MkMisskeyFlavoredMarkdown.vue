@@ -4,7 +4,6 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 import MfmCore from '@/components/mfm';
 
 withDefaults(defineProps<{
@@ -12,7 +11,10 @@ withDefaults(defineProps<{
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: any;
-	customEmojis?: CustomEmoji[];
+	customEmojis?: {
+		name: string;
+		url: string;
+	}[];
 	isNote?: boolean;
 }>(), {
 	plain: false,

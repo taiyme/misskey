@@ -4,11 +4,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
 
 defineProps<{
 	reaction: string;
-	customEmojis?: CustomEmoji[];
+	customEmojis?: {
+		name: string;
+		url: string;
+	}[];
 	noStyle?: boolean;
 	useFallbackIcon?: boolean;
 }>();
