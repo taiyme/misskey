@@ -4,8 +4,7 @@
 		ref="buttonRef"
 		class="hkzvhatu _button"
 		:class="[tmsStore.state.useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.reacted]: reacted, [$style.canToggle]: canToggle }]"
-		@click="react()"
-		@dblclick="react({ disableMenu: true })"
+		@click="react"
 	>
 		<MkReactionIcon :class="$style.reactionIcon" :reaction="reaction" :custom-emojis="note.emojis" use-fallback-icon/>
 		<span :class="$style.reactionCount">{{ count }}</span>
@@ -39,16 +38,15 @@ const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
 
 const reacted = computed(() => props.note.myReaction === props.reaction);
 
-const react = (opt: {
-	disableMenu?: boolean;
-} = {}): void => {
+const react = (): void => {
 	const param = {
 		reaction: props.reaction,
 		note: props.note,
 		canToggle: canToggle,
 		reactButton: buttonRef,
 	};
-	if (!opt.disableMenu && tmsStore.state.useReactionMenu) {
+
+	if (tmsStore.state.useReactionMenu) {
 		getReactMenu(param);
 	} else {
 		toggleReact(param);

@@ -19,8 +19,7 @@
 					<button
 						:class="[$style.reactionButton, useEasyReactionsViewer ? $style.viewTypeEasy : $style.viewTypeNormal, { [$style.canToggle]: item.canToggle, [$style.reacted]: item.reacted }]"
 						class="_button"
-						@click="react({ ...item, disableMenu: false }, $event)"
-						@dblclick="react({ ...item, disableMenu: true }, $event)"
+						@click="react(item, $event)"
 					>
 						<MkEmoji :class="$style.reactionIcon" :emoji="item.reaction" :custom-emojis="item.customEmojis" :is-reaction="true" :normal="true"/>
 						<span :class="$style.reactionCount">1</span>
@@ -90,15 +89,14 @@ const reactions = [
 	...emojis,
 ];
 
-const react = ({ reaction, canToggle, disableMenu }: {
+const react = ({ reaction, canToggle }: {
 	reaction: string;
 	canToggle: boolean;
-	disableMenu: boolean;
 }, ev: MouseEvent): void => {
 	if (!(ev.target instanceof HTMLElement)) return;
 	const reactButton = ref(ev.target);
 
-	if (!disableMenu && useReactionMenu.value) {
+	if (useReactionMenu.value) {
 		getReactMenuDryrun({ reactButton, reaction });
 	} else {
 		toggleReactDryrun({ reactButton, canToggle: ref(canToggle) });
