@@ -5,7 +5,7 @@ const EXCLUDE_MFM_NODE_TYPES = ['link', 'plain'];
 
 export const DLSITE_PID = 'dlsite_pid';
 export const DLSITE_PID_REGEXP = /[RVB][JE]\d{6,}/g;
-export const DLSITE_PID_BASEURL = 'https://www.dlsite.com/home/announce/=/product_id/{{product_id}}.html';
+export const DLSITE_PID_BASEURL = 'https://www.dlsite.com/home/work/=/product_id/{{product_id}}.html';
 
 export const DLSITE_MID = 'dlsite_mid';
 export const DLSITE_MID_REGEXP = /[RVB][G]\d{5,}/g;
