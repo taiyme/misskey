@@ -7,6 +7,7 @@ import { DriveFile } from '@/models/entities/drive-file.js';
 import { DriveFiles, Users } from '@/models/index.js';
 import { truncate } from '@/misc/truncate.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 const logger = apLogger;
 
@@ -23,6 +24,10 @@ export async function createImage(actor: CacheableRemoteUser, value: any): Promi
 
 	if (image.url == null) {
 		throw new Error('invalid image: url not privided');
+	}
+
+	if (!checkHttps(image.url)) {
+		throw new Error('invalid image: unexpected schema of url: ' + image.url);
 	}
 
 	logger.info(`Creating the Image: ${image.url}`);
