@@ -1,15 +1,15 @@
 import { VNode, h } from 'vue';
-import MkLinkDlsite from '@/components/MkDlsite.link.vue';
+import TmsDlsiteLink from '@/components/TmsDlsiteLink.vue';
 
 const EXCLUDE_MFM_NODE_TYPES = ['link', 'plain'];
 
 export const DLSITE_PID = 'dlsite_pid';
-export const DLSITE_PID_REGEXP = /[RVB][JE]\d{5,}/g;
-export const DLSITE_PID_BASEURL = 'https://www.dlsite.com/home/work/=/product_id/';
+export const DLSITE_PID_REGEXP = /[RVB][JE]\d{6,}/g;
+export const DLSITE_PID_BASEURL = 'https://www.dlsite.com/home/announce/=/product_id/{{product_id}}.html';
 
 export const DLSITE_MID = 'dlsite_mid';
 export const DLSITE_MID_REGEXP = /[RVB][G]\d{5,}/g;
-export const DLSITE_MID_BASEURL = 'https://www.dlsite.com/home/circle/profile/=/maker_id/';
+export const DLSITE_MID_BASEURL = 'https://www.dlsite.com/home/circle/profile/=/maker_id/{{maker_id}}.html';
 
 type ParsedType = {
 	type: 'text' | typeof DLSITE_PID | typeof DLSITE_MID;
@@ -51,17 +51,17 @@ export const parseMfmText = (text: string, parents: string[]): (VNode | string)[
 				return value;
 			}
 			case DLSITE_PID: {
-				return h(MkLinkDlsite, {
+				return h(TmsDlsiteLink, {
 					key: value,
 					value,
-					url: `${DLSITE_PID_BASEURL}${value}`,
+					url: DLSITE_PID_BASEURL.replace('{{product_id}}', value),
 				});
 			}
 			case DLSITE_MID: {
-				return h(MkLinkDlsite, {
+				return h(TmsDlsiteLink, {
 					key: value,
 					value,
-					url: `${DLSITE_MID_BASEURL}${value}`,
+					url: DLSITE_MID_BASEURL.replace('{{maker_id}}', value),
 				});
 			}
 		}
