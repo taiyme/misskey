@@ -180,18 +180,16 @@ const emit = defineEmits<{
 
 const modal = inject<boolean>('modal', false);
 
-let fetchingList = $ref<string[]>([]);
+const fetchingList = new Set<string>();
 const fetchingWrapper = <T>(prom: Promise<T>): Promise<T> => {
 	const id = uuid();
-	fetchingList.push(id);
 
-	prom.finally(() => {
-		fetchingList = fetchingList.filter(fid => fid !== id);
-	});
+	fetchingList.add(id);
+	prom.finally(() => fetchingList.delete(id));
 
 	return prom;
 };
-const fetching = $computed<boolean>(() => fetchingList.length !== 0);
+const fetching = $computed<boolean>(() => fetchingList.size !== 0);
 
 const isFetching = (): boolean => fetching;
 
@@ -773,6 +771,8 @@ const onCompositionEnd = (_ev: CompositionEvent): void => {
 const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 	if (!ev.clipboardData) return;
 
+	ev.preventDefault();
+
 	const uploadItems = Array.from(ev.clipboardData.items).flatMap(item => {
 		if (item.kind !== 'file') return [];
 		const file = item.getAsFile();
@@ -782,14 +782,13 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 
 	if (uploadItems.length !== 0) {
 		uploads(uploadItems);
+		return;
 	}
 
 	const paste = ev.clipboardData.getData('text');
 	const path = `${url}/notes/`;
 
 	if (!renote && !quote && paste.startsWith(path)) {
-		ev.preventDefault();
-
 		fetchingWrapper(
 			os.confirm({
 				type: 'info',
@@ -804,6 +803,8 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 				setQuote(quoteId);
 			}),
 		);
+	} else {
+		if (textareaEl) insertTextAtCursor(textareaEl, paste);
 	}
 };
 //#endregion
