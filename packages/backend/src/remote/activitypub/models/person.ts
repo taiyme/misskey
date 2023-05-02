@@ -20,6 +20,7 @@ import { fetchInstanceMetadata } from '@/services/fetch-instance-metadata.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { truncate } from '@/misc/truncate.js';
 import { StatusError } from '@/misc/fetch.js';
+import { checkHttps } from '@/misc/check-https.js';
 import { uriPersonCache } from '@/services/user-cache.js';
 import { publishInternalEvent } from '@/services/stream.js';
 import { db } from '@/db/postgre.js';
@@ -37,13 +38,20 @@ const logger = apLogger;
 const nameLength = 128;
 const summaryLength = 2048;
 
+function punyHost(url: string): string {
+	const urlObj = new URL(url);
+	const host = toPuny(urlObj.hostname);
+	const port = urlObj.port.length > 0 ? `:${urlObj.port}` : '';
+	return `${host}${port}`;
+}
+
 /**
  * Validate and convert to actor object
  * @param x Fetched object
  * @param uri Fetch target URI
  */
 function validateActor(x: IObject, uri: string): IActor {
-	const expectHost = toPuny(new URL(uri).hostname);
+	const expectHost = punyHost(uri);
 
 	if (x == null) {
 		throw new Error('invalid Actor: object is null');
@@ -81,7 +89,7 @@ function validateActor(x: IObject, uri: string): IActor {
 		x.summary = truncate(x.summary, summaryLength);
 	}
 
-	const idHost = toPuny(new URL(x.id!).hostname);
+	const idHost = punyHost(x.id);
 	if (idHost !== expectHost) {
 		throw new Error('invalid Actor: id has different host');
 	}
@@ -91,7 +99,7 @@ function validateActor(x: IObject, uri: string): IActor {
 			throw new Error('invalid Actor: publicKey.id is not a string');
 		}
 
-		const publicKeyIdHost = toPuny(new URL(x.publicKey.id).hostname);
+		const publicKeyIdHost = punyHost(x.publicKey.id);
 		if (publicKeyIdHost !== expectHost) {
 			throw new Error('invalid Actor: publicKey.id has different host');
 		}
@@ -149,7 +157,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 
 	logger.info(`Creating the Person: ${person.id}`);
 
-	const host = toPuny(new URL(object.id).hostname);
+	const host = punyHost(object.id);
 
 	const { fields } = analyzeAttachments(person.attachment || []);
 
@@ -158,6 +166,12 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 	const isBot = getApType(object) === 'Service';
 
 	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
+
+	const url = getOneApHrefNullable(person.url);
+
+	if (url && !checkHttps(url)) {
+		throw new Error('unexpected schema of person url: ' + url);
+	}
 
 	// Create user
 	let user: IRemoteUser;
@@ -190,7 +204,7 @@ export async function createPerson(uri: string, resolver?: Resolver): Promise<Us
 			await transactionalEntityManager.save(new UserProfile({
 				userId: user.id,
 				description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-				url: getOneApHrefNullable(person.url),
+				url: url,
 				fields,
 				birthday: bday ? bday[0] : null,
 				location: person['vcard:Address'] || null,
@@ -331,6 +345,12 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 
 	const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
+	const url = getOneApHrefNullable(person.url);
+
+	if (url && !checkHttps(url)) {
+		throw new Error('unexpected schema of person url: ' + url);
+	}
+
 	const updates = {
 		lastFetchedAt: new Date(),
 		inbox: person.inbox,
@@ -365,7 +385,7 @@ export async function updatePerson(uri: string, resolver?: Resolver | null, hint
 	}
 
 	await UserProfiles.update({ userId: exist.id }, {
-		url: getOneApHrefNullable(person.url),
+		url: url,
 		fields,
 		description: person.summary ? htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 		birthday: bday ? bday[0] : null,

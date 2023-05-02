@@ -27,6 +27,7 @@ import { parseAudience } from '../audience.js';
 import { extractApMentions } from './mention.js';
 import DbResolver from '../db-resolver.js';
 import { StatusError } from '@/misc/fetch.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 const logger = apLogger;
 
@@ -87,6 +88,16 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 
 	logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
+	if (note.id && !checkHttps(note.id)) {
+		throw new Error('unexpected schema of note.id: ' + note.id);
+	}
+
+	const url = getOneApHrefNullable(note.url);
+
+	if (url && !checkHttps(url)) {
+		throw new Error('unexpected schema of note url: ' + url);
+	}
+
 	logger.info(`Creating the Note: ${note.id}`);
 
 	// 投稿者をフェッチ
@@ -131,7 +142,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 	const reply: Note | null = note.inReplyTo
 		? await resolveNote(note.inReplyTo, resolver).then(x => {
 			if (x == null) {
-				logger.warn(`Specified inReplyTo, but nout found`);
+				logger.warn(`Specified inReplyTo, but not found`);
 				throw new Error('inReplyTo not found');
 			} else {
 				return x;
@@ -260,7 +271,7 @@ export async function createNote(value: string | IObject, resolver?: Resolver, s
 		apEmojis,
 		poll,
 		uri: note.id,
-		url: getOneApHrefNullable(note.url),
+		url: url,
 	}, silent);
 }
 

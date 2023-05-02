@@ -27,7 +27,8 @@ function genUrl(query: string) {
 	const m = query.match(/^([^@]+)@(.*)/);
 	if (m) {
 		const hostname = m[2];
-		return `https://${hostname}/.well-known/webfinger?` + urlQuery({ resource: `acct:${query}` });
+		const useHttp = !!process.env.MISSKEY_WEBFINGER_USE_HTTP && process.env.MISSKEY_WEBFINGER_USE_HTTP.toLowerCase() === 'true';
+		return `http${useHttp ? '' : 's'}://${hostname}/.well-known/webfinger?${urlQuery({ resource: `acct:${query}` })}`;
 	}
 
 	throw new Error(`Invalid query (${query})`);
