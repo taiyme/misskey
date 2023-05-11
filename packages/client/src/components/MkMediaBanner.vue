@@ -30,12 +30,12 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { ColdDeviceStorage } from '@/store';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
-	media: misskey.entities.DriveFile;
+	media: Misskey.entities.DriveFile;
 }>(), {
 });
 

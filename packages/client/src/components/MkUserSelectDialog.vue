@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -62,16 +62,16 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
+	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
 
 let username = $ref('');
 let host = $ref('');
-let users: misskey.entities.UserDetailed[] = $ref([]);
-let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
-let selected: misskey.entities.UserDetailed | null = $ref(null);
+let users: Misskey.entities.UserDetailed[] = $ref([]);
+let recentUsers: Misskey.entities.UserDetailed[] = $ref([]);
+let selected: Misskey.entities.UserDetailed | null = $ref(null);
 let dialogEl = $ref<InstanceType<typeof MkModalWindow>>();
 
 const search = (): void => {
@@ -85,7 +85,7 @@ const search = (): void => {
 		limit: 10,
 		detail: false,
 	}).then((_users) => {
-		users = _users as unknown as misskey.entities.UserDetailed[];
+		users = _users as unknown as Misskey.entities.UserDetailed[];
 	});
 };
 

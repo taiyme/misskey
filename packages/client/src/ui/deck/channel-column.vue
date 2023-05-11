@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
@@ -34,7 +34,7 @@ const emit = defineEmits<{
 }>();
 
 const timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
-let channel = $shallowRef<misskey.entities.Channel>();
+let channel = $shallowRef<Misskey.entities.Channel>();
 
 onMounted(() => {
 	if (props.column.channelId == null) {

@@ -16,13 +16,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkVisibility from '@/components/MkVisibility.vue';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 
 defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 </script>

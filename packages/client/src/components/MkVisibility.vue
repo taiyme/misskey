@@ -10,13 +10,13 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 }>();
 
 let hasAuthority = $ref(false);

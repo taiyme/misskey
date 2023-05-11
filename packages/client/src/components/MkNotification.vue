@@ -88,7 +88,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkReactionTooltip from '@/components/MkReactionTooltip.vue';
@@ -102,7 +102,7 @@ import { stream } from '@/stream';
 import { useTooltip } from '@/scripts/use-tooltip';
 
 const props = withDefaults(defineProps<{
-	notification: misskey.entities.Notification;
+	notification: Misskey.entities.Notification;
 	withTime?: boolean;
 	full?: boolean;
 }>(), {
@@ -114,7 +114,7 @@ const rootEl = ref<HTMLElement | null>(null);
 const reactionRef = ref<InstanceType<typeof MkReactionIcon> | null>(null);
 
 let readObserver: IntersectionObserver | null = null;
-let connection: misskey.ChannelConnection | null = null;
+let connection: Misskey.ChannelConnection | null = null;
 
 onMounted(() => {
 	if (rootEl.value && !props.notification.isRead) {

@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XDetails from '@/components/MkUsersTooltip.vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { pleaseLogin } from '@/scripts/please-login';
@@ -22,7 +22,7 @@ import { pakuru, numberquote } from '@/scripts/tms/pakuru';
 import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	count: number;
 }>();
 

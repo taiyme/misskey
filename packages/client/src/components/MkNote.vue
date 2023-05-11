@@ -112,7 +112,7 @@
 import { inject, onMounted, ref, Ref, computed } from 'vue';
 import { ReactiveVariable } from 'vue/macros';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -146,20 +146,20 @@ import { tmsStore } from '@/tms/store';
 import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
 
-let note = $ref<misskey.entities.Note>(deepClone(props.note));
+let note = $ref<Misskey.entities.Note>(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
 		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>; // unknownのため
+			result = await interruptor.handler(result) as ReactiveVariable<Misskey.entities.Note>; // unknownのため
 		}
 		note = result;
 	});
@@ -249,7 +249,7 @@ const react = (_viaKeyboard = false): void => {
 	}, focus);
 };
 
-const undoReact = (note_: misskey.entities.Note): void => {
+const undoReact = (note_: Misskey.entities.Note): void => {
 	const oldReaction = note_.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
@@ -257,7 +257,7 @@ const undoReact = (note_: misskey.entities.Note): void => {
 	});
 };
 
-const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
+const currentClipPage = inject<Ref<Misskey.entities.Clip> | null>('currentClipPage', null);
 
 const onContextmenu = (ev: MouseEvent): void => {
 	if (disableContextmenu) return;

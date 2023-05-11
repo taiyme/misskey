@@ -1,9 +1,10 @@
 <!-- eslint-disable-line vue/multi-word-component-names -->
 <template>
 <MkSpacer :content-max="700">
-	<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
-		<div :class="$style.pages"></div>
-		<MkPagePreview v-for="page in items" :key="page.id" :page="(page as any /* 定義されていないため */)" :class="$style.page"/>
+	<MkPagination v-slot="{items}" :pagination="pagination">
+		<div :class="$style.pages">
+			<MkPagePreview v-for="page in items" :key="page.id" :page="(page as any /* 定義されていないため */)"/>
+		</div>
 	</MkPagination>
 </MkSpacer>
 </template>

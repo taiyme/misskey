@@ -41,7 +41,7 @@
 
 <script lang="ts" setup>
 import { onMounted, computed } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkUserCardMiniList from '@/components/MkUserCardMiniList.vue';
@@ -53,7 +53,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	noteId: misskey.entities.Note['id'];
+	noteId: Misskey.entities.Note['id'];
 	initialTab?: string | null;
 }>();
 
@@ -62,7 +62,7 @@ const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 const RENOTE_TAB = 'RENOTE_TAB';
 let hasRenote = $ref<boolean>(false);
 
-let note = $ref<misskey.entities.Note>();
+let note = $ref<Misskey.entities.Note>();
 let tab = $ref<typeof RENOTE_TAB | string>();
 let reactions = $ref<string[]>();
 

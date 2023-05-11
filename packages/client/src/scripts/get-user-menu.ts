@@ -1,6 +1,6 @@
 import * as Acct from 'misskey-js/built/acct';
 import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { copyText } from '@/scripts/tms/clipboard';
 import { host } from '@/config';
@@ -10,7 +10,7 @@ import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 
-export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
+export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	async function pushList() {

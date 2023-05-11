@@ -6,22 +6,22 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import TmsPostForm from '@/components/TmsPostForm.vue';
 
 const props = defineProps<{
-	reply?: misskey.entities.Note;
-	renote?: misskey.entities.Note;
-	channel?: misskey.entities.Channel; // TODO
-	mention?: misskey.entities.User;
-	specified?: misskey.entities.User;
+	reply?: Misskey.entities.Note;
+	renote?: Misskey.entities.Note;
+	channel?: Misskey.entities.Channel; // TODO
+	mention?: Misskey.entities.User;
+	specified?: Misskey.entities.User;
 	initialText?: string;
 	initialVisibility?: 'public' | 'home' | 'followers' | 'specified';
-	initialFiles?: misskey.entities.DriveFile[];
+	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
-	initialVisibleUsers?: misskey.entities.User[];
-	initialNote?: misskey.entities.Note;
+	initialVisibleUsers?: Misskey.entities.User[];
+	initialNote?: Misskey.entities.Note;
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;

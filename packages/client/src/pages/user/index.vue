@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 let tab = $ref(props.page);
-let user = $ref<null | misskey.entities.UserDetailed>(null);
+let user = $ref<null | Misskey.entities.UserDetailed>(null);
 let error = $ref(null);
 
 function fetchUser(): void {

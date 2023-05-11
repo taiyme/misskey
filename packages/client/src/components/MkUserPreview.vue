@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
@@ -57,7 +57,7 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = $ref<misskey.entities.UserDetailed | null>(null);
+let user = $ref<Misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
 let left = $ref(0);
 

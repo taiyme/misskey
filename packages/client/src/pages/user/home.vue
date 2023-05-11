@@ -111,7 +111,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import calcAge from 's-age';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XUserTimeline from './index.timeline.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -130,7 +130,7 @@ const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.UserDetailed;
+	user: Misskey.entities.UserDetailed;
 }>(), {
 });
 

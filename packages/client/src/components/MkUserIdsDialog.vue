@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user';
@@ -40,12 +40,12 @@ const emit = defineEmits<{
 
 const props = defineProps<{
 	title: string;
-	userIds: misskey.entities.User['id'][];
+	userIds: Misskey.entities.User['id'][];
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let users = $ref<misskey.entities.UserDetailed[]>([]);
+let users = $ref<Misskey.entities.UserDetailed[]>([]);
 
 os.api('users/show', {
 	userIds: props.userIds,

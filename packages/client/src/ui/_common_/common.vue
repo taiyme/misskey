@@ -24,7 +24,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject';
 import XNotification from './notification.vue';
 import { popups, pendingApiRequestsCount } from '@/os';
@@ -40,7 +40,7 @@ const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<misskey.entities.Notification[]>([]);
+let notifications = $ref<Misskey.entities.Notification[]>([]);
 
 function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;

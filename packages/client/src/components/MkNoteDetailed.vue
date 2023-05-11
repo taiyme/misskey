@@ -116,7 +116,7 @@
 import { inject, onMounted, ref, Ref } from 'vue';
 import { ReactiveVariable } from 'vue/macros';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -144,20 +144,20 @@ import { disableContextmenu } from '@/scripts/touch';
 import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
 
-let note = $ref<misskey.entities.Note>(deepClone(props.note));
+let note = $ref<Misskey.entities.Note>(deepClone(props.note));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
 		let result = deepClone(note);
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>; // unknownのため
+			result = await interruptor.handler(result) as ReactiveVariable<Misskey.entities.Note>; // unknownのため
 		}
 		note = result;
 	});
@@ -179,8 +179,8 @@ const translation = ref(null);
 const translating = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const conversation = ref<misskey.entities.Note[]>([]);
-const replies = ref<misskey.entities.Note[]>([]);
+const conversation = ref<Misskey.entities.Note[]>([]);
+const replies = ref<Misskey.entities.Note[]>([]);
 
 const keymap = {
 	'r': (): void => reply(true),
@@ -217,7 +217,7 @@ const react = (_viaKeyboard = false): void => {
 	}, focus);
 };
 
-const undoReact = (note_: misskey.entities.Note): void => {
+const undoReact = (note_: Misskey.entities.Note): void => {
 	const oldReaction = note_.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
@@ -306,7 +306,7 @@ if (appearNote.replyId) {
 	os.api('notes/conversation', {
 		noteId: appearNote.replyId,
 	}).then(res => {
-		const resTyped = res as misskey.entities.Note[]; // TODO型のため
+		const resTyped = res as Misskey.entities.Note[]; // TODO型のため
 		conversation.value = resTyped.reverse();
 	});
 }

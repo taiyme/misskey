@@ -10,12 +10,12 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 
 const props = defineProps<{
-	instance: misskey.entities.Instance;
+	instance: Misskey.entities.Instance;
 }>();
 
 let chartValues = $ref<number[] | null>(null);

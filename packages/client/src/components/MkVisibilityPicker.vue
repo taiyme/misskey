@@ -49,24 +49,24 @@
 
 <script lang="ts" setup>
 import { nextTick, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n';
 
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
-	currentVisibility: typeof misskey.noteVisibilities[number];
+	currentVisibility: typeof Misskey.noteVisibilities[number];
 	currentLocalOnly: boolean;
 	src?: HTMLElement;
-	disabledVisibilities?: typeof misskey.noteVisibilities[number][];
+	disabledVisibilities?: typeof Misskey.noteVisibilities[number][];
 }>(), {
 	src: undefined,
 	disabledVisibilities: () => [],
 });
 
 const emit = defineEmits<{
-	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'changeLocalOnly', v: boolean): void;
 	(ev: 'closed'): void;
 }>();
@@ -78,7 +78,7 @@ watch($$(localOnly), () => {
 	emit('changeLocalOnly', localOnly);
 });
 
-function choose(visibility: typeof misskey.noteVisibilities[number]): void {
+function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {

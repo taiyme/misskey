@@ -56,7 +56,7 @@
 
 <script lang="ts" setup>
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch, unref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
@@ -65,10 +65,10 @@ import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
-export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
+export type Paging<E extends keyof Misskey.Endpoints = keyof Misskey.Endpoints> = {
 	endpoint: E;
 	limit?: number;
-	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
+	params?: Misskey.Endpoints[E]['req'] | ComputedRef<Misskey.Endpoints[E]['req']>;
 
 	/**
 	 * 検索APIのような、ページング不可なエンドポイントを利用する場合
@@ -113,7 +113,7 @@ const users = computed(() => {
 	return items.value
 		.flatMap(x => {
 			const xTyped = x as typeof x & {
-				user?: misskey.entities.UserDetailed | null; /* any型のため */
+				user?: Misskey.entities.UserDetailed | null; /* any型のため */
 			};
 			return xTyped.user ? [xTyped.user] : [];
 		})

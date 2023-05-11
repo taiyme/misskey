@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
 import { v4 as uuid } from 'uuid';
 import MkNote from '@/components/MkNote.vue';
@@ -77,10 +77,10 @@ let currentId = $ref(uuid());
 
 let pickup = $ref<{
 	type: 'note';
-	value: misskey.entities.Note;
+	value: Misskey.entities.Note;
 } | {
 	type: 'user';
-	value: misskey.entities.UserDetailed;
+	value: Misskey.entities.UserDetailed;
 } | {
 	type: 'fetch';
 	value: string | null;

@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
@@ -34,7 +34,7 @@ import { $i } from '@/account';
 import { tmsStore } from '@/tms/store';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 }>();
 
 const textEl = ref<HTMLElement>();

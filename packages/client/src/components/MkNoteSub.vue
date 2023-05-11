@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -36,7 +36,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	detail?: boolean;
 
 	// how many notes are in between this one and the note being viewed in detail
@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<{
 });
 
 let showContent = $ref(false);
-let replies: misskey.entities.Note[] = $ref([]);
+let replies: Misskey.entities.Note[] = $ref([]);
 
 if (props.detail) {
 	os.api('notes/children', {

@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import { computed, watch, provide } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
@@ -31,7 +31,7 @@ const props = defineProps<{
 	clipId: string,
 }>();
 
-let clip = $ref<misskey.entities.Clip | null>(null);
+let clip = $ref<Misskey.entities.Clip | null>(null);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,

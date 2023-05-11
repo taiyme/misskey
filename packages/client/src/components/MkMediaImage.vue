@@ -24,14 +24,14 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	image: misskey.entities.DriveFile;
+	image: Misskey.entities.DriveFile;
 	raw?: boolean;
 }>();
 

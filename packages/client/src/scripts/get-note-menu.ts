@@ -1,5 +1,5 @@
 import { defineAsyncComponent, Ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
@@ -11,12 +11,12 @@ import { getUserMenu } from '@/scripts/get-user-menu';
 import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 export function getNoteMenu(props: {
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	menuButton?: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	currentClipPage?: Ref<misskey.entities.Clip>;
+	currentClipPage?: Ref<Misskey.entities.Clip>;
 }) {
 	const appearNote = isPureRenote(props.note) ? props.note.renote : props.note;
 

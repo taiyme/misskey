@@ -8,14 +8,14 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os';
 
 const props = defineProps<{
 	userIds: string[];
 }>();
 
-const users = ref<misskey.entities.UserDetailed[]>([]);
+const users = ref<Misskey.entities.UserDetailed[]>([]);
 
 onMounted(async () => {
 	users.value = await os.api('users/show', {

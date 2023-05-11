@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
@@ -56,8 +56,8 @@ const props = defineProps<{
 	noteId: string;
 }>();
 
-let note = $ref<misskey.entities.Note | null>();
-let clips = $ref<misskey.entities.Clip | null>();
+let note = $ref<Misskey.entities.Note | null>();
+let clips = $ref<Misskey.entities.Clip | null>();
 let hasPrev = $ref(false);
 let hasNext = $ref(false);
 let showPrev = $ref(false);
