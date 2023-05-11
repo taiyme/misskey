@@ -8,12 +8,12 @@
 	</template>
 
 	<template #default="{ users }">
-		<div class="mk-user-card-mini-list" :class="{ links: props.useUserPage }">
+		<div :class="$style.cardList">
 			<template v-for="user in users" :key="user.id">
-				<MkA v-if="props.useUserPage" :to="userPage(user)">
-					<MkUserCardMini class="user" :user="user" :with-chart="props.withChart"/>
+				<MkA v-if="useUserPage" :to="userPage(user)">
+					<MkUserCardMini :user="user" :with-chart="withChart"/>
 				</MkA>
-				<MkUserCardMini v-else class="user" :user="user" :with-chart="props.withChart"/>
+				<MkUserCardMini v-else :user="user" :with-chart="withChart"/>
 			</template>
 		</div>
 	</template>
@@ -27,7 +27,7 @@ import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
 	pagination: Paging;
 	withChart: boolean;
 	useUserPage: boolean;
@@ -39,5 +39,11 @@ const props = withDefaults(defineProps<{
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.cardList {
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: 100%;
+	gap: var(--margin);
+}
 </style>

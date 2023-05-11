@@ -27,8 +27,8 @@
 					</button>
 				</div>
 				<div class="users">
-					<MkUserCardMiniList v-if="tab === RENOTE_TAB" :pagination="renotedUsers" :with-chart="false" :use-user-page="true"></MkUserCardMiniList>
-					<MkUserCardMiniList v-else :pagination="reactedUsers" :with-chart="false" :use-user-page="true"></MkUserCardMiniList>
+					<TmsUserCardMiniList v-if="tab === RENOTE_TAB" :pagination="renotedUsers" :with-chart="false" :use-user-page="true"/>
+					<TmsUserCardMiniList v-else :pagination="reactedUsers" :with-chart="false" :use-user-page="true"/>
 				</div>
 			</template>
 		</div>
@@ -44,7 +44,7 @@ import { onMounted, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import MkUserCardMiniList from '@/components/MkUserCardMiniList.vue';
+import TmsUserCardMiniList from '@/components/TmsUserCardMiniList.vue';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 
