@@ -66,6 +66,7 @@ import { UserPending } from './entities/user-pending.js';
 import { InstanceRepository } from './repositories/instance.js';
 import { Webhook } from './entities/webhook.js';
 import { UserIp } from './entities/user-ip.js';
+import { TmsCustomImage } from './entities/tms/custom-image.js';
 
 export const Announcements = db.getRepository(Announcement);
 export const AnnouncementReads = db.getRepository(AnnouncementRead);
@@ -131,3 +132,4 @@ export const RegistryItems = db.getRepository(RegistryItem);
 export const Webhooks = db.getRepository(Webhook);
 export const Ads = db.getRepository(Ad);
 export const PasswordResetRequests = db.getRepository(PasswordResetRequest);
+export const TmsCustomImages = db.getRepository(TmsCustomImage);

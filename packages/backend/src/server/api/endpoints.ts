@@ -317,6 +317,8 @@ import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___admin_driveCapOverride from './endpoints/admin/drive-capacity-override.js';
+import * as ep___tms_customImage_get from './endpoints/tms/custom-image/get.js';
+import * as ep___tms_customImage_set from './endpoints/tms/custom-image/set.js';
 
 const eps = [
 	['admin/meta', ep___admin_meta],
@@ -636,6 +638,8 @@ const eps = [
 	['users/stats', ep___users_stats],
 	['admin/drive-capacity-override', ep___admin_driveCapOverride],
 	['fetch-rss', ep___fetchRss],
+	['tms/custom-image/get', ep___tms_customImage_get],
+	['tms/custom-image/set', ep___tms_customImage_set],
 ];
 
 export interface IEndpointMeta {
