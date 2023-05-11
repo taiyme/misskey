@@ -29,11 +29,14 @@ defineProps<{
 
 <style lang="scss" module>
 .root {
-	display: block;
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: 100%;
+	gap: 8px;
 	padding: 16px;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-	color: inherit !important;
+	color: inherit;
 
 	&:hover {
 		text-decoration: none;
@@ -49,15 +52,15 @@ defineProps<{
 }
 
 .clipDescription {
-	margin-top: 8px;
 	font-size: 0.8em;
 }
 
 .clipUser {
-	margin-top: 8px;
 	display: grid;
 	grid-template-columns: 16px 1fr;
 	grid-template-rows: 16px;
+	align-items: center;
+	gap: 4px;
 }
 
 .clipUserIcon {
@@ -68,6 +71,5 @@ defineProps<{
 
 .clipUserName {
 	font-size: 0.8em;
-	line-height: 0.8em;
 }
 </style>
