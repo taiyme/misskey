@@ -3,10 +3,7 @@
 <MkSpacer :content-max="700">
 	<MkPagination v-slot="{items}" :pagination="pagination">
 		<div :class="$style.clips">
-			<MkA v-for="item in items" :key="item.id" :to="`/clips/${item.id}`" :class="[$style.clip, '_panel']">
-				<div :class="$style.clipName">{{ item.name }}</div>
-				<div v-if="item.description" :class="$style.clipDescription">{{ item.description }}</div>
-			</MkA>
+			<TmsClipPreview v-for="clip in items" :key="clip.id" :clip="(clip as any /* 定義されていないため */)"/>
 		</div>
 	</MkPagination>
 </MkSpacer>
@@ -14,11 +11,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
+import TmsClipPreview from '@/components/TmsClipPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
 const props = defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>();
 
 const pagination = {
@@ -36,25 +34,5 @@ const pagination = {
 	grid-auto-flow: row;
 	grid-template-columns: 100%;
 	gap: var(--margin);
-}
-
-.clip {
-	display: block;
-	padding: 16px;
-	overflow: hidden; // fallback (overflow: clip)
-	overflow: clip;
-}
-
-.clipName {
-	font-weight: bold;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.clipDescription {
-	margin-top: 8px;
-	padding-top: 8px;
-	border-top: solid 0.5px var(--divider);
 }
 </style>
