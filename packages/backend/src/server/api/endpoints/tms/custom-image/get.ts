@@ -28,12 +28,6 @@ export const meta = {
 				nullable: false,
 				optional: false,
 			},
-			pwaIconType: {
-				type: 'string',
-				enum: ['default', 'custom'],
-				nullable: false,
-				optional: false,
-			},
 			pwaIcon192URL: {
 				type: 'string',
 				nullable: false,
@@ -58,17 +52,16 @@ type Responce = {
 	infoImageURL: string;
 	notFoundImageURL: string;
 	errorImageURL: string;
-	pwaIconType: 'default' | 'custom';
 	pwaIcon192URL: string;
 	pwaIcon512URL: string;
 };
 
+// そろそろno-default-exportを消してもいいかもしれない
 // eslint-disable-next-line import/no-default-export
 export default define(meta, paramDef, async (_ps, _me): Promise<Responce> => {
-	// 分割代入で不必要な要素idを取り除くためなので許容
+	// 不必要な要素idを取り除くための分割代入なのでので許容
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	// const { id: _, ...response } = await FetchCustomImage();
-	const response = await FetchCustomImage();
+	const { id: _, ...response } = await FetchCustomImage();
 
 	return response;
 });

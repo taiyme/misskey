@@ -1,9 +1,8 @@
-export class tmsCustomImage1683805713382 {
-    name = 'tmsCustomImage1683805713382'
+export class tmsCustomImage1683811106730 {
+    name = 'tmsCustomImage1683811106730'
 
     async up(queryRunner) {
-        await queryRunner.query(`CREATE TYPE "public"."tms_custom_image_pwaicontype_enum" AS ENUM('default', 'custom')`);
-        await queryRunner.query(`CREATE TABLE "tms_custom_image" ("id" integer NOT NULL, "infoImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/info.jpg', "notFoundImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/not-found.jpg', "errorImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/error.jpg', "pwaIconType" "public"."tms_custom_image_pwaicontype_enum" NOT NULL DEFAULT 'default', "pwaIcon192URL" character varying(512) NOT NULL DEFAULT '/static-assets/icons/192.png', "pwaIcon512URL" character varying(512) NOT NULL DEFAULT '/static-assets/icons/512.png', CONSTRAINT "PK_e830889ecb6b4f7d7ec4e2161ab" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "tms_custom_image" ("id" integer NOT NULL, "infoImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/info.jpg', "notFoundImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/not-found.jpg', "errorImageURL" character varying(512) NOT NULL DEFAULT 'https://xn--931a.moe/assets/error.jpg', "pwaIcon192URL" character varying(512) NOT NULL DEFAULT '/static-assets/icons/192.png', "pwaIcon512URL" character varying(512) NOT NULL DEFAULT '/static-assets/icons/512.png', CONSTRAINT "PK_e830889ecb6b4f7d7ec4e2161ab" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" SET DEFAULT 'https://github.com/taiyme/misskey'`);
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "feedbackUrl" SET DEFAULT 'https://github.com/taiyme/misskey/issues/new'`);
         await queryRunner.query(`ALTER TABLE "poll" DROP CONSTRAINT "FK_da851e06d0dfe2ef397d8b1bf1b"`);
@@ -46,6 +45,5 @@ export class tmsCustomImage1683805713382 {
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "feedbackUrl" SET DEFAULT 'https://github.com/misskey-dev/misskey/issues/new'`);
         await queryRunner.query(`ALTER TABLE "meta" ALTER COLUMN "repositoryUrl" SET DEFAULT 'https://github.com/misskey-dev/misskey'`);
         await queryRunner.query(`DROP TABLE "tms_custom_image"`);
-        await queryRunner.query(`DROP TYPE "public"."tms_custom_image_pwaicontype_enum"`);
     }
 }

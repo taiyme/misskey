@@ -13,7 +13,7 @@ export const FetchCustomImage = async (): Promise<TmsCustomImage> => {
 		if (customImage[0]) return customImage[0];
 
 		return await entityManager
-			.upsert(TmsCustomImage, {}, ['id'])
+			.upsert(TmsCustomImage, { id: 1 }, ['id'])
 			.then((x) =>
 				entityManager.findOneByOrFail(TmsCustomImage, x.identifiers[0]),
 			);

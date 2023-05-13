@@ -23,12 +23,6 @@ export class TmsCustomImage {
 	})
 	public errorImageURL: string;
 
-	@Column('enum', {
-		enum: ['default', 'custom'],
-		default: 'default',
-	})
-	public pwaIconType: 'default' | 'custom';
-
 	@Column('varchar', {
 		length: 512,
 		default: '/static-assets/icons/192.png',
