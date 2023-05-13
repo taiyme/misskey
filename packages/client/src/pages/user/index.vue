@@ -10,7 +10,7 @@
 				<XPages v-else-if="tab === 'pages'" :user="user"/>
 				<XGallery v-else-if="tab === 'gallery'" :user="user"/>
 			</div>
-			<MkError v-else-if="error" @retry="fetchUser()"/>
+			<TmsStatus type="error" v-else-if="error" @retry="fetchUser()"/>
 			<MkLoading v-else/>
 		</transition>
 	</div>
@@ -27,6 +27,7 @@ import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));

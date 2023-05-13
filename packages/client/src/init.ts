@@ -97,7 +97,7 @@ import { mainRouter } from '@/router';
 	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
-	document.addEventListener('touchend', () => {}, { passive: true });
+	document.addEventListener('touchend', () => { }, { passive: true });
 
 	// 一斉リロード
 	reloadChannel.addEventListener('message', path => {
@@ -193,10 +193,10 @@ import { mainRouter } from '@/router';
 
 	const app = createApp(
 		window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
-		defineAsyncComponent(() => import('@/ui/universal.vue')),
+			!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+				ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+					ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+						defineAsyncComponent(() => import('@/ui/universal.vue')),
 	);
 
 	if (_DEV_) {

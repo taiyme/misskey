@@ -2,10 +2,7 @@
 <div class="_formRoot">
 	<FormPagination ref="list" :pagination="pagination">
 		<template #empty>
-			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
+			<TmsStatus type="info">{{ i18n.ts.nothing }}</TmsStatus>
 		</template>
 		<template #default="{items}">
 			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
@@ -43,6 +40,7 @@ import FormPagination from '@/components/MkPagination.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const list = ref<any>(null);
 

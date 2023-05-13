@@ -9,10 +9,7 @@
 		<div class="body">
 			<MkPagination v-if="pagination" ref="pagingComponent" :key="userAcct || groupId" :pagination="pagination">
 				<template #empty>
-					<div class="_fullinfo">
-						<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-						<div>{{ i18n.ts.noMessagesYet }}</div>
-					</div>
+					<TmsStatus type="info">{{ i18n.ts.noMessagesYet }}</TmsStatus>
 				</template>
 
 				<template #default="{ items: messages, fetching: pFetching }">
@@ -57,6 +54,7 @@ import XMessage from './messaging-room.message.vue';
 import XForm from './messaging-room.form.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 import { isBottomVisible, onScrollBottom, scrollToBottom } from '@/scripts/scroll';
 import * as os from '@/os';
 import { stream } from '@/stream';

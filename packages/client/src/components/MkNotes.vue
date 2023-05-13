@@ -1,10 +1,7 @@
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
-		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ i18n.ts.noNotes }}</div>
-		</div>
+		<TmsStatus type="info">{{ i18n.ts.noNotes }}</TmsStatus>
 	</template>
 
 	<template #default="{ items: notes }">
@@ -19,6 +16,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import TmsStatus from './global/TmsStatus.vue';
 import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';

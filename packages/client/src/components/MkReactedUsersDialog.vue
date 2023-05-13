@@ -11,10 +11,7 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="note" class="mk-reacted-users-dialog _gaps">
-			<div v-if="!hasRenote && reactions?.length === 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
+			<TmsStatus v-if="!hasRenote && reactions?.length === 0" type="info">{{ i18n.ts.nothing }}</TmsStatus>
 			<template v-else>
 				<div class="tabs">
 					<button v-if="hasRenote" class="tab _button" :class="{ tabActive: tab === RENOTE_TAB }" @click="tab = RENOTE_TAB">
@@ -42,6 +39,7 @@
 <script lang="ts" setup>
 import { onMounted, computed } from 'vue';
 import * as misskey from 'misskey-js';
+import TmsStatus from './global/TmsStatus.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkUserCardMiniList from '@/components/MkUserCardMiniList.vue';

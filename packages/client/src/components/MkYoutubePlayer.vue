@@ -13,12 +13,13 @@
 			<span v-else>invalid url</span>
 		</Transition>
 		<MkLoading v-if="fetching"/>
-		<MkError v-else-if="!player.url" @retry="ytFetch()"/>
+		<TmsStatus v-else-if="!player.url" type="error" @retry="ytFetch()"/>
 	</div>
 </XWindow>
 </template>
 
 <script lang="ts" setup>
+import TmsStatus from './global/TmsStatus.vue';
 import XWindow from '@/components/MkWindow.vue';
 import { lang } from '@/config';
 

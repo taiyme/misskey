@@ -4,10 +4,7 @@
 	<MkSpacer :content-max="800">
 		<MkPagination ref="pagingComponent" :pagination="pagination">
 			<template #empty>
-				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-					<div>{{ i18n.ts.noNotes }}</div>
-				</div>
+				<TmsStatus type="info">{{ i18n.ts.noNotes }}</TmsStatus>
 			</template>
 
 			<template #default="{ items }">
@@ -27,6 +24,7 @@ import XNote from '@/components/MkNote.vue';
 import XList from '@/components/MkDateSeparatedList.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const pagination = {
 	endpoint: 'i/favorites' as const,

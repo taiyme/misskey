@@ -1,10 +1,7 @@
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
-		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ i18n.ts.noUsers }}</div>
-		</div>
+		<TmsStatus type="info">{{ i18n.ts.noUsers }}</TmsStatus>
 	</template>
 
 	<template #default="{ users }">
@@ -22,6 +19,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import TmsStatus from './global/TmsStatus.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { userPage } from '@/filters/user';

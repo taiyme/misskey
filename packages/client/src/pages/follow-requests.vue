@@ -4,10 +4,9 @@
 	<MkSpacer :content-max="800">
 		<MkPagination ref="paginationComponent" :pagination="pagination">
 			<template #empty>
-				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-					<div>{{ i18n.ts.noFollowRequests }}</div>
-				</div>
+				<TmsStatus type="info">
+					{{ i18n.ts.noFollowRequests }}
+				</TmsStatus>
 			</template>
 			<template #default="{items}">
 				<div class="mk-follow-requests">
@@ -40,6 +39,7 @@ import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

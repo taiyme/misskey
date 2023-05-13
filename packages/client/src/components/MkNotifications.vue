@@ -1,10 +1,7 @@
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
-		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-			<div>{{ i18n.ts.noNotifications }}</div>
-		</div>
+		<TmsStatus type="info">{{ i18n.ts.noNotifications }}</TmsStatus>
 	</template>
 
 	<template #default="{ items: notifications }">
@@ -19,6 +16,7 @@
 <script lang="ts" setup>
 import { onUnmounted, onMounted, computed, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
+import TmsStatus from './global/TmsStatus.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import XList from '@/components/MkDateSeparatedList.vue';

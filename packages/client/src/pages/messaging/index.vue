@@ -32,10 +32,7 @@
 					</div>
 				</MkA>
 			</div>
-			<div v-if="!fetching && messages.length == 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ $ts.noHistory }}</div>
-			</div>
+			<TmsStatus v-if="!fetching && messages.length == 0" type="info">{{ $ts.noHistory }}</TmsStatus>
 			<MkLoading v-if="fetching"/>
 		</div>
 	</MkSpacer>
@@ -53,6 +50,7 @@ import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const router = useRouter();
 

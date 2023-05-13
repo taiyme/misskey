@@ -55,7 +55,7 @@
 					</MkPagination>
 				</MkContainer>
 			</div>
-			<MkError v-else-if="error" @retry="fetchPage()"/>
+			<TmsStatus type="error" v-else-if="error" @retry="fetchPage()"/>
 			<MkLoading v-else/>
 		</transition>
 	</MkSpacer>
@@ -74,6 +74,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const props = defineProps<{
 	pageName: string;

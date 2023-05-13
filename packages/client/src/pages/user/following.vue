@@ -6,7 +6,7 @@
 			<div v-if="user">
 				<XFollowList :user="user" type="following"/>
 			</div>
-			<MkError v-else-if="error" @retry="fetchUser()"/>
+			<TmsStatus type="error" v-else-if="error" @retry="fetchUser()"/>
 			<MkLoading v-else/>
 		</transition>
 	</MkSpacer>
@@ -21,6 +21,7 @@ import XFollowList from './follow-list.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const props = withDefaults(defineProps<{
 	acct: string;

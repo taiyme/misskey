@@ -11,10 +11,7 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="mk-visible-users-dialog _gaps">
-			<div v-if="users.length === 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
+			<TmsStatus v-if="users.length === 0" type="info">{{ i18n.ts.nothing }}</TmsStatus>
 			<template v-else>
 				<MkA v-for="user in users" :key="user.id" :to="userPage(user)">
 					<MkUserCardMini class="user" :user="user" :with-chart="false"/>
@@ -28,6 +25,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as misskey from 'misskey-js';
+import TmsStatus from './global/TmsStatus.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user';

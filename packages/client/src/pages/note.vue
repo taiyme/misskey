@@ -32,7 +32,7 @@
 						<XNotes class="_content" :pagination="prevPagination" :no-gap="true"/>
 					</div>
 				</div>
-				<MkError v-else-if="error" @retry="fetch()"/>
+				<TmsStatus type="error" v-else-if="error" @retry="fetch()"/>
 				<MkLoading v-else/>
 			</transition>
 		</div>
@@ -50,6 +50,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const props = defineProps<{
 	noteId: string;

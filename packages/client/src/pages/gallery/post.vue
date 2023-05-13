@@ -46,7 +46,7 @@
 						</MkPagination>
 					</MkContainer>
 				</div>
-				<MkError v-else-if="error" @retry="fetch()"/>
+				<TmsStatus type="error" v-else-if="error" @retry="fetch()"/>
 				<MkLoading v-else/>
 			</transition>
 		</div>
@@ -66,6 +66,7 @@ import { url } from '@/config';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import TmsStatus from '@/components/global/TmsStatus.vue';
 
 const router = useRouter();
 

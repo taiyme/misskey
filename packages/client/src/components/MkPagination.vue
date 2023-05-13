@@ -8,14 +8,11 @@
 >
 	<MkLoading v-if="fetching"/>
 
-	<MkError v-else-if="error" @retry="init()"/>
+	<TmsStatusVue v-else-if="error" type="error" @retry="init()"/>
 
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
-			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
+			<TmsStatus type="info">{{ i18n.ts.nothing }}</TmsStatus>
 		</slot>
 	</div>
 
@@ -56,6 +53,7 @@
 <script lang="ts" setup>
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch, unref } from 'vue';
 import * as misskey from 'misskey-js';
+import TmsStatus from './global/TmsStatus.vue';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
