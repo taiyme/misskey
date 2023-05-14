@@ -54,6 +54,7 @@
 		"three": "0.150.0",
 		"throttle-debounce": "5.0.0",
 		"tinycolor2": "1.6.0",
+		"ts-pattern": "^4.3.0",
 		"tsc-alias": "1.8.2",
 		"tsconfig-paths": "4.1.2",
 		"twemoji-parser": "14.0.0",
