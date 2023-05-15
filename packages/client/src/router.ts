@@ -382,6 +382,10 @@ export const routes = [{
 		name: 'other-settings',
 		component: page(() => import('./pages/admin/other-settings.vue')),
 	}, {
+		path: '/taiyme-settings',
+		name: 'taiyme-settings',
+		component: page(() => import('./pages/admin/taiyme-settings.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],

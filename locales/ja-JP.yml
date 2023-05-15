@@ -2304,3 +2304,17 @@ _tms:
   unreact: "リアクションを解除"
   pakuru: "パクる"
   numberquote: "数字引用する"
+  customImage: "各ページの画像"
+
+  _customImage:
+    info: "案内ページの画像のURL"
+    notFound: "404ページの画像のURL"
+    error: "エラーページの画像のURL"
+
+    pwaIcon: "PWAアイコン"
+    pwaIconType: "PWAアイコンの種類"
+    default: "デフォルトアイコン"
+    themeColor: "テーマカラー"
+    custom: "カスタムアイコン"
+    pwaIcon192: "PWAアイコン(192x192)"
+    pwaIcon512: "PWAアイコン(512x512)"

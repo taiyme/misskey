@@ -96,7 +96,7 @@ type Responce = {
 export default define(meta, paramDef, async (ps, _me): Promise<Responce> => {
 	const params = (({ infoImageURL, notFoundImageURL, errorImageURL, pwaIcon192URL, pwaIcon512URL }): { infoImageURL: string | undefined, notFoundImageURL: string | undefined, errorImageURL: string | undefined, pwaIcon192URL: string | undefined, pwaIcon512URL: string | undefined; } => ({ infoImageURL, notFoundImageURL, errorImageURL, pwaIcon192URL, pwaIcon512URL }))(ps);
 	for (const [key, value] of Object.entries(params)) {
-		if (value !== undefined && !(new RegExp(/^https?:\/\/[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+$/).test(value))) {
+		if (value !== undefined && !(new RegExp(/^(https?:\/)?\/[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)'\[\]]+$/).test(value))) {
 			throw new ApiError(meta.errors.invalidUrl, { key, value });
 		}
 	}
