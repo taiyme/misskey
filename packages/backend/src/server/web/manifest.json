@@ -20,7 +20,7 @@
 		},
 		{
 			"src": "/static-assets/splash.png",
-			"sizes": "300x300",
+			"sizes": "512x512",
 			"type": "image/png",
 			"purpose": "any"
 		}

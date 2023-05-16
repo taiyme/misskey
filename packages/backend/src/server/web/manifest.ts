@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import { match } from 'ts-pattern';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import { deepClone } from '@/misc/clone.js';
 import { FetchCustomImage } from '@/misc/tms/fetch-custom-image.js';
@@ -12,24 +13,13 @@ export const manifestHandler = async (ctx: Koa.Context) => {
 
 	res.short_name = instance.name || 'Misskey';
 	res.name = instance.name || 'Misskey';
-	if (instance.themeColor) {
-		res.theme_color = instance.themeColor;
-		res.background_color = instance.themeColor;
-	}
+	if (instance.themeColor) res.theme_color = instance.themeColor;
 
 	res.icons = res.icons.map((icon) => {
-		switch (icon.sizes) {
-			case '192x192':
-				icon.src = customImage.pwaIcon192URL;
-				break;
-
-			case '512x512':
-				icon.src = customImage.pwaIcon512URL;
-				break;
-
-			default:
-				break;
-		}
+		icon.src = match(icon.sizes)
+			.with('192x192', () => customImage.pwaIcon192URL)
+			.with('512x512', () => customImage.pwaIcon512URL)
+			.otherwise(() => icon.src);
 
 		return icon;
 	});
