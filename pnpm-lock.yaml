@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 importers:
 
@@ -331,7 +335,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
       syslog-pro:
         specifier: 1.0.0
         version: 1.0.0
@@ -606,7 +610,7 @@ importers:
         version: 4.20.2
       browser-image-resizer:
         specifier: github:misskey-dev/browser-image-resizer
-        version: github.com/misskey-dev/browser-image-resizer/0380d12c8e736788ea7f4e6e985175521ea7b23c
+        version: github.com/misskey-dev/browser-image-resizer/56f504427ad7f6500e141a6d9f3aee42023d7f3e
       chart.js:
         specifier: 4.2.1
         version: 4.2.1
@@ -728,6 +732,9 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(vue@3.2.47)
     devDependencies:
+      '@types/autosize':
+        specifier: ^4.0.1
+        version: 4.0.1
       '@types/escape-regexp':
         specifier: 0.0.1
         version: 0.0.1
@@ -740,6 +747,9 @@ importers:
       '@types/gulp-rename':
         specifier: 2.0.1
         version: 2.0.1
+      '@types/insert-text-at-cursor':
+        specifier: ^0.3.0
+        version: 0.3.0
       '@types/katex':
         specifier: 0.16.0
         version: 0.16.0
@@ -752,6 +762,9 @@ importers:
       '@types/seedrandom':
         specifier: 3.0.5
         version: 3.0.5
+      '@types/textarea-caret':
+        specifier: ^3.0.1
+        version: 3.0.1
       '@types/throttle-debounce':
         specifier: 5.0.0
         version: 5.0.0
@@ -793,7 +806,7 @@ importers:
         version: 1.15.4
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
 
   packages/sw:
     dependencies:
@@ -2534,6 +2547,10 @@ packages:
     dependencies:
       '@types/node': 18.14.1
 
+  /@types/autosize@4.0.1:
+    resolution: {integrity: sha512-iPJT/FCaSO79G6j+9n6gmFc5nhxZ1gDrA2UAvb5FslJ6FJQZnDfbBU0qp5vpp0Cbjj7+gOyjuWZ7RrXvRuETaA==}
+    dev: true
+
   /@types/bcryptjs@2.4.2:
     resolution: {integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==}
     dev: true
@@ -2660,6 +2677,10 @@ packages:
 
   /@types/http-errors@2.0.1:
     resolution: {integrity: sha512-/K3ds8TRAfBvi5vfjuz8y6+GiAYBZ0x4tXv1Av6CWBWn0IlADc+ZX9pMq7oU0fNQPnBwIZl3rmeLp6SBApbxSQ==}
+
+  /@types/insert-text-at-cursor@0.3.0:
+    resolution: {integrity: sha512-58a+1l6hz5DQ25NjODvZEYmJUWA1ALbUxcf/GHjMfh92r41lZkI6buNN0NwxIvJQDkTFNqL73G2Fduu5ctHVhA==}
+    dev: true
 
   /@types/js-yaml@4.0.5:
     resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
@@ -2916,6 +2937,10 @@ packages:
     resolution: {integrity: sha512-JEcOhN2SQCoX86ZfiZEe8px84sVJtivBXMZfOVyARTYEj0hrwwbj1nF0FwEL3nJSoEV6uTbcdLllMKBgAYHWCQ==}
     dependencies:
       '@types/node': 18.14.1
+    dev: true
+
+  /@types/textarea-caret@3.0.1:
+    resolution: {integrity: sha512-JjrXYzk4t6dM/5nz1hHkZXmd3xSdJM6mOIDSBUrpg4xThwKNryiu4CqHx81LwUJHxEEoQWHTu4fMV4em+c5bXg==}
     dev: true
 
   /@types/throttle-debounce@5.0.0:
@@ -6733,7 +6758,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -13389,16 +13414,16 @@ packages:
       readable-stream: 3.6.2
     dev: false
 
-  github.com/misskey-dev/browser-image-resizer/0380d12c8e736788ea7f4e6e985175521ea7b23c:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0380d12c8e736788ea7f4e6e985175521ea7b23c}
+  github.com/misskey-dev/browser-image-resizer/56f504427ad7f6500e141a6d9f3aee42023d7f3e:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/56f504427ad7f6500e141a6d9f3aee42023d7f3e}
     name: browser-image-resizer
-    version: 2.2.1-misskey.3
+    version: 2.2.1-misskey.4
     dev: false
 
-  github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992}
+  github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/77dd5654bb82280b38c1f50e51a771c33f3df503}
     name: summaly
-    version: 4.0.1
+    version: 4.0.2
     dependencies:
       cheerio: 1.0.0-rc.12
       escape-regexp: 0.0.1
