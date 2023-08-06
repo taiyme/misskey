@@ -44,6 +44,11 @@ export default defineConfig(({ command, mode }) => {
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
+		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+		optimizeDeps: {
+			include: ['misskey-js'],
+		},
+
 		build: {
 			target: [
 				'chrome100',
@@ -67,6 +72,11 @@ export default defineConfig(({ command, mode }) => {
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV !== 'production',
 			reportCompressedSize: false,
+
+			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+			commonjsOptions: {
+				include: [/misskey-js/, /node_modules/],
+			},
 		},
 	};
 });

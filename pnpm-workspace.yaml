@@ -2,3 +2,4 @@ packages:
  - 'packages/backend'
  - 'packages/client'
  - 'packages/sw'
+ - 'packages/misskey-js'
