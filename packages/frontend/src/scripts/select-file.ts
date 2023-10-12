@@ -5,7 +5,7 @@
  */
 
 import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';

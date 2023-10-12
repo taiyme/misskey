@@ -54,7 +54,7 @@ import { instanceName } from '@/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';

@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -127,7 +127,7 @@ function showMenu(ev: MouseEvent) {
 
 .sensitive {
 	position: relative;
-	
+
 	&::after {
 		content: "";
 		position: absolute;

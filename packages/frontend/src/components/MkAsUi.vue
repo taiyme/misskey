@@ -68,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { AsUiComponent } from '@/scripts/aiscript/ui.js';
+import { type AsUiComponent } from '@/scripts/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 

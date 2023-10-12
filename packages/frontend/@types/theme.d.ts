@@ -5,7 +5,7 @@
  */
 
 declare module '@/themes/*.json5' {
-	import { Theme } from '@/scripts/theme.js';
+	import type { Theme } from '@/scripts/theme.js';
 
 	const theme: Theme;
 

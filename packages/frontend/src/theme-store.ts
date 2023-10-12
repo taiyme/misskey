@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Theme } from '@/scripts/theme.js';
+import { type Theme } from '@/scripts/theme.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { api } from '@/os.js';
 import { $i } from '@/account.js';

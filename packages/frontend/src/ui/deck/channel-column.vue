@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
-import { updateColumn, Column } from './deck-store.js';
+import { updateColumn, type Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';

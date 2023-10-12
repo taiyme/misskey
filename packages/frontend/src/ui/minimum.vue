@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();

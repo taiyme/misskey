@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick, watch } from 'vue';
 import { Chart } from 'chart.js';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';

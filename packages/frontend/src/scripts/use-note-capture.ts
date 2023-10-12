@@ -5,7 +5,7 @@
  */
 
 import { onUnmounted, Ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { useStream } from '@/stream.js';
 import { $i } from '@/account.js';
 

@@ -5,7 +5,7 @@
  */
 
 import { markRaw, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import { Storage } from '@/pizzax.js';
 

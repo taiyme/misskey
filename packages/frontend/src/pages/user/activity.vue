@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import XHeatmap from './activity.heatmap.vue';
 import XPv from './activity.pv.vue';
 import XNotes from './activity.notes.vue';

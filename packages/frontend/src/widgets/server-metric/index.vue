@@ -22,14 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from '../widget.js';
+import { useWidgetPropsManager, type Widget, type WidgetComponentExpose } from '../widget.js';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { GetFormResultType } from '@/scripts/form.js';
+import type { GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';

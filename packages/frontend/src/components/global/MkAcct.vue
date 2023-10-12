@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode/';
 import MkCondensedLine from './MkCondensedLine.vue';
 import { host as hostRaw } from '@/config.js';

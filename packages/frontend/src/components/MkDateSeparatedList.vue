@@ -11,7 +11,7 @@ import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 
 export default defineComponent({
 	props: {

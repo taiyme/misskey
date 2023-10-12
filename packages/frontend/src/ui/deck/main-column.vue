@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ComputedRef, provide, shallowRef } from 'vue';
 import XColumn from './column.vue';
-import { deckStore, Column } from '@/ui/deck/deck-store.js';
+import { deckStore, type Column } from '@/ui/deck/deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 

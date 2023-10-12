@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
