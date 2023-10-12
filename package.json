@@ -18,6 +18,8 @@
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-storybook-pre": "pnpm --filter frontend build-storybook-pre",
+		"build-misskeyjs": "pnpm --filter misskey-js build",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
 		"init": "pnpm migrate",
