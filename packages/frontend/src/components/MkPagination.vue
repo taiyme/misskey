@@ -51,7 +51,7 @@ import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onS
 import { useDocumentVisibility } from '@/scripts/use-document-visibility.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list';
+import { MisskeyEntity } from '@/types/date-separated-list.js';
 import { i18n } from '@/i18n.js';
 
 const SECOND_FETCH_LIMIT = 30;

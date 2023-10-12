@@ -24,7 +24,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme.js';
 import * as os from '@/os.js';
-import { addTheme, getThemes } from '@/theme-store';
+import { addTheme, getThemes } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 

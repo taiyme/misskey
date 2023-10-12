@@ -6,7 +6,7 @@
 
 import { App } from 'vue';
 
-import Mfm from './global/MkMisskeyFlavoredMarkdown.ts';
+import Mfm from './global/MkMisskeyFlavoredMarkdown.js';
 import MkA from './global/MkA.vue';
 import MkAcct from './global/MkAcct.vue';
 import MkAvatar from './global/MkAvatar.vue';
@@ -17,7 +17,7 @@ import MkUserName from './global/MkUserName.vue';
 import MkEllipsis from './global/MkEllipsis.vue';
 import MkTime from './global/MkTime.vue';
 import MkUrl from './global/MkUrl.vue';
-import I18n from './global/i18n';
+import I18n from './global/i18n.js';
 import RouterView from './global/RouterView.vue';
 import MkLoading from './global/MkLoading.vue';
 import MkError from './global/MkError.vue';

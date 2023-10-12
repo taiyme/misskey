@@ -6,10 +6,10 @@
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
-import './init';
+import './init.js';
 import type * as Misskey from 'misskey-js';
-import { components } from '@/components';
-import { directives } from '@/directives';
+import { components } from '@/components/index.js';
+import { directives } from '@/directives/index.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 
 describe('MkMediaImage', () => {

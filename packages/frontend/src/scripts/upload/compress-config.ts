@@ -5,7 +5,7 @@
  */
 
 import isAnimated from 'is-file-animated';
-import { isWebpSupported } from './isWebpSupported';
+import { isWebpSupported } from './isWebpSupported.js';
 import type { BrowserImageResizerConfig } from 'browser-image-resizer';
 
 const compressTypeMap = {

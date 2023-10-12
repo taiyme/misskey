@@ -33,7 +33,7 @@ import { onActivated } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache } from '@/cache';
+import { antennasCache } from '@/cache.js';
 import { infoImageUrl } from '@/instance.js';
 
 const antennas = $computed(() => antennasCache.value.value ?? []);
