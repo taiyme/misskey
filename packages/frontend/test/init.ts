@@ -5,6 +5,7 @@
  */
 
 import { vi } from 'vitest';
+// @ts-expect-error https://github.com/IanVS/vitest-fetch-mock/issues/10
 import createFetchMock from 'vitest-fetch-mock';
 
 const fetchMocker = createFetchMock(vi);
