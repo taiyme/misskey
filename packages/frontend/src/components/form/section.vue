@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.main">
 		<slot></slot>
 	</div>
+	<div :class="$style.caption"><slot name="caption"></slot></div>
 </div>
 </template>
 
@@ -45,5 +46,15 @@ defineProps<{
 
 .main {
 	margin: 1.5em 0 0 0;
+}
+
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
 }
 </style>
