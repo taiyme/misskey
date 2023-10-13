@@ -2212,3 +2212,8 @@ _fileViewer:
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
+
+_tms:
+  aboutMisskey: "taiyme/misskeyについて"
+  aboutMisskeyDescription: "taiyme/misskeyは、Misskeyからフォークされたオープンソースのソフトウェアです。"
+  donateToTaiy: "taiyに寄付"

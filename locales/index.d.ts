@@ -2300,6 +2300,11 @@ export interface Locale {
         readonly "attachedNotes": string;
         readonly "thisPageCanBeSeenFromTheAuthor": string;
     };
+    readonly "_tms": {
+        readonly "aboutMisskey": string;
+        readonly "aboutMisskeyDescription": string;
+        readonly "donateToTaiy": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
