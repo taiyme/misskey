@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 					<div v-html="i18n.t('poweredByMisskeyDescription', { name: instance.name ?? host })">
 					</div>
-					<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
+					<FormLink to="/about-misskey">{{ i18n.ts._tms.aboutMisskey }}</FormLink>
 				</div>
 			</FormSection>
 

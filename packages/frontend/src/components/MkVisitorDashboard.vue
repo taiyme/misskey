@@ -99,7 +99,7 @@ function showMenu(ev) {
 			os.pageWindow('/about');
 		},
 	}, {
-		text: i18n.ts.aboutMisskey,
+		text: i18n.ts._tms.aboutMisskey,
 		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about-misskey');
