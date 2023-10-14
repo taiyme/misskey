@@ -5,12 +5,14 @@
  */
 
 import { markRaw } from 'vue';
-import type { Locale } from '../../../locales/index.js';
 import { locale } from '@/config.js';
 import { I18n } from '@/scripts/i18n.js';
+import type { Locale } from '@/../../locales/index.js';
+export type { Locale };
 
-export const i18n = markRaw(new I18n<Locale>(locale));
+// @ts-expect-error Locale型と実装がズレてしまうが...
+export const i18n = markRaw(new I18n<Locale>(locale ?? {}));
 
-export function updateI18n(newLocale) {
+export const updateI18n = (newLocale: Locale): void => {
 	i18n.ts = newLocale;
-}
+};
