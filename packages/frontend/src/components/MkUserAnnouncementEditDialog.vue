@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="400"
 	@close="dialog.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
 	<template v-else #header>New announcement</template>

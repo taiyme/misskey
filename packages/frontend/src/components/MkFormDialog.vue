@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		{{ title }}
@@ -82,6 +82,7 @@ const emit = defineEmits<{
 		canceled?: boolean;
 		result?: any;
 	}): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();

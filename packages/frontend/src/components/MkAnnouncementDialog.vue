@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')" @click="onBgClick">
+<MkModal ref="modal" :zPriority="'middle'" @closed="emit('closed')" @click="onBgClick">
 	<div ref="rootEl" :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.icon">
@@ -36,6 +36,10 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
 const rootEl = shallowRef<HTMLDivElement>();
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
@@ -49,7 +53,7 @@ async function ok() {
 		if (confirm.canceled) return;
 	}
 
-	modal.value.close();
+	modal.value?.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
@@ -57,7 +61,7 @@ async function ok() {
 }
 
 function onBgClick() {
-	rootEl.value.animate([{
+	rootEl.value?.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {

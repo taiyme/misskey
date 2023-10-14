@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="400"
 	@close="dialog.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
 	<template v-else #header>New emoji</template>
@@ -93,6 +93,11 @@ const props = defineProps<{
 	emoji?: any,
 }>();
 
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+	(ev: 'closed'): void
+}>();
+
 let dialog = $ref(null);
 let name: string = $ref(props.emoji ? props.emoji.name : '');
 let category: string = $ref(props.emoji ? props.emoji.category : '');
@@ -109,11 +114,6 @@ watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
-
-const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
-}>();
 
 async function changeImage(ev) {
 	file = await selectFile(ev.currentTarget ?? ev.target, null);

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :zPriority="'middle'" @click="$refs.modal.close()" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
@@ -23,6 +23,10 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { confetti } from '@/scripts/confetti.js';
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
