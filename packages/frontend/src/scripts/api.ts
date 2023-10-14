@@ -8,21 +8,70 @@ import type * as Misskey from 'misskey-js';
 import { ref } from 'vue';
 import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
+import { checkHttpOrHttps } from '@/scripts/tms/check-url.js';
+
+type IsNeverType<T> = [T] extends [never] ? true : false;
+type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
+type IsCaseMatched<
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+	C extends number,
+> = IsNeverType<StrictExtract<Misskey.Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false;
+type GetCaseResult<
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+	C extends number,
+> = StrictExtract<Misskey.Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1];
+
+type APIResultType<
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+> = (
+	Misskey.Endpoints[E]['res'] extends {
+		$switch: {
+			$cases: [any, any][];
+			$default: any;
+		};
+	} ? (
+			IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0>
+		: IsCaseMatched<E, P, 1> extends true ? GetCaseResult<E, P, 1>
+		: IsCaseMatched<E, P, 2> extends true ? GetCaseResult<E, P, 2>
+		: IsCaseMatched<E, P, 3> extends true ? GetCaseResult<E, P, 3>
+		: IsCaseMatched<E, P, 4> extends true ? GetCaseResult<E, P, 4>
+		: IsCaseMatched<E, P, 5> extends true ? GetCaseResult<E, P, 5>
+		: IsCaseMatched<E, P, 6> extends true ? GetCaseResult<E, P, 6>
+		: IsCaseMatched<E, P, 7> extends true ? GetCaseResult<E, P, 7>
+		: IsCaseMatched<E, P, 8> extends true ? GetCaseResult<E, P, 8>
+		: IsCaseMatched<E, P, 9> extends true ? GetCaseResult<E, P, 9>
+		: Misskey.Endpoints[E]['res']['$switch']['$default']
+	) : Misskey.Endpoints[E]['res']
+);
+
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
-	if (endpoint.includes('://')) throw new Error('invalid endpoint');
+export const api = <
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+>(
+	endpoint: E,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	data: P = {} as any,
+	token?: string | null | undefined,
+	signal?: AbortSignal,
+): Promise<APIResultType<E, P>> => {
 	pendingApiRequestsCount.value++;
 
-	const onFinally = () => {
+	const onFinally = (): void => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<APIResultType<E, P> | void>((resolve, reject) => {
 		// Append a credential
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		if (token != null) (data as any).i = token;
 
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}`, {
@@ -50,10 +99,20 @@ export function api<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoin
 	promise.then(onFinally, onFinally);
 
 	return promise;
-}
+};
 
-export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(hostUrl: string, endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Misskey.Endpoints[E]['res']> {
-	if (!/^https?:\/\//.test(hostUrl)) throw new Error('invalid host name');
+export const apiExternal = <
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+>(
+	hostUrl: string,
+	endpoint: E,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	data: P = {} as any,
+	token?: string | null | undefined,
+	signal?: AbortSignal,
+): Promise<APIResultType<E, P>> => {
+	if (checkHttpOrHttps(hostUrl)) throw new Error('invalid host name');
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
 	pendingApiRequestsCount.value++;
 
@@ -63,10 +122,11 @@ export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey
 
 	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
 		// Append a credential
-		(data as any).i = token;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		if (token != null) (data as any).i = token;
 
-		const fullUrl = (hostUrl.slice(-1) === '/' ? hostUrl.slice(0, -1) : hostUrl)
-				+ '/api/' + (endpoint.slice(0, 1) === '/' ? endpoint.slice(1) : endpoint);
+		const fullUrl = `${hostUrl.endsWith('/') ? hostUrl.slice(0, -1) : hostUrl}/api/${endpoint.startsWith('/') ? endpoint.slice(1) : endpoint}`;
+
 		// Send request
 		window.fetch(fullUrl, {
 			method: 'POST',
@@ -93,19 +153,27 @@ export function apiExternal<E extends keyof Misskey.Endpoints, P extends Misskey
 	promise.then(onFinally, onFinally);
 
 	return promise;
-}
+};
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Misskey.Endpoints[E]['res']> {
+export const apiGet = <
+	E extends keyof Misskey.Endpoints,
+	P extends Misskey.Endpoints[E]['req'],
+>(
+	endpoint: E,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	data: P = {} as any,
+): Promise<APIResultType<E, P>> => {
 	pendingApiRequestsCount.value++;
 
-	const onFinally = () => {
+	const onFinally = (): void => {
 		pendingApiRequestsCount.value--;
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const query = new URLSearchParams(data as any);
 
-	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<APIResultType<E, P> | void>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
@@ -127,4 +195,4 @@ export function apiGet <E extends keyof Misskey.Endpoints, P extends Misskey.End
 	promise.then(onFinally, onFinally);
 
 	return promise;
-}
+};
