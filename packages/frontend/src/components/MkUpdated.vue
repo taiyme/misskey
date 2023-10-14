@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @click="$refs.modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" :zPriority="'middle'" @click="modal?.close()" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
-		<div :class="$style.version">✨{{ version }}🚀</div>
+		<div :class="$style.version">✨{{ withV(version) }}🚀</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
-		<MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
+		<MkButton :class="$style.gotIt" primary full @click="modal?.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
 </MkModal>
 </template>
@@ -23,6 +23,7 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { confetti } from '@/scripts/confetti.js';
+import { withV } from '@/scripts/tms/version.js';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -31,8 +32,8 @@ const emit = defineEmits<{
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const whatIsNew = () => {
-	modal.value.close();
-	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+	modal.value?.close();
+	window.open(`https://github.com/taiyme/misskey/releases/tag/${version}`, '_blank');
 };
 
 onMounted(() => {

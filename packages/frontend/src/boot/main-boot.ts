@@ -22,7 +22,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
-	const { isClientUpdated } = await common(() => createApp(
+	const { isThemeRemoved, isClientUpdated, isCommitChanged } = await common(() => createApp(
 		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
@@ -33,7 +33,7 @@ export async function mainBoot() {
 	reactionPicker.init();
 
 	if (isClientUpdated && $i) {
-		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), { }, {}, 'closed');
 	}
 
 	const stream = useStream();

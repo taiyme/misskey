@@ -7,6 +7,7 @@
 type Keys =
 	| 'v'
 	| 'lastVersion'
+	| 'lastCommitHash'
 	| 'instance'
 	| 'account'
 	| 'accounts'

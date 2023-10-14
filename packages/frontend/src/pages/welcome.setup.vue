@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.title">
 				<div>Welcome to Misskey!</div>
-				<div :class="$style.version">v{{ version }}</div>
+				<div :class="$style.version">{{ withV(version) }}</div>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.ts.intro }}</div>
@@ -44,6 +44,7 @@ import * as os from '@/os.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
+import { withV } from '@/scripts/tms/version.js';
 
 let username = $ref('');
 let password = $ref('');

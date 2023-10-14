@@ -8,7 +8,7 @@ import { computed, createApp, watch, markRaw, version as vueVersion, defineAsync
 import { common } from './common.js';
 
 export async function subBoot() {
-	const { isClientUpdated } = await common(() => createApp(
+	const { isThemeRemoved, isClientUpdated, isCommitChanged } = await common(() => createApp(
 		defineAsyncComponent(() => import('@/ui/minimum.vue')),
 	));
 }

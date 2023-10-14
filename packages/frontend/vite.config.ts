@@ -1,4 +1,5 @@
-import path from 'path';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
@@ -8,6 +9,14 @@ import locales from '../../locales/index.js';
 import meta from '../../package.json';
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
+
+const commitHash = (() => {
+	try {
+		return execSync('git show --format=\'%h\' --no-patch').toString().trim();
+	} catch {
+		return 'unknown';
+	}
+})();
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
 
@@ -93,6 +102,7 @@ export function getConfig(): UserConfig {
 
 		define: {
 			_VERSION_: JSON.stringify(meta.version),
+			_COMMIT_HASH_: JSON.stringify(commitHash),
 			_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',

@@ -9,7 +9,7 @@ import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, ui, lang } from '@/config.js';
+import { version, ui, lang, commitHash } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { checkUpdateLocale } from '@/scripts/tms/check-update-locale.js';
@@ -26,14 +26,16 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { mainRouter } from '@/router.js';
+import { checkUpdated } from '@/scripts/tms/check-updated.js';
+import { withV } from '@/scripts/tms/version.js';
 
 export async function common(createVue: () => App<Element>) {
-	console.info(`Misskey v${version}`);
+	console.info(`taiyme/misskey ${withV(version)} (${commitHash})`);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
 
-		console.info(`vue ${vueVersion}`);
+		console.info(`vue ${withV(vueVersion)}`);
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$i = $i;
@@ -69,22 +71,12 @@ export async function common(createVue: () => App<Element>) {
 		splash.remove();
 	});
 
-	let isClientUpdated = false;
-
 	//#region クライアントが更新されたかチェック
-	const lastVersion = miLocalStorage.getItem('lastVersion');
-	if (lastVersion !== version) {
-		miLocalStorage.setItem('lastVersion', version);
-
-		// テーマリビルドするため
-		miLocalStorage.removeItem('theme');
-
-		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
-			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-				isClientUpdated = true;
-			}
-		} catch (err) { /* empty */ }
-	}
+	const {
+		isThemeRemoved,
+		isClientUpdated,
+		isCommitChanged,
+	} = await checkUpdated();
 	//#endregion
 
 	//#region Detect language & fetch translations
@@ -142,7 +134,7 @@ export async function common(createVue: () => App<Element>) {
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
-	}, { immediate: miLocalStorage.getItem('theme') == null });
+	}, { immediate: isThemeRemoved });
 
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
@@ -254,7 +246,9 @@ export async function common(createVue: () => App<Element>) {
 	removeSplash();
 
 	return {
+		isThemeRemoved,
 		isClientUpdated,
+		isCommitChanged,
 		app,
 	};
 }

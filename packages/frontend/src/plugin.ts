@@ -8,6 +8,7 @@ import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api.js';
 import { inputText } from '@/os.js';
 import { type Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store.js';
+import { withV } from '@/scripts/tms/version.js';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
@@ -15,7 +16,7 @@ const pluginContexts = new Map<string, Interpreter>();
 export function install(plugin: Plugin): void {
 	// 後方互換性のため
 	if (plugin.src == null) return;
-	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+	console.info('Plugin installed:', plugin.name, withV(plugin.version));
 
 	const aiscript = new Interpreter(createPluginEnv({
 		plugin: plugin,
