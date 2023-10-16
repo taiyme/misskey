@@ -101,6 +101,10 @@ export const api = <
 	return promise;
 };
 
+/**
+ * 任意のURLに通信ができるのはよくないので機能削除
+ * @deprecated
+ */
 export const apiExternal = <
 	E extends keyof Misskey.Endpoints,
 	P extends Misskey.Endpoints[E]['req'],
@@ -114,45 +118,11 @@ export const apiExternal = <
 ): Promise<APIResultType<E, P>> => {
 	if (checkHttpOrHttps(hostUrl)) throw new Error('invalid host name');
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
-	pendingApiRequestsCount.value++;
-
-	const onFinally = () => {
-		pendingApiRequestsCount.value--;
-	};
-
-	const promise = new Promise<Misskey.Endpoints[E]['res'] | void>((resolve, reject) => {
-		// Append a credential
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		if (token != null) (data as any).i = token;
-
-		const fullUrl = `${hostUrl.endsWith('/') ? hostUrl.slice(0, -1) : hostUrl}/api/${endpoint.startsWith('/') ? endpoint.slice(1) : endpoint}`;
-
-		// Send request
-		window.fetch(fullUrl, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			credentials: 'omit',
-			cache: 'no-cache',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			signal,
-		}).then(async (res) => {
-			const body = res.status === 204 ? null : await res.json();
-
-			if (res.status === 200) {
-				resolve(body);
-			} else if (res.status === 204) {
-				resolve();
-			} else {
-				reject(body.error);
-			}
-		}).catch(reject);
+	return Promise.reject({
+		message: 'apiExternal is blocked.',
+		code: 'API_EXTERNAL_BLOCKED',
+		id: '6ad3fa19-4b33-48d9-b2e3-be689e42f6b0',
 	});
-
-	promise.then(onFinally, onFinally);
-
-	return promise;
 };
 
 // Implements Misskey.api.ApiClient.request
