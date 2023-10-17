@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 });
 
 const copy_ = () => {
-	copyToClipboard(props.copy);
+	copyText(props.copy);
 	os.success();
 };
 </script>

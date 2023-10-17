@@ -39,7 +39,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -276,7 +276,7 @@ function onContextmenu(ev: MouseEvent) {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyFolderId,
 			action: () => {
-				copyToClipboard(props.folder.id);
+				copyText(props.folder.id);
 			},
 		}]);
 	}

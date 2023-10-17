@@ -70,7 +70,7 @@ import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
@@ -88,7 +88,7 @@ function uninstall(plugin) {
 }
 
 function copy(plugin) {
-	copyToClipboard(plugin.src ?? '');
+	copyText(plugin.src ?? '');
 	os.success();
 }
 

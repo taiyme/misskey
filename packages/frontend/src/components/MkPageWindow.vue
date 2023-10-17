@@ -34,7 +34,7 @@ import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { url } from '@/config.js';
 import { mainRouter, routes, page } from '@/router.js';
 import { $i } from '@/account.js';
@@ -120,7 +120,7 @@ const contextmenu = $computed(() => ([{
 	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
-		copyToClipboard(url + router.getCurrentPath());
+		copyText(url + router.getCurrentPath());
 	},
 }]));
 

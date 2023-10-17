@@ -63,7 +63,7 @@ import { computed } from 'vue';
 import type * as Misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -88,7 +88,7 @@ function deleteCode() {
 }
 
 function copyInviteCode() {
-	copyToClipboard(props.invite.code);
+	copyText(props.invite.code);
 	os.success();
 }
 </script>

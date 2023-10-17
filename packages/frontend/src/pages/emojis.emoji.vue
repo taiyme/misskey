@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -37,7 +37,7 @@ function menu(ev) {
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',
 		action: () => {
-			copyToClipboard(`:${props.emoji.name}:`);
+			copyText(`:${props.emoji.name}:`);
 			os.success();
 		},
 	}, {

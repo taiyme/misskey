@@ -11,7 +11,7 @@ import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -112,7 +112,7 @@ export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): 
 		icon: 'ti ti-link',
 		text,
 		action: (): void => {
-			copyToClipboard(`${url}/notes/${note.id}`);
+			copyText(`${url}/notes/${note.id}`);
 			os.success();
 		},
 	};
@@ -187,12 +187,12 @@ export function getNoteMenu(props: {
 	}
 
 	function copyContent(): void {
-		copyToClipboard(appearNote.text);
+		copyText(appearNote.text);
 		os.success();
 	}
 
 	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
+		copyText(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
@@ -402,7 +402,7 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {
-				copyToClipboard(appearNote.id);
+				copyText(appearNote.id);
 			},
 		}]);
 	}

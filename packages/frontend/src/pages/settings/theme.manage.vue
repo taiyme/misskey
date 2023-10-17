@@ -39,7 +39,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import { type Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import * as os from '@/os.js';
 import { getThemes, removeTheme } from '@/theme-store.js';
 import { i18n } from '@/i18n.js';
@@ -62,7 +62,7 @@ const selectedThemeCode = computed(() => {
 });
 
 function copyThemeCode() {
-	copyToClipboard(selectedThemeCode.value);
+	copyText(selectedThemeCode.value);
 	os.success();
 }
 

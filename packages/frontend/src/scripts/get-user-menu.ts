@@ -8,7 +8,7 @@ import { toUnicode } from 'punycode';
 import { defineAsyncComponent, ref, watch } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
 import { defaultStore, userActions } from '@/store.js';
@@ -150,7 +150,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host ?? host}`);
+			copyText(`@${user.username}@${user.host ?? host}`);
 		},
 	}, ...(iAmModerator ? [{
 		icon: 'ti ti-user-exclamation',
@@ -162,14 +162,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-rss',
 		text: i18n.ts.copyRSS,
 		action: () => {
-			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
+			copyText(`${user.host ?? host}/@${user.username}.atom`);
 		},
 	}, {
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
-			copyToClipboard(`${url}/${canonical}`);
+			copyText(`${url}/${canonical}`);
 		},
 	}, {
 		icon: 'ti ti-mail',
@@ -336,7 +336,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-id',
 			text: i18n.ts.copyUserId,
 			action: () => {
-				copyToClipboard(user.id);
+				copyText(user.id);
 			},
 		}]);
 	}

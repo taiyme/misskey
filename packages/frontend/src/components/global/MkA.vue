@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { url } from '@/config.js';
 import { popout as popout_ } from '@/scripts/popout.js';
 import { i18n } from '@/i18n.js';
@@ -67,7 +67,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyToClipboard(`${url}${props.to}`);
+			copyText(`${url}${props.to}`);
 		},
 	}], ev);
 }
