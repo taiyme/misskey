@@ -157,7 +157,15 @@ export type DriveFile = {
 	properties: Record<string, any>;
 };
 
-export type DriveFolder = TODO;
+export type DriveFolder = {
+	id: ID;
+	createdAt: DateString;
+	name: string;
+	foldersCount?: number;
+	filesCount?: number;
+	parentId: ID | null;
+	parent?: DriveFolder;
+};
 
 export type GalleryPost = {
 	id: ID;
