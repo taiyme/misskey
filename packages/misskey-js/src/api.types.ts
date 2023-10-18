@@ -937,11 +937,11 @@ export type Endpoints = {
 
 	// gallery
 	'gallery/featured': {
-		req: null;
+		req: NoParams;
 		res: GalleryPost[];
 	};
 	'gallery/popular': {
-		req: null;
+		req: NoParams;
 		res: GalleryPost[];
 	};
 	'gallery/posts': {
