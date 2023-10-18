@@ -23,7 +23,7 @@ import { host as hostRaw } from '@/config.js';
 import { defaultStore } from '@/store.js';
 
 defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: Pick<Misskey.entities.UserDetailed, 'username' | 'host'>;
 	detail?: boolean;
 }>();
 

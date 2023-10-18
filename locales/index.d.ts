@@ -2304,6 +2304,10 @@ export interface Locale {
         readonly "aboutMisskey": string;
         readonly "aboutMisskeyDescription": string;
         readonly "donateToTaiy": string;
+        readonly "pickup": string;
+        readonly "pickupAvailable": string;
+        readonly "pickupNoteDescription": string;
+        readonly "pickupUserDescription": string;
     };
 }
 declare const locales: {

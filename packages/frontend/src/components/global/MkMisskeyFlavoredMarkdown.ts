@@ -32,10 +32,10 @@ export default function(props: {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
-	author?: Misskey.entities.UserLite;
+	author?: Pick<Misskey.entities.UserDetailed, 'host'>;
 	i?: Misskey.entities.UserLite;
 	isNote?: boolean;
-	emojiUrls?: string[];
+	emojiUrls?: Misskey.entities.UserDetailed['emojis'];
 	rootScale?: number;
 }) {
 	const isNote = props.isNote !== undefined ? props.isNote : true;

@@ -565,7 +565,7 @@ export const selectUser = async (
 	} = {},
 ): Promise<Misskey.entities.UserDetailed> => {
 	return new Promise((resolve, reject) => {
-		popup(defineAsyncComponent(() => import('@/components/MkUserSelectDialog.vue')), {
+		popup(defineAsyncComponent(() => import('@/components/TmsUserSelectDialog.vue')), {
 			includeSelf: opts.includeSelf,
 		}, {
 			ok: (user: Misskey.entities.UserDetailed) => {

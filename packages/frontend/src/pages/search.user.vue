@@ -7,77 +7,147 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+		<MkInput v-model="inputSearchQuery" large autofocus type="search" @enter="searchUser">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkRadios v-model="searchOrigin" @update:modelValue="search()">
-			<option value="combined">{{ i18n.ts.all }}</option>
-			<option value="local">{{ i18n.ts.local }}</option>
-			<option value="remote">{{ i18n.ts.remote }}</option>
-		</MkRadios>
-		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+		<MkFolder>
+			<template #label>{{ i18n.ts.options }}</template>
+			<div class="_gaps_s">
+				<MkRadios v-model="inputSearchOrigin">
+					<option value="combined">{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+				</MkRadios>
+			</div>
+		</MkFolder>
+		<div class="_buttonsCenter">
+			<MkButton v-if="!initial" large rounded :disabled="fetching" @click="searchClear">{{ i18n.ts.clear }}</MkButton>
+			<MkButton large primary gradate rounded :disabled="!searchEnabled" @click="searchUser">{{ i18n.ts.search }}</MkButton>
+		</div>
 	</div>
 
-	<MkFoldableSection v-if="userPagination">
-		<template #header>{{ i18n.ts.searchResult }}</template>
-		<MkUserList :key="key" :pagination="userPagination"/>
-	</MkFoldableSection>
+	<template v-if="fetching">
+		<div :class="$style.fetching">
+			<MkLoading :class="$style.fetchingIcon" em/>
+			<div>{{ i18n.ts.fetchingAsApObject }}<MkEllipsis/></div>
+		</div>
+	</template>
+	<template v-else-if="initial">
+		<MkInfo>{{ i18n.ts._tms.pickupAvailable + '\n' + i18n.ts._tms.pickupUserDescription }}</MkInfo>
+	</template>
+	<template v-else-if="!userPickup && !userPagination">
+		<div class="_fullinfo" style="padding: 32px;">
+			<img :src="infoImageUrl" class="_ghost"/>
+			<div>{{ i18n.ts.noUsers }}</div>
+		</div>
+	</template>
+	<template v-else>
+		<MkFoldableSection v-if="userPickup" expanded>
+			<template #header>{{ i18n.ts._tms.pickup }}</template>
+			<div :class="$style.pickupUser">
+				<MkUserInfo :key="userPickup.id" :user="userPickup"/>
+			</div>
+		</MkFoldableSection>
+		<MkFoldableSection v-if="userPagination" expanded>
+			<template #header>{{ i18n.ts.searchResult }}</template>
+			<MkUserList :key="`search.user:${searchedCounter}`" :pagination="userPagination"/>
+		</MkFoldableSection>
+	</template>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted } from 'vue';
-import MkUserList from '@/components/MkUserList.vue';
+import { computed, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
+import MkFolder from '@/components/MkFolder.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account.js';
-import { instance } from '@/instance.js';
+import MkUserInfo from '@/components/MkUserInfo.vue';
+import MkUserList from '@/components/MkUserList.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router.js';
+import { infoImageUrl } from '@/instance.js';
+import { sleep } from '@/scripts/tms/promise.js';
+import { searchUser as _searchUser, type UserPickup, type UserPagination } from '@/scripts/tms/search.js';
 
-const router = useRouter();
+export type SearchOrigin = 'combined' | 'local' | 'remote';
 
-let key = $ref('');
-let searchQuery = $ref('');
-let searchOrigin = $ref('combined');
-let userPagination = $ref();
+useRouter();
 
-async function search() {
-	const query = searchQuery.toString().trim();
+const initial = ref(true);
+const fetching = ref(false);
+const searchedCounter = ref(0);
 
-	if (query == null || query === '') return;
+const inputSearchQuery = ref('');
+const inputSearchOrigin = ref<SearchOrigin>('combined');
 
-	if (query.startsWith('https://')) {
-		const promise = os.api('ap/show', {
-			uri: query,
-		});
+const searchEnabled = computed<boolean>(() => {
+	if (fetching.value) return false;
+	if (!inputSearchQuery.value.trim()) return false;
+	return true;
+});
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+const userPickup = ref<UserPickup>(null);
+const userPagination = ref<UserPagination>(null);
 
-		const res = await promise;
+const searchUser = async (): Promise<void> => {
+	if (!searchEnabled.value) return;
 
-		if (res.type === 'User') {
-			router.push(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.push(`/notes/${res.object.id}`);
-		}
+	initial.value = false;
+	fetching.value = true;
+	userPickup.value = null;
+	userPagination.value = null;
+	searchedCounter.value++;
 
-		return;
-	}
+	const {
+		userPickup: _userPickup,
+		userPagination: _userPagination,
+	} = _searchUser({
+		query: inputSearchQuery.value,
+		origin: inputSearchOrigin.value,
+	});
 
-	userPagination = {
-		endpoint: 'users/search',
-		limit: 10,
-		params: {
-			query: query,
-			origin: searchOrigin,
-		},
-	};
+	await sleep(500);
 
-	key = query;
-}
+	userPagination.value = _userPagination;
+	userPickup.value = await _userPickup;
+
+	fetching.value = false;
+};
+
+const searchClear = (): void => {
+	if (initial.value) return;
+	if (fetching.value) return;
+
+	initial.value = true;
+	inputSearchQuery.value = '';
+	inputSearchOrigin.value = 'combined';
+	userPickup.value = null;
+	userPagination.value = null;
+};
 </script>
+
+<style lang="scss" module>
+.fetching {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 16px;
+	padding: 32px;
+}
+
+.fetchingIcon {
+	font-size: 32px;
+	opacity: 0.7;
+}
+
+.pickupUser {
+	background: var(--panel);
+	border-radius: var(--radius);
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+}
+</style>
