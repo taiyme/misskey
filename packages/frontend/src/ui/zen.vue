@@ -56,12 +56,12 @@ document.documentElement.style.overflowY = 'scroll';
 }
 
 .rootWithBottom {
-	min-height: calc(100dvh - (60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px)));
+	min-height: calc(100dvh - (60px + (var(--margin) * 2) + var(--safeAreaInsetBottom)));
 	box-sizing: border-box;
 }
 
 .bottom {
-	height: calc(60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px));
+	height: calc(60px + (var(--margin) * 2) + var(--safeAreaInsetBottom));
 	width: 100%;
 	margin-top: auto;
 }
@@ -77,6 +77,6 @@ document.documentElement.style.overflowY = 'scroll';
 	background: var(--panel);
 	color: var(--fg);
 	right: var(--margin);
-	bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	bottom: calc(var(--margin) + var(--safeAreaInsetBottom));
 }
 </style>

@@ -8,18 +8,25 @@
  */
 
 :root {
+	--safeAreaInsetTop: env(safe-area-inset-top, 0px);
+	--safeAreaInsetRight: env(safe-area-inset-right, 0px);
+	--safeAreaInsetBottom: env(safe-area-inset-bottom, 0px);
+	--safeAreaInsetLeft: env(safe-area-inset-left, 0px);
+
 	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
-
 	--margin: var(--marginFull);
 
-	// switch dynamically
-	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
-	--minBottomSpacing: var(--minBottomSpacingMobile);
+	--navFooterHeight: var(--navFooterDisabledHeight); // default
+	--navFooterEnabledHeight: 72px;
+	--navFooterDisabledHeight: 0px;
+
+	--minBottomSpacing: calc(var(--navFooterHeight) + var(--safeAreaInsetBottom));
 
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
+		--navFooterHeight: var(--navFooterEnabledHeight); // default
 	}
 
 	//--ad: rgb(255 169 0 / 10%);

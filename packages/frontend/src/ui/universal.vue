@@ -216,14 +216,15 @@ let navFooterHeight = $ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
 
 watch($$(navFooter), () => {
+	const { documentElement: html, body } = document;
 	if (navFooter) {
 		navFooterHeight = navFooter.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
-		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
+		body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+		html.style.setProperty('--navFooterHeight', 'var(--navFooterEnabledHeight)');
 	} else {
 		navFooterHeight = 0;
-		document.body.style.setProperty('--stickyBottom', '0px');
-		document.body.style.setProperty('--minBottomSpacing', '0px');
+		body.style.setProperty('--stickyBottom', '0px');
+		html.style.setProperty('--navFooterHeight', 'var(--navFooterDisabledHeight)');
 	}
 }, {
 	immediate: true,
@@ -329,7 +330,7 @@ $widgets-hide-threshold: 1090px;
 	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -363,7 +364,7 @@ $widgets-hide-threshold: 1090px;
 	z-index: 1001;
 	width: 310px;
 	height: 100dvh;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
+	padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -387,7 +388,7 @@ $widgets-hide-threshold: 1090px;
 	z-index: 1000;
 	bottom: 0;
 	left: 0;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	padding: 12px 12px max(12px, var(--safeAreaInsetBottom)) 12px;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	grid-gap: 8px;

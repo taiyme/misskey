@@ -513,7 +513,7 @@ defineExpose({
 		color: var(--fg);
 
 		&:not(:focus):not(.filled) {
-			margin-bottom: env(safe-area-inset-bottom, 0px);
+			margin-bottom: var(--safeAreaInsetBottom);
 		}
 
 		&:not(.filled) {

@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.asDrawer {
-		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
+		padding: 12px 0 max(12px, var(--safeAreaInsetBottom)) 0;
 		width: 100%;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;

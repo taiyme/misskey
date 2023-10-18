@@ -428,7 +428,7 @@ body {
 	z-index: 1000;
 	bottom: 0;
 	left: 0;
-	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
+	padding: 12px 12px max(12px, var(--safeAreaInsetBottom)) 12px;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	grid-gap: 8px;
