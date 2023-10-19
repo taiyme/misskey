@@ -27,23 +27,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'favorites'">
 			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'following'">
 			<MkPagination v-slot="{items}" :pagination="followingPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -52,9 +52,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
+import type * as Misskey from 'misskey-js';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -63,38 +64,41 @@ import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
+type SearchType = NonNullable<Misskey.Endpoints['channels/search']['req']['type']>
+
 const router = useRouter();
 
 const props = defineProps<{
 	query: string;
-	type?: string;
+	type?: SearchType;
 }>();
 
 let key = $ref('');
 let tab = $ref('featured');
 let searchQuery = $ref('');
-let searchType = $ref('nameAndDescription');
-let channelPagination = $ref();
+let searchType = $ref<SearchType>('nameAndDescription');
+let channelPagination = $ref<Paging<'channels/featured' | 'channels/my-favorites' | 'channels/followed' | 'channels/owned' | 'channels/search'> | null>(null);
 
 onMounted(() => {
 	searchQuery = props.query ?? '';
 	searchType = props.type ?? 'nameAndDescription';
 });
 
-const featuredPagination = {
+const featuredPagination: Paging<'channels/featured'> = {
 	endpoint: 'channels/featured' as const,
+	limit: 100,
 	noPaging: true,
 };
-const favoritesPagination = {
+const favoritesPagination: Paging<'channels/my-favorites'> = {
 	endpoint: 'channels/my-favorites' as const,
 	limit: 100,
 	noPaging: true,
 };
-const followingPagination = {
+const followingPagination: Paging<'channels/followed'> = {
 	endpoint: 'channels/followed' as const,
 	limit: 10,
 };
-const ownedPagination = {
+const ownedPagination: Paging<'channels/owned'> = {
 	endpoint: 'channels/owned' as const,
 	limit: 10,
 };
@@ -104,10 +108,10 @@ async function search() {
 
 	if (query == null) return;
 
-	const type = searchType.toString().trim();
+	const type = searchType;
 
 	channelPagination = {
-		endpoint: 'channels/search',
+		endpoint: 'channels/search' as const,
 		limit: 10,
 		params: {
 			query: searchQuery,

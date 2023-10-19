@@ -19,7 +19,7 @@ import MkPostForm from '@/components/MkPostForm.vue';
 const props = defineProps<{
 	reply?: Misskey.entities.Note;
 	renote?: Misskey.entities.Note;
-	channel?: any; // TODO
+	channel?: Misskey.entities.Channel;
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;

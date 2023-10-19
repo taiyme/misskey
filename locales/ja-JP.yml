@@ -2221,3 +2221,5 @@ _tms:
   pickupAvailable: "ピックアップ機能が利用可能です。"
   pickupNoteDescription: "ノートIDまたはURLを入力すると、それに合致するノートを表示します。"
   pickupUserDescription: "ユーザーネーム、ユーザーIDまたはURLを入力すると、それに合致するユーザーを表示します。"
+  undo: "元に戻す"
+  undoConfirm: "元に戻しますか？"

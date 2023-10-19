@@ -131,7 +131,7 @@ const modal = inject('modal');
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
 	renote?: Misskey.entities.Note;
-	channel?: Misskey.entities.Channel; // TODO
+	channel?: Misskey.entities.Channel;
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;

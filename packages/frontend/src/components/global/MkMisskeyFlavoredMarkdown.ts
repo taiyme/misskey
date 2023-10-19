@@ -33,7 +33,7 @@ export default function(props: {
 	plain?: boolean;
 	nowrap?: boolean;
 	author?: Pick<Misskey.entities.UserDetailed, 'host'>;
-	i?: Misskey.entities.UserLite;
+	i?: Misskey.entities.UserLite | null;
 	isNote?: boolean;
 	emojiUrls?: Misskey.entities.UserDetailed['emojis'];
 	rootScale?: number;

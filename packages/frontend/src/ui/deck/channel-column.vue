@@ -60,6 +60,7 @@ async function setChannel() {
 
 async function post() {
 	if (!channel || channel.id !== props.column.channelId) {
+		if (!props.column.channelId) return;
 		channel = await os.api('channels/show', {
 			channelId: props.column.channelId,
 		});

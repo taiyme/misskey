@@ -2308,6 +2308,8 @@ export interface Locale {
         readonly "pickupAvailable": string;
         readonly "pickupNoteDescription": string;
         readonly "pickupUserDescription": string;
+        readonly "undo": string;
+        readonly "undoConfirm": string;
     };
 }
 declare const locales: {
