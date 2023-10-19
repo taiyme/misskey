@@ -5,9 +5,17 @@ import type {
 	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit, AdminInstanceMetadata,
 } from './entities.js';
 
+/** Parameters not yet defined. */
 type ReqTODO = Record<string, any>;
+
+/** Responses not yet defined. */
 type ResTODO = unknown;
+
+/** No parameters. */
 type NoParams = Record<string, never>;
+
+/** No content. */
+type NoContent = null;
 
 export type Endpoints = {
 	// admin
@@ -19,11 +27,11 @@ export type Endpoints = {
 		req: {
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'admin/delete-logs': {
 		req: NoParams;
-		res: null;
+		res: NoContent;
 	};
 	'admin/get-index-stats': {
 		req: ReqTODO;
@@ -113,7 +121,7 @@ export type Endpoints = {
 		req: {
 			id: Ad['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'admin/ad/list': {
 		req: ReqTODO;
@@ -131,7 +139,7 @@ export type Endpoints = {
 		req: {
 			id: Announcement['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'admin/announcements/list': {
 		req: ReqTODO;
@@ -185,7 +193,7 @@ export type Endpoints = {
 		req: {
 			host: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'admin/federation/refresh-remote-instance-metadata': {
 		req: ReqTODO;
@@ -272,7 +280,7 @@ export type Endpoints = {
 		req: {
 			antennaId: Antenna['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'antennas/list': {
 		req: NoParams;
@@ -335,7 +343,7 @@ export type Endpoints = {
 		req: {
 			token: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'auth/session/generate': {
 		req: {
@@ -404,13 +412,13 @@ export type Endpoints = {
 		req: {
 			channelId: Channel['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'channels/follow': {
 		req: {
 			channelId: Channel['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'channels/followed': {
 		req: {
@@ -463,13 +471,13 @@ export type Endpoints = {
 		req: {
 			channelId: Channel['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'channels/unfollow': {
 		req: {
 			channelId: Channel['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'channels/update': {
 		req: {
@@ -718,7 +726,7 @@ export type Endpoints = {
 		req: {
 			clipId: Clip['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'clips/list': {
 		req: ReqTODO;
@@ -777,7 +785,7 @@ export type Endpoints = {
 		req: {
 			fileId: DriveFile['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'drive/files/find-by-hash': {
 		req: ReqTODO;
@@ -816,7 +824,7 @@ export type Endpoints = {
 			marker?: string | null;
 			force?: boolean;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'drive/folders': {
 		req: {
@@ -838,7 +846,7 @@ export type Endpoints = {
 		req: {
 			folderId: DriveFolder['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'drive/folders/find': {
 		req: {
@@ -945,7 +953,7 @@ export type Endpoints = {
 		req: {
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'federation/users': {
 		req: {
@@ -974,7 +982,7 @@ export type Endpoints = {
 		req: {
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'following/requests/cancel': {
 		req: {
@@ -990,7 +998,7 @@ export type Endpoints = {
 		req: {
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// gallery
@@ -1023,13 +1031,13 @@ export type Endpoints = {
 		req: {
 			postId: GalleryPost['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'gallery/posts/like': {
 		req: {
 			postId: GalleryPost['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'gallery/posts/show': {
 		req: {
@@ -1041,7 +1049,7 @@ export type Endpoints = {
 		req: {
 			postId: GalleryPost['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'gallery/posts/update': {
 		req: {
@@ -1131,7 +1139,7 @@ export type Endpoints = {
 		req: {
 			password: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'i/export-blocking': {
 		req: ReqTODO;
@@ -1223,7 +1231,7 @@ export type Endpoints = {
 		req: {
 			password: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'i/registry/get-all': {
 		req: {
@@ -1265,7 +1273,7 @@ export type Endpoints = {
 			key: string;
 			scope?: string[];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'i/registry/scopes': {
 		req: NoParams;
@@ -1277,7 +1285,7 @@ export type Endpoints = {
 			value: any;
 			scope?: string[];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'i/revoke-token': {
 		req: ReqTODO;
@@ -1377,7 +1385,7 @@ export type Endpoints = {
 		req: {
 			inviteId: Invite['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'invite/list': {
 		req: {
@@ -1424,13 +1432,13 @@ export type Endpoints = {
 		req: {
 			messageId: MessagingMessage['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'messaging/messages/read': {
 		req: {
 			messageId: MessagingMessage['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// meta
@@ -1474,7 +1482,7 @@ export type Endpoints = {
 		req: {
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'mute/list': {
 		req: ReqTODO;
@@ -1540,19 +1548,19 @@ export type Endpoints = {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/favorites/create': {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/favorites/delete': {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/featured': {
 		req: ReqTODO;
@@ -1606,7 +1614,7 @@ export type Endpoints = {
 			noteId: Note['id'];
 			choice: number;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/reactions': {
 		req: {
@@ -1621,13 +1629,13 @@ export type Endpoints = {
 			noteId: Note['id'];
 			reaction: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/reactions/delete': {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/renotes': {
 		req: {
@@ -1679,7 +1687,7 @@ export type Endpoints = {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notes/user-list-timeline': {
 		req: {
@@ -1700,7 +1708,7 @@ export type Endpoints = {
 		req: {
 			noteId: Note['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// notifications
@@ -1710,15 +1718,15 @@ export type Endpoints = {
 			header?: string | null;
 			icon?: string | null;
 		};
-		res: null;
+		res: NoContent;
 	};
 	'notifications/test-notification': {
 		req: NoParams;
-		res: null;
+		res: NoContent;
 	};
 	'notifications/mark-all-as-read': {
 		req: NoParams;
-		res: null;
+		res: NoContent;
 	};
 
 	// page-push
@@ -1728,7 +1736,7 @@ export type Endpoints = {
 			event: string;
 			var?: any;
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// pages
@@ -1740,7 +1748,7 @@ export type Endpoints = {
 		req: {
 			pageId: Page['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'pages/featured': {
 		req: NoParams;
@@ -1750,7 +1758,7 @@ export type Endpoints = {
 		req: {
 			pageId: Page['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'pages/show': {
 		req: {
@@ -1764,11 +1772,11 @@ export type Endpoints = {
 		req: {
 			pageId: Page['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'pages/update': {
 		req: ReqTODO;
-		res: null;
+		res: NoContent;
 	};
 
 	// ping
@@ -1797,7 +1805,7 @@ export type Endpoints = {
 			username: string;
 			email: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// reset-password
@@ -1806,7 +1814,7 @@ export type Endpoints = {
 			token: string;
 			password: string;
 		};
-		res: null;
+		res: NoContent;
 	};
 
 	// room
@@ -1914,7 +1922,7 @@ export type Endpoints = {
 		req: {
 			groupId: UserGroup['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'users/groups/invitations/accept': {
 		req: ReqTODO;
@@ -1962,7 +1970,7 @@ export type Endpoints = {
 		req: {
 			listId: UserList['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'users/lists/list': {
 		req: NoParams;
@@ -1973,14 +1981,14 @@ export type Endpoints = {
 			listId: UserList['id'];
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'users/lists/push': {
 		req: {
 			listId: UserList['id'];
 			userId: User['id'];
 		};
-		res: null;
+		res: NoContent;
 	};
 	'users/lists/show': {
 		req: {
