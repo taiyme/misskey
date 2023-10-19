@@ -387,44 +387,102 @@ export type Endpoints = {
 
 	// channels
 	'channels/create': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			name: Channel['name'];
+			description?: Channel['description'];
+			bannerId?: DriveFile['id'] | null;
+			color?: Channel['color'];
+			isSensitive?: Channel['isSensitive'] | null;
+		};
+		res: Channel;
 	};
 	'channels/featured': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: NoParams;
+		res: Channel[];
+	};
+	'channels/favorite': {
+		req: {
+			channelId: Channel['id'];
+		};
+		res: null;
 	};
 	'channels/follow': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			channelId: Channel['id'];
+		};
+		res: null;
 	};
 	'channels/followed': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			sinceId?: Channel['id'];
+			untilId?: Channel['id'];
+			limit?: number;
+		};
+		res: Channel[];
+	};
+	'channels/my-favorites': {
+		req: NoParams;
+		res: Channel[];
 	};
 	'channels/owned': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			sinceId?: Channel['id'];
+			untilId?: Channel['id'];
+			limit?: number;
+		};
+		res: Channel[];
 	};
-	'channels/pin-note': {
-		req: ReqTODO;
-		res: ResTODO;
+	'channels/search': {
+		req: {
+			query: string;
+			type?: 'nameAndDescription' | 'nameOnly';
+			sinceId?: Channel['id'];
+			untilId?: Channel['id'];
+			limit?: number;
+		};
+		res: Channel[];
 	};
 	'channels/show': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			channelId: Channel['id'];
+		};
+		res: Channel;
 	};
 	'channels/timeline': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			channelId: Channel['id'];
+			limit?: number;
+			sinceId?: Channel['id'];
+			untilId?: Channel['id'];
+			sinceDate?: number;
+			untilDate?: number;
+		};
+		res: Note[];
+	};
+	'channels/unfavorite': {
+		req: {
+			channelId: Channel['id'];
+		};
+		res: null;
 	};
 	'channels/unfollow': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			channelId: Channel['id'];
+		};
+		res: null;
 	};
 	'channels/update': {
-		req: ReqTODO;
-		res: ResTODO;
+		req: {
+			channelId: Channel['id'];
+			name?: Channel['name'];
+			description?: Channel['description'];
+			bannerId?: DriveFile['id'] | null;
+			isArchived?: Channel['isArchived'] | null;
+			pinnedNoteIds?: Channel['pinnedNoteIds'];
+			color?: Channel['color'];
+			isSensitive?: Channel['isSensitive'] | null;
+		};
+		res: Channel;
 	};
 
 	// charts

@@ -190,6 +190,8 @@ export type Note = {
 	replyId: Note['id'];
 	renote?: Note;
 	renoteId: Note['id'];
+	channel?: ChannelLite;
+	channelId?: ChannelLite['id'];
 	files: DriveFile[];
 	fileIds: DriveFile['id'][];
 	visibility: 'public' | 'home' | 'followers' | 'specified';
@@ -504,9 +506,27 @@ export type FollowRequest = {
 	followee: User;
 };
 
-export type Channel = {
+export type ChannelLite = {
 	id: ID;
-	// TODO
+	name: string;
+	color: string;
+	isSensitive: boolean;
+}
+
+export type Channel = ChannelLite & {
+	createdAt: DateString;
+	lastNotedAt: DateString | null;
+	description: string | null;
+	bannerUrl: string | null;
+	isArchived: boolean;
+	notesCount: number;
+	usersCount: number;
+	isFollowing?: boolean;
+	isFavorited?: boolean;
+	userId: string | null;
+	pinnedNoteIds: Note['id'][];
+	pinnedNotes?: Note[]; // TODO: ChannelEntityService
+	hasUnreadNote?: boolean; // TODO: ChannelEntityService
 };
 
 export type Following = {
