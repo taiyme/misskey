@@ -16,10 +16,7 @@ export type UserLite = {
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
-	emojis: {
-		name: string;
-		url: string;
-	}[];
+	emojis: Record<string, string>;
 	instance?: {
 		name: Instance['name'];
 		softwareName: Instance['softwareName'];
@@ -200,6 +197,7 @@ export type Note = {
 	localOnly?: boolean;
 	myReaction?: string;
 	reactions: Record<string, number>;
+	reactionEmojis: Record<string, string>;
 	renoteCount: number;
 	repliesCount: number;
 	clippedCount?: number;
@@ -212,10 +210,7 @@ export type Note = {
 			votes: number;
 		}[];
 	};
-	emojis: {
-		name: string;
-		url: string;
-	}[];
+	emojis?: Record<string, string>;
 	uri?: string;
 	url?: string;
 	isHidden?: boolean;
