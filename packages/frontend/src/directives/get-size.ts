@@ -4,18 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
+import { type Directive } from 'vue';
 
-const mountings = new Map<Element, {
+type Mounting = {
 	resize: ResizeObserver;
-	intersection?: IntersectionObserver;
+	intersection?: IntersectionObserver | null;
 	fn: (w: number, h: number) => void;
-}>();
+};
 
-function calc(src: Element) {
-	const info = mountings.get(src);
-	const height = src.clientHeight;
-	const width = src.clientWidth;
+const mountings = new Map<HTMLElement, Mounting>();
+
+const calc = (el: HTMLElement): void => {
+	const info = mountings.get(el);
+	const {
+		clientWidth: width,
+		clientHeight: height,
+	} = el;
 
 	if (!info) return;
 
@@ -24,23 +28,24 @@ function calc(src: Element) {
 		// IntersectionObserverで表示検出する
 		if (!info.intersection) {
 			info.intersection = new IntersectionObserver(entries => {
-				if (entries.some(entry => entry.isIntersecting)) calc(src);
+				if (entries.some(entry => entry.isIntersecting)) calc(el);
 			});
 		}
-		info.intersection.observe(src);
+		info.intersection.observe(el);
 		return;
 	}
 	if (info.intersection) {
 		info.intersection.disconnect();
-		delete info.intersection;
+		info.intersection = null;
 	}
 
 	info.fn(width, height);
-}
+};
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding, vn) {
-		const resize = new ResizeObserver((entries, observer) => {
+	mounted(src, binding) {
+		const resize = new ResizeObserver(() => {
 			calc(src);
 		});
 		resize.observe(src);
@@ -49,7 +54,7 @@ export default {
 		calc(src);
 	},
 
-	unmounted(src, binding, vn) {
+	unmounted(src, binding) {
 		binding.value(0, 0);
 		const info = mountings.get(src);
 		if (!info) return;
@@ -57,4 +62,4 @@ export default {
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
 	},
-} as Directive<Element, (w: number, h: number) => void>;
+} as Directive<HTMLElement, (w: number, h: number) => void>;

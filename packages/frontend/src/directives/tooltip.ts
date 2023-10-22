@@ -7,35 +7,50 @@
 // TODO: useTooltip関数使うようにしたい
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
-import { defineAsyncComponent, Directive, ref } from 'vue';
+import { type Directive, defineAsyncComponent, ref } from 'vue';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { popup, alert } from '@/os.js';
+
+type TooltipDirective = {
+	text?: string;
+	close?: (() => void) | null;
+	_close?: (() => void) | null;
+	show?: (() => void) | null;
+	showTimer?: number | null;
+	hideTimer?: number | null;
+	checkTimer?: number | null;
+};
+
+type TooltipElement = HTMLElement & {
+	_tooltipDirective_?: TooltipDirective | null;
+};
 
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el: HTMLElement, binding, vn) {
+	mounted(src, binding) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;
 
-		const self = (el as any)._tooltipDirective_ = {} as any;
+		const self = src._tooltipDirective_ = ({} as TooltipDirective);
 
-		self.text = binding.value as string;
+		self.text = binding.value;
 		self._close = null;
 		self.showTimer = null;
 		self.hideTimer = null;
 		self.checkTimer = null;
 
-		self.close = () => {
+		self.close = (): void => {
 			if (self._close) {
-				window.clearInterval(self.checkTimer);
+				if (self.checkTimer) window.clearInterval(self.checkTimer);
 				self._close();
 				self._close = null;
 			}
 		};
 
 		if (binding.arg === 'dialog') {
-			el.addEventListener('click', (ev) => {
+			src.addEventListener('click', (ev: MouseEvent) => {
 				ev.preventDefault();
 				ev.stopPropagation();
 				alert({
@@ -46,8 +61,8 @@ export default {
 			});
 		}
 
-		self.show = () => {
-			if (!document.body.contains(el)) return;
+		self.show = (): void => {
+			if (!document.body.contains(src)) return;
 			if (self._close) return;
 			if (self.text == null) return;
 
@@ -56,52 +71,56 @@ export default {
 				showing,
 				text: self.text,
 				asMfm: binding.modifiers.mfm,
-				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
-				targetElement: el,
+				direction: (
+					binding.modifiers.left
+						? 'left'
+						: binding.modifiers.right
+							? 'right'
+							: binding.modifiers.top
+								? 'top'
+								: binding.modifiers.bottom
+									? 'bottom'
+									: 'top'
+				),
+				targetElement: src,
 			}, {}, 'closed');
 
-			self._close = () => {
+			self._close = (): void => {
 				showing.value = false;
 			};
 		};
 
-		el.addEventListener('selectstart', ev => {
+		src.addEventListener('selectstart', ev => {
 			ev.preventDefault();
 		});
 
-		el.addEventListener(start, (ev) => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
-			if (delay === 0) {
-				self.show();
-			} else {
-				self.showTimer = window.setTimeout(self.show, delay);
-			}
+		src.addEventListener(start, () => {
+			if (self.showTimer) window.clearTimeout(self.showTimer);
+			if (self.hideTimer) window.clearTimeout(self.hideTimer);
+			if (self.show) self.showTimer = window.setTimeout(self.show, delay);
 		}, { passive: true });
 
-		el.addEventListener(end, () => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
-			if (delay === 0) {
-				self.close();
-			} else {
-				self.hideTimer = window.setTimeout(self.close, delay);
-			}
+		src.addEventListener(end, () => {
+			if (self.showTimer) window.clearTimeout(self.showTimer);
+			if (self.hideTimer) window.clearTimeout(self.hideTimer);
+			if (self.close) self.hideTimer = window.setTimeout(self.close, delay);
 		}, { passive: true });
 
-		el.addEventListener('click', () => {
-			window.clearTimeout(self.showTimer);
-			self.close();
+		src.addEventListener('click', () => {
+			if (self.showTimer) window.clearTimeout(self.showTimer);
+			if (self.close) self.close();
 		});
 	},
 
-	updated(el, binding) {
-		const self = el._tooltipDirective_;
-		self.text = binding.value as string;
+	updated(src, binding) {
+		const self = src._tooltipDirective_;
+		if (!self) return;
+		self.text = binding.value;
 	},
 
-	unmounted(el, binding, vn) {
-		const self = el._tooltipDirective_;
-		window.clearInterval(self.checkTimer);
+	unmounted(src) {
+		const self = src._tooltipDirective_;
+		if (!self) return;
+		if (self.checkTimer) window.clearInterval(self.checkTimer);
 	},
-} as Directive;
+} as Directive<TooltipElement, string>;

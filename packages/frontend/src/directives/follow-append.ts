@@ -4,16 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
+import { type Directive } from 'vue';
 import { getScrollContainer, getScrollPosition } from '@/scripts/scroll.js';
 
+const map = new WeakMap<HTMLElement, ResizeObserver>();
+
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding, vn) {
+	mounted(src, binding) {
 		if (binding.value === false) return;
 
 		let isBottom = true;
 
-		const container = getScrollContainer(src)!;
+		const container = getScrollContainer(src);
+		if (!container) return;
+
 		container.addEventListener('scroll', () => {
 			const pos = getScrollPosition(container);
 			const viewHeight = container.clientHeight;
@@ -22,20 +27,21 @@ export default {
 		}, { passive: true });
 		container.scrollTop = container.scrollHeight;
 
-		const ro = new ResizeObserver((entries, observer) => {
+		const ro = new ResizeObserver(() => {
 			if (isBottom) {
 				const height = container.scrollHeight;
 				container.scrollTop = height;
 			}
 		});
-
 		ro.observe(src);
-
-		// TODO: 新たにプロパティを作るのをやめMapを使う
-		src._ro_ = ro;
+		map.set(src, ro);
 	},
 
-	unmounted(src, binding, vn) {
-		if (src._ro_) src._ro_.unobserve(src);
+	unmounted(src) {
+		const ro = map.get(src);
+		if (ro) {
+			ro.disconnect();
+			map.delete(src);
+		}
 	},
-} as Directive;
+} as Directive<HTMLElement, boolean>;

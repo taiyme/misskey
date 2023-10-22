@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { App } from 'vue';
+import { type App } from 'vue';
 
 import userPreview from './user-preview.js';
+import size from './size.js';
 import getSize from './get-size.js';
 import ripple from './ripple.js';
 import tooltip from './tooltip.js';
@@ -18,15 +19,17 @@ import panel from './panel.js';
 import adaptiveBorder from './adaptive-border.js';
 import adaptiveBg from './adaptive-bg.js';
 
-export default function(app: App) {
+// eslint-disable-next-line import/no-default-export
+export default (app: App): void => {
 	for (const [key, value] of Object.entries(directives)) {
 		app.directive(key, value);
 	}
-}
+};
 
 export const directives = {
 	'userPreview': userPreview,
 	'user-preview': userPreview,
+	'size': size,
 	'get-size': getSize,
 	'ripple': ripple,
 	'tooltip': tooltip,

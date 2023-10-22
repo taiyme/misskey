@@ -4,20 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
+import { type Directive } from 'vue';
 import { defaultStore } from '@/store.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(el: HTMLElement, binding, vn) {
+	mounted(src) {
 		if (!defaultStore.state.animation) return;
 
-		const target = el.children[0];
+		const target = Array.from(src.children).at(0);
 
 		if (target == null) return;
 
 		target.classList.add('_anime_bounce_standBy');
 
-		el.addEventListener('mousedown', () => {
+		src.addEventListener('mousedown', () => {
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -28,14 +29,14 @@ export default {
 			});
 		});
 
-		el.addEventListener('click', () => {
+		src.addEventListener('click', () => {
 			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
 		});
 
-		el.addEventListener('animationend', () => {
+		src.addEventListener('animationend', () => {
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
 		});
 	},
-} as Directive;
+} as Directive<HTMLElement>;
