@@ -2310,6 +2310,8 @@ export interface Locale {
         readonly "pickupUserDescription": string;
         readonly "undo": string;
         readonly "undoConfirm": string;
+        readonly "gifInfo": string;
+        readonly "sensitiveInfo": string;
     };
 }
 declare const locales: {
