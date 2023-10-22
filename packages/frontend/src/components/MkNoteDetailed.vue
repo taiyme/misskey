@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-if="!muted"
+	v-size="{ max: [500, 450, 350, 300], min: [] }"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -762,48 +763,54 @@ function loadConversation() {
 	border-color: var(--accent);
 }
 
-@container (max-width: 500px) {
-	.root {
+:global(:where(.max-width_500px)) {
+	&.root {
 		font-size: 0.9em;
 	}
 }
 
-@container (max-width: 450px) {
-	.renote {
-		padding: 8px 16px 0 16px;
-	}
+:global(:where(.max-width_450px)) {
+	&:where(.root) {
+		.renote {
+			padding: 8px 16px 0 16px;
+		}
 
-	.note {
-		padding: 16px;
-	}
+		.note {
+			padding: 16px;
+		}
 
-	.noteHeaderAvatar {
-		width: 50px;
-		height: 50px;
-	}
-}
-
-@container (max-width: 350px) {
-	.noteFooterButton {
-		&:not(:last-child) {
-			margin-right: 18px;
+		.noteHeaderAvatar {
+			width: 50px;
+			height: 50px;
 		}
 	}
 }
 
-@container (max-width: 300px) {
-	.root {
+:global(:where(.max-width_350px)) {
+	&:where(.root) {
+		.noteFooterButton {
+			&:not(:last-child) {
+				margin-right: 18px;
+			}
+		}
+	}
+}
+
+:global(:where(.max-width_300px)) {
+	&.root {
 		font-size: 0.825em;
 	}
 
-	.noteHeaderAvatar {
-		width: 50px;
-		height: 50px;
-	}
+	&:where(.root) {
+		.noteHeaderAvatar {
+			width: 50px;
+			height: 50px;
+		}
 
-	.noteFooterButton {
-		&:not(:last-child) {
-			margin-right: 12px;
+		.noteFooterButton {
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
 		}
 	}
 }

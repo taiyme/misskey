@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-size="{ max: [], min: [250, 350, 500] }" :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -80,27 +80,33 @@ const showContent = $ref(false);
 	padding: 0;
 }
 
-@container (min-width: 250px) {
-	.avatar {
-		margin: 0 10px 0 0;
-		width: 40px;
-		height: 40px;
+:global(:where(.min-width_250px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 10px 0 0;
+			width: 40px;
+			height: 40px;
+		}
 	}
 }
 
-@container (min-width: 350px) {
-	.avatar {
-		margin: 0 10px 0 0;
-		width: 44px;
-		height: 44px;
+:global(:where(.min-width_350px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 10px 0 0;
+			width: 44px;
+			height: 44px;
+		}
 	}
 }
 
-@container (min-width: 500px) {
-	.avatar {
-		margin: 0 12px 0 0;
-		width: 48px;
-		height: 48px;
+:global(:where(.min-width_500px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 12px 0 0;
+			width: 48px;
+			height: 48px;
+		}
 	}
 }
 </style>

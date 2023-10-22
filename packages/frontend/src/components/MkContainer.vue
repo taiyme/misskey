@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.scrollable]: scrollable }]">
+<div ref="rootEl" v-size="{ max: [380], min: [] }" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.scrollable]: scrollable }]">
 	<header v-if="showHeader" ref="headerEl" :class="$style.header">
 		<div :class="$style.title">
 			<span :class="$style.titleIcon"><slot name="icon"></slot></span>
@@ -237,10 +237,12 @@ onUnmounted(() => {
 	}
 }
 
-@container (max-width: 380px) {
-	.title {
-		padding: 8px 10px;
-		font-size: 0.9em;
+:global(:where(.max-width_380px)) {
+	&:where(.root) {
+		.title {
+			padding: 8px 10px;
+			font-size: 0.9em;
+		}
 	}
 }
 </style>

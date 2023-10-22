@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
+<div v-if="!muted" v-size="{ max: [450], min: [] }" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
@@ -145,8 +145,8 @@ if (props.detail) {
 	padding: 10px 0 0 16px;
 }
 
-@container (max-width: 450px) {
-	.root {
+:global(:where(.max-width_450px)) {
+	&.root {
 		padding: 14px 16px;
 
 		&.children {

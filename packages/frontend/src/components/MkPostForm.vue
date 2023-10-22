@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
+	v-size="{ max: [500, 350], min: [] }"
 	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
@@ -1189,60 +1190,64 @@ defineExpose({
 	color: var(--accent);
 }
 
-@container (max-width: 500px) {
-	.headerRight {
-		font-size: .9em;
-	}
+:global(:where(.max-width_500px)) {
+	&:where(.root) {
+		.headerRight {
+			font-size: .9em;
+		}
 
-	.headerRightButtonText {
-		display: none;
-	}
+		.headerRightButtonText {
+			display: none;
+		}
 
-	.visibility {
-		overflow: initial;
-	}
+		.visibility {
+			overflow: initial;
+		}
 
-	.submit {
-		margin: 8px 8px 8px 4px;
-	}
+		.submit {
+			margin: 8px 8px 8px 4px;
+		}
 
-	.toSpecified {
-		padding: 6px 16px;
-	}
+		.toSpecified {
+			padding: 6px 16px;
+		}
 
-	.preview {
-		padding: 16px 14px 0 14px;
-	}
-	.cw,
-	.hashtags,
-	.text {
-		padding: 0 16px;
-	}
+		.preview {
+			padding: 16px 14px 0 14px;
+		}
+		.cw,
+		.hashtags,
+		.text {
+			padding: 0 16px;
+		}
 
-	.text {
-		min-height: 80px;
-	}
+		.text {
+			min-height: 80px;
+		}
 
-	.footer {
-		padding: 0 8px 8px 8px;
+		.footer {
+			padding: 0 8px 8px 8px;
+		}
 	}
 }
 
-@container (max-width: 350px) {
-	.footer {
-		font-size: 0.9em;
-	}
+:global(:where(.max-width_350px)) {
+	&:where(.root) {
+		.footer {
+			font-size: 0.9em;
+		}
 
-	.footerLeft {
-		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-	}
+		.footerLeft {
+			grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+		}
 
-	.footerRight {
-		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-	}
+		.footerRight {
+			grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+		}
 
-	.headerRight {
-		gap: 0;
+		.headerRight {
+			gap: 0;
+		}
 	}
 }
 </style>

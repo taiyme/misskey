@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-size="{ max: [], min: [350, 500] }" :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
 	<div :class="$style.main">
 		<div :class="$style.header">
@@ -61,19 +61,23 @@ const props = defineProps<{
     text-overflow: ellipsis;
 }
 
-@container (min-width: 350px) {
-	.avatar {
-		margin: 0 10px 0 0 !important;
-		width: 44px !important;
-		height: 44px !important;
+:global(:where(.min-width_350px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 10px 0 0 !important;
+			width: 44px !important;
+			height: 44px !important;
+		}
 	}
 }
 
-@container (min-width: 500px) {
-	.avatar {
-		margin: 0 12px 0 0 !important;
-		width: 48px !important;
-		height: 48px !important;
+:global(:where(.min-width_500px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 12px 0 0 !important;
+			width: 48px !important;
+			height: 48px !important;
+		}
 	}
 }
 </style>

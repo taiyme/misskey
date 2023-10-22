@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-size="{ max: [500], min: [] }" :class="$style.root">
 	<button v-for="item in items" class="_button item" :class="{ disabled: item.hidden }" @click="onClick(item)">
 		<span class="box" :style="{ background: chart.config.type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
 		{{ item.text }}
@@ -78,8 +78,8 @@ defineExpose({
 	}
 }
 
-@container (max-width: 500px) {
-	.root {
+:global(:where(.max-width_500px)) {
+	&.root {
 		font-size: 90%;
 		gap: 6px;
 	}

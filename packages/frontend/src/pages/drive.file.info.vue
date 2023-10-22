@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
+<div v-size="{ max: [], min: [500] }" :class="$style.root" class="_gaps">
 	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
@@ -207,10 +207,12 @@ onMounted(async () => {
 	gap: 8px;
 }
 
-@container (min-width: 500px) {
-	.fileQuickActionsRoot {
-		flex-direction: row;
-		align-items: center;
+:global(:where(.min-width_500px)) {
+	&:where(.root) {
+		.fileQuickActionsRoot {
+			flex-direction: row;
+			align-items: center;
+		}
 	}
 }
 

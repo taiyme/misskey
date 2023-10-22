@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="narrow ? 800 : 1100">
-	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
+	<div ref="rootEl" v-size="{ max: [500], min: [] }" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main _gaps">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
@@ -607,8 +607,8 @@ onUnmounted(() => {
 	}
 }
 
-@container (max-width: 500px) {
-	.ftskorzw {
+:global(:where(.max-width_500px)) {
+	&.ftskorzw {
 		> .main {
 			> .profile > .main {
 				> .banner-container {

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.rootMin]: forceSpacerMin }]">
+<div v-size="{ max: [450], min: [451] }" :class="[$style.root, { [$style.rootMin]: forceSpacerMin }]">
 	<div :class="$style.content">
 		<slot></slot>
 	</div>
@@ -44,14 +44,14 @@ const forceSpacerMin = inject('forceSpacerMin', false) || deviceKind === 'smartp
 	container-type: inline-size;
 }
 
-@container (max-width: 450px) {
-	.root {
+:global(:where(.max-width_450px)) {
+	&.root {
 		padding: v-bind('props.marginMin + "px"');
 	}
 }
 
-@container (min-width: 451px) {
-	.root {
+:global(:where(.min-width_451px)) {
+	&.root {
 		padding: v-bind('props.marginMax + "px"');
 	}
 }

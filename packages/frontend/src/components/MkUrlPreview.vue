@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkButton>
 	</div>
 </template>
-<div v-else>
+<div v-else v-size="{ max: [400, 350], min: [] }" :class="$style.linkRoot">
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail" :class="$style.thumbnail" :style="defaultStore.state.enableDataSaverMode ? '' : `background-image: url('${thumbnail}')`">
 		</div>
@@ -321,66 +321,70 @@ onUnmounted(() => {
 	margin-top: 6px;
 }
 
-@container (max-width: 400px) {
-	.link {
-		font-size: 12px;
-	}
+:global(:where(.max-width_400px)) {
+	&:where(.linkRoot) {
+		.link {
+			font-size: 12px;
+		}
 
-	.thumbnail {
-		height: 80px;
-	}
+		.thumbnail {
+			height: 80px;
+		}
 
-	.body {
-		padding: 12px;
+		.body {
+			padding: 12px;
+		}
 	}
 }
 
-@container (max-width: 350px) {
-	.link {
-		font-size: 10px;
+:global(:where(.max-width_350px)) {
+	&:where(.linkRoot) {
+		.link {
+			font-size: 10px;
 
-		&.compact {
-			> .thumbnail {
-				position: absolute;
-				width: 56px;
-				height: 100%;
-			}
-
-			> .body {
-				left: 56px;
-				width: calc(100% - 56px);
-				padding: 4px;
-
-				> .header {
-					margin-bottom: 2px;
+			&.compact {
+				> .thumbnail {
+					position: absolute;
+					width: 56px;
+					height: 100%;
 				}
 
-				> .footer {
-					margin-top: 2px;
+				> .body {
+					left: 56px;
+					width: calc(100% - 56px);
+					padding: 4px;
+
+					> .header {
+						margin-bottom: 2px;
+					}
+
+					> .footer {
+						margin-top: 2px;
+					}
 				}
 			}
 		}
-	}
 
-	.thumbnail {
-		height: 70px;
-	}
+		.thumbnail {
+			height: 70px;
+		}
 
-	.body {
-		padding: 8px;
-	}
+		.body {
+			padding: 8px;
+		}
 
-	.header {
-		margin-bottom: 4px;
-	}
+		.header {
+			margin-bottom: 4px;
+		}
 
-	.footer {
-		margin-top: 4px;
-	}
+		.footer {
+			margin-top: 4px;
+		}
 
-	.siteIcon {
-		width: 12px;
-		height: 12px;
+		.siteIcon {
+			width: 12px;
+			height: 12px;
+		}
 	}
 }
 </style>

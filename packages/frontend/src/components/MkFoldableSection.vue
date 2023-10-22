@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="el" :class="$style.root">
+<div ref="el" v-size="{ max: [500], min: [] }" :class="$style.root">
 	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
@@ -136,9 +136,11 @@ onMounted(() => {
 	padding: 12px 0 12px 16px;
 }
 
-@container (max-width: 500px) {
-	.title {
-		padding: 8px 10px 8px 0;
+:global(:where(.max-width_500px)) {
+	&:where(.root) {
+		.title {
+			padding: 8px 10px 8px 0;
+		}
 	}
 }
 </style>

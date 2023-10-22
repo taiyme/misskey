@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_m">
+<div v-size="{ max: [452], min: [] }" class="_gaps_m">
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
@@ -303,7 +303,7 @@ definePageMetadata({
 	}
 
 	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
-	@container (max-width: 452px) {
+	:global(:where(.max-width_452px)) {
 		align-items: center;
 	}
 }

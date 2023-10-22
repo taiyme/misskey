@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="elRef" :class="$style.root">
+<div ref="elRef" v-size="{ max: [600, 500], min: [] }" :class="$style.root">
 	<div :class="$style.head">
 		<MkAvatar v-if="notification.type === 'pollEnded'" :class="$style.icon" :user="notification.note.user" link preview/>
 		<MkAvatar v-else-if="notification.type === 'note'" :class="$style.icon" :user="notification.note.user" link preview/>
@@ -300,15 +300,15 @@ useTooltip(reactionRef, (showing) => {
 	flex: 1;
 }
 
-@container (max-width: 600px) {
-	.root {
+:global(:where(.max-width_600px)) {
+	&.root {
 		padding: 16px;
 		font-size: 0.9em;
 	}
 }
 
-@container (max-width: 500px) {
-	.root {
+:global(:where(.max-width_500px)) {
+	&.root {
 		padding: 12px;
 		font-size: 0.85em;
 	}

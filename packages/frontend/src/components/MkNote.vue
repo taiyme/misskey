@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-if="!muted"
+	v-size="{ max: [580, 500, 480, 450, 400, 350, 300, 250], min: [] }"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -815,73 +816,81 @@ function readPromo() {
 	opacity: 0.7;
 }
 
-@container (max-width: 580px) {
-	.root {
+:global(:where(.max-width_580px)) {
+	&.root {
 		font-size: 0.95em;
 	}
 
-	.renote {
-		padding: 12px 26px 0 26px;
-	}
+	&:where(.root) {
+		.renote {
+			padding: 12px 26px 0 26px;
+		}
 
-	.article {
-		padding: 24px 26px;
-	}
+		.article {
+			padding: 24px 26px;
+		}
 
-	.avatar {
-		width: 50px;
-		height: 50px;
+		.avatar {
+			width: 50px;
+			height: 50px;
+		}
 	}
 }
 
-@container (max-width: 500px) {
-	.root {
+:global(:where(.max-width_500px)) {
+	&.root {
 		font-size: 0.9em;
 	}
 
-	.renote {
-		padding: 10px 22px 0 22px;
-	}
+	&:where(.root) {
+		.renote {
+			padding: 10px 22px 0 22px;
+		}
 
-	.article {
-		padding: 20px 22px;
-	}
+		.article {
+			padding: 20px 22px;
+		}
 
-	.footer {
-		margin-bottom: -8px;
-	}
-}
-
-@container (max-width: 480px) {
-	.renote {
-		padding: 8px 16px 0 16px;
-	}
-
-	.tip {
-		padding: 8px 16px 0 16px;
-	}
-
-	.collapsedRenoteTarget {
-		padding: 0 16px 9px;
-		margin-top: 4px;
-	}
-
-	.article {
-		padding: 14px 16px;
+		.footer {
+			margin-bottom: -8px;
+		}
 	}
 }
 
-@container (max-width: 450px) {
-	.avatar {
-		margin: 0 10px 0 0;
-		width: 46px;
-		height: 46px;
-		top: calc(14px + var(--stickyTop, 0px));
+:global(:where(.max-width_480px)) {
+	&:where(.root) {
+		.renote {
+			padding: 8px 16px 0 16px;
+		}
+
+		.tip {
+			padding: 8px 16px 0 16px;
+		}
+
+		.collapsedRenoteTarget {
+			padding: 0 16px 9px;
+			margin-top: 4px;
+		}
+
+		.article {
+			padding: 14px 16px;
+		}
 	}
 }
 
-@container (max-width: 400px) {
-	.root:not(.showActionsOnlyHover) {
+:global(:where(.max-width_450px)) {
+	&:where(.root) {
+		.avatar {
+			margin: 0 10px 0 0;
+			width: 46px;
+			height: 46px;
+			top: calc(14px + var(--stickyTop, 0px));
+		}
+	}
+}
+
+:global(:where(.max-width_400px)) {
+	&.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
 				margin-right: 18px;
@@ -890,8 +899,8 @@ function readPromo() {
 	}
 }
 
-@container (max-width: 350px) {
-	.root:not(.showActionsOnlyHover) {
+:global(:where(.max-width_350px)) {
+	&.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
 				margin-right: 12px;
@@ -899,21 +908,25 @@ function readPromo() {
 		}
 	}
 
-	.colorBar {
-		top: 6px;
-		left: 6px;
-		width: 4px;
-		height: calc(100% - 12px);
+	&:where(.root) {
+		.colorBar {
+			top: 6px;
+			left: 6px;
+			width: 4px;
+			height: calc(100% - 12px);
+		}
 	}
 }
 
-@container (max-width: 300px) {
-	.avatar {
-		width: 44px;
-		height: 44px;
+:global(:where(.max-width_300px)) {
+	&:where(.root) {
+		.avatar {
+			width: 44px;
+			height: 44px;
+		}
 	}
 
-	.root:not(.showActionsOnlyHover) {
+	&.root:not(.showActionsOnlyHover) {
 		.footerButton {
 			&:not(:last-child) {
 				margin-right: 8px;
@@ -922,9 +935,11 @@ function readPromo() {
 	}
 }
 
-@container (max-width: 250px) {
-	.quoteNote {
-		padding: 12px;
+:global(:where(.max-width_250px)) {
+	&:where(.root) {
+		.quoteNote {
+			padding: 12px;
+		}
 	}
 }
 
