@@ -136,7 +136,7 @@ function more() {
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);
@@ -152,7 +152,7 @@ function more() {
 	}
 
 	&:hover, &.active {
-		&:before {
+		&::before {
 			background: var(--accentLighten);
 		}
 	}
@@ -223,7 +223,7 @@ function more() {
 	}
 
 	&:hover, &.active {
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			width: calc(100% - 24px);

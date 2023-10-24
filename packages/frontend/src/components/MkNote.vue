@@ -509,7 +509,7 @@ function readPromo() {
 	&:focus-visible {
 		outline: none;
 
-		&:after {
+		&::after {
 			content: "";
 			pointer-events: none;
 			display: block;

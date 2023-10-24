@@ -110,7 +110,7 @@ const zIndex = os.claimZIndex('high');
   width: 48px;
   text-align: right;
 }
-.mk-uploader > ol > li > .top > .status > .percentage:after {
+.mk-uploader > ol > li > .top > .status > .percentage::after {
   content: '%';
 }
 .mk-uploader > ol > li > progress {

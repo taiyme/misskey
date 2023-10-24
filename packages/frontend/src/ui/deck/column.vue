@@ -259,7 +259,7 @@ function onDrop(ev) {
 	border-radius: 10px;
 
 	&.draghover {
-		&:after {
+		&::after {
 			content: "";
 			display: block;
 			position: absolute;
@@ -273,7 +273,7 @@ function onDrop(ev) {
 	}
 
 	&.dragging {
-		&:after {
+		&::after {
 			content: "";
 			display: block;
 			position: absolute;

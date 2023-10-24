@@ -189,7 +189,7 @@ function more(ev: MouseEvent) {
 		font-weight: bold;
 		text-align: left;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			width: calc(100% - 38px);
@@ -205,7 +205,7 @@ function more(ev: MouseEvent) {
 		}
 
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -282,7 +282,7 @@ function more(ev: MouseEvent) {
 		&:hover, &.active {
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				width: calc(100% - 34px);
@@ -367,7 +367,7 @@ function more(ev: MouseEvent) {
 		margin-bottom: 16px;
 		text-align: center;
 
-		&:before {
+		&::before {
 			content: "";
 			display: block;
 			position: absolute;
@@ -383,7 +383,7 @@ function more(ev: MouseEvent) {
 		}
 
 		&:hover, &.active {
-			&:before {
+			&::before {
 				background: var(--accentLighten);
 			}
 		}
@@ -435,7 +435,7 @@ function more(ev: MouseEvent) {
 			text-decoration: none;
 			color: var(--accent);
 
-			&:before {
+			&::before {
 				content: "";
 				display: block;
 				height: 100%;
