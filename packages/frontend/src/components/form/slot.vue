@@ -26,6 +26,7 @@ function focus() {
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
+	-webkit-user-select: none;
 	user-select: none;
 
 	&:empty {

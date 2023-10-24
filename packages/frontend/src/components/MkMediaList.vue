@@ -354,6 +354,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 <style lang="scss">
 .pswp__bg {
 	background: var(--modalBg);
+	-webkit-backdrop-filter: var(--modalBgFilter);
 	backdrop-filter: var(--modalBgFilter);
 }
 

@@ -175,6 +175,7 @@ definePageMetadata({
 
 			&.playing {
 				&, * {
+					-webkit-user-select: none;
 					user-select: none;
 				}
 

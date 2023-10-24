@@ -256,6 +256,7 @@ if ($i) {
 	padding: 4px 7px;
 	font-size: 14px;
 	pointer-events: none;
+	-webkit-user-select: none;
 	user-select: none;
 
 	> span {
@@ -273,6 +274,7 @@ if ($i) {
 	padding: 4px 5px;
 	font-size: 14px;
 	pointer-events: none;
+	-webkit-user-select: none;
 	user-select: none;
 
 	> span {

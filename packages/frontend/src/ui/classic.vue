@@ -214,7 +214,8 @@ onMounted(() => {
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
+		// -webkit-backdrop-filter: var(--blur, blur(4px));
+		// backdrop-filter: var(--blur, blur(4px));
 	}
 
 	> .columns {

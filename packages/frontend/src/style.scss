@@ -46,9 +46,9 @@ html {
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 1.35;
+	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	tab-size: 2;
-	-webkit-text-size-adjust: 100%;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) transparent;
@@ -110,7 +110,6 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
@@ -124,7 +123,6 @@ a {
 }
 
 textarea, input {
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 }
 
@@ -164,8 +162,8 @@ hr {
 }
 
 ._noSelect {
-	user-select: none;
 	-webkit-user-select: none;
+	user-select: none;
 	-webkit-touch-callout: none;
 }
 
@@ -198,6 +196,7 @@ hr {
 
 ._button {
 	@extend ._noSelect;
+	-webkit-appearance: none;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
@@ -207,7 +206,6 @@ hr {
 	cursor: pointer;
 	color: inherit;
 	touch-action: manipulation;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 	font-family: inherit;

@@ -347,6 +347,7 @@ function onDrop(ev) {
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
+	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -395,6 +396,7 @@ function onDrop(ev) {
 	box-sizing: border-box;
 	height: var(--deckColumnHeaderHeight);
 	cursor: move;
+	-webkit-user-select: none;
 	user-select: none;
 	opacity: 0.5;
 }

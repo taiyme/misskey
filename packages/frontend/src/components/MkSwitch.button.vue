@@ -51,11 +51,13 @@ const toggle = () => {
 	height: 23px;
 	outline: none;
 	background: var(--switchOffBg);
+	-webkit-background-clip: content-box;
 	background-clip: content-box;
 	border: solid 1px var(--switchOffBg);
 	border-radius: 999px;
 	cursor: pointer;
 	transition: inherit;
+	-webkit-user-select: none;
 	user-select: none;
 }
 

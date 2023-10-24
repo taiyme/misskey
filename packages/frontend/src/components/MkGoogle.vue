@@ -33,6 +33,8 @@ const search = () => {
 }
 
 .input {
+	-webkit-appearance: textfield;
+	appearance: textfield;
 	flex-shrink: 1;
 	padding: 10px;
 	width: 100%;
@@ -40,7 +42,6 @@ const search = () => {
 	font-size: 16px;
 	border: solid 1px var(--divider);
 	border-radius: 4px 0 0 4px;
-	-webkit-appearance: textfield;
 }
 
 .button {

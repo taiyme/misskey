@@ -376,6 +376,7 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: flex;
 	transition: all 0.2s ease;
+	-webkit-user-select: none;
 	user-select: none;
 	cursor: pointer;
 }

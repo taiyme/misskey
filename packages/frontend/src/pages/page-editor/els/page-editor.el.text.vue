@@ -44,7 +44,6 @@ watch($$(text), () => {
 .textarea {
 	display: block;
 	-webkit-appearance: none;
-	-moz-appearance: none;
 	appearance: none;
 	width: 100%;
 	min-width: 100%;

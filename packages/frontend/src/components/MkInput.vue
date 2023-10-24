@@ -170,6 +170,7 @@ defineExpose({
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
+	-webkit-user-select: none;
 	user-select: none;
 
 	&:empty {
@@ -213,8 +214,8 @@ defineExpose({
 }
 
 .inputCore {
-	appearance: none;
 	-webkit-appearance: none;
+	appearance: none;
 	display: block;
 	height: v-bind("height + 'px'");
 	width: 100%;

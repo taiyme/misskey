@@ -127,6 +127,7 @@ onMounted(() => {
 	border-radius: 100%;
 	box-sizing: border-box;
 	pointer-events: none;
+	-webkit-user-select: none;
 	user-select: none;
 	filter: drop-shadow(0px 2px 2px #00000044);
 	box-shadow: 0 1px 0px #ffffff88 inset;

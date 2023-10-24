@@ -54,11 +54,13 @@ function toggle(): void {
 	padding: 7px 10px;
 	min-width: 60px;
 	background-color: var(--panel);
+	-webkit-background-clip: padding-box !important;
 	background-clip: padding-box !important;
 	border: solid 1px var(--panel);
 	border-radius: 6px;
 	font-size: 90%;
 	transition: all 0.2s;
+	-webkit-user-select: none;
 	user-select: none;
 
 	&.disabled {

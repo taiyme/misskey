@@ -121,6 +121,7 @@ onMounted(() => {
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
+	-webkit-user-select: none;
 	user-select: none;
 
 	&:empty {
@@ -139,8 +140,8 @@ onMounted(() => {
 }
 
 .textarea {
-	appearance: none;
 	-webkit-appearance: none;
+	appearance: none;
 	display: block;
 	width: 100%;
 	min-width: 100%;

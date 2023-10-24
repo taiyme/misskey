@@ -119,6 +119,7 @@ defineExpose<WidgetComponentExpose>({
 		box-sizing: border-box;
 		background-position: center center;
 		background-size: cover;
+		-webkit-background-clip: content-box;
 		background-clip: content-box;
 		border: solid 2px transparent;
 		border-radius: 4px;
