@@ -180,7 +180,7 @@ async function later(later: boolean) {
 <style lang="scss" module>
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
+	transition: opacity 0.3s cubic-bezier(0, 0, 0.35, 1), transform 0.3s cubic-bezier(0, 0, 0.35, 1);
 }
 .transition_x_enterFrom {
 	opacity: 0;
@@ -203,7 +203,7 @@ async function later(later: boolean) {
 .progressBarValue {
 	height: 100%;
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-	transition: all 0.5s cubic-bezier(0,.5,.5,1);
+	transition: all 0.5s cubic-bezier(0, 0.5, 0.5, 1);
 }
 
 .centerPage {

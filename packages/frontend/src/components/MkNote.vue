@@ -954,6 +954,6 @@ function readPromo() {
 	height: 32px;
 	margin: 2px;
 	padding: 0 6px;
-	opacity: .8;
+	opacity: 0.8;
 }
 </style>

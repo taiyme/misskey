@@ -254,12 +254,12 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 			> .container {
 				> .track {
 					> .highlight {
-						transition: width 0.2s cubic-bezier(0,0,0,1);
+						transition: width 0.2s cubic-bezier(0, 0, 0, 1);
 					}
 				}
 
 				> .thumb {
-					transition: left 0.2s cubic-bezier(0,0,0,1);
+					transition: left 0.2s cubic-bezier(0, 0, 0, 1);
 				}
 			}
 		}

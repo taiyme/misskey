@@ -294,7 +294,7 @@ definePageMetadata({
 
 .fieldDragItem {
 	display: flex;
-	padding-bottom: .75em;
+	padding-bottom: 0.75em;
 	align-items: flex-end;
 	border-bottom: solid 0.5px var(--divider);
 
@@ -329,7 +329,7 @@ definePageMetadata({
 	cursor: pointer;
 
 	&:hover, &:focus {
-		opacity: .7;
+		opacity: 0.7;
 	}
 	&:active {
 		cursor: pointer;

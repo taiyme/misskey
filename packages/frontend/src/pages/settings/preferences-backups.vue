@@ -438,8 +438,8 @@ definePageMetadata(computed(() => ({
 	}
 
 	&Time {
-		font-size: .85em;
-		opacity: .7;
+		font-size: 0.85em;
+		opacity: 0.7;
 	}
 }
 </style>

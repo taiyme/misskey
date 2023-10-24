@@ -95,7 +95,7 @@ onActivated(() => {
 }
 
 .nUsers {
-	font-size: .9em;
-	opacity: .7;
+	font-size: 0.9em;
+	opacity: 0.7;
 }
 </style>

@@ -223,7 +223,7 @@ onMounted(async () => {
 	gap: 8px;
 
 	.fileQuickActionsOthersButton {
-		padding: .5rem;
+		padding: 0.5rem;
 		border-radius: 99rem;
 
 		&:hover,
@@ -245,18 +245,18 @@ onMounted(async () => {
 }
 
 .fileNameEditBtn {
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 	display: flex;
 	align-items: center;
 	min-width: 0;
 	font-weight: 700;
 	border-radius: var(--radius);
-	font-size: .8rem;
+	font-size: 0.8rem;
 
 	>.fileNameEditIcon {
 		color: transparent;
 		visibility: hidden;
-		padding-left: .5rem;
+		padding-left: 0.5rem;
 	}
 
 	>.fileName {
@@ -275,21 +275,21 @@ onMounted(async () => {
 }
 
 .fileMetaDataChildren {
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 }
 
 .fileAltEditBtn {
 	text-align: start;
 	display: block;
 	width: 100%;
-	padding: .5rem 1rem;
+	padding: 0.5rem 1rem;
 	border-radius: var(--radius);
 
 	.fileAltEditIcon {
 		display: inline-block;
 		color: transparent;
 		visibility: hidden;
-		padding-left: .5rem;
+		padding-left: 0.5rem;
 	}
 
 	&:hover {

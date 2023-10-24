@@ -234,7 +234,7 @@ onUnmounted(() => {
 	overflow: hidden;
 
 	&.animate {
-		transition: width .15s linear, padding-left .15s linear;
+		transition: width 0.15s linear, padding-left 0.15s linear;
 	}
 }
 

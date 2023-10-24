@@ -57,7 +57,7 @@ function leaveHover(): void {
 
 <style lang="scss" module>
 .transition_toggle_leaveActive {
-	transition: opacity .5s;
+	transition: opacity 0.5s;
 	position: absolute;
 	top: 0;
 	left: 0;

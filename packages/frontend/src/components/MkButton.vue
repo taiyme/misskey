@@ -278,7 +278,7 @@ function onMousedown(evt: MouseEvent): void {
 	background: rgba(0, 0, 0, 0.1);
 	opacity: 1;
 	transform: scale(1);
-	transition: all 0.5s cubic-bezier(0,.5,0,1);
+	transition: all 0.5s cubic-bezier(0, 0.5, 0, 1);
 }
 
 .content {

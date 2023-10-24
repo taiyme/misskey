@@ -330,7 +330,7 @@ defineExpose({
 
 	> .content {
     transform: translateY(0px);
-		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(0.5, -0.5, 1, 0.5) !important;
 	}
 }
 .transition_send_enterFrom,
@@ -402,7 +402,7 @@ defineExpose({
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
 .transition_modalDrawer_leaveActive {
@@ -411,7 +411,7 @@ defineExpose({
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
+		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
 	}
 }
 .transition_modalDrawer_enterFrom,

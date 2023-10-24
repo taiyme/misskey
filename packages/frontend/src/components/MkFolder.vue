@@ -165,7 +165,7 @@ onMounted(() => {
 
 .headerLower {
 	color: var(--fgTransparentWeak);
-	font-size: .85em;
+	font-size: 0.85em;
 	padding-left: 4px;
 }
 
@@ -193,7 +193,7 @@ onMounted(() => {
 
 .headerTextSub {
 	color: var(--fgTransparentWeak);
-	font-size: .85em;
+	font-size: 0.85em;
 }
 
 .headerRight {

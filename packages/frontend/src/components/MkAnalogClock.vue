@@ -228,11 +228,11 @@ onBeforeUnmount(() => {
 	transform-origin: 50% 50%;
 
 	&.animate.elastic {
-		transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
+		transition: transform 0.2s cubic-bezier(0.4, 2.08, 0.55, 0.44);
 	}
 
 	&.animate.easeOut {
-		transition: transform .7s cubic-bezier(0,.7,.3,1);
+		transition: transform 0.7s cubic-bezier(0, 0.7, 0.3, 1);
 	}
 }
 </style>

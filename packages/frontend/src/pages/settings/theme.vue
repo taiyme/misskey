@@ -316,7 +316,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		.star--5 {
@@ -325,7 +325,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 3px;
 			height: 3px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		.star--6 {
@@ -334,7 +334,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px,0,0);
+			transform: translate3d(3px, 0, 0);
 		}
 
 		input:checked {
@@ -377,7 +377,7 @@ definePageMetadata({
 				.star--5,
 				.star--6 {
 					opacity: 1;
-					transform: translate3d(0,0,0);
+					transform: translate3d(0, 0, 0);
 				}
 
 				.star--4 {

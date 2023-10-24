@@ -118,7 +118,7 @@ const vote = async (id) => {
 	left: 0;
 	height: 100%;
 	background: var(--accent);
-	background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
+	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 	transition: width 1s ease;
 }
 

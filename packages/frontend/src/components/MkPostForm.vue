@@ -1133,7 +1133,7 @@ defineExpose({
 	top: 0;
 	right: 2px;
 	padding: 4px 6px;
-	font-size: .9em;
+	font-size: 0.9em;
 	color: var(--warn);
 	border-radius: 6px;
 	min-width: 1.6em;
@@ -1193,7 +1193,7 @@ defineExpose({
 :global(:where(.max-width_500px)) {
 	&:where(.root) {
 		.headerRight {
-			font-size: .9em;
+			font-size: 0.9em;
 		}
 
 		.headerRightButtonText {

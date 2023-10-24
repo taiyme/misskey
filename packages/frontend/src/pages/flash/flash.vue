@@ -288,7 +288,7 @@ definePageMetadata(computed(() => flash ? {
 
 .zoom-enter-active,
 .zoom-leave-active {
-	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
+	transition: opacity 0.3s cubic-bezier(0, 0, 0.35, 1), transform 0.3s cubic-bezier(0, 0, 0.35, 1);
 }
 .zoom-enter-from {
 	opacity: 0;

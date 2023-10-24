@@ -413,7 +413,7 @@ hr {
 ._zoom {
 	transition-duration: 0.5s, 0.5s;
 	transition-property: opacity, transform;
-	transition-timing-function: cubic-bezier(0,.5,.5,1);
+	transition-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
 }
 
 ._transition_zoom-enter-active, ._transition_zoom-leave-active {
