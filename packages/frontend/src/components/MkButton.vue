@@ -191,14 +191,14 @@ function onMousedown(evt: MouseEvent): void {
 		}
 
 		&.primary {
-			background: rgb(241 97 132);
+			background: rgb(241, 97, 132);
 
 			&:not(:disabled):hover {
-				background: rgb(241 92 128);
+				background: rgb(241, 92, 128);
 			}
 
 			&:not(:disabled):active {
-				background: rgb(241 92 128);
+				background: rgb(241, 92, 128);
 			}
 		}
 	}

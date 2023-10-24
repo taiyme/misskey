@@ -119,7 +119,7 @@ defineExpose<WidgetComponentExpose>({
 	overflow: hidden;
 
 	&:nth-child(even) {
-		background: rgba(#000, 0.05);
+		background: rgba(0, 0, 0, 0.05);
 	}
 }
 </style>

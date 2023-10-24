@@ -147,7 +147,7 @@ onMounted(() => {
 	}
 }
 .iconFrame_gold {
-	background: linear-gradient(0deg, rgba(255,182,85,1) 0%, rgba(233,133,0,1) 49%, rgba(255,243,93,1) 51%, rgba(255,187,25,1) 100%);
+	background: linear-gradient(0deg, rgb(255, 182, 85) 0%, rgb(233, 133, 0) 49%, rgb(255, 243, 93) 51%, rgb(255, 187, 25) 100%);
 
 	> .iconInner {
 		background: linear-gradient(0deg, #ffee20, #eb7018);
@@ -167,7 +167,7 @@ onMounted(() => {
 	}
 }
 .iconFrame_platinum {
-	background: linear-gradient(0deg, rgba(154,154,154,1) 0%, rgba(226,226,226,1) 49%, rgba(255,255,255,1) 51%, rgba(195,195,195,1) 100%);
+	background: linear-gradient(0deg, rgb(154, 154, 154) 0%, rgb(226, 226, 226) 49%, rgb(255, 255, 255) 51%, rgb(195, 195, 195) 100%);
 
 	> .iconInner {
 		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);

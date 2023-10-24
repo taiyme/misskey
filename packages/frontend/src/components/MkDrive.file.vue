@@ -108,7 +108,7 @@ function onDragend() {
 	cursor: pointer;
 
 	&:hover {
-		background: rgba(#000, 0.05);
+		background: rgba(0, 0, 0, 0.05);
 
 		> .label {
 			&:before,
@@ -126,7 +126,7 @@ function onDragend() {
 	}
 
 	&:active {
-		background: rgba(#000, 0.1);
+		background: rgba(0, 0, 0, 0.1);
 
 		> .label {
 			&:before,

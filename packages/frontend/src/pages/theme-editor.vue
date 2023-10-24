@@ -257,7 +257,7 @@ definePageMetadata({
 					width: 42px;
 					height: 42px;
 					border-radius: 4px;
-					box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 					transition: transform 0.15s ease;
 				}
 

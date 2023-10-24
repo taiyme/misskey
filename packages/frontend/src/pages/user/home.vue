@@ -345,7 +345,7 @@ onUnmounted(() => {
 						left: 0;
 						width: 100%;
 						height: 78px;
-						background: linear-gradient(transparent, rgba(#000, 0.7));
+						background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 					}
 
 					> .followed {
@@ -451,7 +451,7 @@ onUnmounted(() => {
 					z-index: 2;
 					width: 120px;
 					height: 120px;
-					box-shadow: 1px 1px 3px rgba(#000, 0.2);
+					box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 				}
 
 				> .roles {

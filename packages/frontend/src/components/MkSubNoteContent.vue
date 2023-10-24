@@ -72,7 +72,7 @@ const collapsed = $ref(isLong);
 				padding: 6px 10px;
 				font-size: 0.8em;
 				border-radius: 999px;
-				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 			}
 
 			&:hover {
@@ -108,6 +108,6 @@ const collapsed = $ref(isLong);
 	padding: 6px 10px;
 	font-size: 0.8em;
 	border-radius: 999px;
-	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 </style>

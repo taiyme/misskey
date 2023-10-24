@@ -210,10 +210,10 @@ definePageMetadata(computed(() => post ? {
 
 			> .like {
 				> .button {
-					--accent: rgb(241 97 132);
-					--X8: rgb(241 92 128);
-					--buttonBg: rgb(216 71 106 / 5%);
-					--buttonHoverBg: rgb(216 71 106 / 10%);
+					--accent: rgb(241, 97, 132);
+					--X8: rgb(241, 92, 128);
+					--buttonBg: rgba(216, 71, 106, 0.5);
+					--buttonHoverBg: rgba(216, 71, 106, 0.1);
 					color: #ff002f;
 
 					::v-deep(.count) {

@@ -238,7 +238,7 @@ definePageMetadata({
 			height: 50px - 6;
 			background-color: #FFCF96;
 			border-radius: 50px;
-			box-shadow: 0 2px 6px rgba(0,0,0,.3);
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 			transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
 			transform:  rotate(-45deg);
 

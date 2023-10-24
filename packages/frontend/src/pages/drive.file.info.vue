@@ -239,7 +239,7 @@ onMounted(async () => {
 
 		&.danger:hover,
 		&.danger:focus-visible {
-			background-color: rgba(255, 42, 42, .15);
+			background-color: rgba(255, 42, 42, 0.15);
 		}
 	}
 }

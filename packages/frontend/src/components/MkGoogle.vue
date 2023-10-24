@@ -52,7 +52,7 @@ const search = () => {
 	border-radius: 0 4px 4px 0;
 
 	&:active {
-		box-shadow: 0 2px 4px rgba(#000, 0.15) inset;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) inset;
 	}
 }
 </style>

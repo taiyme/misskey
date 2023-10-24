@@ -85,7 +85,7 @@ svg {
 
 		&.day {
 			&:hover {
-				fill: rgba(#000, 0.05);
+				fill: rgba(0, 0, 0, 0.05);
 			}
 		}
 	}

@@ -329,7 +329,7 @@ definePageMetadata(computed(() => {
 			line-height: 42px;
 			font-size: 0.9em;
 			font-weight: bold;
-			box-shadow: 0 1px rgba(#000, 0.07);
+			box-shadow: 0 1px rgba(0, 0, 0, 0.07);
 
 			> i {
 				margin-right: 6px;

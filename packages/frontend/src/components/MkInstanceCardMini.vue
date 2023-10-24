@@ -91,13 +91,13 @@ function getInstanceIcon(instance): string {
 	}
 
 	&:global(.yellow) {
-		--c: rgb(255 196 0 / 15%);
+		--c: rgba(255, 196, 0, 0.15);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}
 
 	&:global(.red) {
-		--c: rgb(255 0 0 / 15%);
+		--c: rgba(255, 0, 0, 0.15);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}

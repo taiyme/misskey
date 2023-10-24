@@ -83,8 +83,8 @@ os.apiGet('federation/instances', {
 		width: 500px;
 		height: calc(100% - 256px);
 		overflow: hidden;
-		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
-		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
+		-webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 128px, rgba(0, 0, 0, 1) calc(100% - 128px), rgba(0, 0, 0, 0) 100%);
+		mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 128px, rgba(0, 0, 0, 1) calc(100% - 128px), rgba(0, 0, 0, 0) 100%);
 
 		@media (max-width: 1200px) {
 			display: none;
