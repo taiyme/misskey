@@ -52,7 +52,7 @@ onUnmounted(() => {
 
 	&.omitted {
 		position: relative;
-		max-height: v-bind("props.maxHeight + 'px'");
+		max-height: v-bind("`${props.maxHeight}px`");
 		overflow: hidden;
 
 		> .fade {

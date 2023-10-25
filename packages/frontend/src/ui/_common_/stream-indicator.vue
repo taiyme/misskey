@@ -48,7 +48,7 @@ onUnmounted(() => {
 <style lang="scss" module>
 .root {
 	position: fixed;
-	z-index: v-bind(zIndex);
+	z-index: v-bind("zIndex");
 	bottom: calc(var(--minBottomSpacing) + var(--margin));
 	right: var(--margin);
 	margin: 0;

@@ -70,7 +70,7 @@ onMounted(() => {
 
 	&.up {
 		opacity: 0;
-		transform: translateY(-50px) rotateZ(v-bind(angle));
+		transform: translateY(-50px) rotateZ(v-bind("angle"));
 	}
 }
 </style>

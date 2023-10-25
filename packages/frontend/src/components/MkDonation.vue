@@ -65,7 +65,7 @@ function neverShow() {
 <style lang="scss" module>
 .root {
 	position: fixed;
-	z-index: v-bind(zIndex);
+	z-index: v-bind("zIndex");
 	bottom: var(--margin);
 	left: 0;
 	right: 0;

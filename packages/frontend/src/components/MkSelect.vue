@@ -233,7 +233,7 @@ function show(ev: MouseEvent) {
 	-webkit-appearance: none;
 	appearance: none;
 	display: block;
-	height: v-bind("height + 'px'");
+	height: v-bind("`${height}px`");
 	width: 100%;
 	margin: 0;
 	padding: 0 12px;
@@ -263,7 +263,7 @@ function show(ev: MouseEvent) {
 	top: 0;
 	padding: 0 12px;
 	font-size: 1em;
-	height: v-bind("height + 'px'");
+	height: v-bind("`${height}px`");
 	min-width: 16px;
 	max-width: 150px;
 	overflow: hidden;

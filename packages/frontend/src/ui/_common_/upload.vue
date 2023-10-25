@@ -111,7 +111,7 @@ const zIndex = os.claimZIndex('high');
 	text-align: right;
 }
 .mk-uploader > ol > li > .top > .status > .percentage::after {
-	content: '%';
+	content: "%";
 }
 .mk-uploader > ol > li > progress {
 	display: block;

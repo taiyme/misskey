@@ -42,11 +42,11 @@ function toggle() {
 	margin-left: 4px;
 
 	&::before {
-		content: '(';
+		content: "(";
 	}
 
 	&::after {
-		content: ')';
+		content: ")";
 	}
 }
 </style>

@@ -35,24 +35,24 @@ const forceSpacerMin = inject('forceSpacerMin', false) || deviceKind === 'smartp
 	width: 100%;
 }
 .rootMin {
-	padding: v-bind('props.marginMin + "px"') !important;
+	padding: v-bind("`${props.marginMin}px`") !important;
 }
 
 .content {
 	margin: 0 auto;
-	max-width: v-bind('props.contentMax + "px"');
+	max-width: v-bind("`${props.contentMax}px`");
 	container-type: inline-size;
 }
 
 :global(:where(.max-width_450px)) {
 	&.root {
-		padding: v-bind('props.marginMin + "px"');
+		padding: v-bind("`${props.marginMin}px`");
 	}
 }
 
 :global(:where(.min-width_451px)) {
 	&.root {
-		padding: v-bind('props.marginMax + "px"');
+		padding: v-bind("`${props.marginMax}px`");
 	}
 }
 </style>
