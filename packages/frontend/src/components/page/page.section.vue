@@ -31,9 +31,9 @@ import type { SectionBlock } from './block.type.js';
 const XBlock = defineAsyncComponent(() => import('./page.block.vue'));
 
 defineProps<{
-	block: SectionBlock,
-	h: number,
-	page: Misskey.entities.Page,
+	block: SectionBlock;
+	h: number;
+	page: Misskey.entities.Page;
 }>();
 </script>
 

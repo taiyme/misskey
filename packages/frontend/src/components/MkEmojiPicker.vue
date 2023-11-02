@@ -122,7 +122,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', v: string): void;
+	chosen: [v: string];
 }>();
 
 const searchEl = shallowRef<HTMLInputElement>();

@@ -66,7 +66,10 @@ import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	transition?: {
-		duration?: number | { enter: number; leave: number; };
+		duration?: number | {
+			enter: number;
+			leave: number;
+		};
 		enterActiveClass?: string;
 		leaveActiveClass?: string;
 		enterFromClass?: string;

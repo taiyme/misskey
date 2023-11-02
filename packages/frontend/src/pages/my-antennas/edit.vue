@@ -23,7 +23,7 @@ const router = useRouter();
 let antenna: any = $ref(null);
 
 const props = defineProps<{
-	antennaId: string
+	antennaId: string;
 }>();
 
 function onAntennaUpdated() {

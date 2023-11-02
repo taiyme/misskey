@@ -75,9 +75,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
-	(ev: 'mouseover'): void;
-	(ev: 'mouseleave'): void;
+	closed: [];
+	mouseover: [];
+	mouseleave: [];
 }>();
 
 const zIndex = os.claimZIndex('middle');

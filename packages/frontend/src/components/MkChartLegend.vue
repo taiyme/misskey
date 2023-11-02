@@ -16,8 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { Chart, LegendItem } from 'chart.js';
 
-const props = defineProps({
-});
+const props = defineProps<{}>();
 
 let chart = $shallowRef<Chart>();
 let items = $shallowRef<LegendItem[]>([]);

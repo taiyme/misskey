@@ -45,9 +45,9 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.UserDetailed,
-	full?: boolean,
-	large?: boolean,
+	user: Misskey.entities.UserDetailed;
+	full?: boolean;
+	large?: boolean;
 }>(), {
 	full: false,
 	large: false,

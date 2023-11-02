@@ -90,12 +90,12 @@ import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any,
+	emoji?: any;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
+	done: [v: { deleted?: boolean; updated?: any; created?: any; }];
+	closed: [];
 }>();
 
 let dialog = $ref(null);

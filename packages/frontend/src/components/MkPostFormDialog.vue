@@ -34,7 +34,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();

@@ -139,7 +139,7 @@ import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();

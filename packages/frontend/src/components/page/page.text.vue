@@ -22,8 +22,8 @@ import { $i } from '@/account.js';
 const MkUrlPreview = defineAsyncComponent(() => import('@/components/MkUrlPreview.vue'));
 
 const props = defineProps<{
-	block: TextBlock,
-	page: Misskey.entities.Page,
+	block: TextBlock;
+	page: Misskey.entities.Page;
 }>();
 
 const urls = props.block.text ? extractUrlFromMfm(mfm.parse(props.block.text)) : [];

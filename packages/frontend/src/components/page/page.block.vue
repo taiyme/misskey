@@ -28,8 +28,8 @@ function getComponent(type: string) {
 }
 
 defineProps<{
-	block: Block,
-	h: number,
-	page: Misskey.entities.Page,
+	block: Block;
+	h: number;
+	page: Misskey.entities.Page;
 }>();
 </script>

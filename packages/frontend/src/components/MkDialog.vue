@@ -114,8 +114,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: { canceled: boolean; result: any }): void;
-	(ev: 'closed'): void;
+	done: [v: { canceled: boolean; result: any; }];
+	closed: [];
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();

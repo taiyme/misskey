@@ -26,8 +26,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
-	(ev: 'remove'): void;
+	'update:modelValue': [value: any];
+	remove: [];
 }>();
 
 const text = $ref(props.modelValue.text ?? '');

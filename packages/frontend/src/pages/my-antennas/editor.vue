@@ -60,13 +60,13 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	antenna: any
+	antenna: any;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'created'): void,
-	(ev: 'updated'): void,
-	(ev: 'deleted'): void,
+	created: [];
+	updated: [];
+	deleted: [];
 }>();
 
 let name: string = $ref(props.antenna.name);

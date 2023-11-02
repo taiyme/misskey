@@ -80,8 +80,8 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: any;
+	meta: any;
 }>();
 
 let viewBoxX: number = $ref(50);

@@ -25,7 +25,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 const zIndex = os.claimZIndex('middle');

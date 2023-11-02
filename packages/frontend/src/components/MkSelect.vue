@@ -53,8 +53,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string | null): void;
+	change: [ev: KeyboardEvent];
+	'update:modelValue': [value: string | null];
 }>();
 
 const slots = useSlots();

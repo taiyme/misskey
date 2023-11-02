@@ -34,13 +34,16 @@ import { deviceKind } from '@/scripts/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
-	anchor?: { x: string; y: string; };
+	anchor?: {
+		x: string;
+		y: string;
+	};
 }>(), {
 	anchor: () => ({ x: 'right', y: 'center' }),
 });
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'popup' :

@@ -152,9 +152,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'posted'): void;
-	(ev: 'cancel'): void;
-	(ev: 'esc'): void;
+	posted: [];
+	cancel: [];
+	esc: [];
 }>();
 
 const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);

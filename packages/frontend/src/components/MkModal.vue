@@ -63,7 +63,10 @@ type ModalTypes = 'popup' | 'dialog' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	anchor?: { x: string; y: string; };
+	anchor?: {
+		x: string;
+		y: string;
+	};
 	src?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
@@ -80,12 +83,12 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'opening'): void;
-	(ev: 'opened'): void;
-	(ev: 'click'): void;
-	(ev: 'esc'): void;
-	(ev: 'close'): void;
-	(ev: 'closed'): void;
+	opening: [];
+	opened: [];
+	click: [];
+	esc: [];
+	close: [];
+	closed: [];
 }>();
 
 provide('modal', true);

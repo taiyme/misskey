@@ -28,7 +28,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'select', user: Misskey.entities.UserDetailed): void;
+	select: [user: Misskey.entities.UserDetailed];
 }>();
 
 const select = (): void => {

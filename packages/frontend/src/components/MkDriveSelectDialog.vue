@@ -40,8 +40,8 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done', r?: Misskey.entities.DriveFile[]): void;
-	(ev: 'closed'): void;
+	done: [r?: Misskey.entities.DriveFile[]];
+	closed: [];
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();

@@ -63,8 +63,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User,
-	announcement?: any,
+	user: Misskey.entities.User;
+	announcement?: any;
 }>();
 
 let dialog = $ref(null);
@@ -75,8 +75,8 @@ let display: string = $ref(props.announcement ? props.announcement.display : 'di
 let needConfirmationToRead = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
+	done: [v: { deleted?: boolean; updated?: any; created?: any; }];
+	closed: [];
 }>();
 
 async function done() {

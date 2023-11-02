@@ -20,8 +20,8 @@ import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os.js';
 
 const props = defineProps<{
-	block: NoteBlock,
-	page: Misskey.entities.Page,
+	block: NoteBlock;
+	page: Misskey.entities.Page;
 }>();
 
 const note: Ref<Misskey.entities.Note | null> = ref(null);

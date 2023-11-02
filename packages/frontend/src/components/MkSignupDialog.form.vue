@@ -96,8 +96,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'signup', user: Record<string, any>): void;
-	(ev: 'signupEmailPending'): void;
+	signup: [user: Record<string, any>];
+	signupEmailPending: [];
 }>();
 
 const host = toUnicode(config.host);

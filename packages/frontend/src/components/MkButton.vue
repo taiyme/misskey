@@ -57,7 +57,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
+	click: [payload: MouseEvent];
 }>();
 
 let el = $shallowRef<HTMLElement | null>(null);

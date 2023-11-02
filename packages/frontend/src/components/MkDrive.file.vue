@@ -62,9 +62,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', r: Misskey.entities.DriveFile): void;
-	(ev: 'dragstart'): void;
-	(ev: 'dragend'): void;
+	chosen: [r: Misskey.entities.DriveFile];
+	dragstart: [];
+	dragend: [];
 }>();
 
 const isDragging = ref(false);

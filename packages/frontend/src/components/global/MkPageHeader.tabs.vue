@@ -66,8 +66,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
-	(ev: 'tabClick', key: string);
+	'update:tab': [key: string];
+	tabClick: [key: string];
 }>();
 
 const el = shallowRef<HTMLElement | null>(null);

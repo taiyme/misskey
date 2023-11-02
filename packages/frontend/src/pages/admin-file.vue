@@ -89,7 +89,7 @@ let info: any = $ref(null);
 let isSensitive: boolean = $ref(false);
 
 const props = defineProps<{
-	fileId: string,
+	fileId: string;
 }>();
 
 async function fetch() {

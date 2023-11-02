@@ -50,8 +50,8 @@ import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
-	(ev: 'done'): void;
-	(ev: 'closed'): void;
+	done: [];
+	closed: [];
 }>();
 
 let dialog: InstanceType<typeof MkModalWindow> = $ref();

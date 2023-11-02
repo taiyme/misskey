@@ -36,7 +36,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: string): void;
+	'update:modelValue': [value: string];
 }>();
 
 const { modelValue } = toRefs(props);

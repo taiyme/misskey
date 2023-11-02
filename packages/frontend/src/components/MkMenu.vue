@@ -87,8 +87,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'close', actioned?: boolean): void;
-	(ev: 'hide'): void;
+	close: [actioned?: boolean];
+	hide: [];
 }>();
 
 let itemsEl = $shallowRef<HTMLDivElement>();

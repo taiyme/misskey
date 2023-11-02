@@ -67,8 +67,8 @@ import { deepClone } from '@/scripts/clone.js';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
-	(ev: 'remove'): void;
+	'update:modelValue': [value: any];
+	remove: [];
 }>();
 
 const props = defineProps<{

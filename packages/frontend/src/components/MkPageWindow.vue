@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));

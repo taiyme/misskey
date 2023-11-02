@@ -32,8 +32,8 @@ withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'chosen', v: any): void;
-	(ev: 'closed'): void;
+	chosen: [v: any];
+	closed: [];
 }>();
 
 function chosen(emoji: any) {

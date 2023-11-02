@@ -39,7 +39,7 @@ import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
 
 const props = defineProps<{
-	clipId: string,
+	clipId: string;
 }>();
 
 let clip: Misskey.entities.Clip = $ref<Misskey.entities.Clip>();

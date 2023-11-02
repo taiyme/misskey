@@ -16,7 +16,7 @@ import type * as Misskey from 'misskey-js';
 import XBlock from './page.block.vue';
 
 defineProps<{
-	page: Misskey.entities.Page,
+	page: Misskey.entities.Page;
 }>();
 </script>
 

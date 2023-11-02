@@ -32,8 +32,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(event: 'accepted'): void;
-	(event: 'denied'): void;
+	accepted: [];
+	denied: [];
 }>();
 
 const app = $computed(() => props.session.app);

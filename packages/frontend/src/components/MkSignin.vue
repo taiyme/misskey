@@ -76,7 +76,7 @@ let hCaptchaResponse = $ref(null);
 let reCaptchaResponse = $ref(null);
 
 const emit = defineEmits<{
-	(ev: 'login', v: any): void;
+	login: [v: any];
 }>();
 
 const props = defineProps({

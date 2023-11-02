@@ -36,7 +36,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'chosen', v: string, event: MouseEvent): void;
+	chosen: [v: string, event: MouseEvent];
 }>();
 
 const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);

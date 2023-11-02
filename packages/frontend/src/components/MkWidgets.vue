@@ -67,11 +67,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'updateWidgets', widgets: Widget[]): void;
-	(ev: 'addWidget', widget: Widget): void;
-	(ev: 'removeWidget', widget: Widget): void;
-	(ev: 'updateWidget', widget: Partial<Widget>): void;
-	(ev: 'exit'): void;
+	updateWidgets: [widgets: Widget[]];
+	addWidget: [widget: Widget];
+	removeWidget: [widget: Widget];
+	updateWidget: [widget: Partial<Widget>];
+	exit: [];
 }>();
 
 const widgetRefs = {};

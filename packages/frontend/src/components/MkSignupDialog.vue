@@ -49,8 +49,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done'): void;
-	(ev: 'closed'): void;
+	done: [];
+	closed: [];
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();

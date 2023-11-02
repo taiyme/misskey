@@ -39,7 +39,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any[]): void;
+	'update:modelValue': [value: any[]];
 }>();
 
 function updateItem(v) {

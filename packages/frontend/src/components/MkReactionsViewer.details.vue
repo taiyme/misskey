@@ -37,7 +37,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 function getReactionName(reaction: string): string {

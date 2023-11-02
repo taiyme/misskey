@@ -21,8 +21,8 @@ import type { ImageBlock } from './block.type.js';
 import type MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	block: ImageBlock,
-	page: Misskey.entities.Page,
+	block: ImageBlock;
+	page: Misskey.entities.Page;
 }>();
 
 const image = ref<Misskey.entities.DriveFile>(props.page.attachedFiles.find(x => x.id === props.block.fileId));

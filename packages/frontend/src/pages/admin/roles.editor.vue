@@ -535,7 +535,7 @@ import { instance } from '@/instance.js';
 import { deepClone } from '@/scripts/clone.js';
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: any): void;
+	'update:modelValue': [v: any];
 }>();
 
 const props = defineProps<{

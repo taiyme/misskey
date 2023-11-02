@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'toggle'): void;
+	toggle: [];
 }>();
 
 const checked = toRefs(props).checked;

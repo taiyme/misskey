@@ -45,9 +45,9 @@ import { i18n } from '@/i18n.js';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
-	(ev: 'cancel'): void;
-	(ev: 'closed'): void;
+	ok: [cropped: Misskey.entities.DriveFile];
+	cancel: [];
+	closed: [];
 }>();
 
 const props = defineProps<{

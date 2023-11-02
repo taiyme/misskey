@@ -64,7 +64,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'headerWheel', ctx: WheelEvent): void;
+	headerWheel: [ctx: WheelEvent];
 }>();
 
 let body = $shallowRef<HTMLDivElement | null>();

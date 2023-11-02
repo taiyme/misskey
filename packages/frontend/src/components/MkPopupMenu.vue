@@ -25,8 +25,8 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
-	(ev: 'closing'): void;
+	closed: [];
+	closing: [];
 }>();
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();

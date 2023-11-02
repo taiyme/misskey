@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'click', v: MouseEvent): void;
+	click: [v: MouseEvent];
 }>();
 
 const bound = $computed(() => props.link

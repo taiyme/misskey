@@ -138,8 +138,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(event: 'done', value: { type: string; value: any }): void;
-	(event: 'closed'): void;
+	done: [value: { type: string; value: any; }];
+	closed: [];
 }>();
 
 const suggests = ref<Element>();

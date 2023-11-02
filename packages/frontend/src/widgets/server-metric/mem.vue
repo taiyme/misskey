@@ -22,8 +22,8 @@ import XPie from './pie.vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: any;
+	meta: any;
 }>();
 
 let usage: number = $ref(0);

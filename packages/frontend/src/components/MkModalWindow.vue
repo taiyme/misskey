@@ -39,10 +39,10 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(event: 'click'): void;
-	(event: 'close'): void;
-	(event: 'closed'): void;
-	(event: 'ok'): void;
+	click: [];
+	close: [];
+	closed: [];
+	ok: [];
 }>();
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();

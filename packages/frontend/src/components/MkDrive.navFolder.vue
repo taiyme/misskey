@@ -30,10 +30,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'move', v?: Misskey.entities.DriveFolder): void;
-	(ev: 'upload', file: File, folder?: Misskey.entities.DriveFolder | null): void;
-	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
-	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
+	move: [v?: Misskey.entities.DriveFolder];
+	upload: [file: File, folder?: Misskey.entities.DriveFolder | null];
+	removeFile: [v: Misskey.entities.DriveFile['id']];
+	removeFolder: [v: Misskey.entities.DriveFolder['id']];
 }>();
 
 const hover = ref(false);

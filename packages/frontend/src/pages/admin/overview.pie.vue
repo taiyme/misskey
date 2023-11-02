@@ -17,7 +17,12 @@ import { initChart } from '@/scripts/init-chart.js';
 initChart();
 
 const props = defineProps<{
-	data: { name: string; value: number; color: string; onClick?: () => void }[];
+	data: {
+		name: string;
+		value: number;
+		color: string;
+		onClick?: () => void;
+	}[];
 }>();
 
 const chartEl = shallowRef<HTMLCanvasElement>(null);

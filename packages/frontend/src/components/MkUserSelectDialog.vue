@@ -70,9 +70,9 @@ import { $i } from '@/account.js';
 import { hostname } from '@/config.js';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
-	(ev: 'cancel'): void;
-	(ev: 'closed'): void;
+	ok: [selected: Misskey.entities.UserDetailed];
+	cancel: [];
+	closed: [];
 }>();
 
 const props = defineProps<{

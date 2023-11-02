@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: number): void;
+	'update:modelValue': [value: number];
 }>();
 
 const containerEl = shallowRef<HTMLElement>();

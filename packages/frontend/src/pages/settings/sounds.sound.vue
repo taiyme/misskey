@@ -35,7 +35,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', result: { type: string; volume: number; }): void;
+	update: [result: { type: string; volume: number; }];
 }>();
 
 let type = $ref(props.type);

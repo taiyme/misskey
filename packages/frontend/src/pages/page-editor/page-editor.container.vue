@@ -42,8 +42,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'toggle', show: boolean): void;
-	(ev: 'remove'): void;
+	toggle: [show: boolean];
+	remove: [];
 }>();
 
 const showBody = ref(props.expanded);

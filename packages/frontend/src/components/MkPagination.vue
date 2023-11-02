@@ -101,7 +101,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'queue', count: number): void;
+	queue: [count: number];
 }>();
 
 let rootEl = $shallowRef<HTMLElement>();

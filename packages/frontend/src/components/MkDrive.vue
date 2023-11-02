@@ -120,11 +120,11 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
-	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
-	(ev: 'move-root'): void;
-	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
-	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
+	selected: [v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder];
+	'change-selection': [v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]];
+	'move-root': [];
+	cd: [v: Misskey.entities.DriveFolder | null];
+	'open-folder': [v: Misskey.entities.DriveFolder];
 }>();
 
 const loadMoreFiles = shallowRef<InstanceType<typeof MkButton>>();

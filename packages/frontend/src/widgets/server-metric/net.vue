@@ -54,8 +54,8 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: any;
+	meta: any;
 }>();
 
 let viewBoxX: number = $ref(50);

@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 const props = defineProps<{
-	activity: any[]
+	activity: any[];
 }>();
 
 let viewBoxX: number = $ref(147);

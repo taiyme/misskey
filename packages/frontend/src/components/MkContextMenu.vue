@@ -32,7 +32,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 let rootEl = $shallowRef<HTMLDivElement>();

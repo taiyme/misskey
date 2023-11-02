@@ -73,7 +73,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-	(event: 'deleted', value: string): void;
+	deleted: [value: string];
 }>();
 
 const isExpired = computed(() => {

@@ -29,12 +29,12 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: any
+	modelValue: any;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
-	(ev: 'remove'): void;
+	'update:modelValue': [value: any];
+	remove: [];
 }>();
 
 let file: any = $ref(null);

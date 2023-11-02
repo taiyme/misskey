@@ -20,8 +20,8 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import XPie from './pie.vue';
 
 const props = defineProps<{
-	connection: any,
-	meta: any
+	connection: any;
+	meta: any;
 }>();
 
 let usage: number = $ref(0);

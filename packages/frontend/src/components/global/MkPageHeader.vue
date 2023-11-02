@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
+	'update:tab': [key: string];
 }>();
 
 const metadata = injectPageMetadata();

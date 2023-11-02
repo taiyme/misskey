@@ -28,16 +28,16 @@ import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	autoSet?: boolean;
-	message?: string,
+	message?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 });
 
 const emit = defineEmits<{
-	(ev: 'done', v: any): void;
-	(ev: 'closed'): void;
-	(ev: 'cancelled'): void;
+	done: [v: any];
+	closed: [];
+	cancelled: [];
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();

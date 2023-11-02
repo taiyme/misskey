@@ -26,7 +26,7 @@ import { confetti } from '@/scripts/confetti.js';
 import { withV } from '@/scripts/tms/version.js';
 
 const emit = defineEmits<{
-	(ev: 'closed'): void;
+	closed: [];
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();

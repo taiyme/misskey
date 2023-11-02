@@ -72,12 +72,7 @@ const props = defineProps<{
 	};
 }>();
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: {
-		expiresAt: string;
-		expiredAfter: number;
-		choices: string[];
-		multiple: boolean;
-	}): void;
+	'update:modelValue': [v: { expiresAt: string; expiredAfter: number; choices: string[]; multiple: boolean; }];
 }>();
 
 const choices = ref(props.modelValue.choices);

@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 const props = defineProps<{
-	activity: any[]
+	activity: any[];
 }>();
 
 for (const d of props.activity) {
