@@ -72,6 +72,7 @@ function submit() {
 
 <style lang="scss" module>
 .formContainer {
+	min-height: 100vh; // fallback (svh units)
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
