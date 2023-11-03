@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_x_leaveTo"
 		>
 			<template v-if="page === 0">
-				<div style="height: 100cqh; overflow: auto; text-align: center;">
+				<div :class="$style.page" style="text-align: center;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<I18n :src="i18n.ts._2fa.step1" tag="div">
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 1">
-				<div style="height: 100cqh; overflow: auto;">
+				<div :class="$style.page">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div>{{ i18n.ts._2fa.step3Title }}</div>
@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 2">
-				<div style="height: 100cqh; overflow: auto;">
+				<div :class="$style.page">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div style="text-align: center;">{{ i18n.ts._2fa.setupCompleted }}🎉</div>
@@ -179,5 +179,11 @@ function allDone() {
 .qr {
 	width: 200px;
 	max-width: 100%;
+}
+
+.page {
+	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
+	height: 100cqh;
+	overflow: auto;
 }
 </style>

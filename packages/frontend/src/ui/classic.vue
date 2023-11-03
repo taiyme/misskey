@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<main class="main" @contextmenu.stop="onContextmenu">
-			<div class="content" style="container-type: inline-size;">
+			<div class="content" v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 		</main>

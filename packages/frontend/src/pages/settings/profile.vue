@@ -43,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div :class="$style.metadataRoot">
+			<div v-container="{ type: 'inlineSize' }" :class="$style.metadataRoot">
 				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>

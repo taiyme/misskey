@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
-	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
+	<div v-for="notification in notifications" :key="notification.id" v-container="{ type: 'inlineSize' }" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
 </TransitionGroup>

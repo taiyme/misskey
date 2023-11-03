@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
+	<div ref="contents" v-container="{ type: 'inlineSize' }" :class="$style.root" style="container-type: inline-size;">
 		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>

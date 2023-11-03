@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 1">
-				<div style="height: 100cqh; overflow: auto;">
+				<div :class="$style.page">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XProfile/>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 2">
-				<div style="height: 100cqh; overflow: auto;">
+				<div :class="$style.page">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XPrivacy/>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 3">
-				<div style="height: 100cqh; overflow: auto;">
+				<div :class="$style.page">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XFollow/>
 					</MkSpacer>
@@ -210,6 +210,7 @@ async function later(later: boolean) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
 	height: 100cqh;
 	padding-bottom: 30px;
 	box-sizing: border-box;
@@ -223,5 +224,11 @@ async function later(later: boolean) {
 	border-top: solid 0.5px var(--divider);
 	-webkit-backdrop-filter: blur(15px);
 	backdrop-filter: blur(15px);
+}
+
+.page {
+	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
+	height: 100cqh;
+	overflow: auto;
 }
 </style>

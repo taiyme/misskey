@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-size="{ max: [450], min: [451] }" :class="[$style.root, { [$style.rootMin]: forceSpacerMin }]">
-	<div :class="$style.content">
+	<div v-container="{ type: 'inlineSize' }" :class="$style.content">
 		<slot></slot>
 	</div>
 </div>

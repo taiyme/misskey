@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-size="{ max: [500, 350], min: [] }"
+	v-container="{ type: 'inlineSize' }"
 	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"

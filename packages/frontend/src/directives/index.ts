@@ -18,6 +18,7 @@ import clickAnime from './click-anime.js';
 import panel from './panel.js';
 import adaptiveBorder from './adaptive-border.js';
 import adaptiveBg from './adaptive-bg.js';
+import container from './container.js';
 
 // eslint-disable-next-line import/no-default-export
 export default (app: App): void => {
@@ -40,4 +41,5 @@ export const directives = {
 	'panel': panel,
 	'adaptive-border': adaptiveBorder,
 	'adaptive-bg': adaptiveBg,
+	'container': container,
 };

@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<div class="contents">
-			<main v-if="!root" style="container-type: inline-size;">
+			<main v-if="!root" v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
 				<RouterView/>
 			</main>
 			<main v-else>

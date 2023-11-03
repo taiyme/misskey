@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
-		<div :class="$style.noteContent">
+		<div v-container="{ type: 'inlineSize' }" :class="$style.noteContent">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
 				<MkCwButton v-model="showContent" :note="appearNote"/>

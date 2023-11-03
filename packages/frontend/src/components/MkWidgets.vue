@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div v-container="{ type: 'inlineSize' }" :class="$style.root">
 	<template v-if="edit">
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" data-cy-widget-select>

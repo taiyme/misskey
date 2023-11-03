@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div style="container-type: inline-size;">
+	<div v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
 		<RouterView/>
 	</div>
 

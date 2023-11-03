@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkSpacer :contentMax="narrow ? 800 : 1100">
-	<div ref="rootEl" v-size="{ max: [500], min: [] }" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
+	<div ref="rootEl" v-size="{ max: [500], min: [] }" v-container="{ type: 'inlineSize' }" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main _gaps">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
@@ -138,7 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
+		<div v-if="!narrow" v-container="{ type: 'inlineSize' }" class="sub _gaps" style="container-type: inline-size;">
 			<XFiles :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user"/>
 		</div>

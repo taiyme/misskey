@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import { defineComponent, h, PropType, TransitionGroup, useCssModule, resolveDirective, withDirectives } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
@@ -127,24 +127,30 @@ export default defineComponent({
 			el.style.left = '';
 		}
 
-		return () => h(
-			defaultStore.state.animation ? TransitionGroup : 'div',
-			{
-				class: {
-					[$style['date-separated-list']]: true,
-					[$style['date-separated-list-nogap']]: props.noGap,
-					[$style['reversed']]: props.reversed,
-					[$style['direction-down']]: props.direction === 'down',
-					[$style['direction-up']]: props.direction === 'up',
+		return () => withDirectives(
+			h(
+				defaultStore.state.animation ? TransitionGroup : 'div',
+				{
+					class: {
+						[$style['date-separated-list']]: true,
+						[$style['date-separated-list-nogap']]: props.noGap,
+						[$style['reversed']]: props.reversed,
+						[$style['direction-down']]: props.direction === 'down',
+						[$style['direction-up']]: props.direction === 'up',
+					},
+					...(defaultStore.state.animation ? {
+						name: 'list',
+						tag: 'div',
+						onBeforeLeave,
+						onLeaveCanceled,
+					} : {}),
 				},
-				...(defaultStore.state.animation ? {
-					name: 'list',
-					tag: 'div',
-					onBeforeLeave,
-					onLeaveCanceled,
-				} : {}),
-			},
-			{ default: renderChildren });
+				{ default: renderChildren },
+			),
+			[
+				[resolveDirective('container'), { type: 'inlineSize' }],
+			],
+		);
 	},
 });
 </script>

@@ -192,6 +192,7 @@ definePageMetadata(computed(() => list ? {
 
 <style lang="scss" module>
 .main {
+	min-height: calc((var(--cqh, 1vh) * 100) - (var(--stickyTop, 0px) + var(--stickyBottom, 0px))); // fallback (cqh units)
 	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
 }
 
