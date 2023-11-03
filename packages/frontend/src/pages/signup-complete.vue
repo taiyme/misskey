@@ -63,8 +63,8 @@ function submit() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-display: grid;
-place-content: center;
+	display: grid;
+	place-content: center;
 }
 
 .form {

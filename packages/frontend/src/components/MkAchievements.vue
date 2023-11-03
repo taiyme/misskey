@@ -159,11 +159,11 @@ onMounted(() => {
 		content: "";
 		display: block;
 		position: absolute;
-    top: 30px;
-    width: 200px;
-    height: 8px;
-    rotate: -45deg;
-    translate: -30px;
+		top: 30px;
+		width: 200px;
+		height: 8px;
+		rotate: -45deg;
+		translate: -30px;
 		background: #ffffff88;
 		animation: shine 2s infinite;
 	}
@@ -179,11 +179,11 @@ onMounted(() => {
 		content: "";
 		display: block;
 		position: absolute;
-    top: 30px;
-    width: 200px;
-    height: 8px;
-    rotate: -45deg;
-    translate: -30px;
+		top: 30px;
+		width: 200px;
+		height: 8px;
+		rotate: -45deg;
+		translate: -30px;
 		background: #ffffffee;
 		animation: shine 2s infinite;
 	}

@@ -162,7 +162,7 @@ onUnmounted(() => {
 	> .buttons {
 		--margin: 8px;
 		display: flex;
-    align-items: center;
+		align-items: center;
 		height: var(--height);
 		margin: 0 var(--margin);
 

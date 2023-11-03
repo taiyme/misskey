@@ -103,6 +103,6 @@ onMounted(() => {
 
 .sensitive {
 	display: grid;
-  place-items: center;
+	place-items: center;
 }
 </style>

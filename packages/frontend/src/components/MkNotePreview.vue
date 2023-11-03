@@ -60,7 +60,7 @@ const props = defineProps<{
 	width: 100%;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 }
 
 :global(:where(.min-width_350px)) {

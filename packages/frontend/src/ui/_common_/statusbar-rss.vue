@@ -71,7 +71,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 .transition_change_leaveActive {
 	position: absolute;
 	top: 0;
-  transition: all 1s ease;
+	transition: all 1s ease;
 }
 .transition_change_enterFrom {
 	opacity: 0;
