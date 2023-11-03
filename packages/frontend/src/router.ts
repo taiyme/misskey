@@ -16,7 +16,7 @@ export const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent(
 	errorComponent: MkError,
 });
 
-export const routes = [{
+export const routes: Router['routes'] = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
 }, {
