@@ -22,13 +22,7 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
-	const { isThemeRemoved, isClientUpdated, isCommitChanged } = await common(() => createApp(
-		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
-		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
-		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
-		defineAsyncComponent(() => import('@/ui/universal.vue')),
-	));
+	const { isThemeRemoved, isClientUpdated, isCommitChanged } = await common(() => createApp(useUi()));
 
 	reactionPicker.init();
 
@@ -265,4 +259,20 @@ export async function mainBoot() {
 	document.addEventListener('keydown', makeHotkey(hotkeys));
 
 	initializeSw();
+}
+
+function useUi() {
+	if (new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/')) {
+		return defineAsyncComponent(() => import('@/ui/zen.vue'));
+	}
+	if (!$i) {
+		return defineAsyncComponent(() => import('@/ui/visitor.vue'));
+	}
+	if (ui === 'deck') {
+		return defineAsyncComponent(() => import('@/ui/deck.vue'));
+	}
+	if (ui === 'classic') {
+		return defineAsyncComponent(() => import('@/ui/classic.vue'));
+	}
+	return defineAsyncComponent(() => import('@/ui/universal.vue'));
 }
