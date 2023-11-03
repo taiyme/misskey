@@ -34,6 +34,7 @@ const props = defineProps<{
 	display: flex;
 	margin: 0;
 	padding: 0;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	font-size: 0.95em;
 }
@@ -57,6 +58,7 @@ const props = defineProps<{
 	margin-bottom: 2px;
 	font-weight: bold;
 	width: 100%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
     text-overflow: ellipsis;
 }

@@ -127,6 +127,7 @@ onUnmounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
+	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
@@ -137,6 +138,7 @@ onUnmounted(() => {
 
 .root {
 	position: relative;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 

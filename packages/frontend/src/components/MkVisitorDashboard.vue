@@ -214,6 +214,7 @@ function exploreOtherServers() {
 }
 
 .statsItem {
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	padding: 16px 20px;
 }
@@ -230,6 +231,7 @@ function exploreOtherServers() {
 }
 
 .tl {
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

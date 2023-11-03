@@ -23,6 +23,7 @@ defineProps<{
 	background: var(--infoWarnBg);
 	color: var(--infoWarnFg);
 	border-radius: var(--radius);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

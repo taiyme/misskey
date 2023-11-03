@@ -267,6 +267,7 @@ hr {
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -422,6 +423,21 @@ hr {
 ._transition_zoom-enter-from, ._transition_zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
+}
+
+._clip_x {
+	overflow-x: hidden; // fallback (overflow: clip)
+	overflow-x: clip;
+}
+
+._clip_y {
+	overflow-y: hidden; // fallback (overflow: clip)
+	overflow-y: clip;
+}
+
+._clip {
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 }
 
 @keyframes blink {

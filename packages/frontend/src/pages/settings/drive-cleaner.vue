@@ -152,6 +152,7 @@ definePageMetadata({
 	margin-top: 8px;
 	height: 12px;
 	background: rgba(0, 0, 0, 0.1);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	border-radius: 999px;
 }

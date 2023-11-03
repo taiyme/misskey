@@ -263,11 +263,12 @@ async function deleteProfile() {
 }
 </script>
 
-<style>
+<style lang="scss">
 html,
 body {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: fixed;
 	top: 0;
@@ -278,6 +279,7 @@ body {
 #misskey_app {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: absolute;
 	top: 0;
@@ -337,6 +339,7 @@ body {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
+	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	overscroll-behavior: contain;
 	background: var(--deckBg);

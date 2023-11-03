@@ -124,6 +124,7 @@ function more(ev: MouseEvent) {
 	height: 100dvh;
 	box-sizing: border-box;
 	overflow: auto;
+	overflow-x: hidden; // fallback (overflow: clip)
 	overflow-x: clip;
 	overscroll-behavior: contain;
 	background: var(--navBg);

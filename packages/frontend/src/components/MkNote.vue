@@ -495,6 +495,7 @@ function readPromo() {
 	position: relative;
 	transition: box-shadow 0.1s ease;
 	font-size: 1.05em;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 
@@ -725,6 +726,7 @@ function readPromo() {
 .contentCollapsed {
 	position: relative;
 	max-height: 9em;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -784,6 +786,7 @@ function readPromo() {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

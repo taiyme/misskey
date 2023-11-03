@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
-	<div style="overflow-x: clip;">
+	<div class="_clip_x">
 		<div :class="$style.progressBar">
 			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
 		</div>

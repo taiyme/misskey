@@ -91,6 +91,7 @@ onMounted(() => {
 .img {
 	height: 128px;
 	border-radius: 6px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

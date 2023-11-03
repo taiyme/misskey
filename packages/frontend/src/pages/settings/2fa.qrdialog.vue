@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.setupOf2fa }}</template>
 
-	<div style="overflow-x: clip;">
+	<div class="_clip_x">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"

@@ -249,6 +249,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	max-width: min(30vw, 400px);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	white-space: nowrap;
 	text-align: left;
@@ -260,6 +261,7 @@ onUnmounted(() => {
 .titleAvatarContainer {
 	$size: 32px;
 	contain: strict;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	width: $size;
 	height: $size;

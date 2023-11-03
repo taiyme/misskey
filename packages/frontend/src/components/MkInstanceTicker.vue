@@ -48,6 +48,7 @@ $height: 2ex;
 	align-items: center;
 	height: $height;
 	border-radius: 4px 0 0 4px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	color: #fff;
 	text-shadow: /* 0.866 ≈ sin(60deg) */

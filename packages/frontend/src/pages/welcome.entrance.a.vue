@@ -157,6 +157,7 @@ os.apiGet('federation/instances', {
 		-webkit-backdrop-filter: var(--blur, blur(15px));
 		backdrop-filter: var(--blur, blur(15px));
 		border-radius: 999px;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 		width: 800px;
 		padding: 8px 0;

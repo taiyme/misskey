@@ -254,6 +254,7 @@ function onDrop(ev) {
 	--deckColumnHeaderHeight: 38px;
 
 	height: 100%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: strict;
 	border-radius: 10px;
@@ -408,6 +409,7 @@ function onDrop(ev) {
 .body {
 	height: calc(100% - var(--deckColumnHeaderHeight));
 	overflow-y: auto;
+	overflow-x: hidden; // fallback (overflow: clip)
 	overflow-x: clip;
 	overscroll-behavior-y: contain;
 	box-sizing: border-box;
