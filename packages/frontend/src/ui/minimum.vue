@@ -36,6 +36,7 @@ document.documentElement.style.overflowY = 'scroll';
 
 <style lang="scss" module>
 .root {
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 }

@@ -209,6 +209,7 @@ onMounted(() => {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 
@@ -311,6 +312,7 @@ onMounted(() => {
 		top: 0;
 		right: 0;
 		z-index: 1001;
+		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 		height: 100dvh;
 		padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom));
 		box-sizing: border-box;

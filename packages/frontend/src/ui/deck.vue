@@ -316,6 +316,7 @@ body {
 	--columnGap: 6px;
 
 	display: flex;
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
@@ -414,6 +415,7 @@ body {
 	top: 0;
 	left: 0;
 	z-index: 1001;
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;

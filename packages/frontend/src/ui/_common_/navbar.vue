@@ -120,6 +120,7 @@ function more(ev: MouseEvent) {
 	left: 0;
 	z-index: 1001;
 	width: var(--nav-icon-only-width);
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	box-sizing: border-box;
 	overflow: auto;

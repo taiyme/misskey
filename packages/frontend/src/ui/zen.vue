@@ -51,11 +51,13 @@ document.documentElement.style.overflowY = 'scroll';
 
 <style lang="scss" module>
 .root {
+	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 }
 
 .rootWithBottom {
+	min-height: calc((var(--vh, 1vh) * 100) - (60px + (var(--margin) * 2) + var(--safeAreaInsetBottom))); // fallback (dvh units)
 	min-height: calc(100dvh - (60px + (var(--margin) * 2) + var(--safeAreaInsetBottom)));
 	box-sizing: border-box;
 }

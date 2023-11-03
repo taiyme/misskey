@@ -84,6 +84,21 @@ export async function common(createVue: () => App<Element>) {
 		else location.reload();
 	});
 
+	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+	try {
+		if (!window.CSS.supports('height', '1dvh')) throw new Error();
+		document.documentElement.style.setProperty('--vh', '1dvh'); // 後方互換性のため
+	} catch {
+		// fallback (dvh units)
+		const setViewportHeight = (): void => {
+			const vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--vh', `${vh}px`);
+		};
+		setViewportHeight();
+		window.addEventListener('resize', setViewportHeight, { passive: true });
+	}
+	//#endregion
+
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
 		const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');

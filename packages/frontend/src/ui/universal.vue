@@ -304,6 +304,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .root {
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	overflow: clip;
 	contain: strict;
@@ -363,6 +364,7 @@ $widgets-hide-threshold: 1090px;
 	right: 0;
 	z-index: 1001;
 	width: 310px;
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom)) !important;
 	box-sizing: border-box;
@@ -457,6 +459,7 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	left: 0;
 	z-index: 1001;
+	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;
