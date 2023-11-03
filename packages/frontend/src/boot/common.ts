@@ -4,28 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
-import { compareVersions } from 'compare-versions';
+import { computed, watch, version as vueVersion, App } from 'vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, ui, lang, commitHash } from '@/config.js';
+import { version, lang, commitHash } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { checkUpdateLocale } from '@/scripts/tms/check-update-locale.js';
-import { confirm, alert, post, popup, toast } from '@/os.js';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { $i, refreshAccount, login } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
-import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { mainRouter } from '@/router.js';
 import { checkUpdated } from '@/scripts/tms/check-updated.js';
 import { withV } from '@/scripts/tms/version.js';
 
@@ -44,30 +40,26 @@ export async function common(createVue: () => App<Element>) {
 
 		window.addEventListener('error', event => {
 			console.error(event);
-			/*
-			alert({
-				type: 'error',
-				title: 'DEV: Unhandled error',
-				text: event.message
-			});
-			*/
+			// alert({
+			// 	type: 'error',
+			// 	title: 'DEV: Unhandled error',
+			// 	text: event.message,
+			// });
 		});
 
 		window.addEventListener('unhandledrejection', event => {
 			console.error(event);
-			/*
-			alert({
-				type: 'error',
-				title: 'DEV: Unhandled promise rejection',
-				text: event.reason
-			});
-			*/
+			// alert({
+			// 	type: 'error',
+			// 	title: 'DEV: Unhandled promise rejection',
+			// 	text: event.reason,
+			// });
 		});
 	}
 
 	const splash = document.getElementById('splash');
 	// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
-	if (splash) splash.addEventListener('transitionend', () => {
+	splash?.addEventListener('transitionend', () => {
 		splash.remove();
 	});
 
@@ -94,14 +86,12 @@ export async function common(createVue: () => App<Element>) {
 
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.getElementsByName('viewport').item(0);
-		viewport.setAttribute('content',
-			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+		const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+		viewport?.setAttribute('content', `${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 	}
 
 	//#region Set lang attr
-	const html = document.documentElement;
-	html.setAttribute('lang', lang);
+	document.documentElement.setAttribute('lang', lang);
 	//#endregion
 
 	await defaultStore.ready;
