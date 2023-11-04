@@ -992,6 +992,9 @@ importers:
       vitest-fetch-mock:
         specifier: 0.2.2
         version: 0.2.2(vitest@0.34.6)
+      vue-component-type-helpers:
+        specifier: ^1.8.21
+        version: 1.8.21
       vue-eslint-parser:
         specifier: 9.3.2
         version: 9.3.2(eslint@8.51.0)
@@ -6913,7 +6916,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.3.4
-      vue-component-type-helpers: 1.8.18
+      vue-component-type-helpers: 1.8.21
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -19171,8 +19174,8 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
-  /vue-component-type-helpers@1.8.18:
-    resolution: {integrity: sha512-SklLIg782E5Ff0qdE68AUrRBhT2YGW97edBewNEjCWCw+RSETcGOjA8m1/6T68CXkymWBSk+KDpPXqIGthqCDg==}
+  /vue-component-type-helpers@1.8.21:
+    resolution: {integrity: sha512-XL37QbmiqqbKrAFHPxqryMXpNgO0KMKd5bIo7LO9QABPMNEysd8xmYRIjwZhh0t2abveXjAJ//ZcAzwdxp/S3Q==}
     dev: true
 
   /vue-demi@0.13.11(vue@3.3.4):
