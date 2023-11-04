@@ -15,12 +15,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.ts.intro }}</div>
-				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+				<MkInput type="text" v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 					<template #suffix>@{{ host }}</template>
 				</MkInput>
-				<MkInput v-model="password" type="password" data-cy-admin-password>
+				<MkInput type="password" v-model="password" data-cy-admin-password>
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>

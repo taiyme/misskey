@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manualSave>
+	<MkInput type="text" v-model="profile.name" :max="30" manualSave>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
@@ -23,12 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="profile.location" manualSave>
+	<MkInput type="text" v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
 
-	<MkInput v-model="profile.birthday" type="date" manualSave>
+	<MkInput type="date" v-model="profile.birthday" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</MkInput>
@@ -66,10 +66,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
 								<FormSplit :minWidth="200">
-									<MkInput v-model="element.name" small>
+									<MkInput type="text" v-model="element.name" small>
 										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
 									</MkInput>
-									<MkInput v-model="element.value" small>
+									<MkInput type="text" v-model="element.value" small>
 										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
 									</MkInput>
 								</FormSplit>

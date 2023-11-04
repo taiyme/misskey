@@ -46,11 +46,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<RolesEditorFormula v-model="v.value"/>
 	</div>
 
-	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" v-model="v.sec" type="number">
+	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" type="number" v-model="v.sec">
 		<template #suffix>sec</template>
 	</MkInput>
 
-	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
+	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" type="number" v-model="v.value">
 	</MkInput>
 </div>
 </template>

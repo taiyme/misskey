@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
-	<MkInput v-model="statusbar.name" manualSave>
+	<MkInput type="text" v-model="statusbar.name" manualSave>
 		<template #label>{{ i18n.ts.label }}</template>
 	</MkInput>
 
@@ -31,13 +31,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
-		<MkInput v-model="statusbar.props.url" manualSave type="url">
+		<MkInput type="url" v-model="statusbar.props.url" manualSave>
 			<template #label>URL</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.shuffle">
 			<template #label>{{ i18n.ts.shuffle }}</template>
 		</MkSwitch>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
+		<MkInput type="number" v-model="statusbar.props.refreshIntervalSec" manualSave>
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
+		<MkInput type="number" v-model="statusbar.props.refreshIntervalSec" manualSave>
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
+		<MkInput type="number" v-model="statusbar.props.refreshIntervalSec" manualSave>
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">

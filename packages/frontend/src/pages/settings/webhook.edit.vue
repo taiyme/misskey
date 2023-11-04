@@ -6,15 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkInput v-model="name">
+	<MkInput type="text" v-model="name">
 		<template #label>{{ i18n.ts._webhookSettings.name }}</template>
 	</MkInput>
 
-	<MkInput v-model="url" type="url">
+	<MkInput type="url" v-model="url">
 		<template #label>URL</template>
 	</MkInput>
 
-	<MkInput v-model="secret">
+	<MkInput type="text" v-model="secret">
 		<template #prefix><i class="ti ti-lock"></i></template>
 		<template #label>{{ i18n.ts._webhookSettings.secret }}</template>
 	</MkInput>

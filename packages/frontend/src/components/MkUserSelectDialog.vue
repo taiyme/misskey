@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div :class="$style.form">
 			<FormSplit :minWidth="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput type="text" v-model="username" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput type="text" v-model="host" :datalist="[hostname]" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>

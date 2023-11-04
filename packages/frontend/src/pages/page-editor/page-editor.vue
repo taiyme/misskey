@@ -17,15 +17,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="tab === 'settings'">
 			<div class="_gaps_m">
-				<MkInput v-model="title">
+				<MkInput type="text" v-model="title">
 					<template #label>{{ i18n.ts._pages.title }}</template>
 				</MkInput>
 
-				<MkInput v-model="summary">
+				<MkInput type="text" v-model="summary">
 					<template #label>{{ i18n.ts._pages.summary }}</template>
 				</MkInput>
 
-				<MkInput v-model="name">
+				<MkInput type="text" v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<template #label>{{ i18n.ts._pages.url }}</template>
 				</MkInput>

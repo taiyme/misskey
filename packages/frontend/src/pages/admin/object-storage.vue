@@ -13,39 +13,39 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
-					<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'">
+					<MkInput type="url" v-model="objectStorageBaseUrl" :placeholder="'https://example.com'">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageBucket">
+					<MkInput type="text" v-model="objectStorageBucket">
 						<template #label>{{ i18n.ts.objectStorageBucket }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBucketDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStoragePrefix">
+					<MkInput type="text" v-model="objectStoragePrefix">
 						<template #label>{{ i18n.ts.objectStoragePrefix }}</template>
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
+					<MkInput type="text" v-model="objectStorageEndpoint" :placeholder="'example.com'">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
 						<template #prefix>https://</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageRegion">
+					<MkInput type="text" v-model="objectStorageRegion">
 						<template #label>{{ i18n.ts.objectStorageRegion }}</template>
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
 					</MkInput>
 
 					<FormSplit :minWidth="280">
-						<MkInput v-model="objectStorageAccessKey">
+						<MkInput type="text" v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
 						</MkInput>
 
-						<MkInput v-model="objectStorageSecretKey" type="password">
+						<MkInput type="text" v-model="objectStorageSecretKey" type="password">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
 						</MkInput>

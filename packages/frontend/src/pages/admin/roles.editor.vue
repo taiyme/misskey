@@ -6,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true">
+	<MkInput v-if="readonly" type="text" :modelValue="role.id" :readonly="true">
 		<template #label>ID</template>
 	</MkInput>
 
-	<MkInput v-model="role.name" :readonly="readonly">
+	<MkInput type="text" v-model="role.name" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.name }}</template>
 	</MkInput>
 
@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>{{ i18n.ts.color }}</template>
 	</MkColorInput>
 
-	<MkInput v-model="role.iconUrl">
+	<MkInput type="url" v-model="role.iconUrl">
 		<template #label>{{ i18n.ts._role.iconUrl }}</template>
 	</MkInput>
 
-	<MkInput v-model="role.displayOrder" type="number">
+	<MkInput type="number" v-model="role.displayOrder">
 		<template #label>{{ i18n.ts._role.displayOrder }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfDisplayOrder }}</template>
 	</MkInput>
@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSlot>
 		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
 		<div class="_gaps_s">
-			<MkInput v-model="q" type="search">
+			<MkInput type="search" v-model="q">
 				<template #prefix><i class="ti ti-search"></i></template>
 			</MkInput>
 
@@ -192,7 +192,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.inviteLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.inviteLimit.value" :disabled="role.policies.inviteLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.inviteLimit.value" :disabled="role.policies.inviteLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.inviteLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -211,7 +211,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.inviteLimitCycle.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.inviteLimitCycle.value" :disabled="role.policies.inviteLimitCycle.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.inviteLimitCycle.value" :disabled="role.policies.inviteLimitCycle.useDefault" :readonly="readonly">
 						<template #suffix>{{ i18n.ts._time.minute }}</template>
 					</MkInput>
 					<MkRange v-model="role.policies.inviteLimitCycle.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -231,7 +231,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.inviteExpirationTime.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.inviteExpirationTime.value" :disabled="role.policies.inviteExpirationTime.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.inviteExpirationTime.value" :disabled="role.policies.inviteExpirationTime.useDefault" :readonly="readonly">
 						<template #suffix>{{ i18n.ts._time.minute }}</template>
 					</MkInput>
 					<MkRange v-model="role.policies.inviteExpirationTime.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -311,7 +311,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.driveCapacityMb.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.driveCapacityMb.value" :disabled="role.policies.driveCapacityMb.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.driveCapacityMb.value" :disabled="role.policies.driveCapacityMb.useDefault" :readonly="readonly">
 						<template #suffix>MB</template>
 					</MkInput>
 					<MkRange v-model="role.policies.driveCapacityMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -351,7 +351,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.pinLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.pinLimit.value" :disabled="role.policies.pinLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.pinLimit.value" :disabled="role.policies.pinLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.pinLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -370,7 +370,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.antennaLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.antennaLimit.value" :disabled="role.policies.antennaLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.antennaLimit.value" :disabled="role.policies.antennaLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.antennaLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -389,7 +389,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.wordMuteLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.wordMuteLimit.value" :disabled="role.policies.wordMuteLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.wordMuteLimit.value" :disabled="role.policies.wordMuteLimit.useDefault" :readonly="readonly">
 						<template #suffix>chars</template>
 					</MkInput>
 					<MkRange v-model="role.policies.wordMuteLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
@@ -409,7 +409,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.webhookLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.webhookLimit.value" :disabled="role.policies.webhookLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.webhookLimit.value" :disabled="role.policies.webhookLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.webhookLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -428,7 +428,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.clipLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.clipLimit.value" :disabled="role.policies.clipLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.clipLimit.value" :disabled="role.policies.clipLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.clipLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -447,7 +447,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.noteEachClipsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.noteEachClipsLimit.value" :disabled="role.policies.noteEachClipsLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.noteEachClipsLimit.value" :disabled="role.policies.noteEachClipsLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.noteEachClipsLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -466,7 +466,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.userListLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.userListLimit.value" :disabled="role.policies.userListLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.userListLimit.value" :disabled="role.policies.userListLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.userListLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -485,7 +485,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.userEachUserListsLimit.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkInput v-model="role.policies.userEachUserListsLimit.value" :disabled="role.policies.userEachUserListsLimit.useDefault" type="number" :readonly="readonly">
+					<MkInput type="number" v-model="role.policies.userEachUserListsLimit.value" :disabled="role.policies.userEachUserListsLimit.useDefault" :readonly="readonly">
 					</MkInput>
 					<MkRange v-model="role.policies.userEachUserListsLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>

@@ -12,11 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			{{ message }}
 		</MkInfo>
 		<div v-if="!totpLogin" class="normal-signin _gaps_m">
-			<MkInput v-model="username" :placeholder="i18n.ts.username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
+			<MkInput type="text" v-model="username" :placeholder="i18n.ts.username" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autocomplete="username webauthn" autofocus required data-cy-signin-username @update:modelValue="onUsernameChange">
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
+			<MkInput v-if="!user || user && !user.usePasswordLessLogin" type="password" v-model="password" :placeholder="i18n.ts.password" autocomplete="current-password webauthn" :withPasswordToggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
@@ -34,11 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="twofa-group totp-group">
 				<p style="margin-bottom:0;">{{ i18n.ts['2fa'] }}</p>
-				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" autocomplete="current-password" :withPasswordToggle="true" required>
+				<MkInput v-if="user && user.usePasswordLessLogin" type="password" v-model="password" autocomplete="current-password" :withPasswordToggle="true" required>
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false" required>
+				<MkInput type="text" v-model="token" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="ti ti-123"></i></template>
 				</MkInput>

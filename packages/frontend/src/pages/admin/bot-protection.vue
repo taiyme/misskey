@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<template v-if="provider === 'hcaptcha'">
-				<MkInput v-model="hcaptchaSiteKey">
+				<MkInput type="text" v-model="hcaptchaSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 				</MkInput>
-				<MkInput v-model="hcaptchaSecretKey">
+				<MkInput type="text" v-model="hcaptchaSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 				</MkInput>
@@ -30,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'recaptcha'">
-				<MkInput v-model="recaptchaSiteKey">
+				<MkInput type="text" v-model="recaptchaSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 				</MkInput>
-				<MkInput v-model="recaptchaSecretKey">
+				<MkInput type="text" v-model="recaptchaSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 				</MkInput>
@@ -44,11 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'turnstile'">
-				<MkInput v-model="turnstileSiteKey">
+				<MkInput type="text" v-model="turnstileSiteKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
 				</MkInput>
-				<MkInput v-model="turnstileSecretKey">
+				<MkInput type="text" v-model="turnstileSecretKey">
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 				</MkInput>

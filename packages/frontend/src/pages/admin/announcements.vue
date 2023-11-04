@@ -22,13 +22,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ announcement.text }}</template>
 
 				<div class="_gaps_m">
-					<MkInput v-model="announcement.title">
+					<MkInput type="text" v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput v-model="announcement.imageUrl">
+					<MkInput type="url" v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">

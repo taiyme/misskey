@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 
 				<template v-if="enableEmail">
-					<MkInput v-model="email" type="email">
+					<MkInput type="email" v-model="email">
 						<template #label>{{ i18n.ts.emailAddress }}</template>
 					</MkInput>
 
@@ -25,18 +25,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpHost">
+								<MkInput type="text" v-model="smtpHost">
 									<template #label>{{ i18n.ts.smtpHost }}</template>
 								</MkInput>
-								<MkInput v-model="smtpPort" type="number">
+								<MkInput type="number" v-model="smtpPort">
 									<template #label>{{ i18n.ts.smtpPort }}</template>
 								</MkInput>
 							</FormSplit>
 							<FormSplit :minWidth="280">
-								<MkInput v-model="smtpUser">
+								<MkInput type="text" v-model="smtpUser">
 									<template #label>{{ i18n.ts.smtpUser }}</template>
 								</MkInput>
-								<MkInput v-model="smtpPass" type="password">
+								<MkInput type="password" v-model="smtpPass">
 									<template #label>{{ i18n.ts.smtpPass }}</template>
 								</MkInput>
 							</FormSplit>

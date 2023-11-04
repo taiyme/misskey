@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="token" :contentMax="700" :marginMin="16" :marginMax="32">
 		<div class="_gaps_m">
-			<MkInput v-model="password" type="password">
+			<MkInput type="password" v-model="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #label>{{ i18n.ts.newPassword }}</template>
 			</MkInput>

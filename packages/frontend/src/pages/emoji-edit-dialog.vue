@@ -32,17 +32,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
-				<MkInput v-model="name" pattern="[a-z0-9_]">
+				<MkInput type="text" v-model="name" pattern="[a-z0-9_]">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
-				<MkInput v-model="category" :datalist="customEmojiCategories">
+				<MkInput type="text" v-model="category" :datalist="customEmojiCategories">
 					<template #label>{{ i18n.ts.category }}</template>
 				</MkInput>
-				<MkInput v-model="aliases">
+				<MkInput type="text" v-model="aliases">
 					<template #label>{{ i18n.ts.tags }}</template>
 					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 				</MkInput>
-				<MkInput v-model="license">
+				<MkInput type="text" v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
 				<MkFolder>

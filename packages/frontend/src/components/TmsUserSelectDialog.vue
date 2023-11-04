@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps _margin">
 		<div :class="$style.form">
 			<FormSplit :minWidth="128">
-				<MkInput v-model="inputUserName" :autofocus="true" :debounce="false" @update:modelValue="debouncedSearch">
+				<MkInput type="text" v-model="inputUserName" :autofocus="true" :debounce="false" @update:modelValue="debouncedSearch">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="inputHostName" :debounce="false" :datalist="[hostname]" @update:modelValue="debouncedSearch">
+				<MkInput type="text" v-model="inputHostName" :debounce="false" :datalist="[hostname]" @update:modelValue="debouncedSearch">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>

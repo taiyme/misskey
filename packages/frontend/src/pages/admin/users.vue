@@ -34,11 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</div>
 				<div :class="$style.inputs">
-					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:modelValue="$refs.users.reload()">
+					<MkInput type="text" v-model="searchUsername" style="flex: 1;" :spellcheck="false" @update:modelValue="$refs.users.reload()">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.username }}</template>
 					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
+					<MkInput type="text" v-model="searchHost" style="flex: 1;" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>

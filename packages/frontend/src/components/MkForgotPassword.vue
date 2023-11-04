@@ -17,12 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<form v-if="instance.enableEmail" @submit.prevent="onSubmit">
 			<div class="_gaps_m">
-				<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
+				<MkInput type="text" v-model="username" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 
-				<MkInput v-model="email" type="email" :spellcheck="false" required>
+				<MkInput type="email" v-model="email" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.emailAddress }}</template>
 					<template #caption>{{ i18n.ts._forgotPassword.enterEmail }}</template>
 				</MkInput>

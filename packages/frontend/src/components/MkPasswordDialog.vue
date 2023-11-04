@@ -21,11 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div class="_gaps">
-			<MkInput ref="passwordInput" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
+			<MkInput ref="passwordInput" type="password" v-model="password" :placeholder="i18n.ts.password" autocomplete="current-password webauthn" :withPasswordToggle="true">
 				<template #prefix><i class="ti ti-password"></i></template>
 			</MkInput>
 
-			<MkInput v-if="$i.twoFactorEnabled" v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
+			<MkInput v-if="$i.twoFactorEnabled" type="text" v-model="token" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
 				<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
 				<template #prefix><i class="ti ti-123"></i></template>
 			</MkInput>

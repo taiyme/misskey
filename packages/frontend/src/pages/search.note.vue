@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div class="_gaps">
-		<MkInput v-model="inputSearchQuery" large autofocus type="search" @enter="searchNote">
+		<MkInput type="search" v-model="inputSearchQuery" large autofocus @enter="searchNote">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 		<MkFolder>

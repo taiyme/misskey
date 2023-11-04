@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div class="_gaps_m">
-				<MkInput v-model="title">
+				<MkInput type="text" v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
 				</MkInput>
 				<MkTextarea v-model="text">

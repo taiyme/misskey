@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
+	<MkInput type="text" v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 

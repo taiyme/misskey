@@ -11,11 +11,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkInput v-model="name">
+					<MkInput type="text" v-model="name">
 						<template #label>{{ i18n.ts.instanceName }}</template>
 					</MkInput>
 
-					<MkInput v-model="shortName">
+					<MkInput type="text" v-model="shortName">
 						<template #label>{{ i18n.ts._serverSettings.shortName }} ({{ i18n.ts.optional }})</template>
 						<template #caption>{{ i18n.ts._serverSettings.shortNameDescription }}</template>
 					</MkInput>
@@ -25,17 +25,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkTextarea>
 
 					<FormSplit :minWidth="300">
-						<MkInput v-model="maintainerName">
+						<MkInput type="text" v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
 						</MkInput>
 
-						<MkInput v-model="maintainerEmail" type="email">
+						<MkInput type="email" v-model="maintainerEmail">
 							<template #prefix><i class="ti ti-mail"></i></template>
 							<template #label>{{ i18n.ts.maintainerEmail }}</template>
 						</MkInput>
 					</FormSplit>
 
-					<MkInput v-model="impressumUrl">
+					<MkInput type="url" v-model="impressumUrl">
 						<template #label>{{ i18n.ts.impressumUrl }}</template>
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #caption>{{ i18n.ts.impressumDescription }}</template>
@@ -74,12 +74,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 
 							<template v-if="enableServiceWorker">
-								<MkInput v-model="swPublicKey">
+								<MkInput type="text" v-model="swPublicKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Public key</template>
 								</MkInput>
 
-								<MkInput v-model="swPrivateKey">
+								<MkInput type="text" v-model="swPrivateKey">
 									<template #prefix><i class="ti ti-key"></i></template>
 									<template #label>Private key</template>
 								</MkInput>
@@ -91,19 +91,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>Timeline caching</template>
 
 						<div class="_gaps_m">
-							<MkInput v-model="perLocalUserUserTimelineCacheMax" type="number">
+							<MkInput type="number" v-model="perLocalUserUserTimelineCacheMax">
 								<template #label>perLocalUserUserTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perRemoteUserUserTimelineCacheMax" type="number">
+							<MkInput type="number" v-model="perRemoteUserUserTimelineCacheMax">
 								<template #label>perRemoteUserUserTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perUserHomeTimelineCacheMax" type="number">
+							<MkInput type="number" v-model="perUserHomeTimelineCacheMax">
 								<template #label>perUserHomeTimelineCacheMax</template>
 							</MkInput>
 
-							<MkInput v-model="perUserListTimelineCacheMax" type="number">
+							<MkInput type="number" v-model="perUserListTimelineCacheMax">
 								<template #label>perUserListTimelineCacheMax</template>
 							</MkInput>
 						</div>
@@ -114,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<div class="_gaps_s">
-								<MkInput v-model="notesPerOneAd" :min="0" type="number">
+								<MkInput type="number" v-model="notesPerOneAd" :min="0">
 									<template #label>{{ i18n.ts._ad.notesPerOneAd }}</template>
 									<template #caption>{{ i18n.ts._ad.setZeroToDisable }}</template>
 								</MkInput>

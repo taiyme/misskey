@@ -21,12 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 
-					<MkInput v-model="tosUrl">
+					<MkInput type="url" v-model="tosUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.tosUrl }}</template>
 					</MkInput>
 
-					<MkInput v-model="privacyPolicyUrl">
+					<MkInput type="url" v-model="privacyPolicyUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.privacyPolicyUrl }}</template>
 					</MkInput>

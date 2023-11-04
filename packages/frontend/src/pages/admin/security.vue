@@ -93,7 +93,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>Summaly Proxy</template>
 
 					<div class="_gaps_m">
-						<MkInput v-model="summalyProxy">
+						<MkInput type="url" v-model="summalyProxy">
 							<template #prefix><i class="ti ti-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
 						</MkInput>

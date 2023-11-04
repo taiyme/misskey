@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="noExpirationDate">
 						<template #label>{{ i18n.ts.noExpirationDate }}</template>
 					</MkSwitch>
-					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
+					<MkInput v-if="!noExpirationDate" type="datetime-local" v-model="expiresAt">
 						<template #label>{{ i18n.ts.expirationDate }}</template>
 					</MkInput>
-					<MkInput v-model="createCount" type="number">
+					<MkInput type="number" v-model="createCount">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>

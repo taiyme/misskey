@@ -16,10 +16,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
 				<MkAd v-if="ad.url" :specify="ad" />
-				<MkInput v-model="ad.url" type="url">
+				<MkInput type="url" v-model="ad.url">
 					<template #label>URL</template>
 				</MkInput>
-				<MkInput v-model="ad.imageUrl">
+				<MkInput type="url" v-model="ad.imageUrl">
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
 				<MkRadios v-model="ad.place">
@@ -37,13 +37,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			-->
 				<FormSplit>
-					<MkInput v-model="ad.ratio" type="number">
+					<MkInput type="number" v-model="ad.ratio">
 						<template #label>{{ i18n.ts.ratio }}</template>
 					</MkInput>
-					<MkInput v-model="ad.startsAt" type="datetime-local">
+					<MkInput type="datetime-local" v-model="ad.startsAt">
 						<template #label>{{ i18n.ts.startingperiod }}</template>
 					</MkInput>
-					<MkInput v-model="ad.expiresAt" type="datetime-local">
+					<MkInput type="datetime-local" v-model="ad.expiresAt">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 				</FormSplit>

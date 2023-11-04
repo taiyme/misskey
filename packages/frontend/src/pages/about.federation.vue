@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div>
-		<MkInput v-model="host" :debounce="true" class="">
+		<MkInput type="text" v-model="host" :debounce="true">
 			<template #prefix><i class="ti ti-search"></i></template>
 			<template #label>{{ i18n.ts.host }}</template>
 		</MkInput>

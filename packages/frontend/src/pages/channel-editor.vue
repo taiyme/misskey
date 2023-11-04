@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
-			<MkInput v-model="params.name" :disabled="computedIsArchived">
+			<MkInput type="text" v-model="params.name" :disabled="computedIsArchived">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
