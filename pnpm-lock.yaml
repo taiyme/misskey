@@ -993,7 +993,7 @@ importers:
         specifier: 0.2.2
         version: 0.2.2(vitest@0.34.6)
       vue-component-type-helpers:
-        specifier: ^1.8.21
+        specifier: 1.8.21
         version: 1.8.21
       vue-eslint-parser:
         specifier: 9.3.2
@@ -6916,7 +6916,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.3.4
-      vue-component-type-helpers: 1.8.21
+      vue-component-type-helpers: 1.8.22
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -19176,6 +19176,10 @@ packages:
 
   /vue-component-type-helpers@1.8.21:
     resolution: {integrity: sha512-XL37QbmiqqbKrAFHPxqryMXpNgO0KMKd5bIo7LO9QABPMNEysd8xmYRIjwZhh0t2abveXjAJ//ZcAzwdxp/S3Q==}
+    dev: true
+
+  /vue-component-type-helpers@1.8.22:
+    resolution: {integrity: sha512-LK3wJHs3vJxHG292C8cnsRusgyC5SEZDCzDCD01mdE/AoREFMl2tzLRuzwyuEsOIz13tqgBcnvysN3Lxsa14Fw==}
     dev: true
 
   /vue-demi@0.13.11(vue@3.3.4):
