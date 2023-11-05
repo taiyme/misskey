@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>Access key</template>
 						</MkInput>
 
-						<MkInput type="text" v-model="objectStorageSecretKey" type="password">
+						<MkInput type="password" v-model="objectStorageSecretKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Secret key</template>
 						</MkInput>
