@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
-					<MkInput type="search" v-model="query" :debounce="true">
+					<MkInput type="search" v-model="query" nullable :debounce="true">
 						<template #prefix><i class="ti ti-search"></i></template>
 						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
@@ -45,11 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div v-else-if="tab === 'remote'" class="remote">
 					<FormSplit>
-						<MkInput type="search" v-model="queryRemote" :debounce="true">
+						<MkInput type="search" v-model="queryRemote" nullable :debounce="true">
 							<template #prefix><i class="ti ti-search"></i></template>
 							<template #label>{{ i18n.ts.search }}</template>
 						</MkInput>
-						<MkInput type="text" v-model="host" :debounce="true">
+						<MkInput type="text" v-model="host" nullable :debounce="true">
 							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
 					</FormSplit>
@@ -89,9 +89,9 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 const tab = ref('local');
-const query = ref(null);
-const queryRemote = ref(null);
-const host = ref(null);
+const query = ref<string | null>(null);
+const queryRemote = ref<string | null>(null);
+const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 

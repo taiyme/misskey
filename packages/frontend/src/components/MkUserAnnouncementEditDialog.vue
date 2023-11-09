@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	@close="dialog.close()"
+	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
@@ -103,7 +103,7 @@ async function done() {
 			},
 		});
 
-		dialog.close();
+		dialog?.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -111,7 +111,7 @@ async function done() {
 			created: created,
 		});
 
-		dialog.close();
+		dialog?.close();
 	}
 }
 
@@ -128,7 +128,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog.close();
+		dialog?.close();
 	});
 }
 </script>

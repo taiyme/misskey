@@ -9,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
-			<MkInput type="text" v-model="params.name" :disabled="computedIsArchived">
+			<MkInput type="text" v-model="params.name" :minLength="1" :maxLength="128" :disabled="computedIsArchived">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="params.description" :disabled="computedIsArchived">
+			<MkTextarea v-model="params.description" nullable :minLength="1" :maxLength="2048" :disabled="computedIsArchived">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -93,7 +93,7 @@ const props = defineProps<{
 const channel = ref<Misskey.entities.Channel | null>(null);
 const params = reactive<{
 	name: string;
-	description: string;
+	description: string | null;
 	bannerId: string | null; // send
 	bannerUrl: string | null; // view
 	color: string;
@@ -103,7 +103,7 @@ const params = reactive<{
 	}[];
 }>({
 	name: '',
-	description: '',
+	description: null,
 	bannerId: null,
 	bannerUrl: null,
 	color: '#000',
@@ -130,7 +130,7 @@ const fetchChannel = async (updated?: Misskey.entities.Channel): Promise<void> =
 	});
 
 	params.name = channel.value.name;
-	params.description = channel.value.description ?? '';
+	params.description = channel.value.description;
 	params.bannerId = null;
 	params.bannerUrl = channel.value.bannerUrl;
 	params.color = channel.value.color;
@@ -208,8 +208,8 @@ const unarchive = async (): Promise<void> => {
 
 const save = (): void => {
 	const req: Misskey.Endpoints['channels/create']['req'] = {
-		name: params.name.trim(),
-		description: params.description.trim() || null, // nullable
+		name: params.name,
+		description: params.description, // nullable
 		bannerId: computedBannerId.value, // nullable, undefinedable
 		color: params.color.trim() || '#000',
 		isSensitive: params.isSensitive,

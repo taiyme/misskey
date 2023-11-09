@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>
 			<div>
-				<MkInput type="text" v-model="name">
+				<MkInput type="text" v-model="name" nullable>
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
 			</div>
@@ -70,7 +70,7 @@ const emit = defineEmits<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 let name = $ref(props.initialName);
-let permissions = $ref({});
+let permissions = $ref<Record<string, boolean>>({});
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {

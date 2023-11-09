@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="700">
 	<div>
 		<div class="_gaps_m">
-			<MkInput type="text" v-model="name">
+			<MkInput type="text" v-model="name" :minLength="1" :maxLength="100">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 			<MkSelect v-model="src">

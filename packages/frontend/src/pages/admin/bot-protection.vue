@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkRadios>
 
 			<template v-if="provider === 'hcaptcha'">
-				<MkInput type="text" v-model="hcaptchaSiteKey">
+				<MkInput type="text" v-model="hcaptchaSiteKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSiteKey }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="hcaptchaSecretKey">
+				<MkInput type="text" v-model="hcaptchaSecretKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.hcaptchaSecretKey }}</template>
 				</MkInput>
@@ -30,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'recaptcha'">
-				<MkInput type="text" v-model="recaptchaSiteKey">
+				<MkInput type="text" v-model="recaptchaSiteKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSiteKey }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="recaptchaSecretKey">
+				<MkInput type="text" v-model="recaptchaSecretKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.recaptchaSecretKey }}</template>
 				</MkInput>
@@ -44,11 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSlot>
 			</template>
 			<template v-else-if="provider === 'turnstile'">
-				<MkInput type="text" v-model="turnstileSiteKey">
+				<MkInput type="text" v-model="turnstileSiteKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSiteKey }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="turnstileSecretKey">
+				<MkInput type="text" v-model="turnstileSecretKey" nullable>
 					<template #prefix><i class="ti ti-key"></i></template>
 					<template #label>{{ i18n.ts.turnstileSecretKey }}</template>
 				</MkInput>
@@ -77,13 +77,13 @@ import { i18n } from '@/i18n.js';
 
 const MkCaptcha = defineAsyncComponent(() => import('@/components/MkCaptcha.vue'));
 
-let provider = $ref(null);
-let hcaptchaSiteKey: string | null = $ref(null);
-let hcaptchaSecretKey: string | null = $ref(null);
-let recaptchaSiteKey: string | null = $ref(null);
-let recaptchaSecretKey: string | null = $ref(null);
-let turnstileSiteKey: string | null = $ref(null);
-let turnstileSecretKey: string | null = $ref(null);
+let provider = $ref<string | null>(null);
+let hcaptchaSiteKey = $ref<string | null>(null);
+let hcaptchaSecretKey = $ref<string | null>(null);
+let recaptchaSiteKey = $ref<string | null>(null);
+let recaptchaSecretKey = $ref<string | null>(null);
+let turnstileSiteKey = $ref<string | null>(null);
+let turnstileSecretKey = $ref<string | null>(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');

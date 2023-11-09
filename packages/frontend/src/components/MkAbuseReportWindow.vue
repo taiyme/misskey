@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m" :class="$style.root">
 			<div class="">
-				<MkTextarea v-model="comment">
+				<MkTextarea v-model="comment" :minLength="1" :maxLength="2048">
 					<template #label>{{ i18n.ts.details }}</template>
 					<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
 				</MkTextarea>

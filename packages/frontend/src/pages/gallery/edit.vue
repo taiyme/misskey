@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.title }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description" :max="500">
+			<MkTextarea v-model="description" nullable>
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -60,7 +60,7 @@ const props = defineProps<{
 let init = $ref(null);
 let files = $ref([]);
 let description = $ref(null);
-let title = $ref(null);
+let title = $ref('');
 let isSensitive = $ref(false);
 
 function selectFile(evt) {

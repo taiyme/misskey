@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput type="text" class="input" small :modelValue="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput type="text" class="input" small :modelValue="choice" :minLength="1" :maxLength="50" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>

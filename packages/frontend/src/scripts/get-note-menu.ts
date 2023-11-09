@@ -68,12 +68,17 @@ export async function getNoteClipMenu(props: {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
+					minLength: 1,
+					maxLength: 100,
 				},
 				description: {
 					type: 'string',
 					required: false,
 					multiline: true,
 					label: i18n.ts.description,
+					nullable: true,
+					minLength: 1,
+					maxLength: 2048,
 				},
 				isPublic: {
 					type: 'boolean',

@@ -111,16 +111,16 @@ let password: string = $ref('');
 let retypedPassword: string = $ref('');
 let invitationCode: string = $ref('');
 let email = $ref('');
-let usernameState: null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range' = $ref(null);
-let emailState: null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error' = $ref(null);
-let passwordStrength: '' | 'low' | 'medium' | 'high' = $ref('');
-let passwordRetypeState: null | 'match' | 'not-match' = $ref(null);
-let submitting: boolean = $ref(false);
-let hCaptchaResponse = $ref(null);
-let reCaptchaResponse = $ref(null);
-let turnstileResponse = $ref(null);
-let usernameAbortController: null | AbortController = $ref(null);
-let emailAbortController: null | AbortController = $ref(null);
+let usernameState = $ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
+let emailState = $ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
+let passwordStrength = $ref<'' | 'low' | 'medium' | 'high'>('');
+let passwordRetypeState = $ref<null | 'match' | 'not-match'>(null);
+let submitting = $ref(false);
+let hCaptchaResponse = $ref<string | null>(null);
+let reCaptchaResponse = $ref<string | null>(null);
+let turnstileResponse = $ref<string | null>(null);
+let usernameAbortController = $ref<null | AbortController>(null);
+let emailAbortController = $ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
@@ -250,9 +250,9 @@ async function onSubmit(): Promise<void> {
 			password,
 			emailAddress: email,
 			invitationCode,
-			'hcaptcha-response': hCaptchaResponse,
-			'g-recaptcha-response': reCaptchaResponse,
-			'turnstile-response': turnstileResponse,
+			'hcaptcha-response': hCaptchaResponse ?? undefined,
+			'g-recaptcha-response': reCaptchaResponse ?? undefined,
+			'turnstile-response': turnstileResponse ?? undefined,
 		});
 		if (instance.emailRequiredForSignup) {
 			os.alert({

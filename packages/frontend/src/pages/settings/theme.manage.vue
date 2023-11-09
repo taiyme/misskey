@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
 			<template #label>{{ i18n.ts._theme.description }}</template>
 		</MkTextarea>
-		<MkTextarea readonly tall :modelValue="selectedThemeCode">
+		<MkTextarea readonly tall :modelValue="selectedThemeCode" nullable>
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</MkTextarea>

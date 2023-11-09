@@ -23,15 +23,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<div class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
-				<MkInput v-if="form[item].type === 'number'" type="number" v-model="values[item]" :step="form[item].step || 1">
+				<MkInput v-if="form[item].type === 'number'" type="number" v-model="values[item]" :step="form[item].step || 1" :nullable="form[item].nullable" :trim="form[item].trim" :minLength="form[item].minLength" :maxLength="form[item].maxLength">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
-				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" type="text" v-model="values[item]">
+				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" type="text" v-model="values[item]" :nullable="form[item].nullable" :trim="form[item].trim" :minLength="form[item].minLength" :maxLength="form[item].maxLength">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
-				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
+				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]" :nullable="form[item].nullable" :trim="form[item].trim" :minLength="form[item].minLength" :maxLength="form[item].maxLength">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkTextarea>

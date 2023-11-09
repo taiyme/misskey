@@ -136,6 +136,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				multiline: true,
 				label: i18n.ts.memo,
 				default: userDetailed.memo,
+				nullable: true,
 			},
 		});
 		if (canceled) return;

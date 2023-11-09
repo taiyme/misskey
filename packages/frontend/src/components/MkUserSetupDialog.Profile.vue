@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSlot>
 
-	<MkInput type="text" v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
+	<MkInput type="text" nullable v-model="name" :minLength="1" :maxLength="50" manualSave data-cy-user-setup-user-name>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="description" :max="500" tall manualSave data-cy-user-setup-user-description>
+	<MkTextarea nullable v-model="description" :minLength="1" :maxLength="1500" tall manualSave data-cy-user-setup-user-description>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 
@@ -43,22 +43,18 @@ import { chooseFileFromPc } from '@/scripts/select-file.js';
 import * as os from '@/os.js';
 import { $i } from '@/account.js';
 
-const name = ref($i.name ?? '');
-const description = ref($i.description ?? '');
+const name = ref($i?.name || null);
+const description = ref($i?.description || null);
 
 watch(name, () => {
 	os.apiWithDialog('i/update', {
-		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		name: name.value || null,
+		name: name.value,
 	});
 });
 
 watch(description, () => {
 	os.apiWithDialog('i/update', {
-		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		description: description.value || null,
+		description: description.value,
 	});
 });
 

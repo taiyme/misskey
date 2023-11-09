@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 
 				<template v-if="enableEmail">
-					<MkInput type="email" v-model="email">
+					<MkInput type="email" v-model="email" nullable>
 						<template #label>{{ i18n.ts.emailAddress }}</template>
 					</MkInput>
 

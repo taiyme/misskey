@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._pages.title }}</template>
 				</MkInput>
 
-				<MkInput type="text" v-model="summary">
+				<MkInput type="text" v-model="summary" nullable>
 					<template #label>{{ i18n.ts._pages.summary }}</template>
 				</MkInput>
 

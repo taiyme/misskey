@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<FormInfo warn>{{ i18n.ts._plugin.installWarn }}</FormInfo>
 
-	<MkTextarea v-model="code" tall>
+	<MkTextarea v-model="code" nullable tall>
 		<template #label>{{ i18n.ts.code }}</template>
 	</MkTextarea>
 

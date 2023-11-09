@@ -14,21 +14,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput type="text" v-model="profile.name" :max="30" manualSave>
+	<MkInput type="text" v-model="profile.name" :minLength="1" :maxLength="50" manualSave>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
+	<MkTextarea v-model="profile.description" nullable :minLength="1" :maxLength="1500" tall manualSave>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput type="text" v-model="profile.location" manualSave>
+	<MkInput type="text" v-model="profile.location" nullable :minLength="1" :maxLength="50" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
 
-	<MkInput type="date" v-model="profile.birthday" manualSave>
+	<MkInput type="date" v-model="profile.birthday" nullable manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</MkInput>
