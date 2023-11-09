@@ -7,7 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
+	<div
+		ref="container"
+		:class="{
+			[$style.input]: true,
+			[$style.inline]: inline,
+			[$style.disabled]: disabled,
+			[$style.focused]: focused
+		}"
+		@mousedown.prevent="show"
+	>
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
@@ -24,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
+		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="{ [$style.chevron]: true, [$style.chevronOpening]: opening }"></i></div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
 

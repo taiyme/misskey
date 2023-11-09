@@ -7,7 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div
 	v-adaptive-border
-	:class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]"
+	:class="{
+		[$style.root]: true,
+		[$style.disabled]: disabled,
+		[$style.checked]: checked,
+	}"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
 	@click="toggle"
@@ -17,32 +21,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:disabled="disabled"
 		:class="$style.input"
 	>
-	<span :class="$style.button">
-		<span></span>
-	</span>
+	<span :class="$style.button"></span>
 	<span :class="$style.label"><slot></slot></span>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
-	modelValue: any;
-	value: any;
+	modelValue: string;
+	value: string;
 	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any];
+	'update:modelValue': [value: string];
 }>();
 
-let checked = $computed(() => props.modelValue === props.value);
+const checked = computed(() => props.modelValue === props.value);
 
-function toggle(): void {
+const toggle = (): void => {
 	if (props.disabled) return;
 	emit('update:modelValue', props.value);
-}
+};
 </script>
 
 <style lang="scss" module>
@@ -54,8 +56,8 @@ function toggle(): void {
 	padding: 7px 10px;
 	min-width: 60px;
 	background-color: var(--panel);
-	-webkit-background-clip: padding-box !important;
-	background-clip: padding-box !important;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
 	border: solid 1px var(--panel);
 	border-radius: 6px;
 	font-size: 90%;
@@ -65,18 +67,17 @@ function toggle(): void {
 
 	&.disabled {
 		opacity: 0.6;
-		cursor: not-allowed !important;
+		cursor: not-allowed;
 	}
 
 	&:hover {
-		border-color: var(--inputBorderHover) !important;
+		border-color: var(--inputBorderHover);
 	}
 
 	&.checked {
-		background-color: var(--accentedBg) !important;
-		border-color: var(--accentedBg) !important;
+		background-color: var(--accentedBg);
+		border-color: var(--accentedBg);
 		color: var(--accent);
-		cursor: default !important;
 
 		> .button {
 			border-color: var(--accent);
@@ -126,6 +127,5 @@ function toggle(): void {
 	margin-left: 28px;
 	display: block;
 	line-height: 20px;
-	cursor: pointer;
 }
 </style>
