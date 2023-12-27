@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @closed="emit('closed')" @click="onBgClick">
+<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')" @click="onBgClick">
 	<div ref="rootEl" :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.icon">
@@ -24,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -35,10 +34,6 @@ const props = withDefaults(defineProps<{
 	announcement: Misskey.entities.Announcement;
 }>(), {
 });
-
-const emit = defineEmits<{
-	closed: [];
-}>();
 
 const rootEl = shallowRef<HTMLDivElement>();
 const modal = shallowRef<InstanceType<typeof MkModal>>();
@@ -53,7 +48,7 @@ async function ok() {
 		if (confirm.canceled) return;
 	}
 
-	modal.value?.close();
+	modal.value.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({
 		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
@@ -61,7 +56,7 @@ async function ok() {
 }
 
 function onBgClick() {
-	rootEl.value?.animate([{
+	rootEl.value.animate([{
 		offset: 0,
 		transform: 'scale(1)',
 	}, {

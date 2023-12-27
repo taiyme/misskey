@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <MkSpacer :contentMax="narrow ? 800 : 1100">
-	<div ref="rootEl" v-size="{ max: [500], min: [] }" v-container="{ type: 'inlineSize' }" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
+	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
 		<div class="main _gaps">
 			<!-- TODO -->
 			<!-- <div class="punished" v-if="user.isSuspended"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSuspended }}</div> -->
@@ -138,7 +137,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
-		<div v-if="!narrow" v-container="{ type: 'inlineSize' }" class="sub _gaps" style="container-type: inline-size;">
+		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
 			<XFiles :key="user.id" :user="user"/>
 			<XActivity :key="user.id" :user="user"/>
 		</div>
@@ -148,7 +147,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
@@ -321,13 +320,11 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
-				overflow: hidden; // fallback (overflow: clip)
 				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
-					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
 					background-size: cover;
 					background-position: center;
@@ -347,7 +344,7 @@ onUnmounted(() => {
 						left: 0;
 						width: 100%;
 						height: 78px;
-						background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+						background: linear-gradient(transparent, rgba(#000, 0.7));
 					}
 
 					> .followed {
@@ -453,7 +450,7 @@ onUnmounted(() => {
 					z-index: 2;
 					width: 120px;
 					height: 120px;
-					box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
 				> .roles {
@@ -609,8 +606,8 @@ onUnmounted(() => {
 	}
 }
 
-:global(:where(.max-width_500px)) {
-	&.ftskorzw {
+@container (max-width: 500px) {
+	.ftskorzw {
 		> .main {
 			> .profile > .main {
 				> .banner-container {
@@ -679,7 +676,6 @@ onUnmounted(() => {
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

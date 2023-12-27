@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -29,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
@@ -108,7 +107,6 @@ const vote = async (id) => {
 	//border: solid 0.5px var(--divider);
 	background: var(--accentedBg);
 	border-radius: 4px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	cursor: pointer;
 }
@@ -119,7 +117,7 @@ const vote = async (id) => {
 	left: 0;
 	height: 100%;
 	background: var(--accent);
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	background: linear-gradient(90deg,var(--buttonGradateA),var(--buttonGradateB));
 	transition: width 1s ease;
 }
 

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,13 +21,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ announcement.text }}</template>
 
 				<div class="_gaps_m">
-					<MkInput type="text" v-model="announcement.title">
+					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
 					</MkInput>
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
 					</MkTextarea>
-					<MkInput type="url" v-model="announcement.imageUrl">
+					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
 					<MkRadios v-model="announcement.icon">

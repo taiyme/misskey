@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,16 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.title">
 				<div>Welcome to Misskey!</div>
-				<div :class="$style.version">{{ withV(version) }}</div>
+				<div :class="$style.version">v{{ version }}</div>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
 				<div>{{ i18n.ts.intro }}</div>
-				<MkInput type="text" v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 					<template #suffix>@{{ host }}</template>
 				</MkInput>
-				<MkInput type="password" v-model="password" data-cy-admin-password>
+				<MkInput v-model="password" type="password" data-cy-admin-password>
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
@@ -44,7 +43,6 @@ import * as os from '@/os.js';
 import { login } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import MkAnimBg from '@/components/MkAnimBg.vue';
-import { withV } from '@/scripts/tms/version.js';
 
 let username = $ref('');
 let password = $ref('');
@@ -72,12 +70,11 @@ function submit() {
 
 <style lang="scss" module>
 .formContainer {
-	min-height: 100vh; // fallback (svh units)
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-	display: grid;
-	place-content: center;
+display: grid;
+place-content: center;
 }
 
 .form {
@@ -85,7 +82,6 @@ function submit() {
 	z-index: 10;
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	max-width: 500px;
 }

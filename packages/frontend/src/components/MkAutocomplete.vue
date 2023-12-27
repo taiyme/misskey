@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -138,8 +137,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	done: [value: { type: string; value: any; }];
-	closed: [];
+	(event: 'done', value: { type: string; value: any }): void;
+	(event: 'closed'): void;
 }>();
 
 const suggests = ref<Element>();
@@ -387,7 +386,6 @@ onBeforeUnmount(() => {
 	position: fixed;
 	max-width: 100%;
 	margin-top: calc(1em + 8px);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	transition: top 0.1s ease, left 0.1s ease;
 }
@@ -407,12 +405,11 @@ onBeforeUnmount(() => {
 	align-items: center;
 	padding: 4px 12px;
 	white-space: nowrap;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	font-size: 0.9em;
 	cursor: default;
-	-webkit-user-select: none;
 	user-select: none;
+	overflow: hidden;
 	text-overflow: ellipsis;
 
 	&:hover {

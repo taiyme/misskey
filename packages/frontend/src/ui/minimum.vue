@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="$style.root">
-	<div v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
+	<div style="container-type: inline-size;">
 		<RouterView/>
 	</div>
 
@@ -18,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { mainRouter } from '@/router.js';
-import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
@@ -36,7 +35,6 @@ document.documentElement.style.overflowY = 'scroll';
 
 <style lang="scss" module>
 .root {
-	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 }

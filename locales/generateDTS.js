@@ -8,16 +8,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function createMembers(record) {
-	return Object.entries(record).map(([k, v]) => {
-		return ts.factory.createPropertySignature(
-			[ts.factory.createModifier(ts.SyntaxKind.ReadonlyKeyword)],
+	return Object.entries(record)
+		.map(([k, v]) => ts.factory.createPropertySignature(
+			undefined,
 			ts.factory.createStringLiteral(k),
 			undefined,
 			typeof v === 'string'
 				? ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword)
 				: ts.factory.createTypeLiteralNode(createMembers(v)),
-		);
-	});
+		));
 }
 
 export default function generateDTS() {

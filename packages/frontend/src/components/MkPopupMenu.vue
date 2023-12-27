@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from '@/types/menu';
 
 defineProps<{
 	items: MenuItem[];
@@ -25,8 +24,8 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	closed: [];
-	closing: [];
+	(ev: 'closed'): void;
+	(ev: 'closing'): void;
 }>();
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();

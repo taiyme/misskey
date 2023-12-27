@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,22 +27,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
-import { navbarItemDef } from '@/navbar.js';
+import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;
-	anchor?: {
-		x: string;
-		y: string;
-	};
+	anchor?: { x: string; y: string; };
 }>(), {
 	anchor: () => ({ x: 'right', y: 'center' }),
 });
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const preferedModalType = (deviceKind === 'desktop' && props.src != null) ? 'popup' :
@@ -82,7 +78,7 @@ function close() {
 
 	&.asDrawer {
 		width: 100%;
-		padding: 16px 16px max(16px, var(--safeAreaInsetBottom)) 16px;
+		padding: 16px 16px max(env(safe-area-inset-bottom, 0px), 16px) 16px;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;

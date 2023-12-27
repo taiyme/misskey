@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +7,7 @@ import keyCode from './keycode.js';
 
 type Callback = (ev: KeyboardEvent) => void;
 
-export type Keymap = Record<string, Callback>;
+type Keymap = Record<string, Callback>;
 
 type Pattern = {
 	which: string[];
@@ -23,12 +22,12 @@ type Action = {
 	allowRepeat: boolean;
 };
 
-const parseKeymap = (keymap: Keymap): Action[] => Object.entries(keymap).map(([patterns, callback]): Action => {
-	const result: Action = {
+const parseKeymap = (keymap: Keymap) => Object.entries(keymap).map(([patterns, callback]): Action => {
+	const result = {
 		patterns: [],
 		callback,
 		allowRepeat: true,
-	};
+	} as Action;
 
 	if (patterns.match(/^\(.*\)$/) !== null) {
 		result.allowRepeat = false;
@@ -71,7 +70,7 @@ function match(ev: KeyboardEvent, patterns: Action['patterns']): boolean {
 	);
 }
 
-export const makeHotkey = (keymap: Keymap): ((ev: KeyboardEvent) => void) => {
+export const makeHotkey = (keymap: Keymap) => {
 	const actions = parseKeymap(keymap);
 
 	return (ev: KeyboardEvent) => {

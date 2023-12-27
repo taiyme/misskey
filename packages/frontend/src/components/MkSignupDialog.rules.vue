@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -85,8 +84,8 @@ const agreed = computed(() => {
 });
 
 const emit = defineEmits<{
-	cancel: [];
-	done: [];
+	(ev: 'cancel'): void;
+	(ev: 'done'): void;
 }>();
 
 const tosPrivacyPolicyLabel = computed(() => {

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -59,9 +58,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { openInstanceMenu } from './common.js';
+import { openInstanceMenu } from './common';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
+import { navbarItemDef } from '@/navbar';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -120,11 +119,9 @@ function more(ev: MouseEvent) {
 	left: 0;
 	z-index: 1001;
 	width: var(--nav-icon-only-width);
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	box-sizing: border-box;
 	overflow: auto;
-	overflow-x: hidden; // fallback (overflow: clip)
 	overflow-x: clip;
 	overscroll-behavior: contain;
 	background: var(--navBg);
@@ -156,8 +153,8 @@ function more(ev: MouseEvent) {
 		height: 100%;
 		background-size: cover;
 		background-position: center center;
-		-webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
-		mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
+		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
+		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
 	}
 
 	.instance {
@@ -191,7 +188,7 @@ function more(ev: MouseEvent) {
 		font-weight: bold;
 		text-align: left;
 
-		&::before {
+		&:before {
 			content: "";
 			display: block;
 			width: calc(100% - 38px);
@@ -207,7 +204,7 @@ function more(ev: MouseEvent) {
 		}
 
 		&:hover, &.active {
-			&::before {
+			&:before {
 				background: var(--accentLighten);
 			}
 		}
@@ -284,7 +281,7 @@ function more(ev: MouseEvent) {
 		&:hover, &.active {
 			color: var(--accent);
 
-			&::before {
+			&:before {
 				content: "";
 				display: block;
 				width: calc(100% - 34px);
@@ -369,7 +366,7 @@ function more(ev: MouseEvent) {
 		margin-bottom: 16px;
 		text-align: center;
 
-		&::before {
+		&:before {
 			content: "";
 			display: block;
 			position: absolute;
@@ -385,7 +382,7 @@ function more(ev: MouseEvent) {
 		}
 
 		&:hover, &.active {
-			&::before {
+			&:before {
 				background: var(--accentLighten);
 			}
 		}
@@ -437,7 +434,7 @@ function more(ev: MouseEvent) {
 			text-decoration: none;
 			color: var(--accent);
 
-			&::before {
+			&:before {
 				content: "";
 				display: block;
 				height: 100%;

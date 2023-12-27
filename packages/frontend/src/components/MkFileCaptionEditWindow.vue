@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -18,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.describeFile }}</template>
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<MkDriveFileThumbnail :file="file" fit="contain" style="height: 100px; margin-bottom: 16px;"/>
-		<MkTextarea v-model="caption" :maxLength="512" autofocus :placeholder="i18n.ts.inputNewDescription">
+		<MkTextarea v-model="caption" autofocus :placeholder="i18n.ts.inputNewDescription">
 			<template #label>{{ i18n.ts.caption }}</template>
 		</MkTextarea>
 	</MkSpacer>
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
@@ -39,8 +38,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	done: [v: string];
-	closed: [];
+	(ev: 'done', v: string): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();

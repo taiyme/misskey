@@ -1,34 +1,29 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Directive } from 'vue';
-import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
+import { Directive } from 'vue';
+import { makeHotkey } from '../scripts/hotkey';
 
-const map = new WeakMap<HTMLElement, () => void>();
-
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
-		const global = binding.modifiers.global === true;
-		const handler = makeHotkey(binding.value);
+	mounted(el, binding) {
+		el._hotkey_global = binding.modifiers.global === true;
 
-		if (global) {
-			document.addEventListener('keydown', handler);
-			map.set(src, () => document.removeEventListener('keydown', handler));
+		el._keyHandler = makeHotkey(binding.value);
+
+		if (el._hotkey_global) {
+			document.addEventListener('keydown', el._keyHandler);
 		} else {
-			src.addEventListener('keydown', handler);
-			map.set(src, () => src.removeEventListener('keydown', handler));
+			el.addEventListener('keydown', el._keyHandler);
 		}
 	},
 
-	unmounted(src) {
-		const stopHandler = map.get(src);
-		if (stopHandler) {
-			stopHandler();
-			map.delete(src);
+	unmounted(el) {
+		if (el._hotkey_global) {
+			document.removeEventListener('keydown', el._keyHandler);
+		} else {
+			el.removeEventListener('keydown', el._keyHandler);
 		}
 	},
-} as Directive<HTMLElement, Keymap>;
+} as Directive;

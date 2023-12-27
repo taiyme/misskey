@@ -1,17 +1,16 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createApp, markRaw, defineAsyncComponent } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { common } from './common.js';
-import { ui } from '@/config.js';
-import { i18n } from '@/i18n.js';
+import { version, ui, lang, updateLocale } from '@/config.js';
+import { i18n, updateI18n } from '@/i18n.js';
 import { confirm, alert, post, popup, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, updateAccount, signout } from '@/account.js';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
@@ -22,12 +21,18 @@ import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
-	const { isThemeRemoved, isClientUpdated, isCommitChanged } = await common(() => createApp(useUi()));
+	const { isClientUpdated } = await common(() => createApp(
+		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
+		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
+		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
+		defineAsyncComponent(() => import('@/ui/universal.vue')),
+	));
 
 	reactionPicker.init();
 
 	if (isClientUpdated && $i) {
-		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), { }, {}, 'closed');
+		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
 	}
 
 	const stream = useStream();
@@ -52,7 +57,7 @@ export async function mainBoot() {
 	});
 
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
-		import('../plugin.js').then(async ({ install }) => {
+		import('../plugin').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
 			await new Promise(r => setTimeout(r, 0));
 			install(plugin);
@@ -197,6 +202,14 @@ export async function mainBoot() {
 		}
 		miLocalStorage.setItem('lastUsed', Date.now().toString());
 
+		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
+		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
+		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
+			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
+				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
+			}
+		}
+
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト
 			if (Notification.permission === 'default') {
@@ -259,20 +272,4 @@ export async function mainBoot() {
 	document.addEventListener('keydown', makeHotkey(hotkeys));
 
 	initializeSw();
-}
-
-function useUi() {
-	if (new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/')) {
-		return defineAsyncComponent(() => import('@/ui/zen.vue'));
-	}
-	if (!$i) {
-		return defineAsyncComponent(() => import('@/ui/visitor.vue'));
-	}
-	if (ui === 'deck') {
-		return defineAsyncComponent(() => import('@/ui/deck.vue'));
-	}
-	if (ui === 'classic') {
-		return defineAsyncComponent(() => import('@/ui/classic.vue'));
-	}
-	return defineAsyncComponent(() => import('@/ui/universal.vue'));
 }

@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { reactive, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { readAndCompressImage } from 'browser-image-resizer';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';

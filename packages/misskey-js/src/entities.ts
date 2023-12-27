@@ -16,7 +16,10 @@ export type UserLite = {
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
-	emojis: Record<string, string>;
+	emojis: {
+		name: string;
+		url: string;
+	}[];
 	instance?: {
 		name: Instance['name'];
 		softwareName: Instance['softwareName'];
@@ -154,15 +157,7 @@ export type DriveFile = {
 	properties: Record<string, any>;
 };
 
-export type DriveFolder = {
-	id: ID;
-	createdAt: DateString;
-	name: string;
-	foldersCount?: number;
-	filesCount?: number;
-	parentId: ID | null;
-	parent?: DriveFolder;
-};
+export type DriveFolder = TODO;
 
 export type GalleryPost = {
 	id: ID;
@@ -190,8 +185,6 @@ export type Note = {
 	replyId: Note['id'];
 	renote?: Note;
 	renoteId: Note['id'];
-	channel?: ChannelLite;
-	channelId?: ChannelLite['id'];
 	files: DriveFile[];
 	fileIds: DriveFile['id'][];
 	visibility: 'public' | 'home' | 'followers' | 'specified';
@@ -199,7 +192,6 @@ export type Note = {
 	localOnly?: boolean;
 	myReaction?: string;
 	reactions: Record<string, number>;
-	reactionEmojis: Record<string, string>;
 	renoteCount: number;
 	repliesCount: number;
 	clippedCount?: number;
@@ -212,7 +204,10 @@ export type Note = {
 			votes: number;
 		}[];
 	};
-	emojis?: Record<string, string>;
+	emojis: {
+		name: string;
+		url: string;
+	}[];
 	uri?: string;
 	url?: string;
 	isHidden?: boolean;
@@ -506,27 +501,9 @@ export type FollowRequest = {
 	followee: User;
 };
 
-export type ChannelLite = {
+export type Channel = {
 	id: ID;
-	name: string;
-	color: string;
-	isSensitive: boolean;
-}
-
-export type Channel = ChannelLite & {
-	createdAt: DateString;
-	lastNotedAt: DateString | null;
-	description: string | null;
-	bannerUrl: string | null;
-	isArchived: boolean;
-	notesCount: number;
-	usersCount: number;
-	isFollowing?: boolean;
-	isFavorited?: boolean;
-	userId: string | null;
-	pinnedNoteIds: Note['id'][];
-	pinnedNotes?: Note[]; // TODO: ChannelEntityService
-	hasUnreadNote?: boolean; // TODO: ChannelEntityService
+	// TODO
 };
 
 export type Following = {

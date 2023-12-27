@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -60,12 +59,11 @@ function submit() {
 
 <style lang="scss" module>
 .formContainer {
-	min-height: 100vh; // fallback (svh units)
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-	display: grid;
-	place-content: center;
+display: grid;
+place-content: center;
 }
 
 .form {
@@ -73,7 +71,6 @@ function submit() {
 	z-index: 10;
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	max-width: 500px;
 }

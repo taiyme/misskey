@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:withOkButton="true"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.cropImage }}</template>
 	<template #default="{ width, height }">
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -45,9 +44,9 @@ import { i18n } from '@/i18n.js';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
 const emit = defineEmits<{
-	ok: [cropped: Misskey.entities.DriveFile];
-	cancel: [];
-	closed: [];
+	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
+	(ev: 'cancel'): void;
+	(ev: 'closed'): void;
 }>();
 
 const props = defineProps<{

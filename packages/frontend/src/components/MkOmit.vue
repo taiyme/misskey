@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -52,7 +51,7 @@ onUnmounted(() => {
 
 	&.omitted {
 		position: relative;
-		max-height: v-bind("`${props.maxHeight}px`");
+		max-height: v-bind("props.maxHeight + 'px'");
 		overflow: hidden;
 
 		> .fade {
@@ -71,7 +70,7 @@ onUnmounted(() => {
 				padding: 6px 10px;
 				font-size: 0.8em;
 				border-radius: 999px;
-				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 			}
 
 			&:hover {

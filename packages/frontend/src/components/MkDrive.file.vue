@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes.js';
 import * as os from '@/os.js';
@@ -62,9 +61,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	chosen: [r: Misskey.entities.DriveFile];
-	dragstart: [];
-	dragend: [];
+	(ev: 'chosen', r: Misskey.entities.DriveFile): void;
+	(ev: 'dragstart'): void;
+	(ev: 'dragend'): void;
 }>();
 
 const isDragging = ref(false);
@@ -108,17 +107,17 @@ function onDragend() {
 	cursor: pointer;
 
 	&:hover {
-		background: rgba(0, 0, 0, 0.05);
+		background: rgba(#000, 0.05);
 
 		> .label {
-			&::before,
-			&::after {
+			&:before,
+			&:after {
 				background: #0b65a5;
 			}
 
 			&.red {
-				&::before,
-				&::after {
+				&:before,
+				&:after {
 					background: #c12113;
 				}
 			}
@@ -126,17 +125,17 @@ function onDragend() {
 	}
 
 	&:active {
-		background: rgba(0, 0, 0, 0.1);
+		background: rgba(#000, 0.1);
 
 		> .label {
-			&::before,
-			&::after {
+			&:before,
+			&:after {
 				background: #0b588c;
 			}
 
 			&.red {
-				&::before,
-				&::after {
+				&:before,
+				&:after {
 					background: #ce2212;
 				}
 			}
@@ -155,8 +154,8 @@ function onDragend() {
 		}
 
 		> .label {
-			&::before,
-			&::after {
+			&:before,
+			&:after {
 				display: none;
 			}
 		}
@@ -177,8 +176,8 @@ function onDragend() {
 	left: 0;
 	pointer-events: none;
 
-	&::before,
-	&::after {
+	&:before,
+	&:after {
 		content: "";
 		display: block;
 		position: absolute;
@@ -186,14 +185,14 @@ function onDragend() {
 		background: #0c7ac9;
 	}
 
-	&::before {
+	&:before {
 		top: 0;
 		left: 57px;
 		width: 28px;
 		height: 8px;
 	}
 
-	&::after {
+	&:after {
 		top: 57px;
 		left: 0;
 		width: 8px;
@@ -201,8 +200,8 @@ function onDragend() {
 	}
 
 	&.red {
-		&::before,
-		&::after {
+		&:before,
+		&:after {
 			background: #c12113;
 		}
 	}

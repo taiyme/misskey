@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -82,7 +81,6 @@ export default {
 
 <style lang="scss" module>
 .wrap {
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	animation-play-state: running;
 

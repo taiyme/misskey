@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,10 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<!-- TODO
 			<div class="inputs" style="display: flex; padding-top: 1.2em;">
-				<MkInput type="text" v-model="searchUsername" style="margin: 0; flex: 1;" :spellcheck="false">
+				<MkInput v-model="searchUsername" style="margin: 0; flex: 1;" type="text" :spellcheck="false">
 					<span>{{ i18n.ts.username }}</span>
 				</MkInput>
-				<MkInput type="text" v-model="searchHost" style="margin: 0; flex: 1;" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
+				<MkInput v-model="searchHost" style="margin: 0; flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params().origin === 'local'">
 					<span>{{ i18n.ts.host }}</span>
 				</MkInput>
 			</div>

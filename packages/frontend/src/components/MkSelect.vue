@@ -1,22 +1,12 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div
-		ref="container"
-		:class="{
-			[$style.input]: true,
-			[$style.inline]: inline,
-			[$style.disabled]: disabled,
-			[$style.focused]: focused
-		}"
-		@mousedown.prevent="show"
-	>
+	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
@@ -33,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="{ [$style.chevron]: true, [$style.chevronOpening]: opening }"></i></div>
+		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
 
@@ -62,8 +52,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	change: [ev: KeyboardEvent];
-	'update:modelValue': [value: string | null];
+	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'update:modelValue', value: string | null): void;
 }>();
 
 const slots = useSlots();
@@ -188,7 +178,6 @@ function show(ev: MouseEvent) {
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
-	-webkit-user-select: none;
 	user-select: none;
 
 	&:empty {
@@ -239,10 +228,10 @@ function show(ev: MouseEvent) {
 }
 
 .inputCore {
-	-webkit-appearance: none;
 	appearance: none;
+	-webkit-appearance: none;
 	display: block;
-	height: v-bind("`${height}px`");
+	height: v-bind("height + 'px'");
 	width: 100%;
 	margin: 0;
 	padding: 0 12px;
@@ -259,7 +248,6 @@ function show(ev: MouseEvent) {
 	transition: border-color 0.1s ease-out;
 	cursor: pointer;
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -272,7 +260,7 @@ function show(ev: MouseEvent) {
 	top: 0;
 	padding: 0 12px;
 	font-size: 1em;
-	height: v-bind("`${height}px`");
+	height: v-bind("height + 'px'");
 	min-width: 16px;
 	max-width: 150px;
 	overflow: hidden;

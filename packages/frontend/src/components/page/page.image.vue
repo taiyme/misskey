@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type * as Misskey from 'misskey-js';
-import type { ImageBlock } from './block.type.js';
-import type MediaImage from '@/components/MkMediaImage.vue';
+import * as Misskey from 'misskey-js';
+import { ImageBlock } from './block.type';
+import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	block: ImageBlock;
-	page: Misskey.entities.Page;
+	block: ImageBlock,
+	page: Misskey.entities.Page,
 }>();
 
 const image = ref<Misskey.entities.DriveFile>(props.page.attachedFiles.find(x => x.id === props.block.fileId));

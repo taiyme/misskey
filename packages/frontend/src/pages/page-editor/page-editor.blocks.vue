@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<Sortable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => emit('update:modelValue', v)">
+<Sortable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => $emit('update:modelValue', v)">
 	<template #item="{element}">
 		<div :class="$style.item">
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
@@ -39,7 +38,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any[]];
+	(ev: 'update:modelValue', value: any[]): void;
 }>();
 
 function updateItem(v) {

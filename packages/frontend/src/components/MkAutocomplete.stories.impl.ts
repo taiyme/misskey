@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -10,8 +9,8 @@ import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
-import { userDetailed } from '../../.storybook/fakes.js';
-import { commonHandlers } from '../../.storybook/mocks.js';
+import { userDetailed } from '../../.storybook/fakes';
+import { commonHandlers } from '../../.storybook/mocks';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
 import { tick } from '@/scripts/test-utils.js';

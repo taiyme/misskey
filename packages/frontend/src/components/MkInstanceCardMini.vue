@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os.js';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
@@ -91,13 +90,13 @@ function getInstanceIcon(instance): string {
 	}
 
 	&:global(.yellow) {
-		--c: rgba(255, 196, 0, 0.15);
+		--c: rgb(255 196 0 / 15%);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}
 
 	&:global(.red) {
-		--c: rgba(255, 0, 0, 0.15);
+		--c: rgb(255 0 0 / 15%);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}

@@ -1,16 +1,12 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Directive } from 'vue';
+import { Directive } from 'vue';
 
-const map = new WeakMap<HTMLElement, IntersectionObserver>();
-
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
+	mounted(src, binding, vn) {
 		const fn = binding.value;
 		if (fn == null) return;
 
@@ -19,15 +15,13 @@ export default {
 				fn();
 			}
 		});
+
 		observer.observe(src);
-		map.set(src, observer);
+
+		src._observer_ = observer;
 	},
 
-	unmounted(src) {
-		const observer = map.get(src);
-		if (observer) {
-			observer.disconnect();
-			map.delete(src);
-		}
+	unmounted(src, binding, vn) {
+		if (src._observer_) src._observer_.disconnect();
 	},
-} as Directive<HTMLElement, (() => void) | null | undefined>;
+} as Directive;

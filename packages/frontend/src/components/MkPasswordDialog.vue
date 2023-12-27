@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -21,11 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div class="_gaps">
-			<MkInput ref="passwordInput" type="password" v-model="password" :placeholder="i18n.ts.password" autocomplete="current-password webauthn" :withPasswordToggle="true">
+			<MkInput ref="passwordInput" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password webauthn" :withPasswordToggle="true">
 				<template #prefix><i class="ti ti-password"></i></template>
 			</MkInput>
 
-			<MkInput v-if="$i.twoFactorEnabled" type="text" v-model="token" nullable pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
+			<MkInput v-if="$i.twoFactorEnabled" v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false">
 				<template #label>{{ i18n.ts.token }} ({{ i18n.ts['2fa'] }})</template>
 				<template #prefix><i class="ti ti-123"></i></template>
 			</MkInput>
@@ -38,7 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import type { ComponentExposed } from 'vue-component-type-helpers';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -46,22 +44,22 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 
 const emit = defineEmits<{
-	done: [v: { password: string; token: string | null; }];
-	closed: [];
-	cancelled: [];
+	(ev: 'done', v: { password: string; token: string | null; }): void;
+	(ev: 'closed'): void;
+	(ev: 'cancelled'): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
-const passwordInput = $shallowRef<ComponentExposed<typeof MkInput<'password'>>>();
+const passwordInput = $shallowRef<InstanceType<typeof MkInput>>();
 const password = $ref('');
-const token = $ref<string | null>(null);
+const token = $ref(null);
 
 function onClose() {
 	emit('cancelled');
 	if (dialog) dialog.close();
 }
 
-function done() {
+function done(res) {
 	emit('done', { password, token });
 	if (dialog) dialog.close();
 }

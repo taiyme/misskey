@@ -1,54 +1,48 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-if="props.url.startsWith(local)" ref="selfEl" :class="[$style.root, '_link']" :to="props.url.substring(local.length)" :rel="rel" :title="props.url">
+<component
+	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel" :target="target"
+	:title="url"
+>
 	<slot></slot>
-</MkA>
-<a v-else ref="linkEl" :class="[$style.root, '_link']" :href="props.url" :rel="rel ?? undefined" :title="props.url" target="_blank">
-	<slot></slot>
-	<i :class="$style.icon" class="ti ti-external-link icon"></i>
-</a>
+	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
+</component>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, shallowRef } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
-import MkA from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
 }>(), {
-	rel: null,
 });
 
-const selfEl = shallowRef<InstanceType<typeof MkA>>();
-const linkEl = shallowRef<HTMLAnchorElement>();
+const self = props.url.startsWith(local);
+const attr = self ? 'to' : 'href';
+const target = self ? null : '_blank';
 
-const el = computed(() => selfEl.value?.getAnchorElement() ?? linkEl.value ?? null);
+const el = $ref();
 
-useTooltip(el, (showing) => {
+useTooltip($$(el), (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 		showing,
 		url: props.url,
-		source: el.value,
+		source: el,
 	}, {}, 'closed');
 });
 </script>
 
 <style lang="scss" module>
-.root {
-	word-break: break-all;
-}
-
 .icon {
 	padding-left: 2px;
-	font-size: 0.9em;
+	font-size: .9em;
 }
 </style>

@@ -1,23 +1,22 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { defineAsyncComponent, Ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { claimAchievement } from './achievements.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache } from '@/cache.js';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from '@/types/menu.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -68,17 +67,12 @@ export async function getNoteClipMenu(props: {
 				name: {
 					type: 'string',
 					label: i18n.ts.name,
-					minLength: 1,
-					maxLength: 100,
 				},
 				description: {
 					type: 'string',
 					required: false,
 					multiline: true,
 					label: i18n.ts.description,
-					nullable: true,
-					minLength: 1,
-					maxLength: 2048,
 				},
 				isPublic: {
 					type: 'boolean',
@@ -117,7 +111,7 @@ export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): 
 		icon: 'ti ti-link',
 		text,
 		action: (): void => {
-			copyText(`${url}/notes/${note.id}`);
+			copyToClipboard(`${url}/notes/${note.id}`);
 			os.success();
 		},
 	};
@@ -192,12 +186,12 @@ export function getNoteMenu(props: {
 	}
 
 	function copyContent(): void {
-		copyText(appearNote.text);
+		copyToClipboard(appearNote.text);
 		os.success();
 	}
 
 	function copyLink(): void {
-		copyText(`${url}/notes/${appearNote.id}`);
+		copyToClipboard(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
@@ -407,7 +401,7 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {
-				copyText(appearNote.id);
+				copyToClipboard(appearNote.id);
 			},
 		}]);
 	}

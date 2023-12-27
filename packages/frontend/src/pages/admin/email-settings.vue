@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 
 				<template v-if="enableEmail">
-					<MkInput type="email" v-model="email" nullable>
+					<MkInput v-model="email" type="email">
 						<template #label>{{ i18n.ts.emailAddress }}</template>
 					</MkInput>
 
@@ -25,18 +24,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps_m">
 							<FormSplit :minWidth="280">
-								<MkInput type="text" v-model="smtpHost">
+								<MkInput v-model="smtpHost">
 									<template #label>{{ i18n.ts.smtpHost }}</template>
 								</MkInput>
-								<MkInput type="number" v-model="smtpPort">
+								<MkInput v-model="smtpPort" type="number">
 									<template #label>{{ i18n.ts.smtpPort }}</template>
 								</MkInput>
 							</FormSplit>
 							<FormSplit :minWidth="280">
-								<MkInput type="text" v-model="smtpUser">
+								<MkInput v-model="smtpUser">
 									<template #label>{{ i18n.ts.smtpUser }}</template>
 								</MkInput>
-								<MkInput type="password" v-model="smtpPass">
+								<MkInput v-model="smtpPass" type="password">
 									<template #label>{{ i18n.ts.smtpPass }}</template>
 								</MkInput>
 							</FormSplit>

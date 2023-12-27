@@ -1,12 +1,11 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { Form, GetFormResultType } from '@/scripts/form.js';
+import { Form, GetFormResultType } from '@/scripts/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/scripts/clone.js';
 

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -54,8 +53,8 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: any;
-	meta: any;
+	connection: any,
+	meta: any
 }>();
 
 let viewBoxX: number = $ref(50);

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -31,7 +30,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	toggle: [];
+	(ev: 'toggle'): void;
 }>();
 
 const checked = toRefs(props).checked;
@@ -51,13 +50,11 @@ const toggle = () => {
 	height: 23px;
 	outline: none;
 	background: var(--switchOffBg);
-	-webkit-background-clip: content-box;
 	background-clip: content-box;
 	border: solid 1px var(--switchOffBg);
 	border-radius: 999px;
 	cursor: pointer;
 	transition: inherit;
-	-webkit-user-select: none;
 	user-select: none;
 }
 

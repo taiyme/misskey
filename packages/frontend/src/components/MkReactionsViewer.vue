@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -19,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { watch } from 'vue';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { defaultStore } from '@/store.js';
@@ -74,7 +73,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 .transition_x_move,
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.2s cubic-bezier(0, 0.5, 0.5, 1), transform 0.2s cubic-bezier(0, 0.5, 0.5, 1) !important;
+	transition: opacity 0.2s cubic-bezier(0,.5,.5,1), transform 0.2s cubic-bezier(0,.5,.5,1) !important;
 }
 .transition_x_enterFrom,
 .transition_x_leaveTo {

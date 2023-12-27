@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init" class="_gaps">
-			<MkInput type="text" v-model="title">
+			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="description" nullable>
+			<MkTextarea v-model="description" :max="500">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
@@ -60,7 +59,7 @@ const props = defineProps<{
 let init = $ref(null);
 let files = $ref([]);
 let description = $ref(null);
-let title = $ref('');
+let title = $ref(null);
 let isSensitive = $ref(false);
 
 function selectFile(evt) {

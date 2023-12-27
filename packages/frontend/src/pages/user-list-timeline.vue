@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -99,7 +98,6 @@ definePageMetadata(computed(() => list ? {
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 </style>

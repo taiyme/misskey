@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -35,11 +34,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any[]];
-	detach: [id: string];
-	changeSensitive: [file: Misskey.entities.DriveFile, isSensitive: boolean];
-	changeName: [file: Misskey.entities.DriveFile, newName: string];
-	replaceFile: [file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile];
+	(ev: 'update:modelValue', value: any[]): void;
+	(ev: 'detach', id: string): void;
+	(ev: 'changeSensitive', file: Misskey.entities.DriveFile, isSensitive: boolean): void;
+	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
+	(ev: 'replaceFile', file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void;
 }>();
 
 let menuShowing = false;
@@ -163,7 +162,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent): void {
 	top: 0;
 	left: 0;
 	z-index: 2;
-	background: rgba(17, 17, 17, 0.7);
+	background: rgba(17, 17, 17, .7);
 	color: #fff;
 }
 

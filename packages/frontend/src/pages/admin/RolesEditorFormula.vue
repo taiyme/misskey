@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -46,11 +45,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<RolesEditorFormula v-model="v.value"/>
 	</div>
 
-	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" type="number" v-model="v.sec">
+	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" v-model="v.sec" type="number">
 		<template #suffix>sec</template>
 	</MkInput>
 
-	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" type="number" v-model="v.value">
+	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
 	</MkInput>
 </div>
 </template>
@@ -67,8 +66,8 @@ import { deepClone } from '@/scripts/clone.js';
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any];
-	remove: [];
+	(ev: 'update:modelValue', value: any): void;
+	(ev: 'remove'): void;
 }>();
 
 const props = defineProps<{

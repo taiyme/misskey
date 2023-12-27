@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -54,7 +53,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	resolved: [reportId: string];
+	(ev: 'resolved', reportId: string): void;
 }>();
 
 let forward = $ref(props.report.forwarded);
@@ -86,7 +85,7 @@ function resolve() {
 			align-items: center;
 			padding: 14px;
 			border-radius: 8px;
-			--c: rgba(255, 196, 0, 0.15);
+			--c: rgb(255 196 0 / 15%);
 			background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 			background-size: 16px 16px;
 

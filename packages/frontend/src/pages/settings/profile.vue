@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [452], min: [] }" class="_gaps_m">
+<div class="_gaps_m">
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
@@ -14,21 +13,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput type="text" v-model="profile.name" :minLength="1" :maxLength="50" manualSave>
+	<MkInput v-model="profile.name" :max="30" manualSave>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" nullable :minLength="1" :maxLength="1500" tall manualSave>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput type="text" v-model="profile.location" nullable :minLength="1" :maxLength="50" manualSave>
+	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
 
-	<MkInput type="date" v-model="profile.birthday" nullable manualSave>
+	<MkInput v-model="profile.birthday" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</MkInput>
@@ -43,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div v-container="{ type: 'inlineSize' }" :class="$style.metadataRoot">
+			<div :class="$style.metadataRoot">
 				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -66,10 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
 								<FormSplit :minWidth="200">
-									<MkInput type="text" v-model="element.name" small>
+									<MkInput v-model="element.name" small>
 										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
 									</MkInput>
-									<MkInput type="text" v-model="element.value" small>
+									<MkInput v-model="element.value" small>
 										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
 									</MkInput>
 								</FormSplit>
@@ -262,7 +261,6 @@ definePageMetadata({
 	background-position: center;
 	border: solid 1px var(--divider);
 	border-radius: 10px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -295,7 +293,7 @@ definePageMetadata({
 
 .fieldDragItem {
 	display: flex;
-	padding-bottom: 0.75em;
+	padding-bottom: .75em;
 	align-items: flex-end;
 	border-bottom: solid 0.5px var(--divider);
 
@@ -304,7 +302,7 @@ definePageMetadata({
 	}
 
 	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
-	:global(:where(.max-width_452px)) {
+	@container (max-width: 452px) {
 		align-items: center;
 	}
 }
@@ -330,7 +328,7 @@ definePageMetadata({
 	cursor: pointer;
 
 	&:hover, &:focus {
-		opacity: 0.7;
+		opacity: .7;
 	}
 	&:active {
 		cursor: pointer;

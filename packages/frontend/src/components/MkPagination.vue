@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -45,13 +44,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll.js';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
+import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n.js';
 
 const SECOND_FETCH_LIMIT = 30;
@@ -101,7 +100,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	queue: [count: number];
+	(ev: 'queue', count: number): void;
 }>();
 
 let rootEl = $shallowRef<HTMLElement>();

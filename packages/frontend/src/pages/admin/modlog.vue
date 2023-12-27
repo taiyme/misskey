@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<option :value="null">{{ i18n.ts.all }}</option>
 					<option v-for="t in Misskey.moderationLogTypes" :key="t" :value="t">{{ i18n.ts._moderationLogTypes[t] ?? t }}</option>
 				</MkSelect>
-				<MkInput type="text" v-model="moderatorId" style="margin: 0; flex: 1;">
+				<MkInput v-model="moderatorId" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.moderator }}(ID)</template>
 				</MkInput>
 			</div>

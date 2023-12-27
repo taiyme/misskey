@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, provide } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -36,10 +35,10 @@ import * as os from '@/os.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
-import { clipsCache } from '@/cache.js';
+import { clipsCache } from '@/cache';
 
 const props = defineProps<{
-	clipId: string;
+	clipId: string,
 }>();
 
 let clip: Misskey.entities.Clip = $ref<Misskey.entities.Clip>();
@@ -95,8 +94,6 @@ const headerActions = $computed(() => clip && isOwned ? [{
 				type: 'string',
 				label: i18n.ts.name,
 				default: clip.name,
-				minLength: 1,
-				maxLength: 100,
 			},
 			description: {
 				type: 'string',
@@ -104,9 +101,6 @@ const headerActions = $computed(() => clip && isOwned ? [{
 				multiline: true,
 				label: i18n.ts.description,
 				default: clip.description,
-				nullable: true,
-				minLength: 1,
-				maxLength: 2048,
 			},
 			isPublic: {
 				type: 'boolean',

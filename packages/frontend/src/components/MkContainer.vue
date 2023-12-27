@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" v-size="{ max: [380], min: [] }" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.scrollable]: scrollable }]">
+<div ref="rootEl" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.scrollable]: scrollable }]">
 	<header v-if="showHeader" ref="headerEl" :class="$style.header">
 		<div :class="$style.title">
 			<span :class="$style.titleIcon"><slot name="icon"></slot></span>
@@ -127,7 +126,6 @@ onUnmounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
@@ -138,7 +136,6 @@ onUnmounted(() => {
 
 .root {
 	position: relative;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 
@@ -227,7 +224,7 @@ onUnmounted(() => {
 				padding: 6px 10px;
 				font-size: 0.8em;
 				border-radius: 999px;
-				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 			}
 
 			&:hover {
@@ -239,12 +236,10 @@ onUnmounted(() => {
 	}
 }
 
-:global(:where(.max-width_380px)) {
-	&:where(.root) {
-		.title {
-			padding: 8px 10px;
-			font-size: 0.9em;
-		}
+@container (max-width: 380px) {
+	.title {
+		padding: 8px 10px;
+		font-size: 0.9em;
 	}
 }
 </style>

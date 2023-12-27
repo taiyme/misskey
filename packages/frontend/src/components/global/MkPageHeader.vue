@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,7 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
-import XTabs, { type Tab } from './MkPageHeader.tabs.vue';
+import XTabs, { Tab } from './MkPageHeader.tabs.vue';
 import { scrollToTop } from '@/scripts/scroll.js';
 import { globalEvents } from '@/events.js';
 import { injectPageMetadata } from '@/scripts/page-metadata.js';
@@ -66,7 +65,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	'update:tab': [key: string];
+	(ev: 'update:tab', key: string);
 }>();
 
 const metadata = injectPageMetadata();
@@ -249,7 +248,6 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	max-width: min(30vw, 400px);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	white-space: nowrap;
 	text-align: left;
@@ -261,7 +259,6 @@ onUnmounted(() => {
 .titleAvatarContainer {
 	$size: 32px;
 	contain: strict;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	width: $size;
 	height: $size;

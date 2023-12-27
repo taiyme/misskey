@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.settings }}</template>
 
 				<div class="_gaps">
-					<MkInput type="text" v-model="name" :minLength="1" :maxLength="100">
+					<MkInput v-model="name">
 						<template #label>{{ i18n.ts.name }}</template>
 					</MkInput>
 					<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>
@@ -55,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router.js';
@@ -69,7 +68,7 @@ import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const {
 	enableInfiniteScroll,
@@ -192,7 +191,6 @@ definePageMetadata(computed(() => list ? {
 
 <style lang="scss" module>
 .main {
-	min-height: calc((var(--cqh, 1vh) * 100) - (var(--stickyTop, 0px) + var(--stickyBottom, 0px))); // fallback (cqh units)
 	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
 }
 

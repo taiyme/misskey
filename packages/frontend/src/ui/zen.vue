@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div :class="showBottom ? $style.rootWithBottom : $style.root">
-	<div v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
+	<div style="container-type: inline-size;">
 		<RouterView/>
 	</div>
 
@@ -26,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { mainRouter } from '@/router.js';
-import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 
@@ -51,19 +50,17 @@ document.documentElement.style.overflowY = 'scroll';
 
 <style lang="scss" module>
 .root {
-	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 }
 
 .rootWithBottom {
-	min-height: calc((var(--vh, 1vh) * 100) - (60px + (var(--margin) * 2) + var(--safeAreaInsetBottom))); // fallback (dvh units)
-	min-height: calc(100dvh - (60px + (var(--margin) * 2) + var(--safeAreaInsetBottom)));
+	min-height: calc(100dvh - (60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px)));
 	box-sizing: border-box;
 }
 
 .bottom {
-	height: calc(60px + (var(--margin) * 2) + var(--safeAreaInsetBottom));
+	height: calc(60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px));
 	width: 100%;
 	margin-top: auto;
 }
@@ -79,6 +76,6 @@ document.documentElement.style.overflowY = 'scroll';
 	background: var(--panel);
 	color: var(--fg);
 	right: var(--margin);
-	bottom: calc(var(--margin) + var(--safeAreaInsetBottom));
+	bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 }
 </style>

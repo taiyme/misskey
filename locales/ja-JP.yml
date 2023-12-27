@@ -2212,16 +2212,3 @@ _fileViewer:
   uploadedAt: "追加日"
   attachedNotes: "添付されているノート"
   thisPageCanBeSeenFromTheAuthor: "このページは、このファイルをアップロードしたユーザーしか閲覧できません。"
-
-_tms:
-  aboutMisskey: "taiyme/misskeyについて"
-  aboutMisskeyDescription: "taiyme/misskeyは、Misskeyからフォークされたオープンソースのソフトウェアです。"
-  donateToTaiy: "taiyに寄付"
-  pickup: "ピックアップ"
-  pickupAvailable: "ピックアップ機能が利用可能です。"
-  pickupNoteDescription: "ノートIDまたはURLを入力すると、それに合致するノートを表示します。"
-  pickupUserDescription: "ユーザーネーム、ユーザーIDまたはURLを入力すると、それに合致するユーザーを表示します。"
-  undo: "元に戻す"
-  undoConfirm: "元に戻しますか？"
-  gifInfo: "GIFファイルを表示しています。"
-  sensitiveInfo: "センシティブなファイルを表示しています。"

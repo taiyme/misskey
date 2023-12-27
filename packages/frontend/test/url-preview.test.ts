@@ -1,15 +1,14 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
-import './init.js';
+import './init';
 import type { summaly } from 'summaly';
-import { components } from '@/components/index.js';
-import { directives } from '@/directives/index.js';
+import { components } from '@/components';
+import { directives } from '@/directives';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;

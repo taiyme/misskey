@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -93,7 +92,7 @@ definePageMetadata(computed(() => ({
 .root {
 	padding: 32px;
 	text-align: center;
-	align-items: center;
+  align-items: center;
 }
 
 .text {
@@ -102,7 +101,7 @@ definePageMetadata(computed(() => ({
 
 .img {
 	vertical-align: bottom;
-	width: 128px;
+  width: 128px;
 	height: 128px;
 	margin-bottom: 16px;
 	border-radius: 16px;

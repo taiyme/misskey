@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -30,10 +29,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	move: [v?: Misskey.entities.DriveFolder];
-	upload: [file: File, folder?: Misskey.entities.DriveFolder | null];
-	removeFile: [v: Misskey.entities.DriveFile['id']];
-	removeFolder: [v: Misskey.entities.DriveFolder['id']];
+	(ev: 'move', v?: Misskey.entities.DriveFolder): void;
+	(ev: 'upload', file: File, folder?: Misskey.entities.DriveFolder | null): void;
+	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
+	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
 }>();
 
 const hover = ref(false);

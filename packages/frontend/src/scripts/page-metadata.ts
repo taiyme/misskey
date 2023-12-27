@@ -1,10 +1,9 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { ComputedRef, inject, isRef, onActivated, onMounted, provide, ref, Ref } from 'vue';
 
 export const setPageMetadata = Symbol('setPageMetadata');

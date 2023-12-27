@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
 								<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
 							</div>
-							<MkInput type="text" v-model="serverRules[index]"/>
+							<MkInput v-model="serverRules[index]"/>
 						</div>
 					</template>
 				</Sortable>

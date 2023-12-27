@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [], min: [250, 350, 500] }" :class="$style.root">
+<div :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
@@ -24,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -80,33 +79,27 @@ const showContent = $ref(false);
 	padding: 0;
 }
 
-:global(:where(.min-width_250px)) {
-	&:where(.root) {
-		.avatar {
-			margin: 0 10px 0 0;
-			width: 40px;
-			height: 40px;
-		}
+@container (min-width: 250px) {
+	.avatar {
+		margin: 0 10px 0 0;
+		width: 40px;
+		height: 40px;
 	}
 }
 
-:global(:where(.min-width_350px)) {
-	&:where(.root) {
-		.avatar {
-			margin: 0 10px 0 0;
-			width: 44px;
-			height: 44px;
-		}
+@container (min-width: 350px) {
+	.avatar {
+		margin: 0 10px 0 0;
+		width: 44px;
+		height: 44px;
 	}
 }
 
-:global(:where(.min-width_500px)) {
-	&:where(.root) {
-		.avatar {
-			margin: 0 12px 0 0;
-			width: 48px;
-			height: 48px;
-		}
+@container (min-width: 500px) {
+	.avatar {
+		margin: 0 12px 0 0;
+		width: 48px;
+		height: 48px;
 	}
 }
 </style>

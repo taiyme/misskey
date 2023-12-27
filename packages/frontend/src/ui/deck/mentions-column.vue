@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import XColumn from './column.vue';
-import { type Column } from './deck-store.js';
+import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
 
 defineProps<{

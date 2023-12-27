@@ -1,12 +1,11 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
@@ -32,10 +31,10 @@ export default function(props: {
 	text: string;
 	plain?: boolean;
 	nowrap?: boolean;
-	author?: Pick<Misskey.entities.UserDetailed, 'host'>;
-	i?: Misskey.entities.UserLite | null;
+	author?: Misskey.entities.UserLite;
+	i?: Misskey.entities.UserLite;
 	isNote?: boolean;
-	emojiUrls?: Misskey.entities.UserDetailed['emojis'];
+	emojiUrls?: string[];
 	rootScale?: number;
 }) {
 	const isNote = props.isNote !== undefined ? props.isNote : true;

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,7 +35,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	chosen: [v: string, event: MouseEvent];
+	(ev: 'chosen', v: string, event: MouseEvent): void;
 }>();
 
 const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);

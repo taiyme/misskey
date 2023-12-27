@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<MkSpacer :marginMin="20" :marginMax="32">
 		<form class="_gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
-			<MkInput v-if="instance.disableRegistration" type="text" v-model="invitationCode" :spellcheck="false" required>
+			<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
 				<template #label>{{ i18n.ts.invitationCode }}</template>
 				<template #prefix><i class="ti ti-key"></i></template>
 			</MkInput>
-			<MkInput type="text" v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" autocomplete="username" required data-cy-signup-username @update:modelValue="onChangeUsername">
+			<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" autocomplete="username" required data-cy-signup-username @update:modelValue="onChangeUsername">
 				<template #label>{{ i18n.ts.username }} <div v-tooltip:dialog="i18n.ts.usernameInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
@@ -30,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-else-if="usernameState === 'max-range'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.tooLong }}</span>
 				</template>
 			</MkInput>
-			<MkInput v-if="instance.emailRequiredForSignup" type="email" v-model="email" :debounce="true" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
+			<MkInput v-if="instance.emailRequiredForSignup" v-model="email" :debounce="true" type="email" :spellcheck="false" required data-cy-signup-email @update:modelValue="onChangeEmail">
 				<template #label>{{ i18n.ts.emailAddress }} <div v-tooltip:dialog="i18n.ts._signup.emailAddressInfo" class="_button _help"><i class="ti ti-help-circle"></i></div></template>
 				<template #prefix><i class="ti ti-mail"></i></template>
 				<template #caption>
@@ -96,8 +95,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	signup: [user: Record<string, any>];
-	signupEmailPending: [];
+	(ev: 'signup', user: Record<string, any>): void;
+	(ev: 'signupEmailPending'): void;
 }>();
 
 const host = toUnicode(config.host);
@@ -111,16 +110,16 @@ let password: string = $ref('');
 let retypedPassword: string = $ref('');
 let invitationCode: string = $ref('');
 let email = $ref('');
-let usernameState = $ref<null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range'>(null);
-let emailState = $ref<null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error'>(null);
-let passwordStrength = $ref<'' | 'low' | 'medium' | 'high'>('');
-let passwordRetypeState = $ref<null | 'match' | 'not-match'>(null);
-let submitting = $ref(false);
-let hCaptchaResponse = $ref<string | null>(null);
-let reCaptchaResponse = $ref<string | null>(null);
-let turnstileResponse = $ref<string | null>(null);
-let usernameAbortController = $ref<null | AbortController>(null);
-let emailAbortController = $ref<null | AbortController>(null);
+let usernameState: null | 'wait' | 'ok' | 'unavailable' | 'error' | 'invalid-format' | 'min-range' | 'max-range' = $ref(null);
+let emailState: null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format' | 'unavailable:disposable' | 'unavailable:mx' | 'unavailable:smtp' | 'unavailable' | 'error' = $ref(null);
+let passwordStrength: '' | 'low' | 'medium' | 'high' = $ref('');
+let passwordRetypeState: null | 'match' | 'not-match' = $ref(null);
+let submitting: boolean = $ref(false);
+let hCaptchaResponse = $ref(null);
+let reCaptchaResponse = $ref(null);
+let turnstileResponse = $ref(null);
+let usernameAbortController: null | AbortController = $ref(null);
+let emailAbortController: null | AbortController = $ref(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
@@ -250,9 +249,9 @@ async function onSubmit(): Promise<void> {
 			password,
 			emailAddress: email,
 			invitationCode,
-			'hcaptcha-response': hCaptchaResponse ?? undefined,
-			'g-recaptcha-response': reCaptchaResponse ?? undefined,
-			'turnstile-response': turnstileResponse ?? undefined,
+			'hcaptcha-response': hCaptchaResponse,
+			'g-recaptcha-response': reCaptchaResponse,
+			'turnstile-response': turnstileResponse,
 		});
 		if (instance.emailRequiredForSignup) {
 			os.alert({

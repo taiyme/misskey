@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -53,7 +52,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
+import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -99,7 +99,7 @@ function showMenu(ev) {
 			os.pageWindow('/about');
 		},
 	}, {
-		text: i18n.ts._tms.aboutMisskey,
+		text: i18n.ts.aboutMisskey,
 		icon: 'ti ti-info-circle',
 		action: () => {
 			os.pageWindow('/about-misskey');
@@ -149,7 +149,7 @@ function exploreOtherServers() {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
-	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 }
 
 .main {
@@ -214,7 +214,6 @@ function exploreOtherServers() {
 }
 
 .statsItem {
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	padding: 16px 20px;
 }
@@ -231,7 +230,6 @@ function exploreOtherServers() {
 }
 
 .tl {
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

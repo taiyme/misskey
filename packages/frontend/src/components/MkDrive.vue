@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -97,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
@@ -120,11 +119,11 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	selected: [v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder];
-	'change-selection': [v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]];
-	'move-root': [];
-	cd: [v: Misskey.entities.DriveFolder | null];
-	'open-folder': [v: Misskey.entities.DriveFolder];
+	(ev: 'selected', v: Misskey.entities.DriveFile | Misskey.entities.DriveFolder): void;
+	(ev: 'change-selection', v: Misskey.entities.DriveFile[] | Misskey.entities.DriveFolder[]): void;
+	(ev: 'move-root'): void;
+	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
+	(ev: 'open-folder', v: Misskey.entities.DriveFolder): void;
 }>();
 
 const loadMoreFiles = shallowRef<InstanceType<typeof MkButton>>();
@@ -704,7 +703,6 @@ onBeforeUnmount(() => {
 	overflow: auto;
 	font-size: 0.9em;
 	box-shadow: 0 1px 0 var(--divider);
-	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -752,7 +750,6 @@ onBeforeUnmount(() => {
 	flex: 1;
 	overflow: auto;
 	padding: var(--margin);
-	-webkit-user-select: none;
 	user-select: none;
 
 	&.fetching {

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -99,9 +98,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { type UnicodeEmojiDef, emojilist, emojiCharByCategory, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist.js';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
 import { isTouchUsing } from '@/scripts/touch.js';
@@ -122,7 +121,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	chosen: [v: string];
+	(ev: 'chosen', v: string): void;
 }>();
 
 const searchEl = shallowRef<HTMLInputElement>();
@@ -513,7 +512,7 @@ defineExpose({
 		color: var(--fg);
 
 		&:not(:focus):not(.filled) {
-			margin-bottom: var(--safeAreaInsetBottom);
+			margin-bottom: env(safe-area-inset-bottom, 0px);
 		}
 
 		&:not(.filled) {
@@ -614,7 +613,7 @@ defineExpose({
 
 					> .emoji {
 						height: 1.25em;
-						vertical-align: -0.25em;
+						vertical-align: -.25em;
 						pointer-events: none;
 						width: 100%;
 						object-fit: contain;

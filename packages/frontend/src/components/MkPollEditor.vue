@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput type="text" class="input" small :modelValue="choice" :minLength="1" :maxLength="50" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
+			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
@@ -30,15 +29,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="after">{{ i18n.ts._poll.after }}</option>
 			</MkSelect>
 			<section v-if="expiration === 'at'">
-				<MkInput type="date" v-model="atDate" small class="input">
+				<MkInput v-model="atDate" small type="date" class="input">
 					<template #label>{{ i18n.ts._poll.deadlineDate }}</template>
 				</MkInput>
-				<MkInput type="time" v-model="atTime" small class="input">
+				<MkInput v-model="atTime" small type="time" class="input">
 					<template #label>{{ i18n.ts._poll.deadlineTime }}</template>
 				</MkInput>
 			</section>
 			<section v-else-if="expiration === 'after'">
-				<MkInput type="number" v-model="after" small class="input">
+				<MkInput v-model="after" small type="number" class="input">
 					<template #label>{{ i18n.ts._poll.duration }}</template>
 				</MkInput>
 				<MkSelect v-model="unit" small>
@@ -72,7 +71,12 @@ const props = defineProps<{
 	};
 }>();
 const emit = defineEmits<{
-	'update:modelValue': [v: { expiresAt: string; expiredAfter: number; choices: string[]; multiple: boolean; }];
+	(ev: 'update:modelValue', v: {
+		expiresAt: string;
+		expiredAfter: number;
+		choices: string[];
+		multiple: boolean;
+	}): void;
 }>();
 
 const choices = ref(props.modelValue.choices);
@@ -101,7 +105,7 @@ function add() {
 	choices.value.push('');
 	// TODO
 	// nextTick(() => {
-	// 	(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
 	// });
 }
 

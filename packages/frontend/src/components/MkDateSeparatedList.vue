@@ -1,17 +1,16 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup, useCssModule, resolveDirective, withDirectives } from 'vue';
+import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
-import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
+import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
+import { MisskeyEntity } from '@/types/date-separated-list';
 
 export default defineComponent({
 	props: {
@@ -127,30 +126,24 @@ export default defineComponent({
 			el.style.left = '';
 		}
 
-		return () => withDirectives(
-			h(
-				defaultStore.state.animation ? TransitionGroup : 'div',
-				{
-					class: {
-						[$style['date-separated-list']]: true,
-						[$style['date-separated-list-nogap']]: props.noGap,
-						[$style['reversed']]: props.reversed,
-						[$style['direction-down']]: props.direction === 'down',
-						[$style['direction-up']]: props.direction === 'up',
-					},
-					...(defaultStore.state.animation ? {
-						name: 'list',
-						tag: 'div',
-						onBeforeLeave,
-						onLeaveCanceled,
-					} : {}),
+		return () => h(
+			defaultStore.state.animation ? TransitionGroup : 'div',
+			{
+				class: {
+					[$style['date-separated-list']]: true,
+					[$style['date-separated-list-nogap']]: props.noGap,
+					[$style['reversed']]: props.reversed,
+					[$style['direction-down']]: props.direction === 'down',
+					[$style['direction-up']]: props.direction === 'up',
 				},
-				{ default: renderChildren },
-			),
-			[
-				[resolveDirective('container'), { type: 'inlineSize' }],
-			],
-		);
+				...(defaultStore.state.animation ? {
+					name: 'list',
+					tag: 'div',
+					onBeforeLeave,
+					onLeaveCanceled,
+				} : {}),
+			},
+			{ default: renderChildren });
 	},
 });
 </script>

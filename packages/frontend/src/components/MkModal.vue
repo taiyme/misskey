@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -63,10 +62,7 @@ type ModalTypes = 'popup' | 'dialog' | 'drawer';
 
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
-	anchor?: {
-		x: string;
-		y: string;
-	};
+	anchor?: { x: string; y: string; };
 	src?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
@@ -83,12 +79,12 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	opening: [];
-	opened: [];
-	click: [];
-	esc: [];
-	close: [];
-	closed: [];
+	(ev: 'opening'): void;
+	(ev: 'opened'): void;
+	(ev: 'click'): void;
+	(ev: 'esc'): void;
+	(ev: 'close'): void;
+	(ev: 'closed'): void;
 }>();
 
 provide('modal', true);
@@ -332,8 +328,8 @@ defineExpose({
 	}
 
 	> .content {
-		transform: translateY(0px);
-		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(0.5, -0.5, 1, 0.5) !important;
+    transform: translateY(0px);
+		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
 .transition_send_enterFrom,
@@ -405,7 +401,7 @@ defineExpose({
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
+		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
 .transition_modalDrawer_leaveActive {
@@ -414,7 +410,7 @@ defineExpose({
 	}
 
 	> .content {
-		transition: transform 0.2s cubic-bezier(0, 0.5, 0, 1) !important;
+		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
 .transition_modalDrawer_enterFrom,
@@ -464,7 +460,6 @@ defineExpose({
 		left: 0;
 		width: 100%;
 		height: 100%;
-		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 
 		> .content {

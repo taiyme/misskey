@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-container="{ type: 'inlineSize' }" :class="$style.root">
+<div :class="$style.root">
 	<template v-if="edit">
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" data-cy-widget-select>
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
 			</MkSelect>
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
+			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<Sortable
 			:modelValue="props.widgets"
@@ -55,7 +54,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { widgets as widgetDefs } from '@/widgets/index.js';
+import { widgets as widgetDefs } from '@/widgets';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -67,11 +66,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	updateWidgets: [widgets: Widget[]];
-	addWidget: [widget: Widget];
-	removeWidget: [widget: Widget];
-	updateWidget: [widget: Partial<Widget>];
-	exit: [];
+	(ev: 'updateWidgets', widgets: Widget[]): void;
+	(ev: 'addWidget', widget: Widget): void;
+	(ev: 'removeWidget', widget: Widget): void;
+	(ev: 'updateWidget', widget: Partial<Widget>): void;
+	(ev: 'exit'): void;
 }>();
 
 const widgetRefs = {};
@@ -162,7 +161,7 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		width: 32px;
 		height: 32px;
 		color: #fff;
-		background: rgba(0, 0, 0, 0.7);
+		background: rgba(#000, 0.7);
 		border-radius: 4px;
 	}
 

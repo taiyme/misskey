@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</svg>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-if="active" ref="body" v-container="{ type: 'size' }" :class="$style.body">
+	<div v-if="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
 </div>
@@ -44,10 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, type Column } from './deck-store.js';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -64,7 +63,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	headerWheel: [ctx: WheelEvent];
+	(ev: 'headerWheel', ctx: WheelEvent): void;
 }>();
 
 let body = $shallowRef<HTMLDivElement | null>();
@@ -254,13 +253,12 @@ function onDrop(ev) {
 	--deckColumnHeaderHeight: 38px;
 
 	height: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: strict;
 	border-radius: 10px;
 
 	&.draghover {
-		&::after {
+		&:after {
 			content: "";
 			display: block;
 			position: absolute;
@@ -274,7 +272,7 @@ function onDrop(ev) {
 	}
 
 	&.dragging {
-		&::after {
+		&:after {
 			content: "";
 			display: block;
 			position: absolute;
@@ -348,7 +346,6 @@ function onDrop(ev) {
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
-	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -397,7 +394,6 @@ function onDrop(ev) {
 	box-sizing: border-box;
 	height: var(--deckColumnHeaderHeight);
 	cursor: move;
-	-webkit-user-select: none;
 	user-select: none;
 	opacity: 0.5;
 }
@@ -409,7 +405,6 @@ function onDrop(ev) {
 .body {
 	height: calc(100% - var(--deckColumnHeaderHeight));
 	overflow-y: auto;
-	overflow-x: hidden; // fallback (overflow: clip)
 	overflow-x: clip;
 	overscroll-behavior-y: contain;
 	box-sizing: border-box;

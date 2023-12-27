@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
@@ -77,7 +76,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 .transition_change_leaveActive {
 	position: absolute;
 	top: 0;
-	transition: all 1s ease;
+  transition: all 1s ease;
 }
 .transition_change_enterFrom {
 	opacity: 0;

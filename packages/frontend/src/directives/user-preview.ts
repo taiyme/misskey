@@ -1,33 +1,22 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Directive, defineAsyncComponent, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import { defineAsyncComponent, Directive, ref } from 'vue';
 import { popup } from '@/os.js';
 
-type Mounting = {
-	preview: UserPreview;
-};
-
-const mountings = new Map<HTMLElement, Mounting>();
-
 export class UserPreview {
-	private el: HTMLElement;
-	private user: Misskey.entities.UserDetailed;
-	private showTimer: number | undefined;
-	private hideTimer: number | undefined;
-	private checkTimer: number | undefined;
-	private promise: {
-		cancel: () => void;
-	} | null;
+	private el;
+	private user;
+	private showTimer;
+	private hideTimer;
+	private checkTimer;
+	private promise;
 
-	constructor(el: HTMLElement, user: Misskey.entities.UserDetailed) {
+	constructor(el, user) {
 		this.el = el;
 		this.user = user;
-		this.promise = null;
 
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
@@ -40,7 +29,7 @@ export class UserPreview {
 		this.attach();
 	}
 
-	private show(): void {
+	private show() {
 		if (!document.body.contains(this.el)) return;
 		if (this.promise) return;
 
@@ -61,7 +50,7 @@ export class UserPreview {
 		}, 'closed');
 
 		this.promise = {
-			cancel: (): void => {
+			cancel: () => {
 				showing.value = false;
 			},
 		};
@@ -75,7 +64,7 @@ export class UserPreview {
 		}, 1000);
 	}
 
-	private close(): void {
+	private close() {
 		if (this.promise) {
 			window.clearInterval(this.checkTimer);
 			this.promise.cancel();
@@ -83,30 +72,30 @@ export class UserPreview {
 		}
 	}
 
-	private onMouseover(): void {
+	private onMouseover() {
 		window.clearTimeout(this.showTimer);
 		window.clearTimeout(this.hideTimer);
 		this.showTimer = window.setTimeout(this.show, 500);
 	}
 
-	private onMouseleave(): void {
+	private onMouseleave() {
 		window.clearTimeout(this.showTimer);
 		window.clearTimeout(this.hideTimer);
 		this.hideTimer = window.setTimeout(this.close, 500);
 	}
 
-	private onClick(): void {
+	private onClick() {
 		window.clearTimeout(this.showTimer);
 		this.close();
 	}
 
-	public attach(): void {
+	public attach() {
 		this.el.addEventListener('mouseover', this.onMouseover);
 		this.el.addEventListener('mouseleave', this.onMouseleave);
 		this.el.addEventListener('click', this.onClick);
 	}
 
-	public detach(): void {
+	public detach() {
 		this.el.removeEventListener('mouseover', this.onMouseover);
 		this.el.removeEventListener('mouseleave', this.onMouseleave);
 		this.el.removeEventListener('click', this.onClick);
@@ -114,21 +103,21 @@ export class UserPreview {
 	}
 }
 
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
+	mounted(el: HTMLElement, binding, vn) {
 		if (binding.value == null) return;
 
-		mountings.set(src, {
-			preview: new UserPreview(src, binding.value),
-		});
+		// TODO: 新たにプロパティを作るのをやめMapを使う
+		// ただメモリ的には↓の方が省メモリかもしれないので検討中
+		const self = (el as any)._userPreviewDirective_ = {} as any;
+
+		self.preview = new UserPreview(el, binding.value);
 	},
 
-	unmounted(src, binding) {
+	unmounted(el, binding, vn) {
 		if (binding.value == null) return;
-		const self = mountings.get(src);
-		if (!self) return;
+
+		const self = el._userPreviewDirective_;
 		self.preview.detach();
-		mountings.delete(src);
 	},
-} as Directive<HTMLElement, Misskey.entities.UserDetailed | null | undefined>;
+} as Directive;

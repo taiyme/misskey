@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [], min: [350, 500] }" :class="$style.root">
+<div :class="$style.root">
 	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
 	<div :class="$style.main">
 		<div :class="$style.header">
@@ -34,7 +33,6 @@ const props = defineProps<{
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	font-size: 0.95em;
 }
@@ -58,28 +56,23 @@ const props = defineProps<{
 	margin-bottom: 2px;
 	font-weight: bold;
 	width: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-	text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 
-:global(:where(.min-width_350px)) {
-	&:where(.root) {
-		.avatar {
-			margin: 0 10px 0 0 !important;
-			width: 44px !important;
-			height: 44px !important;
-		}
+@container (min-width: 350px) {
+	.avatar {
+		margin: 0 10px 0 0 !important;
+		width: 44px !important;
+		height: 44px !important;
 	}
 }
 
-:global(:where(.min-width_500px)) {
-	&:where(.root) {
-		.avatar {
-			margin: 0 12px 0 0 !important;
-			width: 48px !important;
-			height: 48px !important;
-		}
+@container (min-width: 500px) {
+	.avatar {
+		margin: 0 12px 0 0 !important;
+		width: 48px !important;
+		height: 48px !important;
 	}
 }
 </style>

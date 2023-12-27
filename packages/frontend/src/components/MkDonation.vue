@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -46,7 +45,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const zIndex = os.claimZIndex('low');
@@ -65,7 +64,7 @@ function neverShow() {
 <style lang="scss" module>
 .root {
 	position: fixed;
-	z-index: v-bind("zIndex");
+	z-index: v-bind(zIndex);
 	bottom: var(--margin);
 	left: 0;
 	right: 0;

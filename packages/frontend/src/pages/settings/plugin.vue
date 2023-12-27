@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_s">
 			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_m" style="padding: 20px;">
 				<div class="_gaps_s">
-					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">{{ withV(plugin.version) }}</span></span>
+					<span style="display: flex; align-items: center;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 					<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 				</div>
 
@@ -70,12 +69,11 @@ import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import * as os from '@/os.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { ColdDeviceStorage } from '@/store.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { withV } from '@/scripts/tms/version.js';
 
 const plugins = ref(ColdDeviceStorage.get('plugins'));
 
@@ -88,7 +86,7 @@ function uninstall(plugin) {
 }
 
 function copy(plugin) {
-	copyText(plugin.src ?? '');
+	copyToClipboard(plugin.src ?? '');
 	os.success();
 }
 

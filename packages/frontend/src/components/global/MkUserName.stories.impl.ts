@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +7,7 @@
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
-import { userDetailed } from '../../../.storybook/fakes.js';
+import { userDetailed } from '../../../.storybook/fakes';
 import MkUserName from './MkUserName.vue';
 export const Default = {
 	render(args) {

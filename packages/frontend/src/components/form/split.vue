@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -27,7 +26,7 @@ const minWidth = props.minWidth + 'px';
 <style lang="scss" module>
 .root {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(v-bind("minWidth"), 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(v-bind('minWidth'), 1fr));
 	grid-gap: 12px;
 }
 </style>

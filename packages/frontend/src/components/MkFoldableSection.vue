@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="el" v-size="{ max: [500], min: [] }" :class="$style.root">
+<div ref="el" :class="$style.root">
 	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
@@ -94,7 +93,6 @@ onMounted(() => {
 
 <style lang="scss" module>
 .folder-toggle-enter-active, .folder-toggle-leave-active {
-	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
 }
@@ -137,11 +135,9 @@ onMounted(() => {
 	padding: 12px 0 12px 16px;
 }
 
-:global(:where(.max-width_500px)) {
-	&:where(.root) {
-		.title {
-			padding: 8px 10px 8px 0;
-		}
+@container (max-width: 500px) {
+	.title {
+		padding: 8px 10px 8px 0;
 	}
 }
 </style>

@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { markRaw, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import { Storage } from '@/pizzax.js';
 
@@ -212,7 +211,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	emojiStyle: {
 		where: 'device',
-		default: 'twemoji' as 'twemoji' | 'fluentEmoji' | 'native',
+		default: 'twemoji', // twemoji / fluentEmoji / native
 	},
 	disableDrawer: {
 		where: 'device',
@@ -220,11 +219,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	useBlurEffectForModal: {
 		where: 'device',
-		default: false,
+		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
 	},
 	useBlurEffect: {
 		where: 'device',
-		default: false,
+		default: !/mobile|iphone|android/.test(navigator.userAgent.toLowerCase()), // 循環参照するのでdevice-kind.tsは参照できない
 	},
 	showFixedPostForm: {
 		where: 'device',

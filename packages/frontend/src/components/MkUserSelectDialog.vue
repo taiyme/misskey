@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,17 +11,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
 			<FormSplit :minWidth="170">
-				<MkInput type="text" v-model="username" :autofocus="true" @update:modelValue="search">
+				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput type="text" v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -59,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -70,9 +69,9 @@ import { $i } from '@/account.js';
 import { hostname } from '@/config.js';
 
 const emit = defineEmits<{
-	ok: [selected: Misskey.entities.UserDetailed];
-	cancel: [];
-	closed: [];
+	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
+	(ev: 'cancel'): void;
+	(ev: 'closed'): void;
 }>();
 
 const props = defineProps<{

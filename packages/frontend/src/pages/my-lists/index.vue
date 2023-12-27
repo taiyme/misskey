@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,7 +35,7 @@ import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { userListsCache } from '@/cache.js';
+import { userListsCache } from '@/cache';
 import { infoImageUrl } from '@/instance.js';
 import { $i } from '@/account.js';
 
@@ -95,7 +94,7 @@ onActivated(() => {
 }
 
 .nUsers {
-	font-size: 0.9em;
-	opacity: 0.7;
+	font-size: .9em;
+	opacity: .7;
 }
 </style>

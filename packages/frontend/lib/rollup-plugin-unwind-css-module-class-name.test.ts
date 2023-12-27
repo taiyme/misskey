@@ -1,13 +1,12 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { parse } from 'acorn';
 import { generate } from 'astring';
 import { describe, expect, it } from 'vitest';
-import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name.js';
+import { normalizeClass, unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name';
 import type * as estree from 'estree';
 
 function parseExpression(code: string): estree.Expression {

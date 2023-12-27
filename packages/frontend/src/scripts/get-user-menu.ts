@@ -1,14 +1,13 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { toUnicode } from 'punycode';
 import { defineAsyncComponent, ref, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { host, url } from '@/config.js';
 import * as os from '@/os.js';
 import { defaultStore, userActions } from '@/store.js';
@@ -136,7 +135,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				multiline: true,
 				label: i18n.ts.memo,
 				default: userDetailed.memo,
-				nullable: true,
 			},
 		});
 		if (canceled) return;
@@ -151,7 +149,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyText(`@${user.username}@${user.host ?? host}`);
+			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
 	}, ...(iAmModerator ? [{
 		icon: 'ti ti-user-exclamation',
@@ -163,14 +161,14 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-rss',
 		text: i18n.ts.copyRSS,
 		action: () => {
-			copyText(`${user.host ?? host}/@${user.username}.atom`);
+			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
 		},
 	}, {
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
-			copyText(`${url}/${canonical}`);
+			copyToClipboard(`${url}/${canonical}`);
 		},
 	}, {
 		icon: 'ti ti-mail',
@@ -337,7 +335,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-id',
 			text: i18n.ts.copyUserId,
 			action: () => {
-				copyText(user.id);
+				copyToClipboard(user.id);
 			},
 		}]);
 	}

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -438,8 +437,8 @@ definePageMetadata(computed(() => ({
 	}
 
 	&Time {
-		font-size: 0.85em;
-		opacity: 0.7;
+		font-size: .85em;
+		opacity: .7;
 	}
 }
 </style>

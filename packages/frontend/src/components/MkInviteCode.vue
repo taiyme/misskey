@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -60,10 +59,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -73,7 +72,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-	deleted: [value: string];
+	(event: 'deleted', value: string): void;
 }>();
 
 const isExpired = computed(() => {
@@ -88,7 +87,7 @@ function deleteCode() {
 }
 
 function copyInviteCode() {
-	copyText(props.invite.code);
+	copyToClipboard(props.invite.code);
 	os.success();
 }
 </script>
@@ -107,7 +106,6 @@ function copyInviteCode() {
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
-	-webkit-user-select: none;
 	user-select: none;
 	opacity: 0.7;
 }

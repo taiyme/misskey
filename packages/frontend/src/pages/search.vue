@@ -1,17 +1,19 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <MkStickyContainer>
-	<template #header>
-		<MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/>
-	</template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 
 	<MkSpacer v-if="tab === 'note'" :contentMax="800">
-		<XNote/>
+		<div v-if="notesSearchAvailable">
+			<XNote/>
+		</div>
+		<div v-else>
+			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+		</div>
 	</MkSpacer>
 
 	<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
@@ -21,23 +23,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
+import MkInfo from '@/components/MkInfo.vue';
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
-const tab = ref<'note' | 'user'>('note');
+let tab = $ref('note');
 
-const headerActions = computed(() => []);
+const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
-const headerTabs = computed(() => [{
-	key: 'note' as const,
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => [{
+	key: 'note',
 	title: i18n.ts.notes,
 	icon: 'ti ti-pencil',
 }, {
-	key: 'user' as const,
+	key: 'user',
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
 }]);

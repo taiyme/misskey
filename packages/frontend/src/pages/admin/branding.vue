@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,12 +10,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<MkInput type="url" v-model="iconUrl">
+					<MkInput v-model="iconUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }}</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="app192IconUrl">
+					<MkInput v-model="app192IconUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
 						<template #caption>
@@ -27,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="app512IconUrl">
+					<MkInput v-model="app512IconUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
 						<template #caption>
@@ -38,27 +37,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="bannerUrl">
+					<MkInput v-model="bannerUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.bannerUrl }}</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="backgroundImageUrl">
+					<MkInput v-model="backgroundImageUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="notFoundImageUrl">
+					<MkInput v-model="notFoundImageUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.notFoundDescription }}</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="infoImageUrl">
+					<MkInput v-model="infoImageUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.nothing }}</template>
 					</MkInput>
 
-					<MkInput type="url" v-model="serverErrorImageUrl">
+					<MkInput v-model="serverErrorImageUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.somethingHappened }}</template>
 					</MkInput>

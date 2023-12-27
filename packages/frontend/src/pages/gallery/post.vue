@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -210,10 +209,10 @@ definePageMetadata(computed(() => post ? {
 
 			> .like {
 				> .button {
-					--accent: rgb(241, 97, 132);
-					--X8: rgb(241, 92, 128);
-					--buttonBg: rgba(216, 71, 106, 0.5);
-					--buttonHoverBg: rgba(216, 71, 106, 0.1);
+					--accent: rgb(241 97 132);
+					--X8: rgb(241 92 128);
+					--buttonBg: rgb(216 71 106 / 5%);
+					--buttonHoverBg: rgb(216 71 106 / 10%);
 					color: #ff002f;
 
 					::v-deep(.count) {

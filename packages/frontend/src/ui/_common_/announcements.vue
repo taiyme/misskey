@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [1000], min: [] }" :class="$style.root">
+<div :class="$style.root">
 	<MkA
 		v-for="announcement in $i.unreadAnnouncements.filter(x => x.display === 'banner')"
 		:key="announcement.id"
@@ -43,11 +42,19 @@ import { $i } from '@/account.js';
 	width: 100%;
 	line-height: var(--height);
 	height: var(--height);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: strict;
 	background: var(--accent);
 	color: var(--fgOnAccent);
+
+	@container (max-width: 1000px) {
+		display: block;
+		text-align: center;
+
+		> .body {
+			display: none;
+		}
+	}
 }
 
 .icon {
@@ -66,22 +73,8 @@ import { $i } from '@/account.js';
 .body {
 	min-width: 0;
 	flex: 1;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-:global(:where(.max-width_1000px)) {
-	&:where(.root) {
-		.item {
-			display: block;
-			text-align: center;
-
-			> .body {
-				display: none;
-			}
-		}
-	}
 }
 </style>

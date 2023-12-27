@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -42,7 +41,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	'update:modelValue': [value: number];
+	(ev: 'update:modelValue', value: number): void;
 }>();
 
 const containerEl = shallowRef<HTMLElement>();
@@ -158,7 +157,6 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	> .label {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
-		-webkit-user-select: none;
 		user-select: none;
 
 		&:empty {
@@ -200,7 +198,6 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 				height: 3px;
 				background: rgba(0, 0, 0, 0.1);
 				border-radius: 999px;
-				overflow: hidden; // fallback (overflow: clip)
 				overflow: clip;
 
 				> .highlight {
@@ -255,12 +252,12 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 			> .container {
 				> .track {
 					> .highlight {
-						transition: width 0.2s cubic-bezier(0, 0, 0, 1);
+						transition: width 0.2s cubic-bezier(0,0,0,1);
 					}
 				}
 
 				> .thumb {
-					transition: left 0.2s cubic-bezier(0, 0, 0, 1);
+					transition: left 0.2s cubic-bezier(0,0,0,1);
 				}
 			}
 		}

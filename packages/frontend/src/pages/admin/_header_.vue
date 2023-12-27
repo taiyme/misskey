@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -39,7 +38,7 @@ import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os.js';
 import { scrollToTop } from '@/scripts/scroll.js';
 import MkButton from '@/components/MkButton.vue';
-import { globalEvents } from '@/events.js';
+import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata.js';
 
 type Tab = {
@@ -63,7 +62,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:tab': [key: string];
+	(ev: 'update:tab', key: string);
 }>();
 
 const metadata = injectPageMetadata();
@@ -162,7 +161,7 @@ onUnmounted(() => {
 	> .buttons {
 		--margin: 8px;
 		display: flex;
-		align-items: center;
+    align-items: center;
 		height: var(--height);
 		margin: 0 var(--margin);
 

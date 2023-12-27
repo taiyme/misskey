@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -23,7 +22,6 @@ defineProps<{
 	background: var(--infoWarnBg);
 	color: var(--infoWarnFg);
 	border-radius: var(--radius);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

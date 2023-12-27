@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="700">
 		<div v-if="tab === 'search'">
 			<div class="_gaps">
-				<MkInput type="search" v-model="searchQuery" :large="true" :autofocus="true">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
 				<MkRadios v-model="searchType" @update:modelValue="search()">
@@ -27,23 +26,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'favorites'">
 			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'following'">
 			<MkPagination v-slot="{items}" :pagination="followingPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
-				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="(channel as Misskey.entities.Channel)"/>
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -52,10 +51,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkChannelList from '@/components/MkChannelList.vue';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -64,41 +62,38 @@ import { useRouter } from '@/router.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 
-type SearchType = NonNullable<Misskey.Endpoints['channels/search']['req']['type']>
-
 const router = useRouter();
 
 const props = defineProps<{
 	query: string;
-	type?: SearchType;
+	type?: string;
 }>();
 
 let key = $ref('');
 let tab = $ref('featured');
 let searchQuery = $ref('');
-let searchType = $ref<SearchType>('nameAndDescription');
-let channelPagination = $ref<Paging<'channels/featured' | 'channels/my-favorites' | 'channels/followed' | 'channels/owned' | 'channels/search'> | null>(null);
+let searchType = $ref('nameAndDescription');
+let channelPagination = $ref();
 
 onMounted(() => {
 	searchQuery = props.query ?? '';
 	searchType = props.type ?? 'nameAndDescription';
 });
 
-const featuredPagination: Paging<'channels/featured'> = {
+const featuredPagination = {
 	endpoint: 'channels/featured' as const,
-	limit: 100,
 	noPaging: true,
 };
-const favoritesPagination: Paging<'channels/my-favorites'> = {
+const favoritesPagination = {
 	endpoint: 'channels/my-favorites' as const,
 	limit: 100,
 	noPaging: true,
 };
-const followingPagination: Paging<'channels/followed'> = {
+const followingPagination = {
 	endpoint: 'channels/followed' as const,
 	limit: 10,
 };
-const ownedPagination: Paging<'channels/owned'> = {
+const ownedPagination = {
 	endpoint: 'channels/owned' as const,
 	limit: 10,
 };
@@ -108,10 +103,10 @@ async function search() {
 
 	if (query == null) return;
 
-	const type = searchType;
+	const type = searchType.toString().trim();
 
 	channelPagination = {
-		endpoint: 'channels/search' as const,
+		endpoint: 'channels/search',
 		limit: 10,
 		params: {
 			query: searchQuery,

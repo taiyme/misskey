@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -44,7 +43,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 // タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる

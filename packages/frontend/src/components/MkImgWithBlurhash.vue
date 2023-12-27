@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -66,10 +65,7 @@ import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	transition?: {
-		duration?: number | {
-			enter: number;
-			leave: number;
-		};
+		duration?: number | { enter: number; leave: number; };
 		enterActiveClass?: string;
 		leaveActiveClass?: string;
 		enterFromClass?: string;

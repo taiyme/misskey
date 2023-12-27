@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -42,8 +41,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	toggle: [show: boolean];
-	remove: [];
+	(ev: 'toggle', show: boolean): void;
+	(ev: 'remove'): void;
 }>();
 
 const showBody = ref(props.expanded);
@@ -86,7 +85,7 @@ function remove() {
 			line-height: 42px;
 			font-size: 0.9em;
 			font-weight: bold;
-			box-shadow: 0 1px rgba(0, 0, 0, 0.07);
+			box-shadow: 0 1px rgba(#000, 0.07);
 
 			> i {
 				margin-right: 6px;

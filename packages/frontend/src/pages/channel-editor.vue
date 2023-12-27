@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,42 +8,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="700">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
-			<MkInput type="text" v-model="params.name" :minLength="1" :maxLength="128" :disabled="computedIsArchived">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 
-			<MkTextarea v-model="params.description" nullable :minLength="1" :maxLength="2048" :disabled="computedIsArchived">
+			<MkTextarea v-model="description">
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
-			<MkColorInput v-model="params.color" :disabled="computedIsArchived">
+			<MkColorInput v-model="color">
 				<template #label>{{ i18n.ts.color }}</template>
 			</MkColorInput>
 
-			<MkSwitch v-model="params.isSensitive" :disabled="computedIsArchived">
+			<MkSwitch v-model="isSensitive">
 				<template #label>{{ i18n.ts.sensitive }}</template>
 			</MkSwitch>
 
 			<div>
-				<div v-if="params.bannerUrl">
-					<img :src="params.bannerUrl" style="width: 100%;"/>
-					<MkButton @click="removeBannerImage()" :disabled="computedIsArchived"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
+				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
+				<div v-else-if="bannerUrl">
+					<img :src="bannerUrl" style="width: 100%;"/>
+					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
 				</div>
-				<MkButton v-else @click="setBannerImage" :disabled="computedIsArchived"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 			</div>
 
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.pinnedNotes }}</template>
 
 				<div class="_gaps">
-					<MkButton primary rounded @click="addPinnedNote()" :disabled="computedIsArchived"><i class="ti ti-plus"></i></MkButton>
+					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
 					<Sortable
-						v-model="params.pinnedNotes"
+						v-model="pinnedNotes"
 						itemKey="id"
 						:handle="'.' + $style.pinnedNoteHandle"
 						:animation="150"
-						:disabled="computedIsArchived"
 					>
 						<template #item="{element,index}">
 							<div :class="$style.pinnedNote">
@@ -58,9 +56,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkFolder>
 
 			<div class="_buttons">
-				<MkButton primary @click="save()" :disabled="computedIsArchived"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
-				<MkButton v-if="computedIsArchived" danger @click="unarchive()" :disabled="!computedIsArchived"><i class="ti ti-arrow-back-up"></i> {{ i18n.ts._tms.undo }}</MkButton>
-				<MkButton v-else-if="channelId" danger @click="archive()" :disabled="computedIsArchived"><i class="ti ti-trash"></i> {{ i18n.ts.archive }}</MkButton>
+				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
+				<MkButton v-if="channelId" danger @click="archive()"><i class="ti ti-trash"></i> {{ i18n.ts.archive }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -68,8 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, defineAsyncComponent } from 'vue';
-import type * as Misskey from 'misskey-js';
+import { computed, ref, watch, defineAsyncComponent } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -90,155 +86,111 @@ const props = defineProps<{
 	channelId?: string;
 }>();
 
-const channel = ref<Misskey.entities.Channel | null>(null);
-const params = reactive<{
-	name: string;
-	description: string | null;
-	bannerId: string | null; // send
-	bannerUrl: string | null; // view
-	color: string;
-	isSensitive: boolean;
-	pinnedNotes: {
-		id: string;
-	}[];
-}>({
-	name: '',
-	description: null,
-	bannerId: null,
-	bannerUrl: null,
-	color: '#000',
-	isSensitive: false,
-	pinnedNotes: [],
+let channel = $ref(null);
+let name = $ref(null);
+let description = $ref(null);
+let bannerUrl = $ref<string | null>(null);
+let bannerId = $ref<string | null>(null);
+let color = $ref('#000');
+let isSensitive = $ref(false);
+const pinnedNotes = ref([]);
+
+watch(() => bannerId, async () => {
+	if (bannerId == null) {
+		bannerUrl = null;
+	} else {
+		bannerUrl = (await os.api('drive/files/show', {
+			fileId: bannerId,
+		})).url;
+	}
 });
 
-// TODO: channels/update でバナーを削除できない？
-const computedBannerId = computed<string | null | undefined>(() => {
-	if (params.bannerId) return params.bannerId; // bannerId があればそれを使う
-	if (params.bannerUrl) return undefined; // bannerUrl があれば undefined (維持)
-	return null; // それ以外は null (削除)
-});
+async function fetchChannel() {
+	if (props.channelId == null) return;
 
-const computedIsArchived = computed(() => {
-	return channel.value?.isArchived ?? false;
-});
-
-const fetchChannel = async (updated?: Misskey.entities.Channel): Promise<void> => {
-	if (!props.channelId) return;
-
-	channel.value = updated ? updated : await os.api('channels/show', {
+	channel = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
 
-	params.name = channel.value.name;
-	params.description = channel.value.description;
-	params.bannerId = null;
-	params.bannerUrl = channel.value.bannerUrl;
-	params.color = channel.value.color;
-	params.isSensitive = channel.value.isSensitive;
-	params.pinnedNotes = channel.value.pinnedNoteIds.map(id => ({ id }));
-};
+	name = channel.name;
+	description = channel.description;
+	bannerId = channel.bannerId;
+	bannerUrl = channel.bannerUrl;
+	isSensitive = channel.isSensitive;
+	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
+		id,
+	}));
+	color = channel.color;
+}
 
 fetchChannel();
 
-const addPinnedNote = async (): Promise<void> => {
-	// TODO: lookupNoteなどを定義して切り分ける
+async function addPinnedNote() {
 	const { canceled, result: value } = await os.inputText({
 		title: i18n.ts.noteIdOrUrl,
 	});
 	if (canceled) return;
-	const noteId = value.includes('/') ? value.split('/').pop() ?? value : value;
-	const note = await os.apiWithDialog('notes/show', { noteId });
-	params.pinnedNotes.unshift({ id: note.id });
-};
-
-const removePinnedNote = (index: number): void => {
-	params.pinnedNotes.splice(index, 1);
-};
-
-const setBannerImage = (evt: MouseEvent): void => {
-	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
-		params.bannerId = file.id;
-		params.bannerUrl = file.url;
+	const note = await os.apiWithDialog('notes/show', {
+		noteId: value.includes('/') ? value.split('/').pop() : value,
 	});
-};
+	pinnedNotes.value = [{
+		id: note.id,
+	}, ...pinnedNotes.value];
+}
 
-const removeBannerImage = (): void => {
-	params.bannerId = null;
-	params.bannerUrl = null;
-};
+function removePinnedNote(index: number) {
+	pinnedNotes.value.splice(index, 1);
+}
 
-const archive = async (): Promise<void> => {
-	if (!props.channelId) return;
+function save() {
+	const params = {
+		name: name,
+		description: description,
+		bannerId: bannerId,
+		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+		color: color,
+		isSensitive: isSensitive,
+	};
 
+	if (props.channelId) {
+		params.channelId = props.channelId;
+		os.api('channels/update', params).then(() => {
+			os.success();
+		});
+	} else {
+		os.api('channels/create', params).then(created => {
+			os.success();
+			router.push(`/channels/${created.id}`);
+		});
+	}
+}
+
+async function archive() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		title: i18n.t('channelArchiveConfirmTitle', {
-			name: params.name,
-		}),
+		title: i18n.t('channelArchiveConfirmTitle', { name: name }),
 		text: i18n.ts.channelArchiveConfirmDescription,
 	});
+
 	if (canceled) return;
 
 	os.api('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,
-	}).then((updated) => {
+	}).then(() => {
 		os.success();
-		fetchChannel(updated);
 	});
-};
+}
 
-const unarchive = async (): Promise<void> => {
-	if (!props.channelId) return;
-
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.ts._tms.undoConfirm,
+function setBannerImage(evt) {
+	selectFile(evt.currentTarget ?? evt.target, null).then(file => {
+		bannerId = file.id;
 	});
-	if (canceled) return;
+}
 
-	os.api('channels/update', {
-		channelId: props.channelId,
-		isArchived: false,
-	}).then((updated) => {
-		os.success();
-		fetchChannel(updated);
-	});
-};
-
-const save = (): void => {
-	const req: Misskey.Endpoints['channels/create']['req'] = {
-		name: params.name,
-		description: params.description, // nullable
-		bannerId: computedBannerId.value, // nullable, undefinedable
-		color: params.color.trim() || '#000',
-		isSensitive: params.isSensitive,
-	};
-	const pinnedNoteIds = params.pinnedNotes.map(({ id }) => id);
-
-	if (props.channelId) {
-		// TODO: channels/update でバナーを削除できない？
-		os.api('channels/update', {
-			...req,
-			pinnedNoteIds,
-			channelId: props.channelId,
-		}).then((updated) => {
-			os.success();
-			fetchChannel(updated);
-		});
-	} else {
-		os.api('channels/create', req).then(async (created) => {
-			// TODO: channels/create でpinnedNoteIdsを指定できない
-			await os.api('channels/update', {
-				pinnedNoteIds,
-				channelId: created.id,
-			}).catch(() => {}); // チャンネル自体は作成できているので、エラーを無視する
-			os.success();
-			fetchChannel(created);
-			router.push(`/channels/${created.id}`);
-		});
-	}
-};
+function removeBannerImage() {
+	bannerId = null;
+}
 
 const headerActions = $computed(() => []);
 

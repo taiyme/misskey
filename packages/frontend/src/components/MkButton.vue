@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -57,7 +56,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	click: [payload: MouseEvent];
+	(ev: 'click', payload: MouseEvent): void;
 }>();
 
 let el = $shallowRef<HTMLElement | null>(null);
@@ -128,7 +127,6 @@ function onMousedown(evt: MouseEvent): void {
 	text-decoration: none;
 	background: var(--buttonBg);
 	border-radius: 5px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	box-sizing: border-box;
 	transition: background 0.1s ease;
@@ -192,14 +190,14 @@ function onMousedown(evt: MouseEvent): void {
 		}
 
 		&.primary {
-			background: rgb(241, 97, 132);
+			background: rgb(241 97 132);
 
 			&:not(:disabled):hover {
-				background: rgb(241, 92, 128);
+				background: rgb(241 92 128);
 			}
 
 			&:not(:disabled):active {
-				background: rgb(241, 92, 128);
+				background: rgb(241 92 128);
 			}
 		}
 	}
@@ -267,7 +265,6 @@ function onMousedown(evt: MouseEvent): void {
 	width: 100%;
 	height: 100%;
 	border-radius: 6px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	pointer-events: none;
 }
@@ -280,7 +277,7 @@ function onMousedown(evt: MouseEvent): void {
 	background: rgba(0, 0, 0, 0.1);
 	opacity: 1;
 	transform: scale(1);
-	transition: all 0.5s cubic-bezier(0, 0.5, 0, 1);
+	transition: all 0.5s cubic-bezier(0,.5,0,1);
 }
 
 .content {

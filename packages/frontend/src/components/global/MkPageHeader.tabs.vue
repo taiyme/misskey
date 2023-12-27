@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -66,8 +65,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	'update:tab': [key: string];
-	tabClick: [key: string];
+	(ev: 'update:tab', key: string);
+	(ev: 'tabClick', key: string);
 }>();
 
 const el = shallowRef<HTMLElement | null>(null);
@@ -234,7 +233,7 @@ onUnmounted(() => {
 	overflow: hidden;
 
 	&.animate {
-		transition: width 0.15s linear, padding-left 0.15s linear;
+		transition: width .15s linear, padding-left .15s linear;
 	}
 }
 

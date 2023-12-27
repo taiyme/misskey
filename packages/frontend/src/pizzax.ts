@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -169,7 +168,7 @@ export class Storage<T extends StateDef> {
 		this.reactiveState[key].value = this.state[key] = rawValue;
 
 		return this.addIdbSetJob(async () => {
-			if (_DEV_) console.log(`set ${String(key)} start`);
+			if (_DEV_) console.log(`set ${key} start`);
 			switch (this.def[key].where) {
 				case 'device': {
 					this.pizzaxChannel.postMessage({
@@ -208,7 +207,7 @@ export class Storage<T extends StateDef> {
 					break;
 				}
 			}
-			if (_DEV_) console.log(`set ${String(key)} complete`);
+			if (_DEV_) console.log(`set ${key} complete`);
 		});
 	}
 
@@ -226,46 +225,7 @@ export class Storage<T extends StateDef> {
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue場で設定コントロールのmodelとして使う用
 	 */
-	public makeGetterSetter<K extends keyof T, V extends T[K]['default']>(
-		key: K,
-		getter: undefined,
-		setter: (v: V) => V,
-	): {
-		get(): V;
-		set(v: V): void;
-	}
-	public makeGetterSetter<K extends keyof T, V extends T[K]['default'], C>(
-		key: K,
-		getter: (v: V) => C,
-		setter?: undefined,
-	): {
-		get(): C;
-		set(v: C): void;
-	}
-	public makeGetterSetter<K extends keyof T, V extends T[K]['default'], C>(
-		key: K,
-		getter: (v: V) => C,
-		setter: (v: C) => V,
-	): {
-		get(): C;
-		set(v: C): void;
-	}
-	public makeGetterSetter<K extends keyof T, V extends T[K]['default']>(
-		key: K,
-		getter?: undefined,
-		setter?: undefined,
-	): {
-		get(): V;
-		set(v: V): void;
-	}
-	public makeGetterSetter<K extends keyof T, V extends T[K]['default'], C>(
-		key: K,
-		getter?: (v: V) => C,
-		setter?: (v: C) => V,
-	): {
-		get(): C;
-		set(v: C): void;
-	} {
+	public makeGetterSetter<K extends keyof T>(key: K, getter?: (v: T[K]) => unknown, setter?: (v: unknown) => T[K]) {
 		const valueRef = ref(this.state[key]);
 
 		const stop = watch(this.reactiveState[key], val => {
@@ -286,7 +246,7 @@ export class Storage<T extends StateDef> {
 					return valueRef.value;
 				}
 			},
-			set: (value) => {
+			set: (value: unknown) => {
 				const val = setter ? setter(value) : value;
 				this.set(key, val);
 				valueRef.value = val;

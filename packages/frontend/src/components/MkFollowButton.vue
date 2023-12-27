@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -45,9 +44,9 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { $i } from '@/account.js';
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.UserDetailed;
-	full?: boolean;
-	large?: boolean;
+	user: Misskey.entities.UserDetailed,
+	full?: boolean,
+	large?: boolean,
 }>(), {
 	full: false,
 	large: false,
@@ -161,7 +160,7 @@ onBeforeUnmount(() => {
 	}
 
 	&:focus-visible {
-		&::after {
+		&:after {
 			content: "";
 			pointer-events: none;
 			position: absolute;

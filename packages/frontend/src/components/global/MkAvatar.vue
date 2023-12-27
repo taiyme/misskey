@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -29,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
@@ -56,7 +55,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	click: [v: MouseEvent];
+	(ev: 'click', v: MouseEvent): void;
 }>();
 
 const bound = $computed(() => props.link
@@ -127,7 +126,6 @@ watch(() => props.user.avatarBlurhash, () => {
 	top: 0;
 	border-radius: 100%;
 	z-index: 1;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	object-fit: cover;
 	width: 100%;
@@ -172,7 +170,7 @@ watch(() => props.user.avatarBlurhash, () => {
 
 			&::after {
 				contain: strict;
-				content: "";
+				content: '';
 				display: block;
 				width: 60%;
 				height: 60%;

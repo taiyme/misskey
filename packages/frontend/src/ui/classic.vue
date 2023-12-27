@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<main class="main" @contextmenu.stop="onContextmenu">
-			<div class="content" v-container="{ type: 'inlineSize' }" style="container-type: inline-size;">
+			<div class="content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 		</main>
@@ -54,7 +53,7 @@ import { instanceName } from '@/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router.js';
-import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -209,14 +208,12 @@ onMounted(() => {
 	$ui-font-size: 1em;
 	$widgets-hide-threshold: 1200px;
 
-	min-height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	min-height: 100dvh;
 	box-sizing: border-box;
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		// -webkit-backdrop-filter: var(--blur, blur(4px));
-		// backdrop-filter: var(--blur, blur(4px));
+		//backdrop-filter: var(--blur, blur(4px));
 	}
 
 	> .columns {
@@ -251,7 +248,6 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
-			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			--margin: 12px;
 		}
@@ -259,7 +255,7 @@ onMounted(() => {
 		> .widgets {
 			//--panelBorder: none;
 			width: 300px;
-			padding-bottom: calc(var(--margin) + var(--safeAreaInsetBottom));
+			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
@@ -313,9 +309,8 @@ onMounted(() => {
 		top: 0;
 		right: 0;
 		z-index: 1001;
-		height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 		height: 100dvh;
-		padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom));
+		padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 		box-sizing: border-box;
 		overflow: auto;
 		background: var(--bg);

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,8 +32,6 @@ const search = () => {
 }
 
 .input {
-	-webkit-appearance: textfield;
-	appearance: textfield;
 	flex-shrink: 1;
 	padding: 10px;
 	width: 100%;
@@ -42,6 +39,7 @@ const search = () => {
 	font-size: 16px;
 	border: solid 1px var(--divider);
 	border-radius: 4px 0 0 4px;
+	-webkit-appearance: textfield;
 }
 
 .button {
@@ -53,7 +51,7 @@ const search = () => {
 	border-radius: 0 4px 4px 0;
 
 	&:active {
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) inset;
+		box-shadow: 0 2px 4px rgba(#000, 0.15) inset;
 	}
 }
 </style>

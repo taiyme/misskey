@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -197,7 +196,7 @@ function calcColors() {
 	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
 	majorGraduationColor = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
-	// minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	sHandColor = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
 	mHandColor = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
 	hHandColor = accent;
@@ -228,11 +227,11 @@ onBeforeUnmount(() => {
 	transform-origin: 50% 50%;
 
 	&.animate.elastic {
-		transition: transform 0.2s cubic-bezier(0.4, 2.08, 0.55, 0.44);
+		transition: transform .2s cubic-bezier(.4,2.08,.55,.44);
 	}
 
 	&.animate.easeOut {
-		transition: transform 0.7s cubic-bezier(0, 0.7, 0.3, 1);
+		transition: transform .7s cubic-bezier(0,.7,.3,1);
 	}
 }
 </style>

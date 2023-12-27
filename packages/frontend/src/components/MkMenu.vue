@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -66,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { Ref, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu.js';
+import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
@@ -87,8 +86,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	close: [actioned?: boolean];
-	hide: [];
+	(ev: 'close', actioned?: boolean): void;
+	(ev: 'hide'): void;
 }>();
 
 let itemsEl = $shallowRef<HTMLDivElement>();
@@ -238,7 +237,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.asDrawer {
-		padding: 12px 0 max(12px, var(--safeAreaInsetBottom)) 0;
+		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
 		width: 100%;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;
@@ -248,7 +247,7 @@ onBeforeUnmount(() => {
 			font-size: 1em;
 			padding: 12px 24px;
 
-			&::before {
+			&:before {
 				width: calc(100% - 24px);
 				border-radius: 12px;
 			}
@@ -278,7 +277,7 @@ onBeforeUnmount(() => {
 	overflow: hidden;
 	text-overflow: ellipsis;
 
-	&::before {
+	&:before {
 		content: "";
 		display: block;
 		position: absolute;
@@ -296,7 +295,7 @@ onBeforeUnmount(() => {
 		color: var(--accent);
 		text-decoration: none;
 
-		&::before {
+		&:before {
 			background: var(--accentedBg);
 		}
 	}
@@ -307,7 +306,7 @@ onBeforeUnmount(() => {
 		&:hover {
 			color: #fff;
 
-			&::before {
+			&:before {
 				background: #ff4242;
 			}
 		}
@@ -315,7 +314,7 @@ onBeforeUnmount(() => {
 		&:active {
 			color: #fff;
 
-			&::before {
+			&:before {
 				background: #d42e2e !important;
 			}
 		}
@@ -326,7 +325,7 @@ onBeforeUnmount(() => {
 		color: var(--fgOnAccent) !important;
 		opacity: 1;
 
-		&::before {
+		&:before {
 			background: var(--accent) !important;
 		}
 	}
@@ -365,7 +364,7 @@ onBeforeUnmount(() => {
 			color: var(--accent);
 			text-decoration: none;
 
-			&::before {
+			&:before {
 				background: var(--accentedBg);
 			}
 		}
@@ -376,7 +375,6 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: flex;
 	transition: all 0.2s ease;
-	-webkit-user-select: none;
 	user-select: none;
 	cursor: pointer;
 }

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -263,12 +262,11 @@ async function deleteProfile() {
 }
 </script>
 
-<style lang="scss">
+<style>
 html,
 body {
 	width: 100%;
 	height: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: fixed;
 	top: 0;
@@ -279,7 +277,6 @@ body {
 #misskey_app {
 	width: 100%;
 	height: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: absolute;
 	top: 0;
@@ -318,7 +315,6 @@ body {
 	--columnGap: 6px;
 
 	display: flex;
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	box-sizing: border-box;
 	flex: 1;
@@ -339,7 +335,6 @@ body {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
-	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	overscroll-behavior: contain;
 	background: var(--deckBg);
@@ -418,7 +413,6 @@ body {
 	top: 0;
 	left: 0;
 	z-index: 1001;
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;
@@ -433,7 +427,7 @@ body {
 	z-index: 1000;
 	bottom: 0;
 	left: 0;
-	padding: 12px 12px max(12px, var(--safeAreaInsetBottom)) 12px;
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	grid-gap: 8px;

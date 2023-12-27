@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -11,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@afterLeave="emit('closed')"
+	@afterLeave="$emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
@@ -35,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div v-container="{ type: 'size' }" :class="$style.content">
+			<div :class="$style.content">
 				<slot></slot>
 			</div>
 		</div>
@@ -57,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onBeforeUnmount, onMounted, provide } from 'vue';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from '@/types/menu';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 
@@ -103,7 +102,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 provide('inWindow', true);
@@ -482,7 +481,6 @@ defineExpose({
 }
 
 .body {
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	display: flex;
 	flex-direction: column;
@@ -503,13 +501,12 @@ defineExpose({
 	position: relative;
 	z-index: 1;
 	flex-shrink: 0;
-	-webkit-user-select: none;
 	user-select: none;
 	height: var(--height);
 	background: var(--windowHeader);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	// border-bottom: solid 1px var(--divider);
+	//border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
 }

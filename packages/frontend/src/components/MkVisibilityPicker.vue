@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -58,8 +57,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	changeVisibility: [v: typeof Misskey.noteVisibilities[number]];
-	closed: [];
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
+	(ev: 'closed'): void;
 }>();
 
 let v = $ref(props.currentVisibility);
@@ -79,7 +78,7 @@ function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	padding: 8px 0;
 
 	&.asDrawer {
-		padding: 12px 0 max(12px, var(--safeAreaInsetBottom)) 0;
+		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
 		width: 100%;
 		border-radius: 24px;
 		border-bottom-right-radius: 0;

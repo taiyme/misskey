@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
-		<MkInput v-if="input" :type="input.type || 'text'" v-model="inputValue" autofocus :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown" :nullable="input.nullable" :trim="input.trim" :minLength="input.minLength" :maxLength="input.maxLength">
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
 				<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: (inputValue as string).length, max: input.maxLength ?? 'NaN' })"/>
@@ -69,8 +68,6 @@ type Input = {
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: string | number | null;
-	nullable?: boolean;
-	trim?: boolean;
 	minLength?: number;
 	maxLength?: number;
 };
@@ -116,8 +113,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	done: [v: { canceled: boolean; result: any; }];
-	closed: [];
+	(ev: 'done', v: { canceled: boolean; result: any }): void;
+	(ev: 'closed'): void;
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();

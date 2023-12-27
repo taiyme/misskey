@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,34 +15,18 @@ export default defineComponent({
 	setup(props, { emit, slots }) {
 		const options = slots.default();
 
-		return () => withDirectives(
-			h(
-				'div',
-				{
-					class: 'pxhvhrfw',
-				},
-				options.map(option => withDirectives(
-					h(
-						'button',
-						{
-							class: ['_button', { active: props.modelValue === option.props.value }],
-							key: option.key,
-							disabled: props.modelValue === option.props.value,
-							onClick: () => {
-								emit('update:modelValue', option.props.value);
-							},
-						},
-						option.children,
-					),
-					[
-						[resolveDirective('click-anime')],
-					]
-				)),
-			),
-			[
-				[resolveDirective('size'), { max: [500] }],
-			],
-		);
+		return () => h('div', {
+			class: 'pxhvhrfw',
+		}, options.map(option => withDirectives(h('button', {
+			class: ['_button', { active: props.modelValue === option.props.value }],
+			key: option.key,
+			disabled: props.modelValue === option.props.value,
+			onClick: () => {
+				emit('update:modelValue', option.props.value);
+			},
+		}, option.children), [
+			[resolveDirective('click-anime')],
+		])));
 	},
 });
 </script>
@@ -83,8 +66,8 @@ export default defineComponent({
 	}
 }
 
-:global(:where(.max-width_500px)) {
-	&.pxhvhrfw {
+@container (max-width: 500px) {
+	.pxhvhrfw {
 		font-size: 80%;
 
 		> button {

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n.js';
@@ -55,7 +54,6 @@ const collapsed = $ref(isLong);
 	&.collapsed {
 		position: relative;
 		max-height: 9em;
-		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 
 		> .fade {
@@ -73,7 +71,7 @@ const collapsed = $ref(isLong);
 				padding: 6px 10px;
 				font-size: 0.8em;
 				border-radius: 999px;
-				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 			}
 
 			&:hover {
@@ -109,6 +107,6 @@ const collapsed = $ref(isLong);
 	padding: 6px 10px;
 	font-size: 0.8em;
 	border-radius: 999px;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 }
 </style>

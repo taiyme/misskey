@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,11 +9,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="500"
 	:height="600"
 	@close="dialog.close()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
-	<div class="_clip_x">
+	<div style="overflow-x: clip;">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"
@@ -49,8 +48,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	done: [];
-	closed: [];
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -70,7 +69,7 @@ function onSignupEmailPending() {
 <style lang="scss" module>
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0, 0, 0.35, 1), transform 0.3s cubic-bezier(0, 0, 0.35, 1);
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
 }
 .transition_x_enterFrom {
 	opacity: 0;

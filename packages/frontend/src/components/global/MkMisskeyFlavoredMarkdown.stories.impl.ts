@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -8,7 +7,7 @@
 import { StoryObj } from '@storybook/vue3';
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
-import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.js';
+import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.ts';
 export const Default = {
 	render(args) {
 		return {

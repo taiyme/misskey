@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,13 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</optgroup>
 	</MkSelect>
 	<template v-if="selectedTheme">
-		<MkInput type="text" readonly :modelValue="selectedTheme.author">
+		<MkInput readonly :modelValue="selectedTheme.author">
 			<template #label>{{ i18n.ts.author }}</template>
 		</MkInput>
 		<MkTextarea v-if="selectedTheme.desc" readonly :modelValue="selectedTheme.desc">
 			<template #label>{{ i18n.ts._theme.description }}</template>
 		</MkTextarea>
-		<MkTextarea readonly tall :modelValue="selectedThemeCode" nullable>
+		<MkTextarea readonly tall :modelValue="selectedThemeCode">
 			<template #label>{{ i18n.ts._theme.code }}</template>
 			<template #caption><button class="_textButton" @click="copyThemeCode()">{{ i18n.ts.copy }}</button></template>
 		</MkTextarea>
@@ -38,10 +37,10 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { type Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import { Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
-import { getThemes, removeTheme } from '@/theme-store.js';
+import { getThemes, removeTheme } from '@/theme-store';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 
@@ -62,7 +61,7 @@ const selectedThemeCode = computed(() => {
 });
 
 function copyThemeCode() {
-	copyText(selectedThemeCode.value);
+	copyToClipboard(selectedThemeCode.value);
 	os.success();
 }
 

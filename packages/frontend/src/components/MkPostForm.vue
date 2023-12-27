@@ -1,13 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div
-	v-size="{ max: [500, 350], min: [] }"
-	v-container="{ type: 'inlineSize' }"
 	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
@@ -133,7 +130,7 @@ const modal = inject('modal');
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
 	renote?: Misskey.entities.Note;
-	channel?: Misskey.entities.Channel;
+	channel?: Misskey.entities.Channel; // TODO
 	mention?: Misskey.entities.User;
 	specified?: Misskey.entities.User;
 	initialText?: string;
@@ -152,9 +149,9 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	posted: [];
-	cancel: [];
-	esc: [];
+	(ev: 'posted'): void;
+	(ev: 'cancel'): void;
+	(ev: 'esc'): void;
 }>();
 
 const textareaEl = $shallowRef<HTMLTextAreaElement | null>(null);
@@ -961,7 +958,6 @@ defineExpose({
 	align-items: center;
 	margin-left: auto;
 	gap: 4px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	padding-left: 4px;
 }
@@ -1025,10 +1021,9 @@ defineExpose({
 }
 
 .visibility {
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
 	&:enabled {
 		> .headerRightButtonText {
@@ -1136,7 +1131,7 @@ defineExpose({
 	top: 0;
 	right: 2px;
 	padding: 4px 6px;
-	font-size: 0.9em;
+	font-size: .9em;
 	color: var(--warn);
 	border-radius: 6px;
 	min-width: 1.6em;
@@ -1193,64 +1188,60 @@ defineExpose({
 	color: var(--accent);
 }
 
-:global(:where(.max-width_500px)) {
-	&:where(.root) {
-		.headerRight {
-			font-size: 0.9em;
-		}
+@container (max-width: 500px) {
+	.headerRight {
+		font-size: .9em;
+	}
 
-		.headerRightButtonText {
-			display: none;
-		}
+	.headerRightButtonText {
+		display: none;
+	}
 
-		.visibility {
-			overflow: initial;
-		}
+	.visibility {
+		overflow: initial;
+	}
 
-		.submit {
-			margin: 8px 8px 8px 4px;
-		}
+	.submit {
+		margin: 8px 8px 8px 4px;
+	}
 
-		.toSpecified {
-			padding: 6px 16px;
-		}
+	.toSpecified {
+		padding: 6px 16px;
+	}
 
-		.preview {
-			padding: 16px 14px 0 14px;
-		}
-		.cw,
-		.hashtags,
-		.text {
-			padding: 0 16px;
-		}
+	.preview {
+		padding: 16px 14px 0 14px;
+	}
+	.cw,
+	.hashtags,
+	.text {
+		padding: 0 16px;
+	}
 
-		.text {
-			min-height: 80px;
-		}
+	.text {
+		min-height: 80px;
+	}
 
-		.footer {
-			padding: 0 8px 8px 8px;
-		}
+	.footer {
+		padding: 0 8px 8px 8px;
 	}
 }
 
-:global(:where(.max-width_350px)) {
-	&:where(.root) {
-		.footer {
-			font-size: 0.9em;
-		}
+@container (max-width: 350px) {
+	.footer {
+		font-size: 0.9em;
+	}
 
-		.footerLeft {
-			grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-		}
+	.footerLeft {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
 
-		.footerRight {
-			grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-		}
+	.footerRight {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
 
-		.headerRight {
-			gap: 0;
-		}
+	.headerRight {
+		gap: 0;
 	}
 }
 </style>

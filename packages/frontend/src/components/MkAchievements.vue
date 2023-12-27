@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -53,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { onMounted } from 'vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -127,11 +126,9 @@ onMounted(() => {
 	border-radius: 100%;
 	box-sizing: border-box;
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 	filter: drop-shadow(0px 2px 2px #00000044);
 	box-shadow: 0 1px 0px #ffffff88 inset;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 .iconFrame_bronze {
@@ -149,41 +146,41 @@ onMounted(() => {
 	}
 }
 .iconFrame_gold {
-	background: linear-gradient(0deg, rgb(255, 182, 85) 0%, rgb(233, 133, 0) 49%, rgb(255, 243, 93) 51%, rgb(255, 187, 25) 100%);
+	background: linear-gradient(0deg, rgba(255,182,85,1) 0%, rgba(233,133,0,1) 49%, rgba(255,243,93,1) 51%, rgba(255,187,25,1) 100%);
 
 	> .iconInner {
 		background: linear-gradient(0deg, #ffee20, #eb7018);
 	}
 
-	&::before {
+	&:before {
 		content: "";
 		display: block;
 		position: absolute;
-		top: 30px;
-		width: 200px;
-		height: 8px;
-		rotate: -45deg;
-		translate: -30px;
+    top: 30px;
+    width: 200px;
+    height: 8px;
+    rotate: -45deg;
+    translate: -30px;
 		background: #ffffff88;
 		animation: shine 2s infinite;
 	}
 }
 .iconFrame_platinum {
-	background: linear-gradient(0deg, rgb(154, 154, 154) 0%, rgb(226, 226, 226) 49%, rgb(255, 255, 255) 51%, rgb(195, 195, 195) 100%);
+	background: linear-gradient(0deg, rgba(154,154,154,1) 0%, rgba(226,226,226,1) 49%, rgba(255,255,255,1) 51%, rgba(195,195,195,1) 100%);
 
 	> .iconInner {
 		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
 	}
 
-	&::before {
+	&:before {
 		content: "";
 		display: block;
 		position: absolute;
-		top: 30px;
-		width: 200px;
-		height: 8px;
-		rotate: -45deg;
-		translate: -30px;
+    top: 30px;
+    width: 200px;
+    height: 8px;
+    rotate: -45deg;
+    translate: -30px;
 		background: #ffffffee;
 		animation: shine 2s infinite;
 	}

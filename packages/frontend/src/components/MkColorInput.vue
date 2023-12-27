@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -36,7 +35,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: string];
+	(ev: 'update:modelValue', value: string): void;
 }>();
 
 const { modelValue } = toRefs(props);
@@ -52,7 +51,6 @@ const onInput = (ev: KeyboardEvent) => {
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
-	-webkit-user-select: none;
 	user-select: none;
 
 	&:empty {
@@ -91,8 +89,8 @@ const onInput = (ev: KeyboardEvent) => {
 }
 
 .inputCore {
-	-webkit-appearance: none;
 	appearance: none;
+	-webkit-appearance: none;
 	display: block;
 	height: 42px;
 	width: 100%;

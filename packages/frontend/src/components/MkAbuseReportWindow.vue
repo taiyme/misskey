@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m" :class="$style.root">
 			<div class="">
-				<MkTextarea v-model="comment" :minLength="1" :maxLength="2048">
+				<MkTextarea v-model="comment">
 					<template #label>{{ i18n.ts.details }}</template>
 					<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
 				</MkTextarea>
@@ -32,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -45,7 +44,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const uiWindow = shallowRef<InstanceType<typeof MkWindow>>();

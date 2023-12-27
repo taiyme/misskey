@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 			<div class="_gaps">
-				<MkInput v-for="(_, i) in accountAliases" type="text" v-model="accountAliases[i]">
+				<MkInput v-for="(_, i) in accountAliases" v-model="accountAliases[i]">
 					<template #prefix><i class="ti ti-plane-arrival"></i></template>
 					<template #label>{{ i18n.t('_accountMigration.moveFromLabel', { n: i + 1 }) }}</template>
 				</MkInput>
@@ -39,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<FormInfo>{{ i18n.ts._accountMigration.moveAccountHowTo }}</FormInfo>
 				<FormInfo warn>{{ i18n.ts._accountMigration.moveCannotBeUndone }}</FormInfo>
 
-				<MkInput type="text" v-model="moveToAccount">
+				<MkInput v-model="moveToAccount">
 					<template #prefix><i class="ti ti-plane-departure"></i></template>
 					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
 				</MkInput>
@@ -127,7 +126,7 @@ definePageMetadata({
 
 <style lang="scss">
 .description {
-	font-size: 0.85em;
+	font-size: .85em;
 	padding: 1rem;
 }
 </style>

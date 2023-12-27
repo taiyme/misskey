@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -19,10 +18,10 @@ import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string;
-		name: string;
-		themeColor?: string;
-	};
+		faviconUrl?: string
+		name: string
+		themeColor?: string
+	}
 }>();
 
 // if no instance data is given, this is for the local instance
@@ -48,26 +47,25 @@ $height: 2ex;
 	align-items: center;
 	height: $height;
 	border-radius: 4px 0 0 4px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	color: #fff;
-	text-shadow: /* 0.866 ≈ sin(60deg) */
+	text-shadow: /* .866 ≈ sin(60deg) */
 		1px 0 1px #000,
-		0.866px 0.5px 1px #000,
-		0.5px 0.866px 1px #000,
+		.866px .5px 1px #000,
+		.5px .866px 1px #000,
 		0 1px 1px #000,
-		-0.5px 0.866px 1px #000,
-		-0.866px 0.5px 1px #000,
+		-.5px .866px 1px #000,
+		-.866px .5px 1px #000,
 		-1px 0 1px #000,
-		-0.866px -0.5px 1px #000,
-		-0.5px -0.866px 1px #000,
+		-.866px -.5px 1px #000,
+		-.5px -.866px 1px #000,
 		0 -1px 1px #000,
-		0.5px -0.866px 1px #000,
-		0.866px -0.5px 1px #000;
+		.5px -.866px 1px #000,
+		.866px -.5px 1px #000;
 	mask-image: linear-gradient(90deg,
-		rgb(0, 0, 0),
-		rgb(0, 0, 0) calc(100% - 16px),
-		rgba(0, 0, 0, 0) 100%
+		rgb(0,0,0),
+		rgb(0,0,0) calc(100% - 16px),
+		rgba(0,0,0,0) 100%
 	);
 }
 

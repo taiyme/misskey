@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -31,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
-	<div v-for="notification in notifications" :key="notification.id" v-container="{ type: 'inlineSize' }" :class="$style.notification">
+	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
 	</div>
 </TransitionGroup>
@@ -47,8 +46,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
-import { swInject } from './sw-inject.js';
+import * as Misskey from 'misskey-js';
+import { swInject } from './sw-inject';
 import XNotification from './notification.vue';
 import { popups, pendingApiRequestsCount } from '@/os.js';
 import { uploads } from '@/scripts/upload.js';
@@ -57,7 +56,7 @@ import { $i } from '@/account.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
-import { globalEvents } from '@/events.js';
+import { globalEvents } from '@/events';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -226,7 +225,7 @@ if ($i) {
 	right: 15px;
 	pointer-events: none;
 
-	&::before {
+	&:before {
 		content: "";
 		display: block;
 		width: 18px;
@@ -256,7 +255,6 @@ if ($i) {
 	padding: 4px 7px;
 	font-size: 14px;
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 
 	> span {
@@ -274,7 +272,6 @@ if ($i) {
 	padding: 4px 5px;
 	font-size: 14px;
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 
 	> span {

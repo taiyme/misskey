@@ -1,12 +1,11 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { v4 as uuid } from 'uuid';
 
-import { type Theme, themeProps } from './theme.js';
+import { themeProps, Theme } from './theme.js';
 
 export type Default = null;
 export type Color = string;

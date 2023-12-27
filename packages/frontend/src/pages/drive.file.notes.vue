@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
-import { type Paging } from '@/components/MkPagination.vue';
+import { Paging } from '@/components/MkPagination.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkNotes from '@/components/MkNotes.vue';
 

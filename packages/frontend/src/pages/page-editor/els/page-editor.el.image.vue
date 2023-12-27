@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
@@ -29,12 +28,11 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: any;
+	modelValue: any
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any];
-	remove: [];
+	(ev: 'update:modelValue', value: any): void;
 }>();
 
 let file: any = $ref(null);

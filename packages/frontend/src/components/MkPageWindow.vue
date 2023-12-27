@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:buttonsLeft="buttonsLeft"
 	:buttonsRight="buttonsRight"
 	:contextmenu="contextmenu"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template #header>
 		<template v-if="pageMetadata?.value">
@@ -23,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div ref="contents" v-container="{ type: 'inlineSize' }" :class="$style.root" style="container-type: inline-size;">
+	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
 		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>
@@ -34,13 +33,13 @@ import { ComputedRef, onMounted, onUnmounted, provide, shallowRef } from 'vue';
 import RouterView from '@/components/global/RouterView.vue';
 import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
 import { mainRouter, routes, page } from '@/router.js';
 import { $i } from '@/account.js';
-import { Router, useScrollPositionManager } from '@/nirax.js';
+import { Router, useScrollPositionManager } from '@/nirax';
 import { i18n } from '@/i18n.js';
-import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
@@ -49,8 +48,8 @@ const props = defineProps<{
 	initialPath: string;
 }>();
 
-const emit = defineEmits<{
-	closed: [];
+defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
@@ -120,7 +119,7 @@ const contextmenu = $computed(() => ([{
 	icon: 'ti ti-link',
 	text: i18n.ts.copyLink,
 	action: () => {
-		copyText(url + router.getCurrentPath());
+		copyToClipboard(url + router.getCurrentPath());
 	},
 }]));
 

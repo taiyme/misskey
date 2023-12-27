@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import * as mfm from 'mfm-js';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { extractUrlFromMfm } from './extract-url-from-mfm.js';
 
 export function shouldCollapsed(note: Misskey.entities.Note): boolean {

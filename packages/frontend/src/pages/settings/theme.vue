@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -86,7 +85,7 @@ import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { uniqueBy } from '@/scripts/array.js';
-import { fetchThemes, getThemes } from '@/theme-store.js';
+import { fetchThemes, getThemes } from '@/theme-store';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 
@@ -191,7 +190,6 @@ definePageMetadata({
 		> .toggleWrapper {
 			display: inline-block;
 			text-align: left;
-			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			padding: 0 100px;
 			vertical-align: bottom;
@@ -239,9 +237,9 @@ definePageMetadata({
 			height: 50px - 6;
 			background-color: #FFCF96;
 			border-radius: 50px;
-			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+			box-shadow: 0 2px 6px rgba(0,0,0,.3);
 			transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-			transform: rotate(-45deg);
+			transform:  rotate(-45deg);
 
 			.crater {
 				position: absolute;
@@ -317,7 +315,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px, 0, 0);
+			transform: translate3d(3px,0,0);
 		}
 
 		.star--5 {
@@ -326,7 +324,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 3px;
 			height: 3px;
-			transform: translate3d(3px, 0, 0);
+			transform: translate3d(3px,0,0);
 		}
 
 		.star--6 {
@@ -335,7 +333,7 @@ definePageMetadata({
 			z-index: 0;
 			width: 2px;
 			height: 2px;
-			transform: translate3d(3px, 0, 0);
+			transform: translate3d(3px,0,0);
 		}
 
 		input:checked {
@@ -378,7 +376,7 @@ definePageMetadata({
 				.star--5,
 				.star--6 {
 					opacity: 1;
-					transform: translate3d(0, 0, 0);
+					transform: translate3d(0,0,0);
 				}
 
 				.star--4 {

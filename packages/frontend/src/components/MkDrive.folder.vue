@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,12 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -51,13 +50,13 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	chosen: [v: Misskey.entities.DriveFolder];
-	move: [v: Misskey.entities.DriveFolder];
-	upload: [file: File, folder: Misskey.entities.DriveFolder];
-	removeFile: [v: Misskey.entities.DriveFile['id']];
-	removeFolder: [v: Misskey.entities.DriveFolder['id']];
-	dragstart: [];
-	dragend: [];
+	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
+	(ev: 'move', v: Misskey.entities.DriveFolder): void;
+	(ev: 'upload', file: File, folder: Misskey.entities.DriveFolder);
+	(ev: 'removeFile', v: Misskey.entities.DriveFile['id']): void;
+	(ev: 'removeFolder', v: Misskey.entities.DriveFolder['id']): void;
+	(ev: 'dragstart'): void;
+	(ev: 'dragend'): void;
 }>();
 
 const hover = ref(false);
@@ -276,7 +275,7 @@ function onContextmenu(ev: MouseEvent) {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyFolderId,
 			action: () => {
-				copyText(props.folder.id);
+				copyToClipboard(props.folder.id);
 			},
 		}]);
 	}
@@ -294,7 +293,7 @@ function onContextmenu(ev: MouseEvent) {
 	cursor: pointer;
 
 	&.draghover {
-		&::after {
+		&:after {
 			content: "";
 			pointer-events: none;
 			position: absolute;

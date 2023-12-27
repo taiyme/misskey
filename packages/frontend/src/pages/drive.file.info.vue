@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [], min: [500] }" :class="$style.root" class="_gaps">
+<div class="_gaps">
 	<MkInfo>{{ i18n.ts._fileViewer.thisPageCanBeSeenFromTheAuthor }}</MkInfo>
 	<MkLoading v-if="fetching"/>
 	<div v-else-if="file" class="_gaps">
@@ -68,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
@@ -207,12 +206,10 @@ onMounted(async () => {
 	gap: 8px;
 }
 
-:global(:where(.min-width_500px)) {
-	&:where(.root) {
-		.fileQuickActionsRoot {
-			flex-direction: row;
-			align-items: center;
-		}
+@container (min-width: 500px) {
+	.fileQuickActionsRoot {
+		flex-direction: row;
+		align-items: center;
 	}
 }
 
@@ -223,7 +220,7 @@ onMounted(async () => {
 	gap: 8px;
 
 	.fileQuickActionsOthersButton {
-		padding: 0.5rem;
+		padding: .5rem;
 		border-radius: 99rem;
 
 		&:hover,
@@ -239,24 +236,24 @@ onMounted(async () => {
 
 		&.danger:hover,
 		&.danger:focus-visible {
-			background-color: rgba(255, 42, 42, 0.15);
+			background-color: rgba(255, 42, 42, .15);
 		}
 	}
 }
 
 .fileNameEditBtn {
-	padding: 0.5rem 1rem;
+	padding: .5rem 1rem;
 	display: flex;
 	align-items: center;
 	min-width: 0;
 	font-weight: 700;
 	border-radius: var(--radius);
-	font-size: 0.8rem;
+	font-size: .8rem;
 
 	>.fileNameEditIcon {
 		color: transparent;
 		visibility: hidden;
-		padding-left: 0.5rem;
+		padding-left: .5rem;
 	}
 
 	>.fileName {
@@ -275,21 +272,21 @@ onMounted(async () => {
 }
 
 .fileMetaDataChildren {
-	padding: 0.5rem 1rem;
+	padding: .5rem 1rem;
 }
 
 .fileAltEditBtn {
 	text-align: start;
 	display: block;
 	width: 100%;
-	padding: 0.5rem 1rem;
+	padding: .5rem 1rem;
 	border-radius: var(--radius);
 
 	.fileAltEditIcon {
 		display: inline-block;
 		color: transparent;
 		visibility: hidden;
-		padding-left: 0.5rem;
+		padding-left: .5rem;
 	}
 
 	&:hover {

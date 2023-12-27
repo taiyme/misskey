@@ -1,24 +1,22 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Directive } from 'vue';
+import { Directive } from 'vue';
 import { defaultStore } from '@/store.js';
 
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src) {
+	mounted(el: HTMLElement, binding, vn) {
 		if (!defaultStore.state.animation) return;
 
-		const target = Array.from(src.children).at(0);
+		const target = el.children[0];
 
 		if (target == null) return;
 
 		target.classList.add('_anime_bounce_standBy');
 
-		src.addEventListener('mousedown', () => {
+		el.addEventListener('mousedown', () => {
 			target.classList.remove('_anime_bounce');
 
 			target.classList.add('_anime_bounce_standBy');
@@ -29,14 +27,14 @@ export default {
 			});
 		});
 
-		src.addEventListener('click', () => {
+		el.addEventListener('click', () => {
 			target.classList.add('_anime_bounce');
 			target.classList.remove('_anime_bounce_ready');
 		});
 
-		src.addEventListener('animationend', () => {
+		el.addEventListener('animationend', () => {
 			target.classList.remove('_anime_bounce');
 			target.classList.add('_anime_bounce_standBy');
 		});
 	},
-} as Directive<HTMLElement>;
+} as Directive;

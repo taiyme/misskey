@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { concat } from '@/scripts/array.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -21,7 +20,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [v: boolean];
+	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
 const label = computed(() => {
@@ -41,12 +40,12 @@ function toggle() {
 .label {
 	margin-left: 4px;
 
-	&::before {
-		content: "(";
+	&:before {
+		content: '(';
 	}
 
-	&::after {
-		content: ")";
+	&:after {
+		content: ')';
 	}
 }
 </style>

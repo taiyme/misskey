@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
-import { Router } from '@/nirax.js';
+import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
@@ -16,7 +15,7 @@ export const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent(
 	errorComponent: MkError,
 });
 
-export const routes: Router['routes'] = [{
+export const routes = [{
 	path: '/@:initUser/pages/:initPageName/view-source',
 	component: page(() => import('./pages/page-editor/page-editor.vue')),
 }, {

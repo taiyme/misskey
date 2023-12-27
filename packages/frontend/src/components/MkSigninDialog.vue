@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -28,16 +27,16 @@ import { i18n } from '@/i18n.js';
 
 withDefaults(defineProps<{
 	autoSet?: boolean;
-	message?: string;
+	message?: string,
 }>(), {
 	autoSet: false,
 	message: '',
 });
 
 const emit = defineEmits<{
-	done: [v: any];
-	closed: [];
-	cancelled: [];
+	(ev: 'done', v: any): void;
+	(ev: 'closed'): void;
+	(ev: 'cancelled'): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();

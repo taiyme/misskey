@@ -1,17 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div
-	:class="{
-		[$style.root]: true,
-		[$style.disabled]: disabled,
-		// [$style.checked]: checked,
-	}"
->
+<div :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]">
 	<input
 		ref="input"
 		type="checkbox"
@@ -23,12 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<span :class="$style.body">
 		<!-- TODO: 無名slotの方は廃止 -->
 		<span :class="$style.label">
-			<span
-				:style="{
-					cursor: disabled ? 'not-allowed' : 'pointer',
-				}"
-				@click="toggle"
-			>
+			<span @click="toggle">
 				<slot name="label"></slot><slot></slot>
 			</span>
 			<span v-if="helpText" v-tooltip:dialog="helpText" class="_button _help" :class="$style.help"><i class="ti ti-help-circle"></i></span>
@@ -49,11 +37,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [v: boolean];
+	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
 const checked = toRefs(props).modelValue;
-
 const toggle = () => {
 	if (props.disabled) return;
 	emit('update:modelValue', !checked.value);
@@ -65,7 +52,6 @@ const toggle = () => {
 	position: relative;
 	display: flex;
 	transition: all 0.2s ease;
-	-webkit-user-select: none;
 	user-select: none;
 
 	&:hover {
@@ -79,8 +65,8 @@ const toggle = () => {
 		cursor: not-allowed;
 	}
 
-	// &.checked {
-	// }
+	//&.checked {
+	//}
 }
 
 .input {
@@ -90,7 +76,6 @@ const toggle = () => {
 	opacity: 0;
 	margin: 0;
 }
-
 .body {
 	margin-left: 12px;
 	margin-top: 2px;
@@ -102,6 +87,7 @@ const toggle = () => {
 .label {
 	display: block;
 	line-height: 20px;
+	cursor: pointer;
 	transition: inherit;
 }
 
@@ -109,8 +95,6 @@ const toggle = () => {
 	margin: 8px 0 0 0;
 	color: var(--fgTransparentWeak);
 	font-size: 0.85em;
-	-webkit-user-select: text;
-	user-select: text;
 
 	&:empty {
 		display: none;

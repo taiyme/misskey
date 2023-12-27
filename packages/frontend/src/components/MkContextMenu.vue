@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
 	</div>
 </Transition>
 </template>
@@ -21,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
 import MkMenu from './MkMenu.vue';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from './types/menu.vue';
 import contains from '@/scripts/contains.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -32,7 +31,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 let rootEl = $shallowRef<HTMLDivElement>();

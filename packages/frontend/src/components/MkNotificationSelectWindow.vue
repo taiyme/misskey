@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -42,8 +41,8 @@ import { i18n } from '@/i18n.js';
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
 
 const emit = defineEmits<{
-	done: [v: { excludeTypes: string[]; }];
-	closed: [];
+	(ev: 'done', v: { excludeTypes: string[] }): void,
+	(ev: 'closed'): void,
 }>();
 
 const props = withDefaults(defineProps<{

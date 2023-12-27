@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,15 +16,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="tab === 'settings'">
 			<div class="_gaps_m">
-				<MkInput type="text" v-model="title">
+				<MkInput v-model="title">
 					<template #label>{{ i18n.ts._pages.title }}</template>
 				</MkInput>
 
-				<MkInput type="text" v-model="summary" nullable>
+				<MkInput v-model="summary">
 					<template #label>{{ i18n.ts._pages.summary }}</template>
 				</MkInput>
 
-				<MkInput type="text" v-model="name">
+				<MkInput v-model="name">
 					<template #prefix>{{ url }}/@{{ author.username }}/pages/</template>
 					<template #label>{{ i18n.ts._pages.url }}</template>
 				</MkInput>
@@ -329,7 +328,7 @@ definePageMetadata(computed(() => {
 			line-height: 42px;
 			font-size: 0.9em;
 			font-weight: bold;
-			box-shadow: 0 1px rgba(0, 0, 0, 0.07);
+			box-shadow: 0 1px rgba(#000, 0.07);
 
 			> i {
 				margin-right: 6px;

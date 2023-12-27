@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { generate } from 'astring';
-import type * as estree from 'estree';
+import * as estree from 'estree';
 import { walk } from '../node_modules/estree-walker/src/index.js';
 import type * as estreeWalker from 'estree-walker';
 import type { Plugin } from 'vite';

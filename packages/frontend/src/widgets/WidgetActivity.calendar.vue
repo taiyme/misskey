@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -37,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 const props = defineProps<{
-	activity: any[];
+	activity: any[]
 }>();
 
 for (const d of props.activity) {
@@ -85,7 +84,7 @@ svg {
 
 		&.day {
 			&:hover {
-				fill: rgba(0, 0, 0, 0.05);
+				fill: rgba(#000, 0.05);
 			}
 		}
 	}

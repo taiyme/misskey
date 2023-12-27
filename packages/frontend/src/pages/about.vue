@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
 			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
-				<div class="_clip">
+				<div style="overflow: clip;">
 					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 					<div :class="$style.bannerName">
 						<b>{{ instance.name ?? host }}</b>
@@ -25,19 +24,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<FormSection>
 				<div class="_gaps_m">
-					<FormSplit>
-						<MkKeyValue :copy="version">
-							<template #key>Misskey</template>
-							<template #value>{{ version }}</template>
-						</MkKeyValue>
-						<MkKeyValue :copy="commitHash">
-							<template #key>CommitHash</template>
-							<template #value>{{ commitHash }}</template>
-						</MkKeyValue>
-					</FormSplit>
+					<MkKeyValue :copy="version">
+						<template #key>Misskey</template>
+						<template #value>{{ version }}</template>
+					</MkKeyValue>
 					<div v-html="i18n.t('poweredByMisskeyDescription', { name: instance.name ?? host })">
 					</div>
-					<FormLink to="/about-misskey">{{ i18n.ts._tms.aboutMisskey }}</FormLink>
+					<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 				</div>
 			</FormSection>
 
@@ -112,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { commitHash, version, host } from '@/config.js';
+import { version, host } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -176,7 +169,6 @@ definePageMetadata(computed(() => ({
 .banner {
 	text-align: center;
 	border-radius: 10px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	background-size: cover;
 	background-position: center center;

@@ -1,25 +1,20 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type Directive } from 'vue';
+import { Directive } from 'vue';
 
-type Mounting = {
+const mountings = new Map<Element, {
 	resize: ResizeObserver;
-	intersection?: IntersectionObserver | null;
+	intersection?: IntersectionObserver;
 	fn: (w: number, h: number) => void;
-};
+}>();
 
-const mountings = new Map<HTMLElement, Mounting>();
-
-const calc = (el: HTMLElement): void => {
-	const info = mountings.get(el);
-	const {
-		clientWidth: width,
-		clientHeight: height,
-	} = el;
+function calc(src: Element) {
+	const info = mountings.get(src);
+	const height = src.clientHeight;
+	const width = src.clientWidth;
 
 	if (!info) return;
 
@@ -28,24 +23,23 @@ const calc = (el: HTMLElement): void => {
 		// IntersectionObserverで表示検出する
 		if (!info.intersection) {
 			info.intersection = new IntersectionObserver(entries => {
-				if (entries.some(entry => entry.isIntersecting)) calc(el);
+				if (entries.some(entry => entry.isIntersecting)) calc(src);
 			});
 		}
-		info.intersection.observe(el);
+		info.intersection.observe(src);
 		return;
 	}
 	if (info.intersection) {
 		info.intersection.disconnect();
-		info.intersection = null;
+		delete info.intersection;
 	}
 
 	info.fn(width, height);
-};
+}
 
-// eslint-disable-next-line import/no-default-export
 export default {
-	mounted(src, binding) {
-		const resize = new ResizeObserver(() => {
+	mounted(src, binding, vn) {
+		const resize = new ResizeObserver((entries, observer) => {
 			calc(src);
 		});
 		resize.observe(src);
@@ -54,7 +48,7 @@ export default {
 		calc(src);
 	},
 
-	unmounted(src, binding) {
+	unmounted(src, binding, vn) {
 		binding.value(0, 0);
 		const info = mountings.get(src);
 		if (!info) return;
@@ -62,4 +56,4 @@ export default {
 		if (info.intersection) info.intersection.disconnect();
 		mountings.delete(src);
 	},
-} as Directive<HTMLElement, (w: number, h: number) => void>;
+} as Directive<Element, (w: number, h: number) => void>;

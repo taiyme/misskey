@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	:canClose="false"
 	@close="dialog.close()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
@@ -24,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInfo warn>{{ information }}</MkInfo>
 			</div>
 			<div>
-				<MkInput type="text" v-model="name" nullable>
+				<MkInput v-model="name">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
 			</div>
@@ -64,13 +63,13 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	closed: [];
-	done: [result: { name: string | null; permissions: string[]; }];
+	(ev: 'closed'): void;
+	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 let name = $ref(props.initialName);
-let permissions = $ref<Record<string, boolean>>({});
+let permissions = $ref({});
 
 if (props.initialPermissions) {
 	for (const kind of props.initialPermissions) {

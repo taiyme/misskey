@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,7 +47,7 @@ onUnmounted(() => {
 <style lang="scss" module>
 .root {
 	position: fixed;
-	z-index: v-bind("zIndex");
+	z-index: v-bind(zIndex);
 	bottom: calc(var(--minBottomSpacing) + var(--margin));
 	right: var(--margin);
 	margin: 0;

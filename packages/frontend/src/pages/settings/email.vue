@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="instance.enableEmail" class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
-		<MkInput type="email" v-model="emailAddress" manualSave>
+		<MkInput v-model="emailAddress" type="email" manualSave>
 			<template #prefix><i class="ti ti-mail"></i></template>
 			<template v-if="$i.email && !$i.emailVerified" #caption>{{ i18n.ts.verificationEmailSent }}</template>
 			<template v-else-if="emailAddress === $i.email && $i.emailVerified" #caption><i class="ti ti-check" style="color: var(--success);"></i> {{ i18n.ts.emailVerified }}</template>

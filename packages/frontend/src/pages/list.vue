@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -107,7 +106,6 @@ definePageMetadata(computed(() => list ? {
 </script>
 <style lang="scss" module>
 .main {
-	min-height: calc((var(--cqh, 1vh) * 100) - (var(--stickyTop, 0px) + var(--stickyBottom, 0px))); // fallback (cqh units)
 	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
 }
 
@@ -131,7 +129,7 @@ definePageMetadata(computed(() => list ? {
 .root {
 	padding: 32px;
 	text-align: center;
-	align-items: center;
+  align-items: center;
 }
 
 .text {
@@ -140,7 +138,7 @@ definePageMetadata(computed(() => list ? {
 
 .img {
 	vertical-align: bottom;
-	width: 128px;
+  width: 128px;
 	height: 128px;
 	margin-bottom: 16px;
 	border-radius: 16px;

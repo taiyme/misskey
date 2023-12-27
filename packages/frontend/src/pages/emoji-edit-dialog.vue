@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="dialog"
 	:width="400"
 	@close="dialog.close()"
-	@closed="emit('closed')"
+	@closed="$emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
 	<template v-else #header>New emoji</template>
@@ -32,17 +31,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 				<MkButton rounded style="margin: 0 auto;" @click="changeImage">{{ i18n.ts.selectFile }}</MkButton>
-				<MkInput type="text" v-model="name" pattern="[a-z0-9_]">
+				<MkInput v-model="name" pattern="[a-z0-9_]">
 					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="category" :datalist="customEmojiCategories">
+				<MkInput v-model="category" :datalist="customEmojiCategories">
 					<template #label>{{ i18n.ts.category }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="aliases">
+				<MkInput v-model="aliases">
 					<template #label>{{ i18n.ts.tags }}</template>
 					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 				</MkInput>
-				<MkInput type="text" v-model="license">
+				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
 				<MkFolder>
@@ -76,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -90,12 +89,7 @@ import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any;
-}>();
-
-const emit = defineEmits<{
-	done: [v: { deleted?: boolean; updated?: any; created?: any; }];
-	closed: [];
+	emoji?: any,
 }>();
 
 let dialog = $ref(null);
@@ -114,6 +108,11 @@ watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+
+const emit = defineEmits<{
+	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+	(ev: 'closed'): void
+}>();
 
 async function changeImage(ev) {
 	file = await selectFile(ev.currentTarget ?? ev.target, null);

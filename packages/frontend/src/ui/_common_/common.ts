@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -95,7 +94,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 		},
 	}, {
 		type: 'link',
-		text: i18n.ts._tms.aboutMisskey,
+		text: i18n.ts.aboutMisskey,
 		to: '/about-misskey',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',

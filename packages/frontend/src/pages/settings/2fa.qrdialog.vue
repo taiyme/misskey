@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.setupOf2fa }}</template>
 
-	<div class="_clip_x">
+	<div style="overflow-x: clip;">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"
@@ -23,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_x_leaveTo"
 		>
 			<template v-if="page === 0">
-				<div :class="$style.page" style="text-align: center;">
+				<div style="height: 100cqh; overflow: auto; text-align: center;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<I18n :src="i18n.ts._2fa.step1" tag="div">
@@ -49,11 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 1">
-				<div :class="$style.page">
+				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div>{{ i18n.ts._2fa.step3Title }}</div>
-							<MkInput type="text" v-model="token" autocomplete="one-time-code"></MkInput>
+							<MkInput v-model="token" autocomplete="one-time-code"></MkInput>
 							<div>{{ i18n.ts._2fa.step3 }}</div>
 						</div>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -64,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 2">
-				<div :class="$style.page">
+				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps">
 							<div style="text-align: center;">{{ i18n.ts._2fa.setupCompleted }}🎉</div>
@@ -121,7 +120,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -165,7 +164,7 @@ function allDone() {
 <style lang="scss" module>
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0, 0, 0.35, 1), transform 0.3s cubic-bezier(0, 0, 0.35, 1);
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
 }
 .transition_x_enterFrom {
 	opacity: 0;
@@ -179,11 +178,5 @@ function allDone() {
 .qr {
 	width: 200px;
 	max-width: 100%;
-}
-
-.page {
-	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
-	height: 100cqh;
-	overflow: auto;
 }
 </style>

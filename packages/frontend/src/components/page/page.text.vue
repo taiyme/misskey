@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,16 +13,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import type * as Misskey from 'misskey-js';
-import type { TextBlock } from './block.type.js';
+import * as Misskey from 'misskey-js';
+import { TextBlock } from './block.type';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 
 const MkUrlPreview = defineAsyncComponent(() => import('@/components/MkUrlPreview.vue'));
 
 const props = defineProps<{
-	block: TextBlock;
-	page: Misskey.entities.Page;
+	block: TextBlock,
+	page: Misskey.entities.Page,
 }>();
 
 const urls = props.block.text ? extractUrlFromMfm(mfm.parse(props.block.text)) : [];

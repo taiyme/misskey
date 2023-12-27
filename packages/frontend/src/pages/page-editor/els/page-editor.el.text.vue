@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => emit('remove')">
+<XContainer :draggable="true" @remove="() => $emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
@@ -22,12 +21,11 @@ import XContainer from '../page-editor.container.vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: any;
+	modelValue: any
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: any];
-	remove: [];
+	(ev: 'update:modelValue', value: any): void;
 }>();
 
 const text = $ref(props.modelValue.text ?? '');
@@ -44,6 +42,7 @@ watch($$(text), () => {
 .textarea {
 	display: block;
 	-webkit-appearance: none;
+	-moz-appearance: none;
 	appearance: none;
 	width: 100%;
 	min-width: 100%;

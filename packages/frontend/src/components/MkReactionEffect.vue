@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,7 +24,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	end: [];
+	(ev: 'end'): void;
 }>();
 
 let up = $ref(false);
@@ -65,12 +64,12 @@ onMounted(() => {
 	font-size: 18px;
 	font-weight: bold;
 	transform: translateY(-30px);
-	transition: transform 1s cubic-bezier(0, 0.5, 0, 1), opacity 1s cubic-bezier(0.5, 0, 1, 0.5);
+	transition: transform 1s cubic-bezier(0,.5,0,1), opacity 1s cubic-bezier(.5,0,1,.5);
 	will-change: opacity, transform;
 
 	&.up {
 		opacity: 0;
-		transform: translateY(-50px) rotateZ(v-bind("angle"));
+		transform: translateY(-50px) rotateZ(v-bind(angle));
 	}
 }
 </style>

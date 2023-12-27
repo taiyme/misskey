@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,7 +33,7 @@ import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { clipsCache } from '@/cache.js';
+import { clipsCache } from '@/cache';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -56,17 +55,12 @@ async function create() {
 		name: {
 			type: 'string',
 			label: i18n.ts.name,
-			minLength: 1,
-			maxLength: 100,
 		},
 		description: {
 			type: 'string',
 			required: false,
 			multiline: true,
 			label: i18n.ts.description,
-			nullable: true,
-			minLength: 1,
-			maxLength: 2048,
 		},
 		isPublic: {
 			type: 'boolean',

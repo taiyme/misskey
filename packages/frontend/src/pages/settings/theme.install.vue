@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div class="_gaps_m">
-	<MkTextarea v-model="installThemeCode" nullable>
+	<MkTextarea v-model="installThemeCode">
 		<template #label>{{ i18n.ts._theme.code }}</template>
 	</MkTextarea>
 
@@ -24,7 +23,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import { applyTheme, validateTheme } from '@/scripts/theme.js';
 import * as os from '@/os.js';
-import { addTheme, getThemes } from '@/theme-store.js';
+import { addTheme, getThemes } from '@/theme-store';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 

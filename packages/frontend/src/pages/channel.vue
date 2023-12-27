@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
 				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
 				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
-				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : undefined }" :class="$style.banner">
+				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" :class="$style.banner">
 					<div :class="$style.bannerStatus">
 						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
 						<div><i class="ti ti-pencil ti-fw"></i><I18n :src="i18n.ts._channel.notesCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.notesCount }}</b></template></I18n></div>
@@ -28,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkFoldableSection>
 				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
-				<div v-if="channel.pinnedNotes && (channel.pinnedNotes.length > 0)" class="_gaps">
+				<div v-if="channel.pinnedNotes.length > 0" class="_gaps">
 					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
 				</div>
 			</MkFoldableSection>
@@ -39,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
-			<MkTimeline :key="channelId" src="channel" :channel="channelId"/>
+			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
 		<div v-else-if="tab === 'featured'">
 			<MkNotes :pagination="featuredPagination"/>
@@ -47,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'search'">
 			<div class="_gaps">
 				<div>
-					<MkInput type="search" v-model="searchQuery" @enter="search">
+					<MkInput v-model="searchQuery">
 						<template #prefix><i class="ti ti-search"></i></template>
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
@@ -70,8 +69,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
-import { type Paging } from '@/components/MkPagination.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
@@ -97,12 +94,12 @@ const props = defineProps<{
 }>();
 
 let tab = $ref('overview');
-let channel = $ref<Misskey.entities.Channel | null>(null);
+let channel = $ref(null);
 let favorited = $ref(false);
 let searchQuery = $ref('');
-let searchPagination = $ref<Paging<'notes/search'>>();
+let searchPagination = $ref();
 let searchKey = $ref('');
-const featuredPagination = $computed<Paging<'notes/featured'>>(() => ({
+const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
 	params: {
@@ -114,26 +111,23 @@ watch(() => props.channelId, async () => {
 	channel = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
-	favorited = !!channel.isFavorited;
+	favorited = channel.isFavorited;
 	if (favorited || channel.isFollowing) {
 		tab = 'timeline';
 	}
 }, { immediate: true });
 
 function edit() {
-	if (!channel) return;
 	router.push(`/channels/${channel.id}/edit`);
 }
 
 function openPostForm() {
-	if (!channel) return;
 	os.post({
 		channel,
 	});
 }
 
 function favorite() {
-	if (!channel) return;
 	os.apiWithDialog('channels/favorite', {
 		channelId: channel.id,
 	}).then(() => {
@@ -142,7 +136,6 @@ function favorite() {
 }
 
 async function unfavorite() {
-	if (!channel) return;
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: i18n.ts.unfavoriteConfirm,
@@ -156,13 +149,12 @@ async function unfavorite() {
 }
 
 async function search() {
-	if (!channel) return;
 	const query = searchQuery.toString().trim();
 
 	if (query == null) return;
 
 	searchPagination = {
-		endpoint: 'notes/search' as const,
+		endpoint: 'notes/search',
 		limit: 10,
 		params: {
 			query: query,
@@ -174,28 +166,28 @@ async function search() {
 }
 
 const headerActions = $computed(() => {
-	if (!channel) return;
-	if (!channel.userId) return;
+	if (channel && channel.userId) {
+		const share = {
+			icon: 'ti ti-share',
+			text: i18n.ts.share,
+			handler: async (): Promise<void> => {
+				navigator.share({
+					title: channel.name,
+					text: channel.description,
+					url: `${url}/channels/${channel.id}`,
+				});
+			},
+		};
 
-	const share = {
-		icon: 'ti ti-share',
-		text: i18n.ts.share,
-		handler: async (): Promise<void> => {
-			if (!channel) return;
-			navigator.share({
-				title: channel.name,
-				text: channel.description ?? undefined,
-				url: `${url}/channels/${channel.id}`,
-			});
-		},
-	};
-
-	const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
-	return canEdit ? [share, {
-		icon: 'ti ti-settings',
-		text: i18n.ts.edit,
-		handler: edit,
-	}] : [share];
+		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
+		return canEdit ? [share, {
+			icon: 'ti ti-settings',
+			text: i18n.ts.edit,
+			handler: edit,
+		}] : [share];
+	} else {
+		return null;
+	}
 });
 
 const headerTabs = $computed(() => [{
@@ -224,7 +216,6 @@ definePageMetadata(computed(() => channel ? {
 
 <style lang="scss" module>
 .main {
-	min-height: calc((var(--cqh, 1vh) * 100) - (var(--stickyTop, 0px) + var(--stickyBottom, 0px))); // fallback (cqh units)
 	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
 }
 

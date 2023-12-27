@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,7 +31,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const zIndex = os.claimZIndex('high');
@@ -68,7 +67,6 @@ onMounted(() => {
 	width: min-content;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 	border-radius: 8px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	text-align: center;
 	pointer-events: none;

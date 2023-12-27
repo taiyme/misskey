@@ -8,11 +8,11 @@
 
 	props: {
 		accent: '#5db0da',
-		bg: 'rgb(246, 248, 249)',
+		bg: 'rgb(246 248 249)',
 		fg: '#636b71',
 		fgOnWhite: '@accent',
 		panel: '#fff',
-		divider: 'rgb(230, 233, 234)',
+		divider: 'rgb(230 233 234)',
 		panelHeaderDivider: '@divider',
 		renote: '@accent',
 		link: '@accent',

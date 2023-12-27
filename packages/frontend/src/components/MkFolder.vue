@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -26,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</template>
 
-		<div v-if="openedAtLeastOnce" v-container="{ type: 'inlineSize' }" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }" :aria-hidden="!opened">
+		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }" :aria-hidden="!opened">
 			<Transition
 				:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
 				:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
@@ -119,7 +118,6 @@ onMounted(() => {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	overflow-y: hidden; // fallback (overflow: clip)
 	overflow-y: clip;
 	transition: opacity 0.3s, height 0.3s, transform 0.3s !important;
 }
@@ -166,7 +164,7 @@ onMounted(() => {
 
 .headerLower {
 	color: var(--fgTransparentWeak);
-	font-size: 0.85em;
+	font-size: .85em;
 	padding-left: 4px;
 }
 
@@ -194,7 +192,7 @@ onMounted(() => {
 
 .headerTextSub {
 	color: var(--fgTransparentWeak);
-	font-size: 0.85em;
+	font-size: .85em;
 }
 
 .headerRight {

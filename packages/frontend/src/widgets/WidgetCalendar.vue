@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -40,8 +39,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useWidgetPropsManager, type Widget, type WidgetComponentEmits, type WidgetComponentExpose, type WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { GetFormResultType } from '@/scripts/form.js';
 import { i18n } from '@/i18n.js';
 import { useInterval } from '@/scripts/use-interval.js';
 
@@ -122,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 .root {
 	padding: 16px 0;
 
-	&::after {
+	&:after {
 		content: "";
 		display: block;
 		clear: both;
@@ -214,6 +213,6 @@ defineExpose<WidgetComponentExpose>({
 
 .meterVal {
 	height: 4px;
-	transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+	transition: width .3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 </style>

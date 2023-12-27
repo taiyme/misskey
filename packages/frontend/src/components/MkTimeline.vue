@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -34,8 +33,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	note: [];
-	queue: [count: number];
+	(ev: 'note'): void;
+	(ev: 'queue', count: number): void;
 }>();
 
 provide('inChannel', computed(() => props.src === 'channel'));

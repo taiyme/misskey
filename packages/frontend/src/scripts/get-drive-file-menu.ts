@@ -1,13 +1,12 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import { copyText } from '@/scripts/tms/clipboard.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { MenuItem } from '@/types/menu.js';
 import { defaultStore } from '@/store.js';
@@ -54,7 +53,7 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 }
 
 function copyUrl(file: Misskey.entities.DriveFile) {
-	copyText(file.url);
+	copyToClipboard(file.url);
 	os.success();
 }
 /*
@@ -130,7 +129,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 			icon: 'ti ti-id',
 			text: i18n.ts.copyFileId,
 			action: () => {
-				copyText(file.id);
+				copyToClipboard(file.id);
 			},
 		}]);
 	}

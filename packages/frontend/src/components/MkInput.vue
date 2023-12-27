@@ -1,25 +1,13 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div>
-	<div :class="$style.label" @click="focus">
-		<span v-if="slots.label || counter.hasLimit" :class="$style.labelText"><slot name="label"/></span>
-		<span v-if="counter.hasLimit"><TmsTextCount :counter="counter"/></span>
-	</div>
-	<div
-		:class="{
-			[$style.input]: true,
-			[$style.inline]: inline,
-			[$style.disabled]: disabled,
-			[$style.focused]: focused,
-			[$style.invalid]: invalid || userInvalid,
-		}"
-	>
-		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"/></div>
+	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
+	<div :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]">
+		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<input
 			ref="inputEl"
 			v-model="v"
@@ -39,40 +27,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:max="max"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown"
+			@keydown="onKeydown($event)"
 			@input="onInput"
-		/>
+		>
 		<datalist v-if="datalist" :id="id">
 			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
-		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"/></div>
+		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div :class="$style.caption"><slot name="caption"/></div>
+	<div :class="$style.caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary :disabled="invalid || userInvalid" :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
-<script lang="ts" setup generic="GenericInputType extends InputType = 'text', GenericNullable extends boolean = false">
-import { computed, onMounted, nextTick, ref, shallowRef, watch, toRefs } from 'vue';
+<script lang="ts" setup>
+import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
-import { v4 as uuid } from 'uuid';
 import MkButton from '@/components/MkButton.vue';
-import TmsTextCount from '@/components/TmsTextCount.vue';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
-import { textCounter } from '@/scripts/tms/text-counter.js';
-
-export type InputType = 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
-
-type ValueOrNullable<T> = GenericNullable extends true ? T | null : T;
-type GenericValue = ValueOrNullable<GenericInputType extends 'number' ? number : string>;
 
 const props = defineProps<{
-	modelValue: GenericValue; // generics
-	type?: GenericInputType; // generics
-	nullable?: GenericNullable; // generics
-	trim?: boolean;
+	modelValue: string | number | null;
+	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -81,7 +59,7 @@ const props = defineProps<{
 	autofocus?: boolean;
 	autocomplete?: string;
 	spellcheck?: boolean;
-	step?: number;
+	step?: any;
 	datalist?: string[];
 	min?: number;
 	max?: number;
@@ -90,68 +68,23 @@ const props = defineProps<{
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
-	minLength?: number;
-	maxLength?: number;
 }>();
 
 const emit = defineEmits<{
-	change: [ev: Event];
-	keydown: [ev: KeyboardEvent];
-	enter: [];
-	'update:modelValue': [value: GenericValue];
+	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'keydown', _ev: KeyboardEvent): void;
+	(ev: 'enter'): void;
+	(ev: 'update:modelValue', value: string | number): void;
 }>();
 
-const slots = defineSlots<{
-	label?(): any;
-	prefix?(): any;
-	suffix?(): any;
-	caption?(): any;
-}>();
-
-const { type: _type, modelValue, autofocus } = toRefs(props);
-const type = computed<InputType>(() => {
-	return (props.type ?? 'text') satisfies InputType;
-});
-const v = ref<string>(
-	// stringであればそのまま
-	typeof modelValue.value === 'string'
-		? modelValue.value
-		// numberであればstringに変換
-		: typeof modelValue.value === 'number'
-			? String(modelValue.value)
-			// null | undefinedであれば空文字
-			: modelValue.value == null
-				? ''
-				// それ以外は空文字
-				: ''
-);
-const computedValue = computed<GenericValue>(() => {
-	const raw = props.trim ? v.value.trim() : v.value;
-	if (props.nullable && !raw) {
-		return null as GenericValue;
-	}
-	if (props.type === 'number') {
-		return (parseFloat(raw.trim()) || 0) as GenericValue;
-	}
-	return raw as GenericValue;
-});
-const userInvalid = computed(() => {
-	if (!changed.value) return false;
-	const raw = props.trim ? v.value.trim() : v.value;
-	if (props.nullable && raw === '') return false;
-	if (props.type === 'number') {
-		const min = props.min ?? -Infinity;
-		const max = props.max ?? Infinity;
-		const num = parseFloat(raw.trim()) || 0;
-		return !(min <= num && num <= max);
-	}
-	return !!inputEl.value?.validity.badInput || (counter.value.hasLimit && counter.value.isOver);
-});
-const id = uuid();
+const { modelValue, type, autofocus } = toRefs(props);
+const v = ref(modelValue.value);
+const id = Math.random().toString(); // TODO: uuid?
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
-const inputEl = shallowRef<HTMLInputElement>();
+const filled = computed(() => v.value !== '' && v.value != null);
+const inputEl = shallowRef<HTMLElement>();
 const prefixEl = shallowRef<HTMLElement>();
 const suffixEl = shallowRef<HTMLElement>();
 const height =
@@ -159,14 +92,8 @@ const height =
 	props.large ? 39 :
 	36;
 
-const counter = textCounter({
-	input: [v],
-	maxChars: props.maxLength,
-	trim: props.trim,
-});
-
-const focus = (): void => inputEl.value?.focus();
-const onInput = (ev: Event): void => {
+const focus = () => inputEl.value.focus();
+const onInput = (ev: KeyboardEvent) => {
 	changed.value = true;
 	emit('change', ev);
 };
@@ -180,9 +107,13 @@ const onKeydown = (ev: KeyboardEvent) => {
 	}
 };
 
-const updated = (): void => {
+const updated = () => {
 	changed.value = false;
-	emit('update:modelValue', computedValue.value);
+	if (type.value === 'number') {
+		emit('update:modelValue', parseFloat(v.value));
+	} else {
+		emit('update:modelValue', v.value);
+	}
 };
 
 const debouncedUpdated = debounce(1000, updated);
@@ -191,9 +122,7 @@ watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, () => {
-	invalid.value = !!inputEl.value?.validity.badInput;
-
+watch(v, newValue => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -201,20 +130,21 @@ watch(v, () => {
 			updated();
 		}
 	}
+
+	invalid.value = inputEl.value.validity.badInput;
 });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
-	if (!inputEl.value) return;
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {
-			inputEl.value.style.paddingLeft = `${prefixEl.value.offsetWidth}px`;
+			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
 		}
 	}
 	if (suffixEl.value) {
 		if (suffixEl.value.offsetWidth) {
-			inputEl.value.style.paddingRight = `${suffixEl.value.offsetWidth}px`;
+			inputEl.value.style.paddingRight = suffixEl.value.offsetWidth + 'px';
 		}
 	}
 }, 100, {
@@ -239,20 +169,10 @@ defineExpose({
 .label {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
-	-webkit-user-select: none;
 	user-select: none;
-	min-height: 1.35em; // line-height
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 8px;
 
 	&:empty {
 		display: none;
-	}
-
-	> .labelText {
-		overflow-wrap: break-word;
 	}
 }
 
@@ -277,13 +197,7 @@ defineExpose({
 	&.focused {
 		> .inputCore {
 			border-color: var(--accent) !important;
-			// box-shadow: 0 0 0 4px var(--focus);
-		}
-	}
-
-	&.invalid {
-		> .inputCore {
-			border-color: var(--error) !important;
+			//box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 
@@ -298,10 +212,10 @@ defineExpose({
 }
 
 .inputCore {
-	-webkit-appearance: none;
 	appearance: none;
+	-webkit-appearance: none;
 	display: block;
-	height: v-bind("`${height}px`");
+	height: v-bind("height + 'px'");
 	width: 100%;
 	margin: 0;
 	padding: 0 12px;
@@ -331,7 +245,7 @@ defineExpose({
 	top: 0;
 	padding: 0 12px;
 	font-size: 1em;
-	height: v-bind("`${height}px`");
+	height: v-bind("height + 'px'");
 	min-width: 16px;
 	max-width: 150px;
 	overflow: hidden;
@@ -354,7 +268,6 @@ defineExpose({
 	right: 0;
 	padding-left: 6px;
 }
-
 .save {
 	margin: 8px 0 0 0;
 }

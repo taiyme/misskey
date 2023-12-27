@@ -1,11 +1,10 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-size="{ max: [500], min: [] }" :class="$style.root">
+<div :class="$style.root">
 	<button v-for="item in items" class="_button item" :class="{ disabled: item.hidden }" @click="onClick(item)">
 		<span class="box" :style="{ background: chart.config.type === 'line' ? item.strokeStyle?.toString() : item.fillStyle?.toString() }"></span>
 		{{ item.text }}
@@ -16,7 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { Chart, LegendItem } from 'chart.js';
 
-const props = defineProps<{}>();
+const props = defineProps({
+});
 
 let chart = $shallowRef<Chart>();
 let items = $shallowRef<LegendItem[]>([]);
@@ -77,8 +77,8 @@ defineExpose({
 	}
 }
 
-:global(:where(.max-width_500px)) {
-	&.root {
+@container (max-width: 500px) {
+	.root {
 		font-size: 90%;
 		gap: 6px;
 	}

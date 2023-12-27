@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer ref="contents" v-container="{ type: 'inlineSize' }" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
+	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header>
 			<div>
 				<XAnnouncements v-if="$i" :class="$style.announcements"/>
@@ -102,7 +101,7 @@ import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { mainRouter } from '@/router.js';
-import { type PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { CURRENT_STICKY_BOTTOM } from '@/const.js';
@@ -216,15 +215,14 @@ let navFooterHeight = $ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
 
 watch($$(navFooter), () => {
-	const { documentElement: html, body } = document;
 	if (navFooter) {
 		navFooterHeight = navFooter.offsetHeight;
-		body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
-		html.style.setProperty('--navFooterHeight', 'var(--navFooterEnabledHeight)');
+		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
 	} else {
 		navFooterHeight = 0;
-		body.style.setProperty('--stickyBottom', '0px');
-		html.style.setProperty('--navFooterHeight', 'var(--navFooterDisabledHeight)');
+		document.body.style.setProperty('--stickyBottom', '0px');
+		document.body.style.setProperty('--minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,
@@ -233,12 +231,11 @@ watch($$(navFooter), () => {
 useScrollPositionManager(() => contents.value.rootEl, mainRouter);
 </script>
 
-<style lang="scss">
+<style>
 html,
 body {
 	width: 100%;
 	height: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: fixed;
 	top: 0;
@@ -249,7 +246,6 @@ body {
 #misskey_app {
 	width: 100%;
 	height: 100%;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	position: absolute;
 	top: 0;
@@ -306,9 +302,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .root {
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: strict;
 	box-sizing: border-box;
@@ -334,7 +328,7 @@ $widgets-hide-threshold: 1090px;
 	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
-	padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom));
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -367,9 +361,8 @@ $widgets-hide-threshold: 1090px;
 	right: 0;
 	z-index: 1001;
 	width: 310px;
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
-	padding: var(--margin) var(--margin) calc(var(--margin) + var(--safeAreaInsetBottom)) !important;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -393,7 +386,7 @@ $widgets-hide-threshold: 1090px;
 	z-index: 1000;
 	bottom: 0;
 	left: 0;
-	padding: 12px 12px max(12px, var(--safeAreaInsetBottom)) 12px;
+	padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	grid-gap: 8px;
@@ -462,7 +455,6 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	left: 0;
 	z-index: 1001;
-	height: calc(var(--vh, 1vh) * 100); // fallback (dvh units)
 	height: 100dvh;
 	width: 240px;
 	box-sizing: border-box;

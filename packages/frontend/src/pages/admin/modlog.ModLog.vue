@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -113,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { CodeDiff } from 'v-code-diff';
 import JSON5 from 'json5';
 import * as os from '@/os.js';
@@ -139,7 +138,6 @@ const props = defineProps<{
 	background: #fff;
 	color: #000;
 	border-radius: 6px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

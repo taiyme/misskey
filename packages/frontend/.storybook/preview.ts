@@ -1,6 +1,5 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -22,7 +21,7 @@ let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
 
-function loadTheme(applyTheme: typeof import('../src/scripts/theme.js')['applyTheme']) {
+function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
 	unobserve();
 	const theme = themes[document.documentElement.dataset.misskeyTheme];
 	if (theme) {
@@ -65,12 +64,12 @@ initialize({
 initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
-		import('../src/components/index.js'),
-		import('../src/directives/index.js'),
-		import('../src/widgets/index.js'),
-		import('../src/scripts/theme.js'),
-		import('../src/store.js'),
-		import('../src/os.js'),
+		import('../src/components'),
+		import('../src/directives'),
+		import('../src/widgets'),
+		import('../src/scripts/theme'),
+		import('../src/store'),
+		import('../src/os'),
 	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
@@ -105,7 +104,7 @@ const preview = {
 							}
 						}).catch(() => {})
 					: Promise.resolve();
-				const resetDefaultStorePromise = import('../src/store.js').then(({ defaultStore }) => {
+				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
 					// @ts-expect-error
 					defaultStore.init();
 				}).catch(() => {});

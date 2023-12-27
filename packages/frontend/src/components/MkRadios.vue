@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -55,7 +54,6 @@ export default defineComponent({
 	> .label {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
-		-webkit-user-select: none;
 		user-select: none;
 
 		&:empty {
@@ -65,8 +63,8 @@ export default defineComponent({
 
 	> .body {
 		display: flex;
-		gap: 12px;
-		flex-wrap: wrap;
+    gap: 12px;
+    flex-wrap: wrap;
 	}
 
 	> .caption {

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -49,9 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted } from 'vue';
-import { openInstanceMenu } from './_common_/common.js';
+import { openInstanceMenu } from './_common_/common';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
+import { navbarItemDef } from '@/navbar';
 import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store.js';

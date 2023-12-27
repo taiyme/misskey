@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,8 +7,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
-	@close="dialog?.close()"
-	@closed="emit('closed')"
+	@close="dialog.close()"
+	@closed="$emit('closed')"
 >
 	<template v-if="announcement" #header>:{{ announcement.title }}:</template>
 	<template v-else #header>New announcement</template>
@@ -17,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div class="_gaps_m">
-				<MkInput type="text" v-model="title">
+				<MkInput v-model="title">
 					<template #label>{{ i18n.ts.title }}</template>
 				</MkInput>
 				<MkTextarea v-model="text">
@@ -52,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -63,8 +62,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
-	announcement?: any;
+	user: Misskey.entities.User,
+	announcement?: any,
 }>();
 
 let dialog = $ref(null);
@@ -75,8 +74,8 @@ let display: string = $ref(props.announcement ? props.announcement.display : 'di
 let needConfirmationToRead = $ref(props.announcement ? props.announcement.needConfirmationToRead : false);
 
 const emit = defineEmits<{
-	done: [v: { deleted?: boolean; updated?: any; created?: any; }];
-	closed: [];
+	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
+	(ev: 'closed'): void
 }>();
 
 async function done() {
@@ -103,7 +102,7 @@ async function done() {
 			},
 		});
 
-		dialog?.close();
+		dialog.close();
 	} else {
 		const created = await os.apiWithDialog('admin/announcements/create', params);
 
@@ -111,7 +110,7 @@ async function done() {
 			created: created,
 		});
 
-		dialog?.close();
+		dialog.close();
 	}
 }
 
@@ -128,7 +127,7 @@ async function del() {
 		emit('done', {
 			deleted: true,
 		});
-		dialog?.close();
+		dialog.close();
 	});
 }
 </script>

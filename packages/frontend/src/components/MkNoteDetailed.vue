@@ -1,13 +1,11 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <div
 	v-if="!muted"
-	v-size="{ max: [500, 450, 350, 300], min: [] }"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -67,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
-		<div v-container="{ type: 'inlineSize' }" :class="$style.noteContent">
+		<div :class="$style.noteContent">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
 				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
 				<MkCwButton v-model="showContent" :note="appearNote"/>
@@ -188,7 +186,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef } from 'vue';
 import * as mfm from 'mfm-js';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -213,11 +211,11 @@ import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
-import type { MenuItem } from '@/types/menu.js';
+import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import MkPagination, { type Paging } from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 
@@ -523,7 +521,6 @@ function loadConversation() {
 .root {
 	position: relative;
 	transition: box-shadow 0.1s ease;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 }
@@ -680,7 +677,6 @@ function loadConversation() {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -765,54 +761,48 @@ function loadConversation() {
 	border-color: var(--accent);
 }
 
-:global(:where(.max-width_500px)) {
-	&.root {
+@container (max-width: 500px) {
+	.root {
 		font-size: 0.9em;
 	}
 }
 
-:global(:where(.max-width_450px)) {
-	&:where(.root) {
-		.renote {
-			padding: 8px 16px 0 16px;
-		}
+@container (max-width: 450px) {
+	.renote {
+		padding: 8px 16px 0 16px;
+	}
 
-		.note {
-			padding: 16px;
-		}
+	.note {
+		padding: 16px;
+	}
 
-		.noteHeaderAvatar {
-			width: 50px;
-			height: 50px;
+	.noteHeaderAvatar {
+		width: 50px;
+		height: 50px;
+	}
+}
+
+@container (max-width: 350px) {
+	.noteFooterButton {
+		&:not(:last-child) {
+			margin-right: 18px;
 		}
 	}
 }
 
-:global(:where(.max-width_350px)) {
-	&:where(.root) {
-		.noteFooterButton {
-			&:not(:last-child) {
-				margin-right: 18px;
-			}
-		}
-	}
-}
-
-:global(:where(.max-width_300px)) {
-	&.root {
+@container (max-width: 300px) {
+	.root {
 		font-size: 0.825em;
 	}
 
-	&:where(.root) {
-		.noteHeaderAvatar {
-			width: 50px;
-			height: 50px;
-		}
+	.noteHeaderAvatar {
+		width: 50px;
+		height: 50px;
+	}
 
-		.noteFooterButton {
-			&:not(:last-child) {
-				margin-right: 12px;
-			}
+	.noteFooterButton {
+		&:not(:last-child) {
+			margin-right: 12px;
 		}
 	}
 }

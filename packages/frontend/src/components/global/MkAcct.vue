@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -16,14 +15,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode/';
 import MkCondensedLine from './MkCondensedLine.vue';
 import { host as hostRaw } from '@/config.js';
 import { defaultStore } from '@/store.js';
 
 defineProps<{
-	user: Pick<Misskey.entities.UserDetailed, 'username' | 'host'>;
+	user: Misskey.entities.UserDetailed;
 	detail?: boolean;
 }>();
 

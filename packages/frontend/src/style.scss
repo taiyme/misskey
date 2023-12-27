@@ -2,34 +2,26 @@
 
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 :root {
-	--safeAreaInsetTop: env(safe-area-inset-top, 0px);
-	--safeAreaInsetRight: env(safe-area-inset-right, 0px);
-	--safeAreaInsetBottom: env(safe-area-inset-bottom, 0px);
-	--safeAreaInsetLeft: env(safe-area-inset-left, 0px);
-
 	--radius: 12px;
 	--marginFull: 16px;
 	--marginHalf: 10px;
+
 	--margin: var(--marginFull);
 
-	--navFooterHeight: var(--navFooterDisabledHeight); // default
-	--navFooterEnabledHeight: 72px;
-	--navFooterDisabledHeight: 0px;
-
-	--minBottomSpacing: calc(var(--navFooterHeight) + var(--safeAreaInsetBottom));
+	// switch dynamically
+	--minBottomSpacingMobile: calc(72px + max(12px, env(safe-area-inset-bottom, 0px)));
+	--minBottomSpacing: var(--minBottomSpacingMobile);
 
 	@media (max-width: 500px) {
 		--margin: var(--marginHalf);
-		--navFooterHeight: var(--navFooterEnabledHeight); // default
 	}
 
-	// --ad: rgba(255, 169, 0, 0.1);
+	//--ad: rgb(255 169 0 / 10%);
 }
 
 ::selection {
@@ -46,9 +38,9 @@ html {
 	font-family: 'Hiragino Maru Gothic Pro', "BIZ UDGothic", Roboto, HelveticaNeue, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 1.35;
-	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 	tab-size: 2;
+	-webkit-text-size-adjust: 100%;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) transparent;
@@ -110,6 +102,7 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
+	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
@@ -123,6 +116,7 @@ a {
 }
 
 textarea, input {
+	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 }
 
@@ -143,7 +137,7 @@ hr {
 	vertical-align: -12%;
 	line-height: 1em;
 
-	&::before {
+	&:before {
 		font-size: 128%;
 	}
 }
@@ -162,8 +156,8 @@ hr {
 }
 
 ._noSelect {
-	-webkit-user-select: none;
 	user-select: none;
+	-webkit-user-select: none;
 	-webkit-touch-callout: none;
 }
 
@@ -196,7 +190,6 @@ hr {
 
 ._button {
 	@extend ._noSelect;
-	-webkit-appearance: none;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
@@ -206,6 +199,7 @@ hr {
 	cursor: pointer;
 	color: inherit;
 	touch-action: manipulation;
+	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 	font-family: inherit;
@@ -267,7 +261,6 @@ hr {
 ._panel {
 	background: var(--panel);
 	border-radius: var(--radius);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -414,7 +407,7 @@ hr {
 ._zoom {
 	transition-duration: 0.5s, 0.5s;
 	transition-property: opacity, transform;
-	transition-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+	transition-timing-function: cubic-bezier(0,.5,.5,1);
 }
 
 ._transition_zoom-enter-active, ._transition_zoom-leave-active {
@@ -423,21 +416,6 @@ hr {
 ._transition_zoom-enter-from, ._transition_zoom-leave-to {
 	opacity: 0;
 	transform: scale(0.9);
-}
-
-._clip_x {
-	overflow-x: hidden; // fallback (overflow: clip)
-	overflow-x: clip;
-}
-
-._clip_y {
-	overflow-y: hidden; // fallback (overflow: clip)
-	overflow-y: clip;
-}
-
-._clip {
-	overflow: hidden; // fallback (overflow: clip)
-	overflow: clip;
 }
 
 @keyframes blink {
@@ -476,31 +454,31 @@ hr {
 
 ._anime_bounce {
 	will-change: transform;
-	animation: bounce ease 0.7s;
-	animation-iteration-count: 1;
-	transform-origin: 50% 50%;
+  animation: bounce ease 0.7s;
+  animation-iteration-count: 1;
+  transform-origin: 50% 50%;
 }
 ._anime_bounce_ready {
 	will-change: transform;
-	transform: scaleX(0.90) scaleY(0.90);
+	transform:  scaleX(0.90) scaleY(0.90) ;
 }
 ._anime_bounce_standBy {
 	transition: transform 0.1s ease;
 }
 
 @keyframes bounce {
-	0% {
-		transform: scaleX(0.90) scaleY(0.90);
-	}
-	19% {
-		transform: scaleX(1.10) scaleY(1.10);
-	}
-	48% {
-		transform: scaleX(0.95) scaleY(0.95);
-	}
-	100% {
-		transform: scaleX(1.00) scaleY(1.00);
-	}
+  0% {
+    transform:  scaleX(0.90) scaleY(0.90) ;
+  }
+  19% {
+    transform:  scaleX(1.10) scaleY(1.10) ;
+  }
+  48% {
+    transform:  scaleX(0.95) scaleY(0.95) ;
+  }
+  100% {
+    transform:  scaleX(1.00) scaleY(1.00) ;
+  }
 }
 
 // MFM -----------------------------

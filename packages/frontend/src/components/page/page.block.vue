@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
 import XNote from './page.note.vue';
-import type { Block } from './block.type.js';
+import { Block } from './block.type';
 
 function getComponent(type: string) {
 	switch (type) {
@@ -28,8 +27,8 @@ function getComponent(type: string) {
 }
 
 defineProps<{
-	block: Block;
-	h: number;
-	page: Misskey.entities.Page;
+	block: Block,
+	h: number,
+	page: Misskey.entities.Page,
 }>();
 </script>

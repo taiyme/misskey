@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
@@ -57,7 +56,7 @@ function leaveHover(): void {
 
 <style lang="scss" module>
 .transition_toggle_leaveActive {
-	transition: opacity 0.5s;
+	transition: opacity .5s;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -84,7 +83,7 @@ function leaveHover(): void {
 
 		> article {
 			> footer {
-				&::before {
+				&:before {
 					opacity: 1;
 				}
 			}
@@ -140,7 +139,7 @@ function leaveHover(): void {
 			text-shadow: 0 0 8px #000;
 			background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
 
-			&::before {
+			&:before {
 				content: "";
 				display: block;
 				position: absolute;

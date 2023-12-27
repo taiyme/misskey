@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -48,9 +47,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, toRef } from 'vue';
-import { openInstanceMenu } from './common.js';
+import { openInstanceMenu } from './common';
 import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
+import { navbarItemDef } from '@/navbar';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -101,8 +100,8 @@ function more() {
 	height: 100%;
 	background-size: cover;
 	background-position: center center;
-	-webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
-	mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
+	-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
+	mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
 }
 
 .instance {
@@ -136,7 +135,7 @@ function more() {
 	font-weight: bold;
 	text-align: left;
 
-	&::before {
+	&:before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);
@@ -152,7 +151,7 @@ function more() {
 	}
 
 	&:hover, &.active {
-		&::before {
+		&:before {
 			background: var(--accentLighten);
 		}
 	}
@@ -223,7 +222,7 @@ function more() {
 	}
 
 	&:hover, &.active {
-		&::before {
+		&:before {
 			content: "";
 			display: block;
 			width: calc(100% - 24px);

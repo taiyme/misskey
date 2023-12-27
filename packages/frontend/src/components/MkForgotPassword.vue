@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,12 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<form v-if="instance.enableEmail" @submit.prevent="onSubmit">
 			<div class="_gaps_m">
-				<MkInput type="text" v-model="username" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
+				<MkInput v-model="username" type="text" pattern="^[a-zA-Z0-9_]+$" :spellcheck="false" autofocus required>
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
 
-				<MkInput type="email" v-model="email" :spellcheck="false" required>
+				<MkInput v-model="email" type="email" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.emailAddress }}</template>
 					<template #caption>{{ i18n.ts._forgotPassword.enterEmail }}</template>
 				</MkInput>
@@ -50,8 +49,8 @@ import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
-	done: [];
-	closed: [];
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 let dialog: InstanceType<typeof MkModalWindow> = $ref();

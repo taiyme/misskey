@@ -1,37 +1,38 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, watch, version as vueVersion, App } from 'vue';
+import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
+import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, commitHash } from '@/config.js';
+import { version, ui, lang, updateLocale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
-import { checkUpdateLocale } from '@/scripts/tms/check-update-locale.js';
-import { $i, refreshAccount, login } from '@/account.js';
+import { i18n, updateI18n } from '@/i18n.js';
+import { confirm, alert, post, popup, toast } from '@/os.js';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
 import { defaultStore, ColdDeviceStorage } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { reloadChannel } from '@/scripts/unison-reload.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { getUrlWithoutLoginId } from '@/scripts/login-id.js';
 import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { checkUpdated } from '@/scripts/tms/check-updated.js';
-import { withV } from '@/scripts/tms/version.js';
+import { mainRouter } from '@/router.js';
 
 export async function common(createVue: () => App<Element>) {
-	console.info(`taiyme/misskey ${withV(version)} (${commitHash})`);
+	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
 
-		console.info(`vue ${withV(vueVersion)}`);
+		console.info(`vue ${vueVersion}`);
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(window as any).$i = $i;
@@ -40,39 +41,65 @@ export async function common(createVue: () => App<Element>) {
 
 		window.addEventListener('error', event => {
 			console.error(event);
-			// alert({
-			// 	type: 'error',
-			// 	title: 'DEV: Unhandled error',
-			// 	text: event.message,
-			// });
+			/*
+			alert({
+				type: 'error',
+				title: 'DEV: Unhandled error',
+				text: event.message
+			});
+			*/
 		});
 
 		window.addEventListener('unhandledrejection', event => {
 			console.error(event);
-			// alert({
-			// 	type: 'error',
-			// 	title: 'DEV: Unhandled promise rejection',
-			// 	text: event.reason,
-			// });
+			/*
+			alert({
+				type: 'error',
+				title: 'DEV: Unhandled promise rejection',
+				text: event.reason
+			});
+			*/
 		});
 	}
 
 	const splash = document.getElementById('splash');
 	// 念のためnullチェック(HTMLが古い場合があるため(そのうち消す))
-	splash?.addEventListener('transitionend', () => {
+	if (splash) splash.addEventListener('transitionend', () => {
 		splash.remove();
 	});
 
+	let isClientUpdated = false;
+
 	//#region クライアントが更新されたかチェック
-	const {
-		isThemeRemoved,
-		isClientUpdated,
-		isCommitChanged,
-	} = await checkUpdated();
+	const lastVersion = miLocalStorage.getItem('lastVersion');
+	if (lastVersion !== version) {
+		miLocalStorage.setItem('lastVersion', version);
+
+		// テーマリビルドするため
+		miLocalStorage.removeItem('theme');
+
+		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
+			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+				isClientUpdated = true;
+			}
+		} catch (err) { /* empty */ }
+	}
 	//#endregion
 
 	//#region Detect language & fetch translations
-	await checkUpdateLocale();
+	const localeVersion = miLocalStorage.getItem('localeVersion');
+	const localeOutdated = (localeVersion == null || localeVersion !== version);
+	if (localeOutdated) {
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		if (res.status === 200) {
+			const newLocale = await res.text();
+			const parsedNewLocale = JSON.parse(newLocale);
+			miLocalStorage.setItem('locale', newLocale);
+			miLocalStorage.setItem('localeVersion', version);
+			updateLocale(parsedNewLocale);
+			updateI18n(parsedNewLocale);
+		}
+	}
 	//#endregion
 
 	// タッチデバイスでCSSの:hoverを機能させる
@@ -84,29 +111,16 @@ export async function common(createVue: () => App<Element>) {
 		else location.reload();
 	});
 
-	//#region SEE: https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-	try {
-		if (!window.CSS.supports('height', '1dvh')) throw new Error();
-		document.documentElement.style.setProperty('--vh', '1dvh'); // 後方互換性のため
-	} catch {
-		// fallback (dvh units)
-		const setViewportHeight = (): void => {
-			const vh = window.innerHeight * 0.01;
-			document.documentElement.style.setProperty('--vh', `${vh}px`);
-		};
-		setViewportHeight();
-		window.addEventListener('resize', setViewportHeight, { passive: true });
-	}
-	//#endregion
-
 	// If mobile, insert the viewport meta tag
 	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-		viewport?.setAttribute('content', `${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+		const viewport = document.getElementsByName('viewport').item(0);
+		viewport.setAttribute('content',
+			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
 	}
 
 	//#region Set lang attr
-	document.documentElement.setAttribute('lang', lang);
+	const html = document.documentElement;
+	html.setAttribute('lang', lang);
 	//#endregion
 
 	await defaultStore.ready;
@@ -139,7 +153,7 @@ export async function common(createVue: () => App<Element>) {
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	watch(defaultStore.reactiveState.darkMode, (darkMode) => {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
-	}, { immediate: isThemeRemoved });
+	}, { immediate: miLocalStorage.getItem('theme') == null });
 
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
@@ -251,9 +265,7 @@ export async function common(createVue: () => App<Element>) {
 	removeSplash();
 
 	return {
-		isThemeRemoved,
 		isClientUpdated,
-		isCommitChanged,
 		app,
 	};
 }

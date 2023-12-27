@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -33,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch, provide } from 'vue';
-import { type Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll.js';
@@ -44,7 +43,7 @@ import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { antennasCache, userListsCache } from '@/cache.js';
+import { antennasCache, userListsCache } from '@/cache';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -248,7 +247,6 @@ definePageMetadata(computed(() => ({
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);
-	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 </style>

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -65,7 +64,7 @@ async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLE
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef } from 'vue';
-import type * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
@@ -73,7 +72,7 @@ import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { FILE_TYPE_BROWSERSAFE } from '@/const';
 import { defaultStore } from '@/store.js';
 import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll.js';
 
@@ -281,11 +280,6 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 		min-height: 64px;
 		max-height: clamp(
 			64px,
-			calc(var(--cqh, 1vh) * 50),
-			min(360px, 50vh)
-		); // fallback (cqh units)
-		max-height: clamp(
-			64px,
 			50cqh,
 			min(360px, 50vh)
 		);
@@ -359,7 +353,6 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 <style lang="scss">
 .pswp__bg {
 	background: var(--modalBg);
-	-webkit-backdrop-filter: var(--modalBgFilter);
 	backdrop-filter: var(--modalBgFilter);
 }
 

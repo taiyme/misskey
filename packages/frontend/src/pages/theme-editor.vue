@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -52,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.editCode }}</template>
 
 				<div class="_gaps_m">
-					<MkTextarea v-model="themeCode" nullable tall>
+					<MkTextarea v-model="themeCode" tall>
 						<template #label>{{ i18n.ts._theme.code }}</template>
 					</MkTextarea>
 					<MkButton primary @click="applyThemeCode">{{ i18n.ts.apply }}</MkButton>
@@ -63,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
 				<div class="_gaps_m">
-					<MkTextarea v-model="description" nullable>
+					<MkTextarea v-model="description">
 						<template #label>{{ i18n.ts._theme.description }}</template>
 					</MkTextarea>
 				</div>
@@ -85,13 +84,13 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
 import { $i } from '@/account.js';
-import { type Theme, applyTheme } from '@/scripts/theme.js';
+import { Theme, applyTheme } from '@/scripts/theme.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { host } from '@/config.js';
 import * as os from '@/os.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { addTheme } from '@/theme-store.js';
+import { addTheme } from '@/theme-store';
 import { i18n } from '@/i18n.js';
 import { useLeaveGuard } from '@/scripts/use-leave-guard.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
@@ -257,7 +256,7 @@ definePageMetadata({
 					width: 42px;
 					height: 42px;
 					border-radius: 4px;
-					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+					box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 					transition: transform 0.15s ease;
 				}
 

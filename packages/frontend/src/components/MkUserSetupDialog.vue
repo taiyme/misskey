@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
-	<div class="_clip_x">
+	<div style="overflow-x: clip;">
 		<div :class="$style.progressBar">
 			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
 		</div>
@@ -46,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 1">
-				<div :class="$style.page">
+				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XProfile/>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -57,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 2">
-				<div :class="$style.page">
+				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XPrivacy/>
 						<div class="_buttonsCenter" style="margin-top: 16px;">
@@ -68,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</template>
 			<template v-else-if="page === 3">
-				<div :class="$style.page">
+				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XFollow/>
 					</MkSpacer>
@@ -139,7 +138,7 @@ import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
 
 const emit = defineEmits<{
-	closed: [];
+	(ev: 'closed'): void;
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
@@ -180,7 +179,7 @@ async function later(later: boolean) {
 <style lang="scss" module>
 .transition_x_enterActive,
 .transition_x_leaveActive {
-	transition: opacity 0.3s cubic-bezier(0, 0, 0.35, 1), transform 0.3s cubic-bezier(0, 0, 0.35, 1);
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
 }
 .transition_x_enterFrom {
 	opacity: 0;
@@ -203,14 +202,13 @@ async function later(later: boolean) {
 .progressBarValue {
 	height: 100%;
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-	transition: all 0.5s cubic-bezier(0, 0.5, 0.5, 1);
+	transition: all 0.5s cubic-bezier(0,.5,.5,1);
 }
 
 .centerPage {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
 	height: 100cqh;
 	padding-bottom: 30px;
 	box-sizing: border-box;
@@ -224,11 +222,5 @@ async function later(later: boolean) {
 	border-top: solid 0.5px var(--divider);
 	-webkit-backdrop-filter: blur(15px);
 	backdrop-filter: blur(15px);
-}
-
-.page {
-	height: calc(var(--cqh, 1vh) * 100); // fallback (cqh units)
-	height: 100cqh;
-	overflow: auto;
 }
 </style>

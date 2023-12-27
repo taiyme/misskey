@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="700">
 	<div>
 		<div class="_gaps_m">
-			<MkInput type="text" v-model="name" :minLength="1" :maxLength="100">
+			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
 			<MkSelect v-model="src">
@@ -60,13 +59,13 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	antenna: any;
+	antenna: any
 }>();
 
 const emit = defineEmits<{
-	created: [];
-	updated: [];
-	deleted: [];
+	(ev: 'created'): void,
+	(ev: 'updated'): void,
+	(ev: 'deleted'): void,
 }>();
 
 let name: string = $ref(props.antenna.name);

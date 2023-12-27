@@ -1,11 +1,10 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import isAnimated from 'is-file-animated';
-import { isWebpSupported } from './isWebpSupported.js';
+import { isWebpSupported } from './isWebpSupported';
 import type { BrowserImageResizerConfig } from 'browser-image-resizer';
 
 const compressTypeMap = {

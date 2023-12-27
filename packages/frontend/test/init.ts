@@ -1,18 +1,16 @@
 /*
  * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-FileCopyrightText: Copyright © 2023 taiy https://github.com/taiyme
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { vi } from 'vitest';
-// @ts-expect-error https://github.com/IanVS/vitest-fetch-mock/issues/10
 import createFetchMock from 'vitest-fetch-mock';
 
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
 // Set i18n
-import locales from '../../../locales/index.js';
+import locales from '../../../locales';
 import { updateI18n } from '@/i18n.js';
 updateI18n(locales['en-US']);
 
