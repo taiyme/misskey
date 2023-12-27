@@ -77,7 +77,7 @@ function getInstanceIcon(instance): string {
 .transition_change_leaveActive {
 	position: absolute;
 	top: 0;
-  transition: all 1s ease;
+	transition: all 1s ease;
 }
 .transition_change_enterFrom {
 	opacity: 0;

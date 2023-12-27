@@ -144,7 +144,7 @@ async function assign() {
 		: null;
 
 	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt });
-	//role.users.push(user);
+	// role.users.push(user);
 }
 
 async function unassign(user, ev) {
@@ -154,7 +154,7 @@ async function unassign(user, ev) {
 		danger: true,
 		action: async () => {
 			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			// role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }

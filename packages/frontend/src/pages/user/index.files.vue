@@ -118,7 +118,7 @@ onMounted(() => {
 	width: 100%;
 	height: 100%;
 	display: grid;
-  place-items: center;
+	place-items: center;
 	font-size: 0.8em;
 	color: #fff;
 	cursor: pointer;

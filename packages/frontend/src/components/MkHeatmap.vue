@@ -198,7 +198,7 @@ async function renderChart() {
 							return ['Active: ' + v.v];
 						},
 					},
-					//mode: 'index',
+					// mode: 'index',
 					animation: {
 						duration: 0,
 					},

@@ -139,7 +139,7 @@ const texts = computed(() => {
 
 let enabled = true;
 const majorGraduationColor = ref<string>();
-//let minorGraduationColor = $ref<string>();
+// let minorGraduationColor = $ref<string>();
 const sHandColor = ref<string>();
 const mHandColor = ref<string>();
 const hHandColor = ref<string>();
@@ -196,7 +196,7 @@ function calcColors() {
 	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
 	majorGraduationColor.value = dark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)';
-	//minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	// minorGraduationColor = dark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 	sHandColor.value = dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)';
 	mHandColor.value = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
 	hHandColor.value = accent;

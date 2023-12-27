@@ -1056,7 +1056,7 @@ defineExpose({
 	top: 0px;
 	left: 12px;
 	width: 5px;
-	height: 100% ;
+	height: 100%;
 	border-radius: 999px;
 	pointer-events: none;
 }

@@ -99,8 +99,8 @@ export const ROLE_POLICIES = [
 ] as const;
 
 // なんか動かない
-//export const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
-//export const CURRENT_STICKY_BOTTOM = Symbol('CURRENT_STICKY_BOTTOM');
+// export const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
+// export const CURRENT_STICKY_BOTTOM = Symbol('CURRENT_STICKY_BOTTOM');
 export const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 export const CURRENT_STICKY_BOTTOM = 'CURRENT_STICKY_BOTTOM';
 

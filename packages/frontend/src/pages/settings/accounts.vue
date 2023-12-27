@@ -113,6 +113,6 @@ definePageMetadata({
 
 <style lang="scss" module>
 .user {
-    cursor: pointer;
+	cursor: pointer;
 }
 </style>

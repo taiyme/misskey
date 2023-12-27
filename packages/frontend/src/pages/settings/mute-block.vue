@@ -164,7 +164,7 @@ async function unrenoteMute(user, ev) {
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('renote-mute/delete', { userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			// role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
@@ -175,7 +175,7 @@ async function unmute(user, ev) {
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('mute/delete', { userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			// role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
@@ -186,7 +186,7 @@ async function unblock(user, ev) {
 		icon: 'ti ti-x',
 		action: async () => {
 			await os.apiWithDialog('blocking/delete', { userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			// role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }

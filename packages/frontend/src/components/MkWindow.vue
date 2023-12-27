@@ -506,7 +506,7 @@ defineExpose({
 	background: var(--windowHeader);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	//border-bottom: solid 1px var(--divider);
+	// border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
 }

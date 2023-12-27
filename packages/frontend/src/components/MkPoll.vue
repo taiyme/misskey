@@ -104,7 +104,7 @@ const vote = async (id) => {
 	position: relative;
 	margin: 4px 0;
 	padding: 4px;
-	//border: solid 0.5px var(--divider);
+	// border: solid 0.5px var(--divider);
 	background: var(--accentedBg);
 	border-radius: 4px;
 	overflow: clip;

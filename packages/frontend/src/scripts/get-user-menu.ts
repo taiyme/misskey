@@ -295,7 +295,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		}
 
 		// フォローしたとしても user.isFollowing はリアルタイム更新されないので不便なため
-		//if (user.isFollowing) {
+		// if (user.isFollowing) {
 		menu = menu.concat([{
 			icon: user.withReplies ? 'ti ti-messages-off' : 'ti ti-messages',
 			text: user.withReplies ? i18n.ts.hideRepliesToOthersInTimeline : i18n.ts.showRepliesToOthersInTimeline,
@@ -305,7 +305,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			text: user.notify === 'none' ? i18n.ts.notifyNotes : i18n.ts.unnotifyNotes,
 			action: toggleNotify,
 		}]);
-		//}
+		// }
 
 		menu = menu.concat([{ type: 'divider' }, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',

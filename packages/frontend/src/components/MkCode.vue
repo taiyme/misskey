@@ -69,8 +69,8 @@ const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'))
 	background: none;
 	border: none;
 	outline: none;
-  font: inherit;
-  color: inherit;
+	font: inherit;
+	color: inherit;
 	cursor: pointer;
 
 	box-sizing: border-box;

@@ -139,7 +139,7 @@ async function renderChart() {
 					},
 					ticks: {
 						display: true,
-						//mirror: true,
+						// mirror: true,
 					},
 				},
 			},

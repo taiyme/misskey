@@ -41,9 +41,9 @@ const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
-  pinnedEmojis?: string[],
+	pinnedEmojis?: string[],
 	asReactionPicker?: boolean;
-  choseAndClose?: boolean;
+	choseAndClose?: boolean;
 }>(), {
 	manualShowing: null,
 	showPinned: true,

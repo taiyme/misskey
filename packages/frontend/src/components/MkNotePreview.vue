@@ -82,7 +82,7 @@ const props = defineProps<{
 	font-weight: bold;
 	width: 100%;
 	overflow: clip;
-    text-overflow: ellipsis;
+	text-overflow: ellipsis;
 }
 
 @container (min-width: 350px) {

@@ -145,7 +145,7 @@ onMounted(async () => {
 					},
 					ticks: {
 						display: true,
-						//mirror: true,
+						// mirror: true,
 						callback: (value, index, values) => value < 0 ? -value : value,
 					},
 				},

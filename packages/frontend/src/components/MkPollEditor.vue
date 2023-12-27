@@ -105,7 +105,7 @@ function add() {
 	choices.value.push('');
 	// TODO
 	// nextTick(() => {
-	//   (this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
+	// 	(this.$refs.choices as any).childNodes[this.choices.length - 1].childNodes[0].focus();
 	// });
 }
 

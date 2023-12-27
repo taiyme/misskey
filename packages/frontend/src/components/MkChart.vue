@@ -212,7 +212,7 @@ const render = () => {
 					},
 					ticks: {
 						display: props.detailed,
-						//mirror: true,
+						// mirror: true,
 					},
 				},
 			},

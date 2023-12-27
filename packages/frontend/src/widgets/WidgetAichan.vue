@@ -37,7 +37,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const live2d = shallowRef<HTMLIFrameElement>();
 
 const touched = () => {
-	//if (this.live2d) this.live2d.changeExpression('gurugurume');
+	// if (this.live2d) this.live2d.changeExpression('gurugurume');
 };
 
 const onMousemove = (ev: MouseEvent) => {

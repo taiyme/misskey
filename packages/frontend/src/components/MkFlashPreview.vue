@@ -23,7 +23,7 @@ import { } from 'vue';
 import { userName } from '@/filters/user.js';
 
 const props = defineProps<{
-	//flash: Misskey.entities.Flash;
+	// flash: Misskey.entities.Flash;
 	flash: any;
 }>();
 </script>

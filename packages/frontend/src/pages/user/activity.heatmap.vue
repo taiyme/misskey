@@ -191,7 +191,7 @@ async function renderChart() {
 							return [v.v];
 						},
 					},
-					//mode: 'index',
+					// mode: 'index',
 					animation: {
 						duration: 0,
 					},

@@ -125,7 +125,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function onAiClick(ev) {
-	//if (this.live2d) this.live2d.click(ev);
+	// if (this.live2d) this.live2d.click(ev);
 }
 
 if (window.innerWidth < 1024) {
@@ -213,14 +213,14 @@ onMounted(() => {
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
+		// backdrop-filter: var(--blur, blur(4px));
 	}
 
 	> .columns {
 		display: flex;
 		justify-content: center;
 		max-width: 100%;
-		//margin: 32px 0;
+		// margin: 32px 0;
 
 		&.fullView {
 			margin: 0;
@@ -253,7 +253,7 @@ onMounted(() => {
 		}
 
 		> .widgets {
-			//--panelBorder: none;
+			// --panelBorder: none;
 			width: 300px;
 			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 

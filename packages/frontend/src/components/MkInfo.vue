@@ -33,7 +33,7 @@ function close() {
 <style lang="scss" module>
 .root {
 	display: flex;
-  align-items: center;
+	align-items: center;
 	padding: 12px 14px;
 	font-size: 90%;
 	background: var(--infoBg);
