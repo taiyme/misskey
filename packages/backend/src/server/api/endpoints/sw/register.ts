@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	secure: true,
 
 	description: 'Register to receive push notifications.',
 
@@ -88,8 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			await this.swSubscriptionsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				endpoint: ps.endpoint,
 				auth: ps.auth,

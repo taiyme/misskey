@@ -15,6 +15,13 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:ad',
+	res: {
+		type: 'object',
+		optional: false,
+		nullable: false,
+		ref: 'Ad',
+	},
 } as const;
 
 export const paramDef = {
@@ -44,8 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ad = await this.adsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				expiresAt: new Date(ps.expiresAt),
 				startsAt: new Date(ps.startsAt),
 				dayOfWeek: ps.dayOfWeek,
@@ -62,7 +68,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ad: ad,
 			});
 
-			return ad;
+			return {
+				id: ad.id,
+				expiresAt: ad.expiresAt.toISOString(),
+				startsAt: ad.startsAt.toISOString(),
+				dayOfWeek: ad.dayOfWeek,
+				url: ad.url,
+				imageUrl: ad.imageUrl,
+				priority: ad.priority,
+				ratio: ad.ratio,
+				place: ad.place,
+				memo: ad.memo,
+			};
 		});
 	}
 }

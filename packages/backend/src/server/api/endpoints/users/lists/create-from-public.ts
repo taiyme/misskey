@@ -18,6 +18,7 @@ import { UserListService } from '@/core/UserListService.js';
 export const meta = {
 	requireCredential: true,
 	prohibitMoved: true,
+	kind: 'write:account',
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -104,8 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const userList = await this.userListsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
 			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));

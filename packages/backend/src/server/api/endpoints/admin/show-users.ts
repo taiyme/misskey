@@ -16,6 +16,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:show-users',
 
 	res: {
 		type: 'array',
@@ -99,8 +100,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			switch (ps.sort) {
 				case '+follower': query.orderBy('user.followersCount', 'DESC'); break;
 				case '-follower': query.orderBy('user.followersCount', 'ASC'); break;
-				case '+createdAt': query.orderBy('user.createdAt', 'DESC'); break;
-				case '-createdAt': query.orderBy('user.createdAt', 'ASC'); break;
+				case '+createdAt': query.orderBy('user.id', 'DESC'); break;
+				case '-createdAt': query.orderBy('user.id', 'ASC'); break;
 				case '+updatedAt': query.orderBy('user.updatedAt', 'DESC', 'NULLS LAST'); break;
 				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC', 'NULLS FIRST'); break;
 				case '+lastActiveDate': query.orderBy('user.lastActiveDate', 'DESC', 'NULLS LAST'); break;

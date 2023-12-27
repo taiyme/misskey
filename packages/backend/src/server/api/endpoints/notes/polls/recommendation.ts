@@ -14,6 +14,7 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'array',
@@ -98,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					id: In(polls.map(poll => poll.noteId)),
 				},
 				order: {
-					createdAt: 'DESC',
+					id: 'DESC',
 				},
 			});
 

@@ -16,7 +16,7 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { RedisTimelineService } from '@/core/RedisTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AntennaService implements OnApplicationShutdown {
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,
-		private redisTimelineService: RedisTimelineService,
+		private fanoutTimelineService: FanoutTimelineService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];
@@ -57,16 +57,24 @@ export class AntennaService implements OnApplicationShutdown {
 				case 'antennaCreated':
 					this.antennas.push({
 						...body,
-						createdAt: new Date(body.createdAt),
 						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
-				case 'antennaUpdated':
-					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
-						...body,
-						createdAt: new Date(body.createdAt),
-						lastUsedAt: new Date(body.lastUsedAt),
-					};
+				case 'antennaUpdated': {
+					const idx = this.antennas.findIndex(a => a.id === body.id);
+					if (idx >= 0) {
+						this.antennas[idx] = {
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						};
+					} else {
+						// サーバ起動時にactiveじゃなかった場合、リストに持っていないので追加する必要あり
+						this.antennas.push({
+							...body,
+							lastUsedAt: new Date(body.lastUsedAt),
+						});
+					}
+				}
 					break;
 				case 'antennaDeleted':
 					this.antennas = this.antennas.filter(a => a.id !== body.id);
@@ -86,7 +94,7 @@ export class AntennaService implements OnApplicationShutdown {
 		const redisPipeline = this.redisForTimelines.pipeline();
 
 		for (const antenna of matchedAntennas) {
-			this.redisTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
+			this.fanoutTimelineService.push(`antennaTimeline:${antenna.id}`, note.id, 200, redisPipeline);
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
@@ -99,6 +107,8 @@ export class AntennaService implements OnApplicationShutdown {
 	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
+
+		if (antenna.localOnly && noteUser.host != null) return false;
 
 		if (!antenna.withReplies && note.replyId != null) return false;
 

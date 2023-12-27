@@ -18,6 +18,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:invite-codes',
 
 	errors: {
 		invalidDateTime: {
@@ -33,13 +34,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			properties: {
-				code: {
-					type: 'string',
-					optional: false, nullable: false,
-					example: 'GR6S02ERUA5VR',
-				},
-			},
+			ref: 'InviteCode',
 		},
 	},
 } as const;
@@ -72,8 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			for (let i = 0; i < ps.count; i++) {
 				ticketsPromises.push(this.registrationTicketsRepository.insert({
-					id: this.idService.genId(),
-					createdAt: new Date(),
+					id: this.idService.gen(),
 					expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
 					code: generateInviteCode(),
 				}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0])));

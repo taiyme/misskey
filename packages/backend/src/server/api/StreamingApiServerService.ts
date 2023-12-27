@@ -15,6 +15,7 @@ import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -39,6 +40,7 @@ export class StreamingApiServerService {
 		private channelsService: ChannelsService,
 		private notificationService: NotificationService,
 		private usersService: UserService,
+		private channelFollowingService: ChannelFollowingService,
 	) {
 	}
 
@@ -69,6 +71,10 @@ export class StreamingApiServerService {
 
 			try {
 				[user, app] = await this.authenticateService.authenticate(token);
+
+				if (app !== null && !app.permission.some(p => p === 'read:account')) {
+					throw new AuthenticationError('Your app does not have necessary permissions to use websocket API.');
+				}
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
 					socket.write([
@@ -93,6 +99,7 @@ export class StreamingApiServerService {
 				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
+				this.channelFollowingService,
 				user, app,
 			);
 

@@ -30,6 +30,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 
 const FALLBACK = '❤';
+const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -137,7 +138,7 @@ export class ReactionService {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
-						if ((note.reactionAcceptance === 'nonSensitiveOnly') && emoji.isSensitive) {
+						if ((note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && emoji.isSensitive) {
 							reaction = FALLBACK;
 						}
 					} else {
@@ -148,13 +149,12 @@ export class ReactionService {
 					reaction = FALLBACK;
 				}
 			} else {
-				reaction = this.normalize(reaction ?? null);
+				reaction = this.normalize(reaction);
 			}
 		}
 
 		const record: MiNoteReaction = {
-			id: this.idService.genId(),
-			createdAt: new Date(),
+			id: this.idService.gen(),
 			noteId: note.id,
 			userId: user.id,
 			reaction,
@@ -188,6 +188,9 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
+				...(note.reactionAndUserPairCache.length < PER_NOTE_REACTION_USER_PAIR_CACHE_MAX ? {
+					reactionAndUserPairCache: () => `array_append("reactionAndUserPairCache", '${user.id}/${reaction}')`,
+				} : {}),
 			})
 			.where('id = :id', { id: note.id })
 			.execute();
@@ -294,6 +297,7 @@ export class ReactionService {
 		await this.notesRepository.createQueryBuilder().update()
 			.set({
 				reactions: () => sql,
+				reactionAndUserPairCache: () => `array_remove("reactionAndUserPairCache", '${user.id}/${exist.reaction}')`,
 			})
 			.where('id = :id', { id: note.id })
 			.execute();

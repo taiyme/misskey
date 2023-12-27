@@ -20,6 +20,7 @@ export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'write:report-abuse',
 
 	description: 'File a report.',
 
@@ -82,8 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			const report = await this.abuseUserReportsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				targetUserId: user.id,
 				targetUserHost: user.host,
 				reporterId: me.id,

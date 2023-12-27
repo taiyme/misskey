@@ -12,6 +12,7 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'write:account',
 	errors: {
 		noSuchList: {
 			message: 'No such user list.',
@@ -69,8 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await this.userListFavoritesRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
+				id: this.idService.gen(),
 				userId: me.id,
 				userListId: ps.listId,
 			});
