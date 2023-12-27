@@ -75,8 +75,8 @@ const otherNavItemIndicated = computed<boolean>(() => {
 	return false;
 });
 const el = shallowRef<HTMLElement>();
-// let accounts = $ref([]);
-// let connection = $ref(null);
+// const accounts = ref([]);
+// const connection = ref(null);
 const iconOnly = ref(false);
 const settingsWindowed = ref(false);
 
