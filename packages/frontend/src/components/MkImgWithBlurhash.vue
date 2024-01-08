@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import DrawBlurhash from '@/workers/draw-blurhash?worker';
-import TestWebGL2 from '@/workers/test-webgl2?worker';
+import DrawBlurhash from '@/workers/draw-blurhash.js?worker';
+import TestWebGL2 from '@/workers/test-webgl2.js?worker';
 import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
 

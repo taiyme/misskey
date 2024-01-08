@@ -5,7 +5,7 @@
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
-import './init';
+import './init.js';
 import type { summaly } from 'summaly';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
