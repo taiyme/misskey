@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 function createMembers(record) {
 	return Object.entries(record)
 		.map(([k, v]) => ts.factory.createPropertySignature(
-			undefined,
+			[ts.factory.createModifier(ts.SyntaxKind.ReadonlyKeyword)],
 			ts.factory.createStringLiteral(k),
 			undefined,
 			typeof v === 'string'
