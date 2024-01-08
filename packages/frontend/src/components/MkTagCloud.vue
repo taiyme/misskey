@@ -78,6 +78,7 @@ defineExpose({
 <style lang="scss" module>
 .root {
 	position: relative;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	display: grid;
 	place-items: center;

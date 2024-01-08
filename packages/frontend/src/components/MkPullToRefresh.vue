@@ -219,6 +219,7 @@ defineExpose({
 <style lang="scss" module>
 .frame {
 	position: relative;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 
 	width: 100%;
@@ -258,6 +259,7 @@ defineExpose({
 }
 
 .slotClip {
+	overflow-y: hidden; // fallback (overflow-y: clip)
 	overflow-y: clip;
 }
 </style>

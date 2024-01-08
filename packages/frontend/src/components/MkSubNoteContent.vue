@@ -53,6 +53,7 @@ const collapsed = ref(isLong);
 	&.collapsed {
 		position: relative;
 		max-height: 9em;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 
 		> .fade {

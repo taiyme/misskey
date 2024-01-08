@@ -241,6 +241,7 @@ html,
 body {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; /* fallback (overflow: clip) */
 	overflow: clip;
 	position: fixed;
 	top: 0;
@@ -251,6 +252,7 @@ body {
 #misskey_app {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; /* fallback (overflow: clip) */
 	overflow: clip;
 	position: absolute;
 	top: 0;
@@ -308,6 +310,7 @@ $widgets-hide-threshold: 1090px;
 
 .root {
 	height: 100dvh;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: strict;
 	box-sizing: border-box;

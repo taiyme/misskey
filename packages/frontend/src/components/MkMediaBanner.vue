@@ -56,6 +56,7 @@ watch(audioEl, () => {
 	width: 100%;
 	border-radius: 4px;
 	margin-top: 4px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -79,6 +80,7 @@ watch(audioEl, () => {
 
 .audio {
 	border-radius: 8px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 </style>

@@ -190,6 +190,7 @@ definePageMetadata({
 		> .toggleWrapper {
 			display: inline-block;
 			text-align: left;
+			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			padding: 0 100px;
 			vertical-align: bottom;

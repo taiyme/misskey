@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
 			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
-				<div style="overflow: clip;">
+				<div :style="{ overflow: ['hidden', 'clip'] as any }">
 					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 					<div :class="$style.bannerName">
 						<b>{{ instance.name ?? host }}</b>
@@ -170,6 +170,7 @@ definePageMetadata(computed(() => ({
 .banner {
 	text-align: center;
 	border-radius: 10px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	background-size: cover;
 	background-position: center center;

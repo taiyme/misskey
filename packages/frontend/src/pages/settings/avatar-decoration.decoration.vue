@@ -45,6 +45,7 @@ const emit = defineEmits<{
 	border-radius: 8px;
 	text-align: center;
 	font-size: 90%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 }

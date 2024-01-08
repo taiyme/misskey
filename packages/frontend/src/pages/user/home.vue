@@ -318,11 +318,13 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
+				overflow: hidden; // fallback (overflow: clip)
 				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
+					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
 					background-size: cover;
 					background-position: center;
@@ -674,6 +676,7 @@ onUnmounted(() => {
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

@@ -492,6 +492,7 @@ function loadConversation() {
 .root {
 	position: relative;
 	transition: box-shadow 0.1s ease;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 }
@@ -648,6 +649,7 @@ function loadConversation() {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

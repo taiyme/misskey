@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 5" #header><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</template>
 	<template v-else #header>{{ i18n.ts._initialTutorial.title }}</template>
 
-	<div style="overflow-x: clip;">
+	<div :style="{ 'overflow-x': ['hidden', 'clip'] as any }">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"
