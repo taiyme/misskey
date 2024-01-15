@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
-					<div class="banner-container" :style="style">
-						<div ref="bannerEl" class="banner" :style="style"></div>
+					<div class="banner-container">
+						<div ref="bannerEl" class="banner" :style="{ backgroundImage: props.user.bannerUrl ? `url(${ props.user.bannerUrl })` : undefined }"></div>
 						<div class="fade"></div>
 						<div class="title">
 							<MkUserName class="name" :user="user" :nowrap="true"/>
@@ -151,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, nextTick, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -161,7 +161,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@/scripts/scroll.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
@@ -204,7 +203,6 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const user = ref(props.user);
-const parallaxAnimationId = ref<null | number>(null);
 const narrow = ref<null | boolean>(null);
 const rootEl = ref<null | HTMLElement>(null);
 const bannerEl = ref<null | HTMLElement>(null);
@@ -218,13 +216,6 @@ watch(moderationNote, async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
 });
 
-const style = computed(() => {
-	if (props.user.bannerUrl == null) return {};
-	return {
-		backgroundImage: `url(${ props.user.bannerUrl })`,
-	};
-});
-
 const age = computed(() => {
 	return calcAge(props.user.birthday);
 });
@@ -232,24 +223,6 @@ const age = computed(() => {
 function menu(ev: MouseEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
-}
-
-function parallaxLoop() {
-	parallaxAnimationId.value = window.requestAnimationFrame(parallaxLoop);
-	parallax();
-}
-
-function parallax() {
-	const banner = bannerEl.value as any;
-	if (banner == null) return;
-
-	const top = getScrollPosition(rootEl.value);
-
-	if (top < 0) return;
-
-	const z = 1.75; // 奥行き(小さいほど奥)
-	const pos = -(top / z);
-	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 }
 
 function showMemoTextarea() {
@@ -278,7 +251,6 @@ watch([props.user], () => {
 });
 
 onMounted(() => {
-	window.requestAnimationFrame(parallaxLoop);
 	narrow.value = rootEl.value!.clientWidth < 1000;
 
 	if (props.user.birthday) {
@@ -295,12 +267,6 @@ onMounted(() => {
 	nextTick(() => {
 		adjustMemoTextarea();
 	});
-});
-
-onUnmounted(() => {
-	if (parallaxAnimationId.value) {
-		window.cancelAnimationFrame(parallaxAnimationId.value);
-	}
 });
 </script>
 
@@ -326,8 +292,6 @@ onUnmounted(() => {
 					height: 250px;
 					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
-					background-size: cover;
-					background-position: center;
 
 					> .banner {
 						height: 100%;
@@ -335,7 +299,6 @@ onUnmounted(() => {
 						background-size: cover;
 						background-position: center;
 						box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
-						will-change: background-position;
 					}
 
 					> .fade {
