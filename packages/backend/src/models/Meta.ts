@@ -328,14 +328,14 @@ export class MiMeta {
 
 	@Column('varchar', {
 		length: 1024,
-		default: 'https://github.com/misskey-dev/misskey',
+		default: 'https://github.com/taiyme/misskey',
 		nullable: false,
 	})
 	public repositoryUrl: string;
 
 	@Column('varchar', {
 		length: 1024,
-		default: 'https://github.com/misskey-dev/misskey/issues/new',
+		default: 'https://github.com/taiyme/misskey/issues/new',
 		nullable: true,
 	})
 	public feedbackUrl: string | null;
