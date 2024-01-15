@@ -60,6 +60,8 @@ import { miLocalStorage } from '@/local-storage.js';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
+
 const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
@@ -78,7 +80,11 @@ provide('router', mainRouter);
 provideMetadataReceiver((info) => {
 	pageMetadata.value = info.value;
 	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
 provide('shouldHeaderThin', showMenuOnTop.value);

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
-		<button :class="$style.navButton" class="_button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
+		<button :class="$style.navButton" class="_button" @click="isRoot ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
 			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
 			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
@@ -117,8 +117,11 @@ const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
+
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
+
 
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
@@ -136,7 +139,11 @@ provide('router', mainRouter);
 provideMetadataReceiver((info) => {
 	pageMetadata.value = info.value;
 	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
 
