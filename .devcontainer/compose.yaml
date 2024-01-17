@@ -1,15 +1,19 @@
-version: '3.8'
+version: "3"
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - UID="$(id -u)"
+        - GID="$(id -g)"
 
     volumes:
       - ../:/workspace:cached
 
-    command: sleep infinity
+    init: true
+    tty: true
 
     networks:
       - internal_network
