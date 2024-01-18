@@ -382,6 +382,11 @@ export interface Locale {
     readonly "enableHcaptcha": string;
     readonly "hcaptchaSiteKey": string;
     readonly "hcaptchaSecretKey": string;
+    readonly "mcaptcha": string;
+    readonly "enableMcaptcha": string;
+    readonly "mcaptchaSiteKey": string;
+    readonly "mcaptchaSecretKey": string;
+    readonly "mcaptchaInstanceUrl": string;
     readonly "recaptcha": string;
     readonly "enableRecaptcha": string;
     readonly "recaptchaSiteKey": string;
@@ -629,6 +634,7 @@ export interface Locale {
     readonly "small": string;
     readonly "generateAccessToken": string;
     readonly "permission": string;
+    readonly "adminPermission": string;
     readonly "enableAll": string;
     readonly "disableAll": string;
     readonly "tokenRequested": string;
@@ -672,6 +678,7 @@ export interface Locale {
     readonly "other": string;
     readonly "regenerateLoginToken": string;
     readonly "regenerateLoginTokenDescription": string;
+    readonly "theKeywordWhenSearchingForCustomEmoji": string;
     readonly "setMultipleBySeparatingWithSpace": string;
     readonly "fileIdOrUrl": string;
     readonly "behavior": string;
@@ -1054,6 +1061,8 @@ export interface Locale {
     readonly "noteIdOrUrl": string;
     readonly "video": string;
     readonly "videos": string;
+    readonly "audio": string;
+    readonly "audioFiles": string;
     readonly "dataSaver": string;
     readonly "accountMigration": string;
     readonly "accountMoved": string;
@@ -1186,6 +1195,23 @@ export interface Locale {
     readonly "decorate": string;
     readonly "addMfmFunction": string;
     readonly "enableQuickAddMfmFunction": string;
+    readonly "bubbleGame": string;
+    readonly "sfx": string;
+    readonly "soundWillBePlayed": string;
+    readonly "showReplay": string;
+    readonly "replay": string;
+    readonly "replaying": string;
+    readonly "ranking": string;
+    readonly "lastNDays": string;
+    readonly "backToTitle": string;
+    readonly "_bubbleGame": {
+        readonly "howToPlay": string;
+        readonly "_howToPlay": {
+            readonly "section1": string;
+            readonly "section2": string;
+            readonly "section3": string;
+        };
+    };
     readonly "_announcement": {
         readonly "forExistingUsers": string;
         readonly "forExistingUsersDescription": string;
@@ -1649,6 +1675,15 @@ export interface Locale {
             readonly "_tutorialCompleted": {
                 readonly "title": string;
                 readonly "description": string;
+            };
+            readonly "_bubbleGameExplodingHead": {
+                readonly "title": string;
+                readonly "description": string;
+            };
+            readonly "_bubbleGameDoubleExplodingHead": {
+                readonly "title": string;
+                readonly "description": string;
+                readonly "flavor": string;
             };
         };
     };
@@ -2250,6 +2285,7 @@ export interface Locale {
     readonly "_exportOrImport": {
         readonly "allNotes": string;
         readonly "favoritedNotes": string;
+        readonly "clips": string;
         readonly "followingList": string;
         readonly "muteList": string;
         readonly "blockingList": string;

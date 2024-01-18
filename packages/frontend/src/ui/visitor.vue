@@ -74,7 +74,7 @@ import { instanceName } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
+import { mainRouter } from '@/global/router/main.js';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
