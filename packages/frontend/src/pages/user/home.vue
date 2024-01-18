@@ -75,10 +75,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						/>
 					</div>
 					<div class="description">
-						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user"/>
-							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+						<MkOmit v-if="user.description">
+							<Mfm :text="user.description" :isNote="false" :author="user"/>
 						</MkOmit>
+						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
 					</div>
 					<div class="fields system">
 						<dl v-if="user.location" class="field">
