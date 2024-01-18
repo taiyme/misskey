@@ -119,6 +119,8 @@ function close() {
 				margin-top: 12px;
 				font-size: 0.8em;
 				line-height: 1.5em;
+				width: 100%; // はみ出し防止
+				text-align: center; // 中央寄せする
 			}
 
 			> .indicatorWithValue {
