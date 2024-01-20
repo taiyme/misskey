@@ -26,9 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
-								<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
-								</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -55,30 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkA>
 						</span>
 					</div>
-					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>{{ i18n.ts.moderationNote }}</template>
-						</MkTextarea>
-						<div v-else>
-							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
-						</div>
-					</div>
-					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-						<div class="heading" v-text="i18n.ts.memo"/>
-						<textarea
-							ref="memoTextareaEl"
-							v-model="memoDraft"
-							rows="1"
-							@focus="isEditingMemo = true"
-							@blur="updateMemo"
-							@input="adjustMemoTextarea"
-						/>
-					</div>
 					<div class="description">
 						<MkOmit v-if="user.description">
 							<Mfm :text="user.description" :isNote="false" :author="user"/>
 						</MkOmit>
 						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+					</div>
+					<div class="memo">
+						<TmsUserMemo :user="user"/>
 					</div>
 					<div class="fields system">
 						<dl v-if="user.location" class="field">
@@ -151,25 +132,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, nextTick, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkButton from '@/components/MkButton.vue';
+import TmsUserMemo from '@/components/TmsUserMemo.vue';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 import { useRouter } from '@/global/router/supplier.js';
 
@@ -206,15 +185,6 @@ const user = ref(props.user);
 const narrow = ref<null | boolean>(null);
 const rootEl = ref<null | HTMLElement>(null);
 const bannerEl = ref<null | HTMLElement>(null);
-const memoTextareaEl = ref<null | HTMLElement>(null);
-const memoDraft = ref(props.user.memo);
-const isEditingMemo = ref(false);
-const moderationNote = ref(props.user.moderationNote);
-const editModerationNote = ref(false);
-
-watch(moderationNote, async () => {
-	await misskeyApi('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
-});
 
 const age = computed(() => {
 	return calcAge(props.user.birthday);
@@ -224,31 +194,6 @@ function menu(ev: MouseEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
-
-function showMemoTextarea() {
-	isEditingMemo.value = true;
-	nextTick(() => {
-		memoTextareaEl.value?.focus();
-	});
-}
-
-function adjustMemoTextarea() {
-	if (!memoTextareaEl.value) return;
-	memoTextareaEl.value.style.height = '0px';
-	memoTextareaEl.value.style.height = `${memoTextareaEl.value.scrollHeight}px`;
-}
-
-async function updateMemo() {
-	await misskeyApi('users/update-memo', {
-		memo: memoDraft.value,
-		userId: props.user.id,
-	});
-	isEditingMemo.value = false;
-}
-
-watch([props.user], () => {
-	memoDraft.value = props.user.memo;
-});
 
 onMounted(() => {
 	narrow.value = rootEl.value!.clientWidth < 1000;
@@ -264,9 +209,6 @@ onMounted(() => {
 			});
 		}
 	}
-	nextTick(() => {
-		adjustMemoTextarea();
-	});
 });
 </script>
 
@@ -375,16 +317,6 @@ onMounted(() => {
 									font-weight: bold;
 								}
 							}
-
-							> .add-note-button {
-								background: rgba(0, 0, 0, 0.2);
-								color: #fff;
-								-webkit-backdrop-filter: var(--blur, blur(8px));
-								backdrop-filter: var(--blur, blur(8px));
-								border-radius: 24px;
-								padding: 4px 8px;
-								font-size: 80%;
-							}
 						}
 					}
 				}
@@ -417,7 +349,7 @@ onMounted(() => {
 				}
 
 				> .roles {
-					padding: 24px 24px 0 154px;
+					padding: 12px 24px 0 154px;
 					font-size: 0.95em;
 					display: flex;
 					flex-wrap: wrap;
@@ -431,43 +363,6 @@ onMounted(() => {
 					}
 				}
 
-				> .moderationNote {
-					margin: 12px 24px 0 154px;
-				}
-
-				> .memo {
-					margin: 12px 24px 0 154px;
-					background: transparent;
-					color: var(--fg);
-					border: 1px solid var(--divider);
-					border-radius: 8px;
-					padding: 8px;
-					line-height: 0;
-
-					> .heading {
-						text-align: left;
-						color: var(--fgTransparent);
-						line-height: 1.5;
-						font-size: 85%;
-					}
-
-					textarea {
-						margin: 0;
-						padding: 0;
-						resize: none;
-						border: none;
-						outline: none;
-						width: 100%;
-						height: auto;
-						min-height: 0;
-						line-height: 1.5;
-						color: var(--fg);
-						overflow: hidden;
-						background: transparent;
-						font-family: inherit;
-					}
-				}
-
 				> .description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
@@ -476,6 +371,10 @@ onMounted(() => {
 						margin: 0;
 						opacity: 0.5;
 					}
+				}
+
+				> .memo {
+					padding: 0 24px 24px 154px;
 				}
 
 				> .fields {
@@ -603,17 +502,13 @@ onMounted(() => {
 					justify-content: center;
 				}
 
-				> .moderationNote {
-					margin: 16px 16px 0 16px;
-				}
-
-				> .memo {
-					margin: 16px 16px 0 16px;
-				}
-
 				> .description {
 					padding: 16px;
 					text-align: center;
+				}
+
+				> .memo {
+					padding: 0 16px 16px 16px;
 				}
 
 				> .fields {
