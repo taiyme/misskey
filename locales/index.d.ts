@@ -9542,6 +9542,98 @@ export interface Locale extends ILocale {
          */
         readonly "lookingForPlayer": string;
     };
+    readonly "_tms": {
+        /**
+         * taiyme
+         */
+        readonly "taiyme": string;
+        /**
+         * taiymeについて
+         */
+        readonly "aboutTaiyme": string;
+        /**
+         * taiyme拡張機能
+         */
+        readonly "taiymeSettings": string;
+        /**
+         * taiyme実験的機能
+         */
+        readonly "taiymeFlags": string;
+        /**
+         * {name}は、Misskeyの派生であるtaiymeを使用したサーバーのひとつです。
+         */
+        readonly "poweredByTaiyme": ParameterizedString<"name">;
+        /**
+         * コミットハッシュ
+         */
+        readonly "commitHash": string;
+        /**
+         * 問題の報告や要望はGitHubで受け付けています。
+         */
+        readonly "reportIssuesToGithub": string;
+        readonly "_about": {
+            /**
+             * taiymeについて
+             */
+            readonly "title": string;
+            /**
+             * taiymeは、Misskeyから派生したオープンソースのソフトウェアです。
+             */
+            readonly "description": string;
+            /**
+             * ソースコード
+             */
+            readonly "source": string;
+            /**
+             * 寄付する
+             */
+            readonly "donate": string;
+            /**
+             * プロジェクトメンバー
+             */
+            readonly "projectMembers": string;
+            /**
+             * コントリビューター
+             */
+            readonly "contributors": string;
+            /**
+             * 支援者
+             */
+            readonly "patrons": string;
+        };
+        readonly "_settings": {
+            /**
+             * taiyme拡張機能
+             */
+            readonly "title": string;
+            /**
+             * これらの機能はtaiyが独自に実装したものです。
+             */
+            readonly "description": string;
+        };
+        readonly "_flags": {
+            /**
+             * taiyme実験的機能
+             */
+            readonly "title": string;
+            /**
+             * これらの設定はブラウザに保存します。このブラウザでログイン中のすべてのユーザーに適用されます。
+             */
+            readonly "description": string;
+            /**
+             * これらの設定を有効にすると、ページの表示や挙動に深刻な影響を及ぼし、{name}が正常に利用できなくなる可能性があります。
+             */
+            readonly "warning": ParameterizedString<"name">;
+            /**
+             * {x}を強制取得
+             */
+            readonly "forceFetchX": ParameterizedString<"x">;
+            /**
+             * {x}を開く
+             */
+            readonly "openX": ParameterizedString<"x">;
+        };
+    };
 }
 declare const locales: {
     [lang: string]: Locale;

@@ -199,7 +199,7 @@ const routes: RouteDef[] = [{
 	hash: 'initialTab',
 }, {
 	path: '/about-misskey',
-	component: page(() => import('@/pages/about-misskey.vue')),
+	redirect: '/tms/about',
 }, {
 	path: '/invite',
 	name: 'invite',
@@ -552,6 +552,24 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/timeline',
 	component: page(() => import('@/pages/timeline.vue')),
+}, {
+	path: '/tms',
+	redirect: '/tms/about',
+}, {
+	path: '/tms/about',
+	component: page(() => import('@/pages/tms/about.vue')),
+}, {
+	path: '/tms/settings',
+	component: page(() => import('@/pages/tms/settings.vue')),
+	loginRequired: true,
+}, {
+	path: '/tms/flags',
+	component: page(() => import('@/pages/tms/flags.vue')),
+	loginRequired: true,
+}, {
+	path: '/settings/taiyme-services',
+	redirect: '/tms/settings',
+	loginRequired: true,
 }, {
 	name: 'index',
 	path: '/',
