@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createApp, markRaw, defineAsyncComponent } from 'vue';
+import { createApp, defineAsyncComponent, markRaw } from 'vue';
 import { common } from './common.js';
 import { ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
-import { confirm, alert, post, popup, toast } from '@/os.js';
+import { alert, confirm, popup, post, toast } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
-import { $i, updateAccount, signout } from '@/account.js';
-import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { $i, signout, updateAccount } from '@/account.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
-import { mainRouter } from '@/router.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
+import { mainRouter } from '@/global/router/main.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -205,20 +205,12 @@ export async function mainBoot() {
 			const lastUsedDate = parseInt(lastUsed, 10);
 			// 二時間以上前なら
 			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.t('welcomeBackWithName', {
+				toast(i18n.tsx.welcomeBackWithName({
 					name: $i.name || $i.username,
 				}));
 			}
 		}
 		miLocalStorage.setItem('lastUsed', Date.now().toString());
-
-		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
-		const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-		if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith('/miauth')) {
-			if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
-				popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
-			}
-		}
 
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト
@@ -271,7 +263,7 @@ export async function mainBoot() {
 
 		main.on('unreadAntenna', () => {
 			updateAccount({ hasUnreadAntenna: true });
-			sound.play('antenna');
+			sound.playMisskeySfx('antenna');
 		});
 
 		main.on('readAllAnnouncements', () => {

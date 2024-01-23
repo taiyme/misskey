@@ -57,8 +57,8 @@ import { navbarItemDef } from '@/navbar.js';
 import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 // import { StickySidebar } from '@/scripts/sticky-sidebar.js';
-// import { mainRouter } from '@/router.js';
-//import MisskeyLogo from '@assets/client/misskey.svg';
+// import { mainRouter } from '@/global/router/main.js';
+// import MisskeyLogo from '@assets/client/misskey.svg';
 import { defaultStore } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -75,8 +75,8 @@ const otherNavItemIndicated = computed<boolean>(() => {
 	return false;
 });
 const el = shallowRef<HTMLElement>();
-// let accounts = $ref([]);
-// let connection = $ref(null);
+// const accounts = ref([]);
+// const connection = ref(null);
 const iconOnly = ref(false);
 const settingsWindowed = ref(false);
 

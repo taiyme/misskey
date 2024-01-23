@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.setupOf2fa }}</template>
 
-	<div style="overflow-x: clip;">
+	<div :style="{ 'overflow-x': ['hidden', 'clip'] as any }">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"
@@ -110,7 +110,9 @@ import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { confetti } from '@/scripts/confetti.js';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 defineProps<{
 	twoFactorData: {
@@ -151,7 +153,7 @@ function downloadBackupCodes() {
 		const txtBlob = new Blob([backupCodes.value.join('\n')], { type: 'text/plain' });
 		const dummya = document.createElement('a');
 		dummya.href = URL.createObjectURL(txtBlob);
-		dummya.download = `${$i?.username}-2fa-backup-codes.txt`;
+		dummya.download = `${$i.username}-2fa-backup-codes.txt`;
 		dummya.click();
 	}
 }

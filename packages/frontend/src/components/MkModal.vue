@@ -328,7 +328,7 @@ defineExpose({
 	}
 
 	> .content {
-    transform: translateY(0px);
+		transform: translateY(0px);
 		transition: opacity 0.3s ease-in, transform 0.3s cubic-bezier(.5,-0.5,1,.5) !important;
 	}
 }
@@ -460,6 +460,7 @@ defineExpose({
 		left: 0;
 		width: 100%;
 		height: 100%;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 
 		> .content {

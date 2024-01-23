@@ -4,7 +4,7 @@
 	name: 'Mi Botanical Light',
 	author: 'ThinaticSystem',
 
-  base: 'light',
+	base: 'light',
 
 	props: {
 		accent: '#77b58c',
@@ -25,6 +25,6 @@
 		link: '@accent',
 		buttonGradateB: ':hue<-70<@accent',
 		success: '#86b300',
-    X14: '#ebe7e5'
+		X14: '#ebe7e5'
 	},
 }

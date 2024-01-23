@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
-					<div class="banner-container" :style="style">
-						<div ref="bannerEl" class="banner" :style="style"></div>
+					<div class="banner-container">
+						<div ref="bannerEl" class="banner" :style="{ backgroundImage: props.user.bannerUrl ? `url(${ props.user.bannerUrl })` : undefined }"></div>
 						<div class="fade"></div>
 						<div class="title">
 							<MkUserName class="name" :user="user" :nowrap="true"/>
@@ -26,9 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
-								<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
-								</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -55,30 +52,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkA>
 						</span>
 					</div>
-					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>{{ i18n.ts.moderationNote }}</template>
-						</MkTextarea>
-						<div v-else>
-							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
-						</div>
-					</div>
-					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-						<div class="heading" v-text="i18n.ts.memo"/>
-						<textarea
-							ref="memoTextareaEl"
-							v-model="memoDraft"
-							rows="1"
-							@focus="isEditingMemo = true"
-							@blur="updateMemo"
-							@input="adjustMemoTextarea"
-						/>
-					</div>
 					<div class="description">
-						<MkOmit>
-							<Mfm v-if="user.description" :text="user.description" :isNote="false" :author="user"/>
-							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+						<MkOmit v-if="user.description">
+							<Mfm :text="user.description" :isNote="false" :author="user"/>
 						</MkOmit>
+						<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
+					</div>
+					<div class="memo">
+						<TmsUserMemo :user="user"/>
 					</div>
 					<div class="fields system">
 						<dl v-if="user.location" class="field">
@@ -87,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</dl>
 						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.t('yearsOld', { age }) }})</dd>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
@@ -151,28 +132,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkButton from '@/components/MkButton.vue';
-import { getScrollPosition } from '@/scripts/scroll.js';
+import TmsUserMemo from '@/components/TmsUserMemo.vue';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import * as os from '@/os.js';
-import { useRouter } from '@/router.js';
 import { i18n } from '@/i18n.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i } from '@/account.js';
 import { dateString } from '@/filters/date.js';
 import { confetti } from '@/scripts/confetti.js';
-import { api } from '@/os.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -204,26 +182,9 @@ const props = withDefaults(defineProps<{
 const router = useRouter();
 
 const user = ref(props.user);
-const parallaxAnimationId = ref<null | number>(null);
 const narrow = ref<null | boolean>(null);
 const rootEl = ref<null | HTMLElement>(null);
 const bannerEl = ref<null | HTMLElement>(null);
-const memoTextareaEl = ref<null | HTMLElement>(null);
-const memoDraft = ref(props.user.memo);
-const isEditingMemo = ref(false);
-const moderationNote = ref(props.user.moderationNote);
-const editModerationNote = ref(false);
-
-watch(moderationNote, async () => {
-	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote.value });
-});
-
-const style = computed(() => {
-	if (props.user.bannerUrl == null) return {};
-	return {
-		backgroundImage: `url(${ props.user.bannerUrl })`,
-	};
-});
 
 const age = computed(() => {
 	return calcAge(props.user.birthday);
@@ -234,51 +195,7 @@ function menu(ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
-function parallaxLoop() {
-	parallaxAnimationId.value = window.requestAnimationFrame(parallaxLoop);
-	parallax();
-}
-
-function parallax() {
-	const banner = bannerEl.value as any;
-	if (banner == null) return;
-
-	const top = getScrollPosition(rootEl.value);
-
-	if (top < 0) return;
-
-	const z = 1.75; // 奥行き(小さいほど奥)
-	const pos = -(top / z);
-	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
-}
-
-function showMemoTextarea() {
-	isEditingMemo.value = true;
-	nextTick(() => {
-		memoTextareaEl.value?.focus();
-	});
-}
-
-function adjustMemoTextarea() {
-	if (!memoTextareaEl.value) return;
-	memoTextareaEl.value.style.height = '0px';
-	memoTextareaEl.value.style.height = `${memoTextareaEl.value.scrollHeight}px`;
-}
-
-async function updateMemo() {
-	await api('users/update-memo', {
-		memo: memoDraft.value,
-		userId: props.user.id,
-	});
-	isEditingMemo.value = false;
-}
-
-watch([props.user], () => {
-	memoDraft.value = props.user.memo;
-});
-
 onMounted(() => {
-	window.requestAnimationFrame(parallaxLoop);
 	narrow.value = rootEl.value!.clientWidth < 1000;
 
 	if (props.user.birthday) {
@@ -291,15 +208,6 @@ onMounted(() => {
 				duration: 1000 * 4,
 			});
 		}
-	}
-	nextTick(() => {
-		adjustMemoTextarea();
-	});
-});
-
-onUnmounted(() => {
-	if (parallaxAnimationId.value) {
-		window.cancelAnimationFrame(parallaxAnimationId.value);
 	}
 });
 </script>
@@ -318,14 +226,14 @@ onUnmounted(() => {
 
 			> .main {
 				position: relative;
+				overflow: hidden; // fallback (overflow: clip)
 				overflow: clip;
 
 				> .banner-container {
 					position: relative;
 					height: 250px;
+					overflow: hidden; // fallback (overflow: clip)
 					overflow: clip;
-					background-size: cover;
-					background-position: center;
 
 					> .banner {
 						height: 100%;
@@ -333,7 +241,6 @@ onUnmounted(() => {
 						background-size: cover;
 						background-position: center;
 						box-shadow: 0 0 128px rgba(0, 0, 0, 0.5) inset;
-						will-change: background-position;
 					}
 
 					> .fade {
@@ -410,16 +317,6 @@ onUnmounted(() => {
 									font-weight: bold;
 								}
 							}
-
-							> .add-note-button {
-								background: rgba(0, 0, 0, 0.2);
-								color: #fff;
-								-webkit-backdrop-filter: var(--blur, blur(8px));
-								backdrop-filter: var(--blur, blur(8px));
-								border-radius: 24px;
-								padding: 4px 8px;
-								font-size: 80%;
-							}
 						}
 					}
 				}
@@ -452,7 +349,7 @@ onUnmounted(() => {
 				}
 
 				> .roles {
-					padding: 24px 24px 0 154px;
+					padding: 12px 24px 0 154px;
 					font-size: 0.95em;
 					display: flex;
 					flex-wrap: wrap;
@@ -466,43 +363,6 @@ onUnmounted(() => {
 					}
 				}
 
-				> .moderationNote {
-					margin: 12px 24px 0 154px;
-				}
-
-				> .memo {
-					margin: 12px 24px 0 154px;
-					background: transparent;
-					color: var(--fg);
-					border: 1px solid var(--divider);
-					border-radius: 8px;
-					padding: 8px;
-					line-height: 0;
-
-					> .heading {
-						text-align: left;
-						color: var(--fgTransparent);
-						line-height: 1.5;
-						font-size: 85%;
-					}
-
-					textarea {
-						margin: 0;
-						padding: 0;
-						resize: none;
-						border: none;
-						outline: none;
-						width: 100%;
-						height: auto;
-						min-height: 0;
-						line-height: 1.5;
-						color: var(--fg);
-						overflow: hidden;
-						background: transparent;
-						font-family: inherit;
-					}
-				}
-
 				> .description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
@@ -511,6 +371,10 @@ onUnmounted(() => {
 						margin: 0;
 						opacity: 0.5;
 					}
+				}
+
+				> .memo {
+					padding: 0 24px 24px 154px;
 				}
 
 				> .fields {
@@ -638,17 +502,13 @@ onUnmounted(() => {
 					justify-content: center;
 				}
 
-				> .moderationNote {
-					margin: 16px 16px 0 16px;
-				}
-
-				> .memo {
-					margin: 16px 16px 0 16px;
-				}
-
 				> .description {
 					padding: 16px;
 					text-align: center;
+				}
+
+				> .memo {
+					padding: 0 16px 16px 16px;
 				}
 
 				> .fields {
@@ -674,6 +534,7 @@ onUnmounted(() => {
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 

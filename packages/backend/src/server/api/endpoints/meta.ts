@@ -69,12 +69,12 @@ export const meta = {
 			repositoryUrl: {
 				type: 'string',
 				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey',
+				default: 'https://github.com/taiyme/misskey',
 			},
 			feedbackUrl: {
 				type: 'string',
 				optional: false, nullable: false,
-				default: 'https://github.com/misskey-dev/misskey/issues/new',
+				default: 'https://github.com/taiyme/misskey/issues/new',
 			},
 			defaultDarkTheme: {
 				type: 'string',
@@ -105,6 +105,18 @@ export const meta = {
 				optional: false, nullable: false,
 			},
 			hcaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			enableMcaptcha: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			mcaptchaSiteKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			mcaptchaInstanceUrl: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -351,6 +363,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				emailRequiredForSignup: instance.emailRequiredForSignup,
 				enableHcaptcha: instance.enableHcaptcha,
 				hcaptchaSiteKey: instance.hcaptchaSiteKey,
+				enableMcaptcha: instance.enableMcaptcha,
+				mcaptchaSiteKey: instance.mcaptchaSitekey,
+				mcaptchaInstanceUrl: instance.mcaptchaInstanceUrl,
 				enableRecaptcha: instance.enableRecaptcha,
 				recaptchaSiteKey: instance.recaptchaSiteKey,
 				enableTurnstile: instance.enableTurnstile,

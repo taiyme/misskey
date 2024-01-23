@@ -103,7 +103,6 @@ import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { defaultStore } from '@/store.js';
@@ -117,6 +116,7 @@ import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
 import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
+import { mainRouter } from '@/global/router/main.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -189,7 +189,7 @@ const addColumn = async (ev) => {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
 		items: columns.map(column => ({
-			value: column, text: i18n.t('_deck._columns.' + column),
+			value: column, text: i18n.ts._deck._columns[column],
 		})),
 	});
 	if (canceled) return;
@@ -197,7 +197,7 @@ const addColumn = async (ev) => {
 	addColumnToStore({
 		type: column,
 		id: uuid(),
-		name: i18n.t('_deck._columns.' + column),
+		name: i18n.ts._deck._columns[column],
 		width: 330,
 	});
 };
@@ -256,7 +256,7 @@ function changeProfile(ev: MouseEvent) {
 async function deleteProfile() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: deckStore.state.profile }),
+		text: i18n.tsx.deleteAreYouSure({ x: deckStore.state.profile }),
 	});
 	if (canceled) return;
 
@@ -271,6 +271,7 @@ html,
 body {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; /* fallback (overflow: clip) */
 	overflow: clip;
 	position: fixed;
 	top: 0;
@@ -281,6 +282,7 @@ body {
 #misskey_app {
 	width: 100%;
 	height: 100%;
+	overflow: hidden; /* fallback (overflow: clip) */
 	overflow: clip;
 	position: absolute;
 	top: 0;
@@ -339,6 +341,7 @@ body {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
+	overflow-y: hidden; // fallback (overflow-y: clip)
 	overflow-y: clip;
 	overscroll-behavior: contain;
 	background: var(--deckBg);

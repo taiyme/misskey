@@ -67,14 +67,15 @@ import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { infoImageUrl } from '@/instance.js';
+import { useRouter } from '@/global/router/supplier.js';
 
 const router = useRouter();
 
@@ -92,7 +93,7 @@ const usersPagination = {
 
 const expandedItems = ref([]);
 
-const role = reactive(await os.api('admin/roles/show', {
+const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
 }));
 
@@ -103,7 +104,7 @@ function edit() {
 async function del() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
-		text: i18n.t('deleteAreYouSure', { x: role.name }),
+		text: i18n.tsx.deleteAreYouSure({ x: role.name }),
 	});
 	if (canceled) return;
 
@@ -144,7 +145,7 @@ async function assign() {
 		: null;
 
 	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt });
-	//role.users.push(user);
+	// role.users.push(user);
 }
 
 async function unassign(user, ev) {
@@ -154,7 +155,7 @@ async function unassign(user, ev) {
 		danger: true,
 		action: async () => {
 			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			// role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
@@ -171,10 +172,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
-	title: i18n.ts.role + ': ' + role.name,
+definePageMetadata(() => ({
+	title: `${i18n.ts.role}: ${role.name}`,
 	icon: 'ti ti-badge',
-})));
+}));
 </script>
 
 <style lang="scss" module>

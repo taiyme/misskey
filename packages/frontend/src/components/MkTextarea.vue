@@ -143,6 +143,10 @@ onUnmounted(() => {
 		autocomplete.detach();
 	}
 });
+
+defineExpose({
+	focus,
+});
 </script>
 
 <style lang="scss" module>
@@ -225,10 +229,10 @@ onUnmounted(() => {
 }
 
 .mfmPreview {
-  padding: 12px;
-  border-radius: var(--radius);
-  box-sizing: border-box;
-  min-height: 130px;
+	padding: 12px;
+	border-radius: var(--radius);
+	box-sizing: border-box;
+	min-height: 130px;
 	pointer-events: none;
 }
 </style>

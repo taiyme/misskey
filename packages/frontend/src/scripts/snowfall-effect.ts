@@ -370,7 +370,7 @@ export class SnowfallEffect {
 			);
 
 			color.push(...this.color, 0.1 + Math.random() * this.opacity);
-			//size.push((this.size * Math.random() * this.size * vh * dpi) / 1000);
+			// size.push((this.size * Math.random() * this.size * vh * dpi) / 1000);
 			size.push((this.size * vh * dpi) / 1000);
 		}
 

@@ -237,10 +237,10 @@ watch(pinnedEmojis, () => {
 	deep: true,
 });
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.emojiPicker,
 	icon: 'ti ti-mood-happy',
-});
+}));
 </script>
 
 <style lang="scss" module>
@@ -251,19 +251,19 @@ definePageMetadata({
 }
 
 .emojis {
-  padding: 12px;
-  font-size: 1.1em;
+	padding: 12px;
+	font-size: 1.1em;
 }
 
 .emojisItem {
-  display: inline-block;
-  padding: 8px;
-  cursor: move;
+	display: inline-block;
+	padding: 8px;
+	cursor: move;
 }
 
 .emojisAdd {
-  display: inline-block;
-  padding: 8px;
+	display: inline-block;
+	padding: 8px;
 }
 
 .editorCaption {

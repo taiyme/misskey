@@ -136,7 +136,7 @@ async function enter(el: HTMLElement) {
 }
 
 function afterEnter(el: HTMLElement) {
-	//el.style.width = '';
+	// el.style.width = '';
 }
 
 async function leave(el: HTMLElement) {

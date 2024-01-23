@@ -16,7 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { $i } from '@/account.js';
+import { signinRequired } from '@/account.js';
+
+const $i = signinRequired();
 
 const props = defineProps<{
 	active?: boolean;
@@ -45,6 +47,7 @@ const emit = defineEmits<{
 	border-radius: 8px;
 	text-align: center;
 	font-size: 90%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	contain: content;
 }

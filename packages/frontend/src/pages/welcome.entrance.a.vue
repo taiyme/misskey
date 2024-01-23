@@ -39,7 +39,7 @@ import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import misskeysvg from '/client-assets/misskey.svg';
-import * as os from '@/os.js';
+import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
@@ -53,11 +53,11 @@ function getInstanceIcon(instance: Misskey.entities.FederationInstance): string 
 	return getProxiedImageUrl(instance.iconUrl, 'preview');
 }
 
-os.api('meta', { detail: true }).then(_meta => {
+misskeyApi('meta', { detail: true }).then(_meta => {
 	meta.value = _meta;
 });
 
-os.apiGet('federation/instances', {
+misskeyApiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
 }).then(_instances => {
@@ -159,6 +159,7 @@ os.apiGet('federation/instances', {
 		-webkit-backdrop-filter: var(--blur, blur(15px));
 		backdrop-filter: var(--blur, blur(15px));
 		border-radius: 999px;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 		width: 800px;
 		padding: 8px 0;

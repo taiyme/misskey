@@ -22,7 +22,7 @@ defineProps<{
 <style lang="scss" module>
 .root {
 	border-top: solid 0.5px var(--divider);
-	//border-bottom: solid 0.5px var(--divider);
+	// border-bottom: solid 0.5px var(--divider);
 }
 
 .rootFirst {

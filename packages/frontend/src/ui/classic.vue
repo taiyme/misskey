@@ -52,19 +52,21 @@ import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { mainRouter } from '@/global/router/main.js';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
+
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
-const pageMetadata = ref<null | PageMetadata>();
+const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
@@ -75,12 +77,18 @@ const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
-	pageMetadata.value = info.value;
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	pageMetadata.value = info;
 	if (pageMetadata.value) {
-		document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		if (isRoot.value && pageMetadata.value.title === instanceName) {
+			document.title = pageMetadata.value.title;
+		} else {
+			document.title = `${pageMetadata.value.title} | ${instanceName}`;
+		}
 	}
 });
+provideReactiveMetadata(pageMetadata);
 provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
@@ -125,7 +133,7 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function onAiClick(ev) {
-	//if (this.live2d) this.live2d.click(ev);
+	// if (this.live2d) this.live2d.click(ev);
 }
 
 if (window.innerWidth < 1024) {
@@ -213,14 +221,14 @@ onMounted(() => {
 
 	&.wallpaper {
 		background: var(--wallpaperOverlay);
-		//backdrop-filter: var(--blur, blur(4px));
+		// backdrop-filter: var(--blur, blur(4px));
 	}
 
 	> .columns {
 		display: flex;
 		justify-content: center;
 		max-width: 100%;
-		//margin: 32px 0;
+		// margin: 32px 0;
 
 		&.fullView {
 			margin: 0;
@@ -248,12 +256,13 @@ onMounted(() => {
 			border-left: solid 1px var(--divider);
 			border-right: solid 1px var(--divider);
 			border-radius: 0;
+			overflow: hidden; // fallback (overflow: clip)
 			overflow: clip;
 			--margin: 12px;
 		}
 
 		> .widgets {
-			//--panelBorder: none;
+			// --panelBorder: none;
 			width: 300px;
 			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 

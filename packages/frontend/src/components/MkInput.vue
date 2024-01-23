@@ -163,7 +163,7 @@ onMounted(() => {
 			focus();
 		}
 	});
-	
+
 	if (props.mfmAutocomplete) {
 		autocomplete = new Autocomplete(inputEl.value, v, props.mfmAutocomplete === true ? null : props.mfmAutocomplete);
 	}
@@ -212,7 +212,7 @@ defineExpose({
 	&.focused {
 		> .inputCore {
 			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			// box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 

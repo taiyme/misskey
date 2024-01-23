@@ -73,7 +73,7 @@ const onInput = (ev: KeyboardEvent) => {
 	&.focused {
 		> .inputCore {
 			border-color: var(--accent) !important;
-			//box-shadow: 0 0 0 4px var(--focus);
+			// box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 

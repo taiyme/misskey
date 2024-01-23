@@ -125,6 +125,7 @@ function more(ev: MouseEvent) {
 	height: 100dvh;
 	box-sizing: border-box;
 	overflow: auto;
+	overflow-x: hidden; // fallback (overflow-x: clip)
 	overflow-x: clip;
 	overscroll-behavior: contain;
 	background: var(--navBg);
@@ -232,6 +233,7 @@ function more(ev: MouseEvent) {
 		width: 100%;
 		text-align: left;
 		box-sizing: border-box;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 	}
 
@@ -411,6 +413,7 @@ function more(ev: MouseEvent) {
 		text-align: center;
 		padding: 20px 0;
 		width: 100%;
+		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
 	}
 

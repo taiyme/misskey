@@ -143,6 +143,7 @@ function top() {
 }
 
 function maximize() {
+	if (rootEl.value == null) return;
 	maximized.value = true;
 	unResizedTop = rootEl.value.style.top;
 	unResizedLeft = rootEl.value.style.left;
@@ -155,6 +156,7 @@ function maximize() {
 }
 
 function unMaximize() {
+	if (rootEl.value == null) return;
 	maximized.value = false;
 	rootEl.value.style.top = unResizedTop;
 	rootEl.value.style.left = unResizedLeft;
@@ -163,6 +165,7 @@ function unMaximize() {
 }
 
 function minimize() {
+	if (rootEl.value == null) return;
 	minimized.value = true;
 	unResizedWidth = rootEl.value.style.width;
 	unResizedHeight = rootEl.value.style.height;
@@ -171,8 +174,8 @@ function minimize() {
 }
 
 function unMinimize() {
+	if (rootEl.value == null) return;
 	const main = rootEl.value;
-	if (main == null) return;
 
 	minimized.value = false;
 	rootEl.value.style.width = unResizedWidth;
@@ -481,6 +484,7 @@ defineExpose({
 }
 
 .body {
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	display: flex;
 	flex-direction: column;
@@ -506,7 +510,7 @@ defineExpose({
 	background: var(--windowHeader);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
-	//border-bottom: solid 1px var(--divider);
+	// border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
 }

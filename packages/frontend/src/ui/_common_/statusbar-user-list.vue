@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
 import { notePage } from '@/filters/note.js';
@@ -54,7 +54,7 @@ const key = ref(0);
 
 const tick = () => {
 	if (props.userListId == null) return;
-	os.api('notes/user-list-timeline', {
+	misskeyApi('notes/user-list-timeline', {
 		listId: props.userListId,
 	}).then(res => {
 		notes.value = res;
@@ -76,7 +76,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 .transition_change_leaveActive {
 	position: absolute;
 	top: 0;
-  transition: all 1s ease;
+	transition: all 1s ease;
 }
 .transition_change_enterFrom {
 	opacity: 0;

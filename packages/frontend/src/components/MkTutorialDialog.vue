@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 5" #header><i class="ti ti-eye-exclamation"></i> {{ i18n.ts._initialTutorial._howToMakeAttachmentsSensitive.title }}</template>
 	<template v-else #header>{{ i18n.ts._initialTutorial.title }}</template>
 
-	<div style="overflow-x: clip;">
+	<div :style="{ 'overflow-x': ['hidden', 'clip'] as any }">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"
@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<a href="https://misskey-hub.net/docs/for-users/" target="_blank" class="_link">{{ i18n.ts.help }}</a>
 								</template>
 							</I18n>
-							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
+							<div>{{ i18n.tsx._initialAccountSetting.haveFun({ name: instance.name ?? host }) }}</div>
 							<div class="_buttonsCenter" style="margin-top: 16px;">
 								<MkButton v-if="initialPage !== 4" rounded @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
 								<MkButton rounded primary gradate @click="close(false)">{{ i18n.ts.close }}</MkButton>

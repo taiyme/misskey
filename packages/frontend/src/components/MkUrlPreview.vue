@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onUnmounted, ref } from 'vue';
-import type { summaly } from 'summaly';
+import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import type { summaly } from '@misskey-dev/summaly';
 import { url as local } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -130,6 +130,10 @@ const tweetExpanded = ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 const tweetHeight = ref(150);
 const unknownUrl = ref(false);
+
+onDeactivated(() => {
+	playerEnabled.value = false;
+});
 
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
@@ -234,6 +238,7 @@ onUnmounted(() => {
 	font-size: 14px;
 	box-shadow: 0 0 0 1px var(--divider);
 	border-radius: 8px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 
 	&:hover {

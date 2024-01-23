@@ -55,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, computed } from 'vue';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements.js';
 
@@ -71,13 +72,13 @@ const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
 function fetch() {
-	os.api('users/achievements', { userId: props.user.id }).then(res => {
+	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
 		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
 			const a = res.find(x => x.name === t);
 			if (a) achievements.value.push(a);
 		}
-		//achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
+		// achievements = res.sort((a, b) => b.unlockedAt - a.unlockedAt);
 	});
 }
 
@@ -129,6 +130,7 @@ onMounted(() => {
 	user-select: none;
 	filter: drop-shadow(0px 2px 2px #00000044);
 	box-shadow: 0 1px 0px #ffffff88 inset;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 .iconFrame_bronze {
@@ -156,11 +158,11 @@ onMounted(() => {
 		content: "";
 		display: block;
 		position: absolute;
-    top: 30px;
-    width: 200px;
-    height: 8px;
-    rotate: -45deg;
-    translate: -30px;
+		top: 30px;
+		width: 200px;
+		height: 8px;
+		rotate: -45deg;
+		translate: -30px;
 		background: #ffffff88;
 		animation: shine 2s infinite;
 	}
@@ -176,11 +178,11 @@ onMounted(() => {
 		content: "";
 		display: block;
 		position: absolute;
-    top: 30px;
-    width: 200px;
-    height: 8px;
-    rotate: -45deg;
-    translate: -30px;
+		top: 30px;
+		width: 200px;
+		height: 8px;
+		rotate: -45deg;
+		translate: -30px;
 		background: #ffffffee;
 		animation: shine 2s infinite;
 	}

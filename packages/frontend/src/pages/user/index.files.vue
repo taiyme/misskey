@@ -37,7 +37,7 @@ import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { notePage } from '@/filters/note.js';
-import * as os from '@/os.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
@@ -61,7 +61,7 @@ function thumbnail(image: Misskey.entities.DriveFile): string {
 }
 
 onMounted(() => {
-	os.api('users/notes', {
+	misskeyApi('users/notes', {
 		userId: props.user.id,
 		withFiles: true,
 		limit: 15,
@@ -94,6 +94,7 @@ onMounted(() => {
 	position: relative;
 	height: 128px;
 	border-radius: 6px;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
@@ -118,7 +119,7 @@ onMounted(() => {
 	width: 100%;
 	height: 100%;
 	display: grid;
-  place-items: center;
+	place-items: center;
 	font-size: 0.8em;
 	color: #fff;
 	cursor: pointer;
