@@ -24,20 +24,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, provide, ref } from 'vue';
 import XCommon from './_common_/common.vue';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/global/router/main.js';
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-const pageMetadata = ref<null | PageMetadata>();
+const pageMetadata = ref<null | PageMetadata>(null);
 
 const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
-	pageMetadata.value = info.value;
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
 			document.title = pageMetadata.value.title;
@@ -46,6 +47,7 @@ provideMetadataReceiver((info) => {
 		}
 	}
 });
+provideReactiveMetadata(pageMetadata);
 
 function goToMisskey() {
 	window.location.href = '/';

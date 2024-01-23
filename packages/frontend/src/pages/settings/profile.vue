@@ -255,10 +255,10 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
-});
+}));
 </script>
 
 <style lang="scss" module>

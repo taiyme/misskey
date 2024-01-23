@@ -52,7 +52,7 @@ import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
+import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -66,7 +66,7 @@ const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
-const pageMetadata = ref<null | PageMetadata>();
+const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
@@ -77,8 +77,9 @@ const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
 provide('router', mainRouter);
-provideMetadataReceiver((info) => {
-	pageMetadata.value = info.value;
+provideMetadataReceiver((metadataGetter) => {
+	const info = metadataGetter();
+	pageMetadata.value = info;
 	if (pageMetadata.value) {
 		if (isRoot.value && pageMetadata.value.title === instanceName) {
 			document.title = pageMetadata.value.title;
@@ -87,6 +88,7 @@ provideMetadataReceiver((info) => {
 		}
 	}
 });
+provideReactiveMetadata(pageMetadata);
 provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 
