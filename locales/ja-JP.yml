@@ -2560,10 +2560,10 @@ _tms:
     patrons: "支援者"
   _settings:
     title: "taiyme拡張機能"
-    description: "これらの機能はtaiyが独自に実装したものです。"
+    description: "これらの機能はtaiymeで独自実装したものです。"
   _flags:
     title: "taiyme実験的機能"
-    description: "これらの設定はブラウザに保存します。このブラウザでログイン中のすべてのユーザーに適用されます。"
+    description: "これらの機能はtaiymeで独自実装したものです。"
     warning: "これらの設定を有効にすると、ページの表示や挙動に深刻な影響を及ぼし、{name}が正常に利用できなくなる可能性があります。"
     forceFetchX: "{x}を強制取得"
     openX: "{x}を開く"

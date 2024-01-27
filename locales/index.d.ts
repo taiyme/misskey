@@ -9607,7 +9607,7 @@ export interface Locale extends ILocale {
              */
             readonly "title": string;
             /**
-             * これらの機能はtaiyが独自に実装したものです。
+             * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
         };
@@ -9617,7 +9617,7 @@ export interface Locale extends ILocale {
              */
             readonly "title": string;
             /**
-             * これらの設定はブラウザに保存します。このブラウザでログイン中のすべてのユーザーに適用されます。
+             * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
             /**
