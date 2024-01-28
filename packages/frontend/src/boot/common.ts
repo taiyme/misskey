@@ -23,6 +23,8 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/global/router/definition.js';
+import { tmsFlaskStore } from '@/tms/flask-store.js';
+import { tmsStore } from '@/tms/store.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -123,6 +125,8 @@ export async function common(createVue: () => App<Element>) {
 
 	await defaultStore.ready;
 	await deckStore.ready;
+	await tmsStore.ready;
+	await tmsFlaskStore.ready;
 
 	const fetchInstanceMetaPromise = fetchInstance();
 
