@@ -2541,3 +2541,29 @@ _reversi:
   canPutEverywhere: "どこでも置けるモード"
   freeMatch: "フリーマッチ"
   lookingForPlayer: "対戦相手を探しています"
+
+_tms:
+  taiyme: "taiyme"
+  aboutTaiyme: "taiymeについて"
+  taiymeSettings: "taiyme拡張機能"
+  taiymeFlags: "taiyme実験的機能"
+  poweredByTaiyme: "{name}は、Misskeyの派生であるtaiymeを使用したサーバーのひとつです。"
+  commitHash: "コミットハッシュ"
+  reportIssuesToGithub: "問題の報告や要望はGitHubで受け付けています。"
+  _about:
+    title: "taiymeについて"
+    description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
+    source: "ソースコード"
+    donate: "寄付する"
+    projectMembers: "プロジェクトメンバー"
+    contributors: "コントリビューター"
+    patrons: "支援者"
+  _settings:
+    title: "taiyme拡張機能"
+    description: "これらの機能はtaiymeで独自実装したものです。"
+  _flags:
+    title: "taiyme実験的機能"
+    description: "これらの機能はtaiymeで独自実装したものです。"
+    warning: "これらの設定を有効にすると、ページの表示や挙動に深刻な影響を及ぼし、{name}が正常に利用できなくなる可能性があります。"
+    forceFetchX: "{x}を強制取得"
+    openX: "{x}を開く"

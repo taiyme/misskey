@@ -9,42 +9,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
-				<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
-					<div :style="{ overflow: ['hidden', 'clip'] as any }">
-						<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
-						<div :class="$style.bannerName">
-							<b>{{ instance.name ?? host }}</b>
-						</div>
-					</div>
-				</div>
+				<TmsServerBanner
+					:serverName="instance.name ?? host"
+					:iconUrl="instance.iconUrl ?? (instance as any).faviconUrl ?? '/favicon.ico'"
+					:bannerUrl="instance.bannerUrl"
+				/>
 
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.description }}</template>
-					<template #value><div v-html="instance.description"></div></template>
+					<template #value><div v-html="instance.description || i18n.ts.headlineMisskey"></div></template>
 				</MkKeyValue>
 
 				<FormSection>
 					<div class="_gaps_m">
-						<MkKeyValue :copy="version">
-							<template #key>Misskey</template>
-							<template #value>{{ version }}</template>
-						</MkKeyValue>
-						<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
+						<TmsSoftwareVersions/>
+						<div v-html="i18n.tsx._tms.poweredByTaiyme({ name: instance.name ?? host })">
 						</div>
-						<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
+						<FormLink to="/tms/about">{{ i18n.ts._tms.aboutTaiyme }}</FormLink>
 					</div>
 				</FormSection>
 
 				<FormSection>
 					<div class="_gaps_m">
 						<FormSplit>
-							<MkKeyValue>
+							<MkKeyValue :copy="instance.maintainerName">
 								<template #key>{{ i18n.ts.administrator }}</template>
-								<template #value>{{ instance.maintainerName }}</template>
+								<template #value>
+									<template v-if="instance.maintainerName != null">{{ instance.maintainerName }}</template>
+									<span v-else style="opacity: 0.7;">({{ i18n.ts.notSet }})</span>
+								</template>
 							</MkKeyValue>
-							<MkKeyValue>
+							<MkKeyValue :copy="instance.maintainerEmail">
 								<template #key>{{ i18n.ts.contact }}</template>
-								<template #value>{{ instance.maintainerEmail }}</template>
+								<template #value>
+									<template v-if="instance.maintainerEmail != null">{{ instance.maintainerEmail }}</template>
+									<span v-else style="opacity: 0.7;">({{ i18n.ts.notSet }})</span>
+								</template>
 							</MkKeyValue>
 						</FormSplit>
 						<FormLink v-if="instance.impressumUrl" :to="instance.impressumUrl" external>{{ i18n.ts.impressum }}</FormLink>
@@ -108,7 +108,7 @@ import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, host } from '@/config.js';
+import { host } from '@/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -117,6 +117,8 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInstanceStats from '@/components/MkInstanceStats.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
+import TmsServerBanner from '@/components/TmsServerBanner.vue';
+import TmsSoftwareVersions from '@/components/TmsSoftwareVersions.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
@@ -170,30 +172,6 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
-.banner {
-	text-align: center;
-	border-radius: 10px;
-	overflow: hidden; // fallback (overflow: clip)
-	overflow: clip;
-	background-size: cover;
-	background-position: center center;
-}
-
-.bannerIcon {
-	display: block;
-	margin: 16px auto 0 auto;
-	height: 64px;
-	border-radius: 8px;
-}
-
-.bannerName {
-	display: block;
-	padding: 16px;
-	color: #fff;
-	text-shadow: 0 0 8px #000;
-	background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-}
-
 .rules {
 	counter-reset: item;
 	list-style: none;

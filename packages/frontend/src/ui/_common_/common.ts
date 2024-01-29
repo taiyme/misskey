@@ -109,10 +109,16 @@ export function openInstanceMenu(ev: MouseEvent) {
 		action: () => {
 			os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {}, {}, 'closed');
 		},
-	} : undefined, {
+	} : undefined, { type: 'divider' }, {
 		type: 'link',
-		text: i18n.ts.aboutMisskey,
-		to: '/about-misskey',
+		text: i18n.ts._tms.aboutTaiyme,
+		icon: 'ti ti-info-circle',
+		to: '/tms/about',
+	}, {
+		type: 'link',
+		text: i18n.ts._tms.taiymeSettings,
+		icon: 'ti ti-settings',
+		to: '/tms/settings',
 	}], ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});
