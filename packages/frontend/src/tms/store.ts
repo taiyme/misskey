@@ -6,5 +6,8 @@
 import { markRaw } from 'vue';
 import { Storage } from '@/pizzax.js';
 
+/**
+ * tmsStore -- 独自実装した機能についてのデータを格納する
+ */
 export const tmsStore = markRaw(new Storage('tmsMain', {
 }));
