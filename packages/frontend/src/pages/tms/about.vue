@@ -3,7 +3,6 @@ SPDX-FileCopyrightText: syuilo and other misskey contributors
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<!-- NOTE: pages/about-misskey.vue を参照する -->
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
