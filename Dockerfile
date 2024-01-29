@@ -44,9 +44,9 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/sw/build.js", "packages/sw/tsconfig.json", "./packages/sw/"]
 COPY --link ["packages/sw/src", "./packages/sw/src"]
-COPY --link ["packages/misskey-bubble-game/tsconfig.json", "./packages/misskey-bubble-game/"]
+COPY --link ["packages/misskey-bubble-game/build.js", "packages/misskey-bubble-game/tsconfig.json", "./packages/misskey-bubble-game/"]
 COPY --link ["packages/misskey-bubble-game/src", "./packages/misskey-bubble-game/src"]
-COPY --link ["packages/misskey-reversi/tsconfig.json", "./packages/misskey-reversi/"]
+COPY --link ["packages/misskey-reversi/build.js", "packages/misskey-reversi/tsconfig.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-reversi/src", "./packages/misskey-reversi/src"]
 COPY --link ["packages/misskey-js/tsconfig.json", "./packages/misskey-js/"]
 COPY --link ["packages/misskey-js/src", "./packages/misskey-js/src"]
@@ -81,7 +81,7 @@ WORKDIR /misskey
 
 COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bubble-game/"]
-# COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
+COPY --link ["packages/misskey-reversi/package.json", "./packages/misskey-reversi/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
@@ -129,7 +129,7 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/built ./built
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-bubble-game/node_modules ./packages/misskey-bubble-game/node_modules
-# COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
+COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules ./packages/misskey-reversi/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules ./packages/misskey-js/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules ./packages/backend/node_modules
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules ./node_modules

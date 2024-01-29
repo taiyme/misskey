@@ -537,6 +537,10 @@ export interface Locale extends ILocale {
      */
     readonly "attachCancel": string;
     /**
+     * ファイルを削除
+     */
+    readonly "deleteFile": string;
+    /**
      * センシティブとして設定
      */
     readonly "markAsSensitive": string;
@@ -4820,6 +4824,18 @@ export interface Locale extends ILocale {
      * タイトルへ
      */
     readonly "backToTitle": string;
+    /**
+     * お住まいの地域
+     */
+    readonly "hemisphere": string;
+    /**
+     * センシティブなファイルを含むノートを表示
+     */
+    readonly "withSensitive": string;
+    /**
+     * {name}のセンシティブなファイルを含む投稿
+     */
+    readonly "userSaysSomethingSensitive": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */
@@ -9408,6 +9424,20 @@ export interface Locale extends ILocale {
             readonly "description": string;
         };
     };
+    readonly "_hemisphere": {
+        /**
+         * 北半球
+         */
+        readonly "N": string;
+        /**
+         * 南半球
+         */
+        readonly "S": string;
+        /**
+         * 一部のクライアント設定で、季節を判定するために使用します。
+         */
+        readonly "caption": string;
+    };
     readonly "_reversi": {
         /**
          * リバーシ
@@ -9482,6 +9512,10 @@ export interface Locale extends ILocale {
          */
         readonly "surrendered": string;
         /**
+         * 時間切れ
+         */
+        readonly "timeout": string;
+        /**
          * 引き分け
          */
         readonly "drawn": string;
@@ -9534,6 +9568,10 @@ export interface Locale extends ILocale {
          */
         readonly "canPutEverywhere": string;
         /**
+         * 1ターンの時間制限
+         */
+        readonly "timeLimitForEachTurn": string;
+        /**
          * フリーマッチ
          */
         readonly "freeMatch": string;
@@ -9541,6 +9579,40 @@ export interface Locale extends ILocale {
          * 対戦相手を探しています
          */
         readonly "lookingForPlayer": string;
+        /**
+         * 対局がキャンセルされました
+         */
+        readonly "gameCanceled": string;
+        /**
+         * 開始時に対局をタイムラインに投稿
+         */
+        readonly "shareToTlTheGameWhenStart": string;
+        /**
+         * 対局を開始しました！ #MisskeyReversi
+         */
+        readonly "iStartedAGame": string;
+        /**
+         * 相手が設定を変更しました
+         */
+        readonly "opponentHasSettingsChanged": string;
+        /**
+         * 変則許可 (完全フリー)
+         */
+        readonly "allowIrregularRules": string;
+        /**
+         * 変則なし
+         */
+        readonly "disallowIrregularRules": string;
+    };
+    readonly "_offlineScreen": {
+        /**
+         * オフライン - サーバーに接続できません
+         */
+        readonly "title": string;
+        /**
+         * サーバーに接続できません
+         */
+        readonly "header": string;
     };
     readonly "_tms": {
         /**
