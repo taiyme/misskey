@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo>{{ i18n.ts._tms.reportIssuesToGithub }} <a href="https://github.com/taiyme/misskey/issues" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a></MkInfo>
 				</div>
 				<XMain ref="xMain"/>
+				<div class="_buttonsCenter"><MkButton rounded small link to="/tms/flags">{{ i18n.ts._tms.taiymeFlags }}</MkButton></div>
 			</div>
 		</MkSpacer>
 	</template>
