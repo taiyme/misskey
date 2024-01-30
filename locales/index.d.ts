@@ -9643,6 +9643,14 @@ export interface Locale extends ILocale {
          * 問題の報告や要望はGitHubで受け付けています。
          */
         readonly "reportIssuesToGithub": string;
+        /**
+         * GIFファイルを表示しています。
+         */
+        readonly "displayingGifFiles": string;
+        /**
+         * センシティブなファイルを表示しています。
+         */
+        readonly "displayingSensitiveFiles": string;
         readonly "_about": {
             /**
              * taiymeについて

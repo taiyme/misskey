@@ -24,9 +24,9 @@ import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 
 type PackOptions = {
-	detail?: boolean,
-	self?: boolean,
-	withUser?: boolean,
+	detail?: boolean;
+	self?: boolean;
+	withUser?: boolean;
 };
 
 @Injectable()
@@ -213,7 +213,7 @@ export class DriveFileEntityService {
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
-			userId: opts.withUser ? file.userId : null,
+			userId: file.userId,
 			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
 		});
 	}
@@ -248,7 +248,7 @@ export class DriveFileEntityService {
 			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
 			}) : null,
-			userId: opts.withUser ? file.userId : null,
+			userId: file.userId,
 			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
 		});
 	}

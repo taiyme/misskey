@@ -4,62 +4,114 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
-	<component
-		:is="disableImageLink ? 'div' : 'a'"
-		v-bind="disableImageLink ? {
-			title: image.name,
-			class: $style.imageContainer,
-		} : {
-			title: image.name,
-			class: $style.imageContainer,
-			href: image.url,
-			style: 'cursor: zoom-in;'
+<div :class="$style.cqRoot">
+	<div
+		:class="{
+			[$style.root]: true,
+			[$style.visible]: !hide,
+			[$style.sensitive]: sensitive,
 		}"
+		@click="onClick"
+		@contextmenu.stop="() => {}"
 	>
-		<ImgWithBlurhash
-			:hash="image.blurhash"
-			:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
-			:forceBlurhash="hide"
-			:cover="hide || cover"
-			:alt="image.comment || image.name"
-			:title="image.comment || image.name"
-			:width="image.properties.width"
-			:height="image.properties.height"
-			:style="hide ? 'filter: brightness(0.7);' : null"
-		/>
-	</component>
-	<template v-if="hide">
-		<div :class="$style.hiddenText">
-			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
-				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && image.size ? bytes(image.size) : i18n.ts.image }}</b>
-				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+		<component
+			:is="disableImageLink ? 'div' : 'a'"
+			v-bind="disableImageLink ? {
+				title: reactiveImage.name,
+				class: $style.imageContainer,
+			} : {
+				title: reactiveImage.name,
+				class: $style.imageContainer,
+				href: reactiveImage.url,
+				style: 'cursor: zoom-in;'
+			}"
+		>
+			<MkImgWithBlurhash
+				:hash="reactiveImage.blurhash"
+				:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
+				:forceBlurhash="hide"
+				:cover="hide || cover"
+				:alt="reactiveImage.comment || reactiveImage.name"
+				:title="reactiveImage.comment || reactiveImage.name"
+				:width="reactiveImage.properties.width"
+				:height="reactiveImage.properties.height"
+				:style="hide ? 'filter: brightness(0.7);' : undefined"
+			/>
+		</component>
+		<template v-if="hide">
+			<div :class="['_noSelect', $style.hiddenText]">
+				<div :class="$style.hiddenTextWrapper">
+					<b v-if="reactiveImage.isSensitive" style="display: block;">
+						<i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.image}${reactiveImage.size ? ` ${bytes(reactiveImage.size)}` : ''})` : '' }}
+					</b>
+					<b v-else style="display: block;">
+						<i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && reactiveImage.size ? bytes(reactiveImage.size) : i18n.ts.image }}
+					</b>
+					<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+				</div>
 			</div>
-		</div>
-	</template>
-	<template v-else-if="controls">
-		<div :class="$style.indicators">
-			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
-			<div v-if="image.comment" :class="$style.indicator">ALT</div>
-			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
-		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
-		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
-	</template>
+		</template>
+		<template v-else-if="controls">
+			<div :class="$style.controlsUpperRight">
+				<button
+					:class="['_button', $style.controlItem]"
+					v-tooltip="i18n.ts.hide"
+					@click.stop="hide = true"
+				>
+					<div :class="$style.controlButton"><i class="ti ti-eye-off"></i></div>
+				</button>
+			</div>
+			<div :class="$style.controlsLowerRight">
+				<button
+					:class="['_button', $style.controlItem]"
+					v-tooltip="i18n.ts.menu"
+					@click.stop="showMenu"
+				>
+					<div :class="$style.controlButton"><i class="ti ti-dots"></i></div>
+				</button>
+			</div>
+			<div :class="$style.controlsLowerLeft">
+			</div>
+			<div :class="$style.controlsUpperLeft">
+				<button
+					v-if="['image/gif', 'image/apng'].includes(reactiveImage.type)"
+					v-tooltip:dialog="i18n.ts._tms.displayingGifFiles"
+					:class="['_button', $style.controlItem]"
+				>
+					<div :class="$style.controlButton"><span>GIF</span></div>
+				</button>
+				<button
+					v-if="reactiveImage.comment"
+					v-tooltip:dialog="reactiveImage.comment"
+					:class="['_button', $style.controlItem]"
+				>
+					<div :class="$style.controlButton"><span>ALT</span></div>
+				</button>
+				<button
+					v-if="reactiveImage.isSensitive"
+					v-tooltip:dialog="i18n.ts._tms.displayingSensitiveFiles"
+					:class="['_button', $style.controlItem]"
+				>
+					<div :class="$style.controlButton"><span>NSFW</span></div>
+				</button>
+			</div>
+		</template>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import bytes from '@/filters/bytes.js';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { iAmModerator } from '@/account.js';
+import { $i, iAmModerator } from '@/account.js';
+import { MenuItem } from '@/types/menu.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -73,60 +125,143 @@ const props = withDefaults(defineProps<{
 	controls: true,
 });
 
+const reactiveImage = ref(deepClone(props.image));
+
 const hide = ref(true);
-const darkMode = ref<boolean>(defaultStore.state.darkMode);
+const sensitive = ref(false);
 
-const url = computed(() => (props.raw || defaultStore.state.loadRawImages)
-	? props.image.url
-	: defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl,
-);
+const iAmOwner = computed(() => {
+	if ($i == null) return false;
+	if (reactiveImage.value.userId == null) return false;
+	return $i.id === reactiveImage.value.userId;
+});
 
-function onclick() {
-	if (!props.controls) {
-		return;
-	}
-	if (hide.value) {
-		hide.value = false;
-	}
-}
+const url = computed(() => {
+	return (
+		(props.raw || defaultStore.state.loadRawImages)
+			? reactiveImage.value.url
+			: defaultStore.state.disableShowingAnimatedImages
+				? getStaticImageUrl(reactiveImage.value.url)
+				: reactiveImage.value.thumbnailUrl
+	);
+});
 
-// Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
+	reactiveImage.value = deepClone(props.image);
+}, {
+	deep: true,
+});
+
+watch(reactiveImage, () => {
+	if (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) {
+		hide.value = true;
+	} else if (defaultStore.state.nsfw === 'ignore') {
+		hide.value = false;
+	} else {
+		hide.value = reactiveImage.value.isSensitive;
+	}
+	if (defaultStore.state.highlightSensitiveMedia) {
+		sensitive.value = reactiveImage.value.isSensitive;
+	} else {
+		sensitive.value = false;
+	}
 }, {
 	deep: true,
 	immediate: true,
 });
 
-function showMenu(ev: MouseEvent) {
-	os.popupMenu([{
+const reactiveColor = computed(() => {
+	return (
+		defaultStore.reactiveState.darkMode.value
+			? 'rgba(255, 255, 255, 0.02)'
+			: 'rgba(0, 0, 0, 0.02)'
+	);
+});
+
+const onClick = (): void => {
+	if (!props.controls || !hide.value) return;
+	hide.value = false;
+};
+
+const showMenu = (ev: MouseEvent): void => {
+	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
+};
+
+const getMenu = (): MenuItem[] => {
+	const menu: MenuItem[] = [];
+	menu.push({
 		text: i18n.ts.hide,
 		icon: 'ti ti-eye-off',
 		action: () => {
 			hide.value = true;
 		},
-	}, ...(iAmModerator ? [{
-		text: i18n.ts.markAsSensitive,
-		icon: 'ti ti-eye-exclamation',
-		danger: true,
+	});
+	menu.push({
+		text: i18n.ts._fileViewer.title,
+		icon: 'ti ti-info-circle',
 		action: () => {
-			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+			os.popup(defineAsyncComponent(() => import('@/components/MkMediaImage.dialog.vue')), {
+				file: reactiveImage.value,
+			}, {}, 'closed');
 		},
-	}] : [])], ev.currentTarget ?? ev.target);
-}
-
+	});
+	if (iAmOwner.value) {
+		menu.push({ type: 'divider' });
+		menu.push({
+			type: 'label',
+			text: i18n.ts.manage,
+		});
+		menu.push({
+			type: 'link',
+			to: `/my/drive/file/${reactiveImage.value.id}`,
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+		});
+	}
+	if (iAmModerator) {
+		menu.push({ type: 'divider' });
+		menu.push({
+			type: 'label',
+			text: i18n.ts.moderation,
+		});
+		menu.push({
+			type: 'link',
+			to: `/admin/file/${reactiveImage.value.id}`,
+			text: i18n.ts._fileViewer.title,
+			icon: 'ti ti-info-circle',
+		});
+		menu.push({
+			text: reactiveImage.value.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
+			icon: reactiveImage.value.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
+			danger: true,
+			action: () => {
+				os.apiWithDialog('drive/files/update', {
+					fileId: reactiveImage.value.id,
+					isSensitive: !reactiveImage.value.isSensitive,
+				}).then(({ isSensitive }) => {
+					reactiveImage.value.isSensitive = isSensitive;
+				});
+			},
+		});
+	}
+	return menu;
+};
 </script>
 
 <style lang="scss" module>
-.hidden {
+.cqRoot {
+	container: mkmediaimage / inline-size;
+}
+
+.root {
+	--scale: 1;
 	position: relative;
+	width: 100%;
+	height: 100%;
+	min-height: calc(80px * var(--scale));
 }
 
 .sensitive {
-	position: relative;
-
 	&::after {
 		content: "";
 		position: absolute;
@@ -138,6 +273,28 @@ function showMenu(ev: MouseEvent) {
 		border-radius: inherit;
 		box-shadow: inset 0 0 0 4px var(--warn);
 	}
+}
+
+.visible {
+	background: var(--bg);
+	background-image: linear-gradient(
+		45deg,
+		v-bind(reactiveColor) 16.67%,
+		var(--bg) 16.67%,
+		var(--bg) 50%,
+		v-bind(reactiveColor) 50%,
+		v-bind(reactiveColor) 66.67%,
+		var(--bg) 66.67%,
+		var(--bg) 100%
+	);
+	background-size: 16px 16px;
+}
+
+.hiddenTextWrapper {
+	display: table-cell;
+	text-align: center;
+	font-size: 0.8em;
+	color: #fff;
 }
 
 .hiddenText {
@@ -153,52 +310,6 @@ function showMenu(ev: MouseEvent) {
 	cursor: pointer;
 }
 
-.hide {
-	display: block;
-	position: absolute;
-	border-radius: 6px;
-	background-color: var(--fg);
-	color: var(--accentLighten);
-	font-size: 12px;
-	opacity: .5;
-	padding: 5px 8px;
-	text-align: center;
-	cursor: pointer;
-	top: 12px;
-	right: 12px;
-}
-
-.hiddenTextWrapper {
-	display: table-cell;
-	text-align: center;
-	font-size: 0.8em;
-	color: #fff;
-}
-
-.visible {
-	position: relative;
-	// box-shadow: 0 0 0 1px var(--divider) inset;
-	background: var(--bg);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--bg) 16.67%, var(--bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--bg) 66.67%, var(--bg) 100%);
-	background-size: 16px 16px;
-}
-
-.menu {
-	display: block;
-	position: absolute;
-	border-radius: 999px;
-	background-color: rgba(0, 0, 0, 0.3);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	color: #fff;
-	font-size: 0.8em;
-	width: 28px;
-	height: 28px;
-	text-align: center;
-	bottom: 10px;
-	right: 10px;
-}
-
 .imageContainer {
 	display: block;
 	overflow: hidden;
@@ -209,24 +320,141 @@ function showMenu(ev: MouseEvent) {
 	background-repeat: no-repeat;
 }
 
-.indicators {
-	display: inline-flex;
+%Controls {
 	position: absolute;
-	top: 10px;
-	left: 10px;
-	pointer-events: none;
-	opacity: .5;
-	gap: 6px;
+	inset: auto;
+	display: flex;
+
+	&:empty {
+		display: none;
+	}
 }
 
-.indicator {
-	/* Hardcode to black because either --bg or --fg makes it hard to read in dark/light mode */
-	background-color: black;
-	border-radius: 6px;
-	color: var(--accentLighten);
-	display: inline-block;
-	font-weight: bold;
-	font-size: 0.8em;
-	padding: 2px 5px;
+%ControlItem {
+	text-align: center;
+	font-size: clamp(6px, calc(12px * var(--scale)), 12px);
+	padding:
+		clamp(3px, calc(6px * var(--scale)), 6px)
+		clamp(2px, calc(4px * var(--scale)), 4px);
+
+	&:first-child {
+		padding-left: clamp(4px, calc(8px * var(--scale)), 8px);
+	}
+
+	&:last-child {
+		padding-right: clamp(4px, calc(8px * var(--scale)), 8px);
+	}
+}
+
+.controlsUpperRight {
+	@extend %Controls;
+	top: 0;
+	right: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-bottom: 0;
+
+		&:first-child {
+			padding-left: 0;
+		}
+	}
+}
+
+.controlsLowerRight {
+	@extend %Controls;
+	right: 0;
+	bottom: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-top: 0;
+
+		&:first-child {
+			padding-left: 0;
+		}
+	}
+}
+
+.controlsLowerLeft {
+	@extend %Controls;
+	bottom: 0;
+	left: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-top: 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.controlsUpperLeft {
+	@extend %Controls;
+	top: 0;
+	left: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-bottom: 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.controlButton {
+	display: block;
+	border-radius: clamp(3px, calc(6px * var(--scale)), 6px);
+	padding:
+		clamp(3px, calc(6px * var(--scale)), 6px)
+		clamp(4px, calc(8px * var(--scale)), 8px);
+	background-color: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	transition: background-color 0.1s ease;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.7);
+	}
+}
+
+@container mkmediaimage (max-width: 300px) {
+	.root {
+		--scale: 0.85;
+	}
+}
+
+@container mkmediaimage (max-width: 250px) {
+	.root {
+		--scale: 0.80;
+	}
+
+	.controlsLowerLeft {
+		display: none;
+	}
+
+	.controlsUpperLeft {
+		display: none;
+	}
+}
+
+@container mkmediaimage (max-width: 200px) {
+	.root {
+		--scale: 0.75;
+	}
+}
+
+@container mkmediaimage (max-width: 150px) {
+	.root {
+		--scale: 0.70;
+		min-height: auto;
+	}
+
+	.controlsUpperRight {
+		display: none;
+	}
 }
 </style>
