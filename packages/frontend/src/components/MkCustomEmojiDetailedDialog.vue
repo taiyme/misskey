@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow ref="dialogEl" @close="cancel()" @closed="$emit('closed')">
+<MkModalWindow ref="dialogEl" @close="cancel()" @closed="emit('closed')">
 	<template #header>:{{ emoji.name }}:</template>
 	<template #default>
 		<MkSpacer>
@@ -61,19 +61,23 @@ import { defineProps, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkLink from './MkLink.vue';
+import MkLink from '@/components/MkLink.vue';
+
 const props = defineProps<{
 	emoji: Misskey.entities.EmojiDetailed,
 }>();
+
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
+
 const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+
 const cancel = () => {
 	emit('cancel');
-	dialogEl.value!.close();
+	dialogEl.value?.close();
 };
 </script>
 
