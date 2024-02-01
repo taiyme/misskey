@@ -22,7 +22,7 @@ import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
-  emoji: Misskey.entities.EmojiSimple;
+	emoji: Misskey.entities.EmojiSimple;
 }>();
 
 function menu(ev) {
