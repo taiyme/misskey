@@ -101,17 +101,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import bytes from '@/filters/bytes.js';
-import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store.js';
+import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { $i, iAmModerator } from '@/account.js';
-import { MenuItem } from '@/types/menu.js';
+import { defaultStore } from '@/store.js';
 import { deepClone } from '@/scripts/clone.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import bytes from '@/filters/bytes.js';
+import { MenuItem } from '@/types/menu.js';
+import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -196,21 +196,8 @@ const getMenu = (): MenuItem[] => {
 			hide.value = true;
 		},
 	});
-	menu.push({
-		text: i18n.ts._fileViewer.title,
-		icon: 'ti ti-info-circle',
-		action: () => {
-			os.popup(defineAsyncComponent(() => import('@/components/MkMediaImage.dialog.vue')), {
-				file: reactiveImage.value,
-			}, {}, 'closed');
-		},
-	});
 	if (iAmOwner.value) {
 		menu.push({ type: 'divider' });
-		menu.push({
-			type: 'label',
-			text: i18n.ts.manage,
-		});
 		menu.push({
 			type: 'link',
 			to: `/my/drive/file/${reactiveImage.value.id}`,
