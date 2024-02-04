@@ -246,11 +246,11 @@ defineExpose({
 	cursor: pointer;
 	border: var(--panelBorder);
 
-	>.name {
+	> .name {
 		font-weight: 700;
 	}
 
-	>.time {
+	> .time {
 		font-size: 0.85em;
 		opacity: 0.7;
 	}
