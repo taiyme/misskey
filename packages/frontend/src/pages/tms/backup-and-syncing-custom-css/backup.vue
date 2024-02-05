@@ -301,7 +301,10 @@ const menu = (ev: MouseEvent, backupId: string) => {
 		icon: 'ti ti-forms',
 		action: () => renameBackup(backupId),
 	}, {
-		text: '上書き保存',
+		text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.preview,
+		icon: 'ti ti-eye-code',
+		action: () => preview(backupId),
+	}, {
 		text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.override,
 		icon: 'ti ti-device-floppy',
 		action: () => overrideBackup(backupId),

@@ -2611,6 +2611,7 @@ _tms:
         deleteBackup: "カスタムCSSのバックアップを削除"
         deleteBackupDescription: "カスタムCSSのバックアップ「{name}」を削除しますか？\nこの操作は取り消せません。"
         override: "上書き保存"
+        preview: "バックアップ内容を見る"
       _syncing:
         title: "カスタムCSSの同期"
         description: "カスタムCSSの同期を有効化すると、カスタムCSSの変更がリアルタイムに同期されます。"

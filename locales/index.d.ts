@@ -9793,6 +9793,10 @@ export interface Locale extends ILocale {
                      * 上書き保存
                      */
                     readonly "override": string;
+                    /**
+                     * バックアップ内容を見る
+                     */
+                    readonly "preview": string;
                 };
                 readonly "_syncing": {
                     /**
