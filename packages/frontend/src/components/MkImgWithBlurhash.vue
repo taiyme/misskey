@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:leaveFromClass="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
 		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-show="!hide" key="img" ref="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async"/>
+		<img v-show="!hide" key="img" ref="img" :height="imgHeight ?? undefined" :width="imgWidth ?? undefined" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async"/>
 	</TransitionGroup>
 </div>
 </template>
@@ -73,11 +73,11 @@ const props = withDefaults(defineProps<{
 		leaveFromClass?: string;
 	} | null;
 	src?: string | null;
-	hash?: string;
+	hash?: string | null;
 	alt?: string | null;
 	title?: string | null;
-	height?: number;
-	width?: number;
+	height?: number | null;
+	width?: number | null;
 	cover?: boolean;
 	forceBlurhash?: boolean;
 	onlyAvgColor?: boolean; // 軽量化のためにBlurhashを使わずに平均色だけを描画
@@ -120,6 +120,8 @@ function waitForDecode() {
 }
 
 watch([() => props.width, () => props.height, root], () => {
+	if (props.width == null || props.height == null) return;
+
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
 		canvasWidth.value = Math.round(64 * ratio);

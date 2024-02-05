@@ -32,12 +32,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, shallowRef } from 'vue';
-import { ready } from './waitTmsStoreLoaded.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { tmsFlaskStore } from '@/tms/flask-store.js';
+import { tmsStore } from '@/tms/store.js';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
+
+const ready = async (): Promise<void> => {
+	await tmsStore.loaded;
+	await tmsFlaskStore.loaded;
+};
 
 const XMain = defineAsyncComponent(() => import('@/pages/tms/settings.main.vue'));
 const xMain = shallowRef<InstanceType<typeof XMain> | null>(null);

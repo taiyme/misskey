@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { unisonReload } from '@/scripts/unison-reload.js';
 import * as os from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';

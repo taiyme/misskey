@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class RefineAnnouncement21691657412740 {
     name = 'RefineAnnouncement21691657412740'
 
