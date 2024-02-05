@@ -4,16 +4,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModalWindow ref="modal" :height="height" :width="width" @close="close()" @closed="emit('closed')">
+<MkModalWindow
+	ref="modal"
+	:height="height"
+	:width="width"
+	@close="close()"
+	@closed="emit('closed')"
+>
+	<template #header><i class="ti ti-file-text"></i> {{ name }}</template>
+
 	<!-- eslint-disable-next-line vue/no-v-html -->
-	<div :class="[$style.centerPage, 'codeBlock']" v-html="html">
-	</div>
+	<MkCode :lang="lang" :code="code" :class="[$style.codeBlock, 'codeBlock']"/>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import MkModalWindow from './MkModalWindow.vue';
+import MkCode from './MkCode.vue';
 
 const modal = shallowRef<InstanceType<typeof MkModalWindow>>();
 const height = ref(window.innerHeight);
@@ -50,35 +58,26 @@ onUnmounted(() => {
 });
 
 defineProps<{
-	html: string;
+	name: string;
+	lang?: string;
+	code: string;
 }>();
 </script>
 
 <style lang="scss" module>
-.centerPage {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100cqh;
-	box-sizing: border-box;
+.codeBlock {
+	height: 100%;
+
+	> div {
+		height: 100%;
+	}
 }
 </style>
 
 <style lang="scss" scoped>
-.codeBlock :deep(.shiki) {
+.codeBlock :deep(pre.shiki) {
 	margin: 0;
-	padding-left: 1em;
-	padding-right: 1em;
 	height: 100%;
-	width: 100%;
-	display: inline-block;
-	line-height: 1.5em;
-	font-size: 1em;
-	white-space: pre;
-
-	& pre,
-	& code {
-		font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-	}
+	border-radius: 0;
 }
 </style>

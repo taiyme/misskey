@@ -281,6 +281,7 @@ const preview = async (backupId: string) => {
 	}
 
 	await codePreview({
+		name: backup.name,
 		lang: 'css',
 		code: backup.customCss,
 	});
