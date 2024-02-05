@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setWasm, setCDN, Highlighter, getHighlighter as _getHighlighter } from 'shiki';
-
-setWasm('/assets/shiki/dist/onig.wasm');
-setCDN('/assets/shiki/');
+import { getHighlighterCore, loadWasm } from 'shiki/core';
+import darkPlus from 'shiki/themes/dark-plus.mjs';
+import type { Highlighter, LanguageRegistration } from 'shiki';
 
 let _highlighter: Highlighter | null = null;
 
@@ -18,16 +17,19 @@ export async function getHighlighter(): Promise<Highlighter> {
 }
 
 export async function initHighlighter() {
-	const highlighter = await _getHighlighter({
-		theme: 'dark-plus',
-		langs: ['js'],
-	});
+	const aiScriptGrammar = await import('aiscript-vscode/aiscript/syntaxes/aiscript.tmLanguage.json');
 
-	await highlighter.loadLanguage({
-		path: 'languages/aiscript.tmLanguage.json',
-		id: 'aiscript',
-		scopeName: 'source.aiscript',
-		aliases: ['is', 'ais'],
+	await loadWasm(import('shiki/onig.wasm?init'));
+
+	const highlighter = await getHighlighterCore({
+		themes: [darkPlus],
+		langs: [
+			import('shiki/langs/javascript.mjs'),
+			{
+				aliases: ['is', 'ais'],
+				...aiScriptGrammar.default,
+			} as unknown as LanguageRegistration,
+		],
 	});
 
 	_highlighter = highlighter;
