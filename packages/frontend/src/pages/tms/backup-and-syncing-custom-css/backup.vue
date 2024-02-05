@@ -5,11 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<div>
-		<MkButton inline primary @click="saveNew">新規作成</MkButton>
+	<div :class="$style.buttons">
+		<MkButton inline primary @click="saveNew">{{ i18n.ts.createNew }}</MkButton>
+		<MkButton inline @click="upload">{{ i18n.ts.upload }}</MkButton>
 	</div>
 	<template v-if="customCssBackups.length === 0">
-		<MkInfo>バックアップがありません。「新規作成」で現在適用されているカスタムCSSのバックアップを作成できます。</MkInfo>
+		<MkInfo>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.notfound }}</MkInfo>
 	</template>
 	<template v-else>
 		<div class="_gaps_s">
@@ -19,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@contextmenu.prevent.stop="($event: MouseEvent) => menu($event, backup.id)"
 			>
 				<div :class="$style.name">{{ backup.name }}</div>
-				<div :class="$style.time">作成日: {{ new Date(backup.createAt).toLocaleString() }}</div>
+				<div :class="$style.time">{{ i18n.tsx._tms._flags._backupAndSyncingCustomCss._backup.createdAt({ datetime: new Date(backup.createAt).toLocaleString() }) }}</div>
 			</div>
 		</div>
 	</template>
@@ -35,16 +36,18 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
+import { codePreview } from '@/tms/popup.js';
 
-type CustomCSSBackup = {
+export type CustomCSSBackup = {
 	id: string;
 	name: string;
 	createAt: string;
 	customCss: string;
 };
-type CustomCSSBackups = CustomCSSBackup[];
+export type CustomCSSBackups = CustomCSSBackup[];
 
-const scope = ['tms', 'customCssBackups'];
+const scope = ['tms', 'customCssBackups'] as const satisfies string[];
 
 const customCssBackups = ref<CustomCSSBackups>([]);
 
@@ -53,15 +56,15 @@ const saveNew = async () => {
 	if (!customCss) {
 		await confirm({
 			type: 'error',
-			title: 'カスタムCSSが設定されていません',
-			text: 'カスタムCSSを設定されていない状態ではバックアップを作成できません。',
+			title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.noCustomCss,
+			text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.noCustomCssDescription,
 		});
 
 		return;
 	}
 
 	const { canceled, result: name } = await inputText({
-		title: 'バックアップ名を入力',
+		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.inputBackupName,
 	});
 	if (canceled) {
 		return;
@@ -87,6 +90,85 @@ const saveNew = async () => {
 	});
 };
 
+const upload = async () => {
+	const input = document.createElement('input');
+	input.type = 'file';
+	input.multiple = false;
+	input.onchange = async () => {
+		if (!input.files || input.files.length === 0) return;
+
+		const file = input.files[0];
+
+		if (file.type !== 'application/json') {
+			return alert({
+				type: 'error',
+				title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.cannnotLoad,
+				text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.invalidFile,
+			});
+		}
+
+		let json: { [key: string]: unknown };
+		try {
+			json = JSON.parse(await file.text());
+		} catch (err) {
+			return alert({
+				type: 'error',
+				title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.cannnotLoad,
+				text: (err as SyntaxError).message,
+			});
+		}
+		const result = validate(json);
+		if (!result.valid) {
+			return alert({
+				type: 'error',
+				title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.cannnotLoad,
+				text: result.error,
+			});
+		}
+
+		await apiWithDialog('i/registry/set', { scope, key: result.value.id, value: result.value });
+
+		// 一応廃棄
+		window['__misskey_input_ref__'] = null;
+	};
+
+	// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
+	// iOS Safari で正常に動かす為のおまじない
+	window['__misskey_input_ref__'] = input;
+
+	input.click();
+};
+
+const validate = (json: { [key: string]: unknown }): { valid: true, value: CustomCSSBackup } | { valid: false, error: string } => {
+	const uuidv4Matcher = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+	if ('id' in json && (typeof json.id !== 'string' || !uuidv4Matcher.test(json.id))) {
+		return {
+			valid: false,
+			error: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.invalidId,
+		};
+	}
+	if ('name' in json && typeof json.name !== 'string') {
+		return {
+			valid: false,
+			error: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.invalidName,
+		};
+	}
+	if ('createAt' in json && typeof json.createAt !== 'string') {
+		json.createAt = new Date().toISOString();
+	}
+	if ('customCss' in json && (typeof json.customCss !== 'string' || json.customCss.length === 0)) {
+		return {
+			valid: false,
+			error: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.invalidCustomCss,
+		};
+	}
+
+	return {
+		valid: true,
+		value: json as CustomCSSBackup,
+	};
+};
+
 const applyBackup = async (backupId: string) => {
 	const backup = customCssBackups.value.find((p) => p.id === backupId);
 	if (!backup) {
@@ -95,8 +177,8 @@ const applyBackup = async (backupId: string) => {
 
 	const { canceled } = await confirm({
 		type: 'info',
-		title: 'カスタムCSSのバックアップを適用',
-		text: `カスタムCSSのバックアップ「${backup.name}」を適用しますか？`,
+		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.applyBackup,
+		text: i18n.tsx._tms._flags._backupAndSyncingCustomCss._backup.applyBackupDescription({ name: backup.name }),
 	});
 	if (canceled) {
 		return;
@@ -114,7 +196,7 @@ const renameBackup = async (backupId: string) => {
 	}
 
 	const { canceled, result: name } = await inputText({
-		title: 'バックアップ名を入力',
+		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.inputBackupName,
 		default: backup.name,
 	});
 	if (canceled) {
@@ -140,8 +222,8 @@ const overrideBackup = async (backupId: string) => {
 	if (!customCss) {
 		await confirm({
 			type: 'error',
-			title: 'カスタムCSSが設定されていません',
-			text: 'カスタムCSSを設定されていない状態では上書き保存できません。\nカスタムCSSのバックアップを削除する場合はメニューから「削除」を選択してください。',
+			title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.noCustomCss,
+			text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.cannotOverrideEmpty,
 		});
 
 		return;
@@ -149,8 +231,8 @@ const overrideBackup = async (backupId: string) => {
 
 	const { canceled } = await confirm({
 		type: 'warning',
-		title: 'カスタムCSSのバックアップを上書き',
-		text: `カスタムCSSのバックアップ「${backup.name}」を現在のカスタムCSSで上書きします。この操作は取り消せません。`,
+		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.overrideBackup,
+		text: i18n.tsx._tms._flags._backupAndSyncingCustomCss._backup.overrideBackupDescription({ name: backup.name }),
 	});
 	if (canceled) {
 		return;
@@ -173,8 +255,8 @@ const deleteBackup = async (backupId: string) => {
 
 	const { canceled } = await confirm({
 		type: 'warning',
-		title: 'カスタムCSSのバックアップを削除',
-		text: `カスタムCSSのバックアップ「${profile.name}」を削除します。この操作は取り消せません。`,
+		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.deleteBackup,
+		text: i18n.tsx._tms._flags._backupAndSyncingCustomCss._backup.deleteBackupDescription({ name: profile.name }),
 	});
 	if (canceled) {
 		return;
@@ -192,6 +274,18 @@ const deleteBackup = async (backupId: string) => {
 	});
 };
 
+const preview = async (backupId: string) => {
+	const backup = customCssBackups.value.find((p) => p.id === backupId);
+	if (!backup) {
+		return;
+	}
+
+	await codePreview({
+		lang: 'css',
+		code: backup.customCss,
+	});
+};
+
 const menu = (ev: MouseEvent, backupId: string) => {
 	const profile = customCssBackups.value.find((p) => p.id === backupId);
 	if (!profile) {
@@ -199,27 +293,28 @@ const menu = (ev: MouseEvent, backupId: string) => {
 	}
 
 	return popupMenu([{
-		text: '適用',
+		text: i18n.ts.apply,
 		icon: 'ti ti-cloud-upload',
 		action: () => applyBackup(backupId),
 	}, {
-		text: '名前を変更',
+		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => renameBackup(backupId),
 	}, {
 		text: '上書き保存',
+		text: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.override,
 		icon: 'ti ti-device-floppy',
 		action: () => overrideBackup(backupId),
 	}, {
 		type: 'a',
-		text: 'ダウンロード',
+		text: i18n.ts.download,
 		icon: 'ti ti-download',
 		href: URL.createObjectURL(new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' })),
 		download: `${profile.name}.json`,
 	}, {
 		type: 'divider',
 	}, {
-		text: '削除',
+		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
 		action: () => deleteBackup(backupId),
@@ -241,6 +336,11 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
+.buttons {
+	display: flex;
+	gap: var(--margin);
+	flex-wrap: wrap;
+}
 .profile {
 	padding: 20px;
 	cursor: pointer;

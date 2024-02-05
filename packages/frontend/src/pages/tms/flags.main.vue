@@ -6,6 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<FormSection>
+		<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
+	</FormSection>
+	<FormSection>
 		<template #label>For developer</template>
 		<div class="_gaps_s">
 			<MkFolder defaultOpen>
@@ -27,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, readonly, ref, watch } from 'vue';
+import { defineAsyncComponent, readonly, ref, shallowRef, watch } from 'vue';
 import { commitHash, lang, version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -35,6 +38,9 @@ import { confirm, inputText, popup, waiting } from '@/os.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+
+const XBackupAndSyncingCustomCss = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/main.vue'));
+const backupAndSyncingCustomCss = shallowRef<InstanceType<typeof XBackupAndSyncingCustomCss> | null>(null);
 
 const confirmDialog = async (): Promise<boolean> => {
 	const { canceled } = await confirm({

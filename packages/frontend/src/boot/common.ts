@@ -5,6 +5,7 @@
 
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
+import type { CustomCSSBackup } from '@/pages/tms/backup-and-syncing-custom-css/backup.vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
@@ -25,6 +26,8 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/global/router/definition.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
+import { useStream } from '@/stream.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`Misskey v${version}`);
@@ -123,10 +126,10 @@ export async function common(createVue: () => App<Element>) {
 	html.setAttribute('lang', lang);
 	//#endregion
 
-	await defaultStore.ready;
-	await deckStore.ready;
-	await tmsStore.ready;
-	await tmsFlaskStore.ready;
+	await defaultStore.loaded;
+	await deckStore.loaded;
+	await tmsStore.loaded;
+	await tmsFlaskStore.loaded;
 
 	const fetchInstanceMetaPromise = fetchInstance();
 
@@ -209,6 +212,31 @@ export async function common(createVue: () => App<Element>) {
 			document.documentElement.style.setProperty('--blur', 'none');
 		}
 	}, { immediate: true });
+
+	// tms custom css syncing
+	const enabledCustomCssSyncing = tmsFlaskStore.state.enabledCustomCssSyncing;
+	if (enabledCustomCssSyncing) {
+		const syncingCustomCssId = tmsFlaskStore.state.syncingCustomCssId;
+		const connection = useStream().useChannel('main');
+		const scope = ['tms', 'customCssBackups'] as const satisfies string[];
+
+		connection.on('registryUpdated', ({ scope: recievedScope, key, value }) => {
+			if (!recievedScope || scope.length !== recievedScope.length || scope.some((v, i) => v !== recievedScope[i])) {
+				return;
+			}
+			if (key !== syncingCustomCssId) {
+				return;
+			}
+
+			const customCss = (value as CustomCSSBackup).customCss;
+			miLocalStorage.setItem('customCss', customCss);
+
+			const styleDom = document.querySelector('style#customCss');
+			if (styleDom) {
+				styleDom.innerHTML = customCss;
+			}
+		});
+	}
 
 	// Keep screen on
 	const onVisibilityChange = () => document.addEventListener('visibilitychange', () => {

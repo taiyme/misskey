@@ -4,24 +4,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<FormSection>
-	<MkFolder>
-		<template #label>カスタムCSSのバックアップと同期</template>
-		<div class="_gaps_s">
-			<FormSection first>
-				<template #label>作成したバックアップ</template>
-				<Backup ref="backup"/>
-			</FormSection>
-		</div>
-	</MkFolder>
-</FormSection>
+<MkFolder>
+	<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss.title }}</template>
+	<div class="_gaps_s">
+		<FormSection first>
+			<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.title }}</template>
+			<XBackup ref="xBackup"/>
+		</FormSection>
+
+		<FormSection v-if="xBackup && xBackup.customCssBackups">
+			<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._syncing.title }}</template>
+			<div class="_gaps_m">
+				<XSync ref="xSync" :customCssBackups="xBackup.customCssBackups"/>
+				<template v-if="xSync && xSync.edited">
+					<MkButton primary :disabled="!xSync.changed" @click="xSync.save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</template>
+			</div>
+		</FormSection>
+	</div>
+</MkFolder>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, shallowRef } from 'vue';
+import { i18n } from '@/i18n.js';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 
-const Backup = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/backup.vue'));
-const backup = shallowRef<InstanceType<typeof Backup> | null>(null);
+const XBackup = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/backup.vue'));
+const xBackup = shallowRef<InstanceType<typeof XBackup> | null>(null);
+
+const XSync = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/sync.vue'));
+const xSync = shallowRef<InstanceType<typeof XSync> | null>(null);
 </script>

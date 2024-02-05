@@ -15,8 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo warn>{{ i18n.tsx._tms._flags.warning({ name: instance.name ?? host }) }}</MkInfo>
 					<MkInfo>{{ i18n.ts._tms.reportIssuesToGithub }} <a href="https://github.com/taiyme/misskey/issues" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a></MkInfo>
 				</div>
-				<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
-				<XMain ref="xMain"/>
+				<FormSuspense :p="ready"><XMain ref="xMain"/></FormSuspense>
 				<div class="_buttonsCenter"><MkButton rounded small link to="/tms/settings"><i class="ti ti-settings"></i> {{ i18n.ts._tms.taiymeSettings }}</MkButton></div>
 			</div>
 		</MkSpacer>
@@ -33,19 +32,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, shallowRef } from 'vue';
+import { ready } from './waitTmsStoreLoaded.js';
 import { host } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import TmsSoftwareVersions from '@/components/TmsSoftwareVersions.vue';
 
 const XMain = defineAsyncComponent(() => import('@/pages/tms/flags.main.vue'));
 const xMain = shallowRef<InstanceType<typeof XMain> | null>(null);
-
-const XBackupAndSyncingCustomCss = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/main.vue'));
-const backupAndSyncingCustomCss = shallowRef<InstanceType<typeof XBackupAndSyncingCustomCss> | null>(null);
 
 definePageMetadata(() => ({
 	title: i18n.ts._tms._flags.title,

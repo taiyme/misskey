@@ -146,6 +146,7 @@
 	if (customCss && customCss.length > 0) {
 		const style = document.createElement('style');
 		style.innerHTML = customCss;
+		style.id = 'customCss';
 		document.head.appendChild(style);
 	}
 
