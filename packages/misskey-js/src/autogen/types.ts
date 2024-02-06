@@ -3,7 +3,7 @@
 
 /*
  * version: 2023.12.2
- * generatedAt: 2024-02-05T06:34:26.230Z
+ * generatedAt: 2024-02-05T15:49:55.890Z
  */
 
 /**
@@ -3884,7 +3884,8 @@ export type components = {
         userId: string | null;
       }) | null;
       localOnly?: boolean;
-      reactionAcceptance: string | null;
+      /** @enum {string|null} */
+      reactionAcceptance: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
       reactionEmojis: {
         [key: string]: string;
       };
