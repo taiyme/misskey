@@ -19,6 +19,7 @@ const props = defineProps<{
 	modelValue: boolean;
 	text: string | null;
 	renote?: Misskey.entities.Note | null;
+	quoteId?: string | null;
 	files?: Misskey.entities.DriveFile[];
 	poll?: Misskey.entities.Note['poll'] | PollEditorModelValue | null;
 }>();
@@ -30,7 +31,7 @@ const emit = defineEmits<{
 const label = computed(() => {
 	return concat([
 		props.text ? [i18n.tsx._cw.chars({ count: props.text.length })] : [],
-		props.renote ? [i18n.ts.quote] : [],
+		(props.renote || props.quoteId) ? [i18n.ts.quote] : [],
 		props.files && props.files.length !== 0 ? [i18n.tsx._cw.files({ count: props.files.length })] : [],
 		props.poll != null ? [i18n.ts.poll] : [],
 	] as string[][]).join(' / ');

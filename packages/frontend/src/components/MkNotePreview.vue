@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div>
 			<p v-if="useCw" :class="$style.cw">
 				<Mfm v-if="cw != null && cw != ''" :text="cw" :author="user" :nyaize="'respect'" :i="user" style="margin-right: 8px;"/>
-				<MkCwButton v-model="showContent" :text="text.trim()" :files="files" :poll="poll" style="margin: 4px 0;"/>
+				<MkCwButton v-model="showContent" :text="text.trim()" :renote="renote" :files="files" :poll="poll" style="margin: 4px 0;"/>
 			</p>
 			<div v-show="!useCw || showContent">
 				<Mfm :text="text.trim()" :author="user" :nyaize="'respect'" :i="user"/>
@@ -33,6 +33,8 @@ const showContent = ref(false);
 
 const props = defineProps<{
 	text: string;
+	renote?: Misskey.entities.Note | null;
+	quoteId?: string | null;
 	files: Misskey.entities.DriveFile[];
 	poll?: PollEditorModelValue;
 	useCw: boolean;
