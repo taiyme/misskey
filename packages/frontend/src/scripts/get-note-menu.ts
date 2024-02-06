@@ -20,20 +20,14 @@ import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const clips = await clipsCache.fetch();
 	const menu: MenuItem[] = [...clips.map(clip => ({
@@ -129,14 +123,7 @@ export function getNoteMenu(props: {
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const cleanups = [] as (() => void)[];
 
@@ -475,14 +462,7 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
