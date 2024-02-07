@@ -4,52 +4,63 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkButton rounded full small @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue" :class="$style.label">{{ label }}</span></MkButton>
+<MkButton rounded full small @click="toggle"><b>{{ modelValue ? i18n.ts._cw.hide : i18n.ts._cw.show }}</b><span v-if="!modelValue && label != null" :class="$style.label">{{ label }}</span></MkButton>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
-import { concat } from '@/scripts/array.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
 
 const props = defineProps<{
-	modelValue: boolean;
-	text: string | null;
-	renote?: Misskey.entities.Note | null;
-	files?: Misskey.entities.DriveFile[];
-	poll?: Misskey.entities.Note['poll'] | PollEditorModelValue | null;
+	text?: string | null;
+	renote?: Misskey.entities.Note | string | null;
+	files?: Misskey.entities.DriveFile[] | string[] | null;
+	poll?: NonNullable<Misskey.entities.Note['poll']> | PollEditorModelValue | null;
 }>();
 
-const emit = defineEmits<{
-	(ev: 'update:modelValue', v: boolean): void;
-}>();
+const modelValue = defineModel<boolean>({ required: true });
 
 const label = computed(() => {
-	return concat([
-		props.text ? [i18n.tsx._cw.chars({ count: props.text.length })] : [],
-		props.renote ? [i18n.ts.quote] : [],
-		props.files && props.files.length !== 0 ? [i18n.tsx._cw.files({ count: props.files.length })] : [],
-		props.poll != null ? [i18n.ts.poll] : [],
-	] as string[][]).join(' / ');
+	const list: string[] = [];
+
+	// text
+	if (props.text != null && props.text !== '') {
+		list.push(i18n.tsx._cw.chars({ count: props.text.length }));
+	}
+	// renote
+	if (props.renote != null) {
+		list.push(i18n.ts.quote);
+	}
+	// files
+	if (props.files != null && props.files.length !== 0) {
+		list.push(i18n.tsx._cw.files({ count: props.files.length }));
+	}
+	// poll
+	if (props.poll != null) {
+		list.push(i18n.ts.poll);
+	}
+
+	if (list.length === 0) return null;
+	return list.join(' / ');
 });
 
-function toggle() {
-	emit('update:modelValue', !props.modelValue);
-}
+const toggle = (): void => {
+	modelValue.value = !modelValue.value;
+};
 </script>
 
 <style lang="scss" module>
 .label {
 	margin-left: 4px;
 
-	&:before {
+	&::before {
 		content: '(';
 	}
 
-	&:after {
+	&::after {
 		content: ')';
 	}
 }
