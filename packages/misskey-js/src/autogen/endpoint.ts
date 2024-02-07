@@ -1,8 +1,3 @@
-/*
- * version: 2023.12.2
- * generatedAt: 2024-02-05T15:49:56.105Z
- */
-
 import type {
 	EmptyRequest,
 	EmptyResponse,
