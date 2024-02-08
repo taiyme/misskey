@@ -2599,7 +2599,6 @@ _tms:
         createdAt: "作成日時: {datetime}"
         cannnotLoad: "バックアップの読み込みに失敗しました。"
         invalidFile: "バックアップファイルはjson形式である必要があります。"
-        invalidId: "バックアップIDが不正です。"
         invalidName: "バックアップ名が不正です。"
         invalidCustomCss: "バックアップのカスタムCSSが不正です。"
         noCustomCss: "カスタムCSSが設定されていません"

@@ -65,7 +65,7 @@ watch([
 	selected,
 ], () => {
 	edited.value = true;
-	changed.value = true;
+	changed.value = tmsFlaskStore.state.enabledCustomCssSyncing !== enabled.value || tmsFlaskStore.state.syncingCustomCssId !== selected.value;
 }, { deep: true });
 
 defineProps<{

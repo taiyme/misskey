@@ -43,6 +43,7 @@ export type CustomCSSBackup = {
 	id: string;
 	name: string;
 	createAt: string;
+	updatedAt: string;
 	customCss: string;
 };
 export type CustomCSSBackups = CustomCSSBackup[];
@@ -74,6 +75,7 @@ const saveNew = async () => {
 		id: v4(),
 		name,
 		createAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
 		customCss: miLocalStorage.getItem('customCss') ?? '',
 	};
 
@@ -141,11 +143,8 @@ const upload = async () => {
 
 const validate = (json: { [key: string]: unknown }): { valid: true, value: CustomCSSBackup } | { valid: false, error: string } => {
 	const uuidv4Matcher = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-	if ('id' in json && (typeof json.id !== 'string' || !uuidv4Matcher.test(json.id))) {
-		return {
-			valid: false,
-			error: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.invalidId,
-		};
+	if ('id' in json && (typeof json.id !== 'string' || !uuidv4Matcher.test(json.id) || customCssBackups.value.some((b) => b.id === json.id))) {
+		json.id = v4();
 	}
 	if ('name' in json && typeof json.name !== 'string') {
 		return {
@@ -155,6 +154,9 @@ const validate = (json: { [key: string]: unknown }): { valid: true, value: Custo
 	}
 	if ('createAt' in json && typeof json.createAt !== 'string') {
 		json.createAt = new Date().toISOString();
+	}
+	if ('updatedAt' in json && typeof json.updatedAt !== 'string') {
+		json.updatedAt = new Date().toISOString();
 	}
 	if ('customCss' in json && (typeof json.customCss !== 'string' || json.customCss.length === 0)) {
 		return {
@@ -203,6 +205,7 @@ const renameBackup = async (backupId: string) => {
 		return;
 	}
 
+	backup.updatedAt = new Date().toISOString();
 	backup.name = name;
 
 	await apiWithDialog('i/registry/set', {
@@ -238,6 +241,7 @@ const overrideBackup = async (backupId: string) => {
 		return;
 	}
 
+	backup.updatedAt = new Date().toISOString();
 	backup.customCss = customCss;
 
 	await apiWithDialog('i/registry/set', {

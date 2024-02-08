@@ -9743,10 +9743,6 @@ export interface Locale extends ILocale {
                      */
                     readonly "invalidFile": string;
                     /**
-                     * バックアップIDが不正です。
-                     */
-                    readonly "invalidId": string;
-                    /**
                      * バックアップ名が不正です。
                      */
                     readonly "invalidName": string;
