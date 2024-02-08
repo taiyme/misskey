@@ -352,7 +352,6 @@ defineExpose({
 .profile {
 	padding: 20px;
 	cursor: pointer;
-	border: var(--panelBorder);
 
 	> .name {
 		font-weight: 700;

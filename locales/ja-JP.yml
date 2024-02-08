@@ -2591,7 +2591,6 @@ _tms:
     forceFetchX: "{x}を強制取得"
     openX: "{x}を開く"
     _backupAndSyncingCustomCss:
-      title: "カスタムCSSのバックアップと同期"
       _backup:
         title: "カスタムCSSのバックアップ"
         description: "現在のカスタムCSSをバックアップとしてサーバーに保存することが可能です。"

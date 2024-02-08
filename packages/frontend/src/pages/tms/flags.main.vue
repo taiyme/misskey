@@ -5,9 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<FormSection>
-		<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
-	</FormSection>
+	<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
 	<FormSection>
 		<template #label>For developer</template>
 		<div class="_gaps_s">

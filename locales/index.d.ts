@@ -9713,10 +9713,6 @@ export interface Locale extends ILocale {
              */
             readonly "openX": ParameterizedString<"x">;
             readonly "_backupAndSyncingCustomCss": {
-                /**
-                 * カスタムCSSのバックアップと同期
-                 */
-                readonly "title": string;
                 readonly "_backup": {
                     /**
                      * カスタムCSSのバックアップ

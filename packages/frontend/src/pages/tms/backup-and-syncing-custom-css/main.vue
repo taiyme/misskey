@@ -4,25 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkFolder>
-	<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss.title }}</template>
-	<div class="_gaps_s">
-		<FormSection first>
-			<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.title }}</template>
-			<XBackup ref="xBackup"/>
-		</FormSection>
+<div class="_gaps_s">
+	<FormSection>
+		<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.title }}</template>
+		<XBackup ref="xBackup"/>
+	</FormSection>
 
-		<FormSection v-if="xBackup && xBackup.customCssBackups">
-			<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._syncing.title }}</template>
-			<div class="_gaps_m">
-				<XSync ref="xSync" :customCssBackups="xBackup.customCssBackups"/>
-				<template v-if="xSync && xSync.edited">
-					<MkButton primary :disabled="!xSync.changed" @click="xSync.save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-				</template>
-			</div>
-		</FormSection>
-	</div>
-</MkFolder>
+	<FormSection v-if="xBackup && xBackup.customCssBackups">
+		<template #label>{{ i18n.ts._tms._flags._backupAndSyncingCustomCss._syncing.title }}</template>
+		<div class="_gaps_m">
+			<XSync ref="xSync" :customCssBackups="xBackup.customCssBackups"/>
+			<template v-if="xSync && xSync.edited">
+				<MkButton primary :disabled="!xSync.changed" @click="xSync.save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</template>
+		</div>
+	</FormSection>
+</div>
 </template>
 
 <script lang="ts" setup>
