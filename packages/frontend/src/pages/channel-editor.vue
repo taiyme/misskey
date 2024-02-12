@@ -100,7 +100,7 @@ const bannerId = ref<string | null>(null);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
-const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const pinnedNotes = ref<{ id: Misskey.entities.Note['id']; }[]>([]);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {

@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ props.modelValue.title }}</template>
 	<template #func>
 		<button class="_button" @click="rename()">
@@ -33,13 +33,14 @@ import MkButton from '@/components/MkButton.vue';
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
 const props = withDefaults(defineProps<{
-	modelValue: any,
+	modelValue: any;
 }>(), {
 	modelValue: {},
 });
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
+	(ev: 'remove'): void;
 }>();
 
 const children = ref(deepClone(props.modelValue.children ?? []));

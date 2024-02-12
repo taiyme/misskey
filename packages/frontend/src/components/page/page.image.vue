@@ -19,8 +19,8 @@ import * as Misskey from 'misskey-js';
 import MediaImage from '@/components/MkMediaImage.vue';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
-	page: Misskey.entities.Page,
+	block: Misskey.entities.PageBlock;
+	page: Misskey.entities.Page;
 }>();
 
 const image = ref<Misskey.entities.DriveFile | null>(null);

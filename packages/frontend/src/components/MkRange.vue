@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 	min: number;
 	max: number;
 	step?: number;
-	textConverter?: (value: number) => string,
+	textConverter?: (value: number) => string;
 	showTicks?: boolean;
 	easing?: boolean;
 	continuousUpdate?: boolean;

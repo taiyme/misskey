@@ -29,7 +29,7 @@ import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 import { mainRouter } from '@/router/main.js';
 
-defineProps<{
+const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();

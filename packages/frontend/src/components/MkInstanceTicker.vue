@@ -18,10 +18,10 @@ import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string | null
-		name?: string | null
-		themeColor?: string | null
-	}
+		faviconUrl?: string | null;
+		name?: string | null;
+		themeColor?: string | null;
+	};
 }>();
 
 // if no instance data is given, this is for the local instance

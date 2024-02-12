@@ -22,8 +22,8 @@ import XPie from './pie.vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
-	meta: Misskey.entities.ServerInfoResponse
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>;
+	meta: Misskey.entities.ServerInfoResponse;
 }>();
 
 const usage = ref<number>(0);

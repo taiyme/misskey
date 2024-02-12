@@ -17,7 +17,7 @@ import XColumn from './column.vue';
 import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
 
-defineProps<{
+const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();

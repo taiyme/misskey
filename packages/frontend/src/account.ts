@@ -77,7 +77,7 @@ export async function signout() {
 	else unisonReload('/');
 }
 
-export async function getAccounts(): Promise<{ id: Account['id'], token: Account['token'] }[]> {
+export async function getAccounts(): Promise<{ id: Account['id']; token: Account['token']; }[]> {
 	return (await get('accounts')) || [];
 }
 

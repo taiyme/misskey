@@ -42,7 +42,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
 import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
-defineProps<{
+const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 </script>

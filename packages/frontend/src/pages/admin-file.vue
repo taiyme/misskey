@@ -90,7 +90,7 @@ const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
 const isSensitive = ref<boolean>(false);
 
 const props = defineProps<{
-	fileId: string,
+	fileId: string;
 }>();
 
 async function fetch() {

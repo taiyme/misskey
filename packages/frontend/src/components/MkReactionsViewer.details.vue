@@ -27,7 +27,7 @@ import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist.js';
 
-defineProps<{
+const props = defineProps<{
 	showing: boolean;
 	reaction: string;
 	users: any[]; // TODO

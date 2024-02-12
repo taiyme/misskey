@@ -47,7 +47,7 @@ export type AsUiMfm = AsUiComponentBase & {
 	bold?: boolean;
 	color?: string;
 	font?: 'serif' | 'sans-serif' | 'monospace';
-	onClickEv?: (evId: string) => void
+	onClickEv?: (evId: string) => void;
 };
 
 export type AsUiButton = AsUiComponentBase & {

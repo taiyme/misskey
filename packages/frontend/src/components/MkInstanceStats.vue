@@ -166,10 +166,10 @@ function createDoughnut(chartEl, tooltip, data) {
 onMounted(() => {
 	misskeyApiGet('federation/stats', { limit: 30 }).then(fedStats => {
 		type ChartData = {
-			name: string,
-			color: string | null,
-			value: number,
-			onClick?: () => void,
+			name: string;
+			color: string | null;
+			value: number;
+			onClick?: () => void;
 		}[];
 
 		const subs: ChartData = fedStats.topSubInstances.map(x => ({

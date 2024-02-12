@@ -96,8 +96,8 @@ const props = withDefaults(defineProps<{
 	icon?: string;
 	actions?: {
 		text: string;
-		primary?: boolean,
-		danger?: boolean,
+		primary?: boolean;
+		danger?: boolean;
 		callback: (...args: any[]) => void;
 	}[];
 	showOkButton?: boolean;

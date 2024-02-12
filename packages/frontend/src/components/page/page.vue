@@ -13,8 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import XBlock from './page.block.vue';
 
-defineProps<{
-	page: Misskey.entities.Page,
+const props = defineProps<{
+	page: Misskey.entities.Page;
 }>();
 </script>
 

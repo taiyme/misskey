@@ -64,7 +64,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 
 const props = defineProps<{
-	emoji: Misskey.entities.EmojiDetailed,
+	emoji: Misskey.entities.EmojiDetailed;
 }>();
 
 const emit = defineEmits<{

@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { i18n } from '@/i18n.js';
 
-defineProps<{
+const props = defineProps<{
 	clip: any;
 }>();
 </script>

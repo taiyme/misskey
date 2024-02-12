@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 
-defineProps<{
+const props = defineProps<{
 	showing: boolean;
 	users: any[]; // TODO
 	count: number;

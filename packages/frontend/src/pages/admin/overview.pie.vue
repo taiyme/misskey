@@ -14,10 +14,10 @@ import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 import { initChart } from '@/scripts/init-chart.js';
 
 export type InstanceForPie = {
-	name: string,
-	color: string | null,
-	value: number,
-	onClick?: () => void
+	name: string;
+	color: string | null;
+	value: number;
+	onClick?: () => void;
 };
 
 initChart();

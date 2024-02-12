@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')" @click="onBgClick">
+<MkModal ref="modal" :zPriority="'middle'" @closed="emit('closed')" @click="onBgClick">
 	<div ref="rootEl" :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.icon">
@@ -35,6 +35,10 @@ const props = withDefaults(defineProps<{
 	announcement: Misskey.entities.Announcement;
 }>(), {
 });
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
 
 const rootEl = shallowRef<HTMLDivElement>();
 const modal = shallowRef<InstanceType<typeof MkModal>>();

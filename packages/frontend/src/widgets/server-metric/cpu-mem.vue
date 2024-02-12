@@ -80,8 +80,8 @@ import * as Misskey from 'misskey-js';
 import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
-	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
-	meta: Misskey.entities.ServerInfoResponse
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>;
+	meta: Misskey.entities.ServerInfoResponse;
 }>();
 
 const viewBoxX = ref<number>(50);

@@ -41,7 +41,7 @@ import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 
-defineProps<{
+const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 

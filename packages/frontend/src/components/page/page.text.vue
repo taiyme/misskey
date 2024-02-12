@@ -19,8 +19,8 @@ import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 const MkUrlPreview = defineAsyncComponent(() => import('@/components/MkUrlPreview.vue'));
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
-	page: Misskey.entities.Page,
+	block: Misskey.entities.PageBlock;
+	page: Misskey.entities.Page;
 }>();
 
 const urls = props.block.text ? extractUrlFromMfm(mfm.parse(props.block.text)) : [];

@@ -17,7 +17,7 @@ import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 
-defineProps<{
+const props = defineProps<{
 	showing: boolean;
 	reaction: string;
 	targetElement: HTMLElement;

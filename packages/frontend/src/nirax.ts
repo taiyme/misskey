@@ -20,7 +20,7 @@ interface RouteDefBase {
 }
 
 interface RouteDefWithComponent extends RouteDefBase {
-	component: Component,
+	component: Component;
 }
 
 interface RouteDefWithRedirect extends RouteDefBase {

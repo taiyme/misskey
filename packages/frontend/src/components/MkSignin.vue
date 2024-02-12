@@ -77,22 +77,14 @@ const emit = defineEmits<{
 	(ev: 'login', v: any): void;
 }>();
 
-const props = defineProps({
-	withAvatar: {
-		type: Boolean,
-		required: false,
-		default: true,
-	},
-	autoSet: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-	message: {
-		type: String,
-		required: false,
-		default: '',
-	},
+const props = withDefaults(defineProps<{
+	withAvatar?: boolean;
+	autoSet?: boolean;
+	message?: string;
+}>(), {
+	withAvatar: true,
+	autoSet: false,
+	message: '',
 });
 
 function onUsernameChange(): void {

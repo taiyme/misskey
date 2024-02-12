@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ModelRef } from 'vue';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	buffer?: number;
 	sliderBgWhite?: boolean;
 }>(), {

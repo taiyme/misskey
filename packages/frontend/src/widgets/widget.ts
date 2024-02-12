@@ -19,7 +19,7 @@ export type WidgetComponentProps<P extends Record<string, unknown>> = {
 };
 
 export type WidgetComponentEmits<P extends Record<string, unknown>> = {
-	(ev: 'updateProps', props: P);
+	(ev: 'updateProps', props: P): void;
 };
 
 export type WidgetComponentExpose = {

@@ -12,17 +12,17 @@ import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 
 interface PostFormAction {
-	title: string,
+	title: string;
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
 }
 
 interface UserAction {
-	title: string,
+	title: string;
 	handler: (user: Misskey.entities.UserDetailed) => void;
 }
 
 interface NoteAction {
-	title: string,
+	title: string;
 	handler: (note: Misskey.entities.Note) => void;
 }
 

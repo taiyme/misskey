@@ -82,6 +82,6 @@ declare module '@vue/runtime-core' {
 		MkFooterSpacer: typeof MkFooterSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
-		TmsNoCache: typeof TmsNoCache,
+		TmsNoCache: typeof TmsNoCache;
 	}
 }

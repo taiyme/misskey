@@ -41,7 +41,7 @@ const props = defineProps<{
 		notes: number;
 		replies: number;
 		renotes: number;
-	}[]
+	}[];
 }>();
 
 for (const d of props.activity) {

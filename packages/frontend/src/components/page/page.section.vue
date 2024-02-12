@@ -28,10 +28,10 @@ import * as Misskey from 'misskey-js';
 
 const XBlock = defineAsyncComponent(() => import('./page.block.vue'));
 
-defineProps<{
-	block: Misskey.entities.PageBlock,
-	h: number,
-	page: Misskey.entities.Page,
+const props = defineProps<{
+	block: Misskey.entities.PageBlock;
+	h: number;
+	page: Misskey.entities.Page;
 }>();
 </script>
 

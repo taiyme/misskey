@@ -20,7 +20,7 @@ import { toUnicode } from 'punycode/';
 import { host as hostRaw } from '@/config.js';
 import { defaultStore } from '@/store.js';
 
-defineProps<{
+const props = defineProps<{
 	user: Misskey.entities.User;
 	detail?: boolean;
 }>();

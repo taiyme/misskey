@@ -215,7 +215,7 @@ export function confirm(props: {
 	text?: string | null;
 	okText?: string;
 	cancelText?: string;
-}): Promise<{ canceled: boolean }> {
+}): Promise<{ canceled: boolean; }> {
 	return new Promise((resolve, reject) => {
 		popup(MkDialog, {
 			...props,
@@ -233,8 +233,8 @@ export function confirm(props: {
 export function actions<T extends {
 	value: string;
 	text: string;
-	primary?: boolean,
-	danger?: boolean,
+	primary?: boolean;
+	danger?: boolean;
 }[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;

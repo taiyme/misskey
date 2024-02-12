@@ -4,21 +4,21 @@
  */
 
 interface StringPageVar {
-	name: string,
-	type: 'string',
-	value: string
+	name: string;
+	type: 'string';
+	value: string;
 }
 
 interface NumberPageVar {
-	name: string,
-	type: 'number',
-	value: number
+	name: string;
+	type: 'number';
+	value: number;
 }
 
 interface BooleanPageVar {
-	name: string,
-	type: 'boolean',
-	value: boolean
+	name: string;
+	type: 'boolean';
+	value: boolean;
 }
 
 type PageVar = StringPageVar | NumberPageVar | BooleanPageVar;

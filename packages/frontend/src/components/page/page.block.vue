@@ -25,9 +25,9 @@ function getComponent(type: string) {
 	}
 }
 
-defineProps<{
-	block: Misskey.entities.PageBlock,
-	h: number,
-	page: Misskey.entities.Page,
+const props = defineProps<{
+	block: Misskey.entities.PageBlock;
+	h: number;
+	page: Misskey.entities.Page;
 }>();
 </script>

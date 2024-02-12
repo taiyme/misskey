@@ -71,7 +71,7 @@ const props = defineProps<{
 	moderator?: boolean;
 }>();
 
-const emits = defineEmits<{
+const emit = defineEmits<{
 	(event: 'deleted', value: string): void;
 }>();
 
@@ -83,7 +83,7 @@ function deleteCode() {
 	os.apiWithDialog('invite/delete', {
 		inviteId: props.invite.id,
 	});
-	emits('deleted', props.invite.id);
+	emit('deleted', props.invite.id);
 }
 
 function copyInviteCode() {

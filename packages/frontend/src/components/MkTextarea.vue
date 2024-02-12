@@ -51,7 +51,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
-	mfmAutocomplete?: boolean | SuggestionType[],
+	mfmAutocomplete?: boolean | SuggestionType[];
 	mfmPreview?: boolean;
 	spellcheck?: boolean;
 	debounce?: boolean;

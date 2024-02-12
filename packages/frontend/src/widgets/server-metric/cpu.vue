@@ -20,8 +20,8 @@ import * as Misskey from 'misskey-js';
 import XPie from './pie.vue';
 
 const props = defineProps<{
-	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
-	meta: Misskey.entities.ServerInfoResponse
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>;
+	meta: Misskey.entities.ServerInfoResponse;
 }>();
 
 const usage = ref<number>(0);

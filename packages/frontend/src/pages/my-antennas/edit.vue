@@ -24,7 +24,7 @@ const router = useRouter();
 const antenna = ref<Misskey.entities.Antenna | null>(null);
 
 const props = defineProps<{
-	antennaId: string
+	antennaId: string;
 }>();
 
 function onAntennaUpdated() {

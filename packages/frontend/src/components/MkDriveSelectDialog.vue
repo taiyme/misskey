@@ -31,7 +31,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import number from '@/filters/number.js';
 import { i18n } from '@/i18n.js';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	type?: 'file' | 'folder';
 	multiple: boolean;
 }>(), {

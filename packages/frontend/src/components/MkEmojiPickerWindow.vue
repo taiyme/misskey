@@ -23,11 +23,11 @@ import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	src?: HTMLElement;
 	showPinned?: boolean;
 	asReactionPicker?: boolean;
-	targetNote?: Misskey.entities.Note
+	targetNote?: Misskey.entities.Note;
 }>(), {
 	showPinned: true,
 });

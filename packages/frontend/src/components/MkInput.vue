@@ -60,7 +60,7 @@ const props = defineProps<{
 	placeholder?: string;
 	autofocus?: boolean;
 	autocomplete?: string;
-	mfmAutocomplete?: boolean | SuggestionType[],
+	mfmAutocomplete?: boolean | SuggestionType[];
 	autocapitalize?: string;
 	spellcheck?: boolean;
 	step?: any;

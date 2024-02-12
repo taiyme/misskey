@@ -26,7 +26,7 @@ import { onMounted, ref } from 'vue';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 
-defineProps<{
+const props = defineProps<{
 	message: string;
 }>();
 

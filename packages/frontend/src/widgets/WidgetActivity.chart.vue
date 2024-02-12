@@ -41,7 +41,7 @@ const props = defineProps<{
 		notes: number;
 		replies: number;
 		renotes: number;
-	}[]
+	}[];
 }>();
 
 const viewBoxX = ref(147);
