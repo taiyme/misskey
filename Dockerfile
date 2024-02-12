@@ -120,6 +120,7 @@ COPY --chown=misskey:misskey ./packages/backend/package.json ./packages/backend/
 COPY --chown=misskey:misskey ./packages/backend/assets ./packages/backend/assets
 COPY --chown=misskey:misskey ./packages/backend/nsfw-model ./packages/backend/nsfw-model
 COPY --chown=misskey:misskey ./packages/backend/migration ./packages/backend/migration
+COPY --chown=misskey:misskey ./packages/frontend/assets ./packages/frontend/assets
 COPY --chown=misskey:misskey ./.node-version ./package.json ./pnpm-workspace.yaml ./
 COPY --chown=misskey:misskey ./healthcheck.sh ./
 COPY --chown=misskey:misskey --from=submodule /misskey/fluent-emojis /misskey/fluent-emojis
