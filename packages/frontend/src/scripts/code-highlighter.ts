@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -73,10 +73,7 @@ export async function initHighlighter() {
 		themes,
 		langs: [
 			import('shiki/langs/javascript.mjs'),
-			{
-				aliases: ['is', 'ais'],
-				...aiScriptGrammar.default,
-			} as unknown as LanguageRegistration,
+			aiScriptGrammar.default as unknown as LanguageRegistration,
 		],
 	});
 
