@@ -4181,6 +4181,18 @@ export interface Locale extends ILocale {
      */
     readonly "sensitiveWordsDescription2": string;
     /**
+     * 禁止ワード
+     */
+    readonly "prohibitedWords": string;
+    /**
+     * 設定したワードが含まれるノートを投稿しようとした際、エラーとなるようにします。改行で区切って複数設定できます。
+     */
+    readonly "prohibitedWordsDescription": string;
+    /**
+     * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
+     */
+    readonly "prohibitedWordsDescription2": string;
+    /**
      * 非表示ハッシュタグ
      */
     readonly "hiddenTags": string;
