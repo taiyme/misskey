@@ -109,7 +109,7 @@ provideMetadataReceiver((metadataGetter) => {
 });
 provideReactiveMetadata(pageMetadata);
 
-const isTimelineAvailable = ref(instance.policies.ltlAvailable || instance.policies.gtlAvailable);
+const isTimelineAvailable = ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
 
 const drawerMenuShowing = ref(false);
 
