@@ -560,11 +560,11 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/tms/about.vue')),
 }, {
 	path: '/tms/settings',
-	component: page(() => import('@/pages/tms/settings.vue')),
+	component: page(() => import('@/pages/tms/settings/index.vue')),
 	loginRequired: true,
 }, {
 	path: '/tms/flags',
-	component: page(() => import('@/pages/tms/flags.vue')),
+	component: page(() => import('@/pages/tms/flags/index.vue')),
 	loginRequired: true,
 }, {
 	path: '/settings/taiyme-services',
