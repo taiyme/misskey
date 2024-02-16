@@ -521,7 +521,7 @@ const headerTabs = computed(() => [{
 definePageMetadata(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
 	icon: 'ti ti-user-exclamation',
-}))
+}));
 </script>
 
 <style lang="scss" scoped>

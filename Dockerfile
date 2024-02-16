@@ -18,6 +18,8 @@ RUN git submodule update --init --recursive
 
 FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
 
+ENV NODE_ENV=production
+
 WORKDIR /misskey
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -64,8 +66,6 @@ COPY --link ./packages/frontend/.gitignore ./packages/frontend/
 COPY --link ./.gitignore ./
 COPY --link ./.git/ ./.git/
 COPY --link --from=submodule /misskey/fluent-emojis/ ./fluent-emojis/
-
-ENV NODE_ENV=production
 
 RUN pnpm build
 
