@@ -240,7 +240,6 @@ provideMetadataReceiver((metadataGetter) => {
 		INFO.value.needWideArea = info.needWideArea ?? undefined;
 	}
 });
-
 provideReactiveMetadata(INFO);
 
 const headerActions = computed(() => []);
