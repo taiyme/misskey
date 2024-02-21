@@ -136,11 +136,10 @@ onMounted(() => {
 	align-items: center;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 9px 12px 9px 12px;
+	padding: 10px 14px;
 	background: var(--buttonBg);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
 	border-radius: 6px;
+	font-size: 0.9em;
 	transition: border-radius 0.3s;
 
 	&:hover {
@@ -158,22 +157,11 @@ onMounted(() => {
 	}
 }
 
-.headerUpper {
-	display: flex;
-	align-items: center;
-}
-
-.headerLower {
-	color: var(--fgTransparentWeak);
-	font-size: .85em;
-	padding-left: 4px;
-}
-
 .headerIcon {
 	margin-right: 0.75em;
 	flex-shrink: 0;
 	text-align: center;
-	opacity: 0.8;
+	color: var(--fgTransparentWeak);
 
 	&:empty {
 		display: none;

@@ -3981,6 +3981,10 @@ export interface Locale extends ILocale {
      */
     readonly "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    readonly "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     readonly "roles": string;
@@ -4684,6 +4688,34 @@ export interface Locale extends ILocale {
      * 外部サービス
      */
     readonly "externalServices": string;
+    /**
+     * ソースコード
+     */
+    readonly "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    readonly "sourceCodeIsNotYetProvided": string;
+    /**
+     * リポジトリURL
+     */
+    readonly "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    readonly "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    readonly "repositoryUrlOrTarballRequired": string;
+    /**
+     * フィードバック
+     */
+    readonly "feedback": string;
+    /**
+     * フィードバックURL
+     */
+    readonly "feedbackUrl": string;
     /**
      * 運営者情報
      */
@@ -6813,6 +6845,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         readonly "source": string;
+        /**
+         * オリジナル
+         */
+        readonly "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        readonly "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
          * Misskeyを翻訳
          */
@@ -9628,6 +9668,10 @@ export interface Locale extends ILocale {
     };
     readonly "_tms": {
         /**
+         * taiy
+         */
+        readonly "taiy": string;
+        /**
          * taiyme
          */
         readonly "taiyme": string;
@@ -9647,6 +9691,10 @@ export interface Locale extends ILocale {
          * {name}は、Misskeyの派生であるtaiymeを使用したサーバーのひとつです。
          */
         readonly "poweredByTaiyme": ParameterizedString<"name">;
+        /**
+         * {name}を支援
+         */
+        readonly "supportX": ParameterizedString<"name">;
         /**
          * コミットハッシュ
          */
@@ -9672,14 +9720,6 @@ export interface Locale extends ILocale {
              * taiymeは、Misskeyから派生したオープンソースのソフトウェアです。
              */
             readonly "description": string;
-            /**
-             * ソースコード
-             */
-            readonly "source": string;
-            /**
-             * 寄付する
-             */
-            readonly "donate": string;
             /**
              * プロジェクトメンバー
              */
@@ -9724,6 +9764,12 @@ export interface Locale extends ILocale {
              * {x}を開く
              */
             readonly "openX": ParameterizedString<"x">;
+        };
+        readonly "_admin": {
+            /**
+             * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。
+             */
+            readonly "repositoryUrlDescription": string;
         };
     };
 }

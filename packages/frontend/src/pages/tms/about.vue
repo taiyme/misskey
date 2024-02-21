@@ -14,16 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ i18n.ts._tms._about.description }}
 				</div>
 				<FormSection>
-					<FormSplit :minWidth="200">
-						<FormLink to="https://github.com/taiyme/misskey" external>
-							<template #icon><i class="ti ti-code"></i></template>
-							<template #default>{{ i18n.ts._tms._about.source }}</template>
-						</FormLink>
-						<FormLink to="https://u.taiy.me/donate" external>
-							<template #icon><i class="ti ti-pig-money"></i></template>
-							<template #default>{{ i18n.ts._tms._about.donate }}</template>
-						</FormLink>
-					</FormSplit>
+					<div class="_gaps_s">
+						<TmsSoftwareRepository/>
+						<TmsSoftwareDonation/>
+					</div>
 				</FormSection>
 				<FormSection v-if="projectMembers.length > 0">
 					<template #label>{{ i18n.ts._tms._about.projectMembers }}</template>
@@ -66,6 +60,8 @@ import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import TmsMemberCard from '@/components/TmsMemberCard.vue';
 import TmsSoftwareBanner from '@/components/TmsSoftwareBanner.vue';
+import TmsSoftwareDonation from '@/components/TmsSoftwareDonation.vue';
+import TmsSoftwareRepository from '@/components/TmsSoftwareRepository.vue';
 
 definePageMetadata(() => ({
 	title: i18n.ts._tms._about.title,
