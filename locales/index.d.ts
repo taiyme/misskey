@@ -9711,6 +9711,22 @@ export interface Locale extends ILocale {
          * センシティブなファイルを表示しています。
          */
         readonly "displayingSensitiveFiles": string;
+        /**
+         * パクる
+         */
+        readonly "pakuru": string;
+        /**
+         * 数字引用する
+         */
+        readonly "numberquote": string;
+        /**
+         * パクりました
+         */
+        readonly "didPakuru": string;
+        /**
+         * 数字引用しました
+         */
+        readonly "didNumberquote": string;
         readonly "_about": {
             /**
              * taiymeについて
@@ -9742,6 +9758,14 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            /**
+             * 「{x}」機能を有効にする
+             */
+            readonly "enableFeatureX": ParameterizedString<"x">;
+            /**
+             * リノートメニューに「{x}」を追加します。
+             */
+            readonly "addXToRenoteMenu": ParameterizedString<"x">;
         };
         readonly "_flags": {
             /**

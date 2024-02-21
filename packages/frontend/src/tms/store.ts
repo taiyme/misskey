@@ -10,4 +10,12 @@ import { Storage } from '@/pizzax.js';
  * tmsStore -- 独自実装した機能についてのデータを格納する
  */
 export const tmsStore = markRaw(new Storage('tmsMain', {
+	usePakuru: {
+		where: 'device',
+		default: false,
+	},
+	useNumberquote: {
+		where: 'device',
+		default: false,
+	},
 }));
