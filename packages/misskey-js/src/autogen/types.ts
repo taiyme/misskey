@@ -4846,7 +4846,10 @@ export type operations = {
             shortName: string | null;
             objectStorageS3ForcePathStyle: boolean;
             privacyPolicyUrl: string | null;
+            /** @default https://github.com/taiyme/misskey */
             repositoryUrl: string | null;
+            /** @default https://github.com/taiyme/misskey/issues/new */
+            feedbackUrl: string | null;
             summalyProxy: string | null;
             themeColor: string | null;
             tosUrl: string | null;
