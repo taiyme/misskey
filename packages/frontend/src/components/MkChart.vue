@@ -219,7 +219,7 @@ const render = () => {
 					},
 					external: externalTooltipHandler,
 					callbacks: {
-						label: (item) => chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString(),
+						label: (item) => `${item.dataset.label}: ${chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString()}`,
 					},
 				},
 				zoom: props.detailed ? {
