@@ -565,6 +565,7 @@ export function getRenoteMenu(props: {
 							// @ts-expect-error
 							targetElement: props.renoteButton.value,
 							text: i18n.ts._tms.didPakuru,
+							primary: true,
 						});
 					}).catch((err) => {
 						os.alert({
@@ -588,6 +589,7 @@ export function getRenoteMenu(props: {
 							// @ts-expect-error
 							targetElement: props.renoteButton.value,
 							text: i18n.ts._tms.didNumberquote,
+							primary: true,
 						});
 					}).catch((err) => {
 						os.alert({

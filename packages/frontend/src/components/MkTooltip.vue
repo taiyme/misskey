@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
 	appear @afterLeave="emit('closed')"
 >
-	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
+	<div v-show="showing" ref="el" :class="[$style.root, { [$style.primary]: primary }]" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
 			<template v-if="text">
 				<Mfm v-if="asMfm" :text="text"/>
@@ -38,6 +38,7 @@ const props = withDefaults(defineProps<{
 	maxWidth?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
 	innerMargin?: number;
+	primary?: boolean;
 }>(), {
 	maxWidth: 250,
 	direction: 'top',
@@ -113,5 +114,11 @@ onUnmounted(() => {
 	border: solid 0.5px var(--divider);
 	pointer-events: none;
 	transform-origin: center center;
+
+	&.primary {
+		border: none;
+		background: var(--accent);
+		color: var(--fgOnAccent);
+	}
 }
 </style>
