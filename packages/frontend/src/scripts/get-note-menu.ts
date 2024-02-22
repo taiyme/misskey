@@ -562,7 +562,6 @@ export function getRenoteMenu(props: {
 				if (!props.mock) {
 					pakuru(appearNote).then(() => {
 						tooltipFromElement({
-							// @ts-expect-error
 							targetElement: props.renoteButton.value,
 							text: i18n.ts._tms.didPakuru,
 							primary: true,
@@ -586,7 +585,6 @@ export function getRenoteMenu(props: {
 				if (!props.mock) {
 					numberquote(appearNote).then(() => {
 						tooltipFromElement({
-							// @ts-expect-error
 							targetElement: props.renoteButton.value,
 							text: i18n.ts._tms.didNumberquote,
 							primary: true,

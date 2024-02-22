@@ -28,7 +28,7 @@ import * as os from '@/os.js';
 import { calcPopupPosition } from '@/scripts/popup-position.js';
 import { defaultStore } from '@/store.js';
 
-const props = withDefaults(defineProps<{
+export type TooltipProps = {
 	showing: boolean;
 	targetElement?: HTMLElement;
 	x?: number;
@@ -39,7 +39,9 @@ const props = withDefaults(defineProps<{
 	direction?: 'top' | 'bottom' | 'right' | 'left';
 	innerMargin?: number;
 	primary?: boolean;
-}>(), {
+};
+
+const props = withDefaults(defineProps<TooltipProps>(), {
 	maxWidth: 250,
 	direction: 'top',
 	innerMargin: 0,

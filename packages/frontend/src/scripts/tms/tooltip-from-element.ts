@@ -5,22 +5,16 @@
 
 import { defineAsyncComponent, ref } from 'vue';
 import { popup } from '@/os.js';
+import { type TooltipProps } from '@/components/MkTooltip.vue';
 
-export const tooltipFromElement = (props: {
-	targetElement: HTMLElement;
-	text: string;
-	asMfm?: boolean;
-	maxWidth?: number;
-	direction?: 'top' | 'bottom' | 'right' | 'left';
-	primary?: boolean;
-}) => {
+export const tooltipFromElement = (props: Omit<TooltipProps, 'showing'>) => {
 	const showing = ref(true);
 	window.setTimeout(() => {
 		showing.value = false;
 	}, 3000);
 	popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+		...props,
 		// @ts-expect-error
 		showing,
-		...props,
 	}, {}, 'closed');
 };
