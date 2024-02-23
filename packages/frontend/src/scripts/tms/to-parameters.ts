@@ -5,10 +5,8 @@
 
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
-import { v4 as uuid } from 'uuid';
 import { $i, getAccounts } from '@/account.js';
 import { defaultStore } from '@/store.js';
-import { useStream } from '@/stream.js';
 import { deepClone } from '@/scripts/clone.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
@@ -107,34 +105,17 @@ const makeFileIds = async ({ files, fileIds, userId }: NoteEntity, { meId, token
 	if (fileIds == null || fileIds.length === 0) return undefined;
 	if (userId === meId) return fileIds;
 
-	const connection = useStream().useChannel('main');
 	const filesPromise = files.map((file) => {
-		return new Promise<Misskey.entities.DriveFile>((resolve, reject) => {
-			const abortController = new AbortController();
-			const marker = uuid();
-			const timer = window.setTimeout(() => {
-				abortController.abort();
-				reject(new Error('timeout'));
-			}, 1000 * 60);
-			connection.on('urlUploadFinished', response => {
-				if (response.marker === marker) {
-					resolve(response.file);
-					window.clearTimeout(timer);
-				}
-			});
-			misskeyApi('drive/files/upload-from-url', {
-				url: file.url,
-				folderId: defaultStore.state.uploadFolder,
-				isSensitive: file.isSensitive,
-				comment: file.comment,
-				marker,
-				force: true,
-			}, token, abortController.signal);
-		});
+		return misskeyApi('drive/files/upload-from-url', {
+			url: file.url,
+			folderId: defaultStore.state.uploadFolder,
+			isSensitive: file.isSensitive,
+			comment: file.comment,
+			force: true,
+		}, token);
 	});
 
 	const uploadedFileIds = await Promise.all(filesPromise).then(f => f.map(({ id }) => id)).catch(() => undefined);
-	connection.dispose();
 
 	return uploadedFileIds;
 };
