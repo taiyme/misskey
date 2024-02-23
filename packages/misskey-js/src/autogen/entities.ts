@@ -211,6 +211,7 @@ export type DriveFilesShowResponse = operations['drive/files/show']['responses']
 export type DriveFilesUpdateRequest = operations['drive/files/update']['requestBody']['content']['application/json'];
 export type DriveFilesUpdateResponse = operations['drive/files/update']['responses']['200']['content']['application/json'];
 export type DriveFilesUploadFromUrlRequest = operations['drive/files/upload-from-url']['requestBody']['content']['application/json'];
+export type DriveFilesUploadFromUrlResponse = operations['drive/files/upload-from-url']['responses']['200']['content']['application/json'];
 export type DriveFoldersRequest = operations['drive/folders']['requestBody']['content']['application/json'];
 export type DriveFoldersResponse = operations['drive/folders']['responses']['200']['content']['application/json'];
 export type DriveFoldersCreateRequest = operations['drive/folders/create']['requestBody']['content']['application/json'];

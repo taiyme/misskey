@@ -209,6 +209,7 @@ import type {
 	DriveFilesUpdateRequest,
 	DriveFilesUpdateResponse,
 	DriveFilesUploadFromUrlRequest,
+	DriveFilesUploadFromUrlResponse,
 	DriveFoldersRequest,
 	DriveFoldersResponse,
 	DriveFoldersCreateRequest,
@@ -693,7 +694,7 @@ export type Endpoints = {
 	'drive/files/find': { req: DriveFilesFindRequest; res: DriveFilesFindResponse };
 	'drive/files/show': { req: DriveFilesShowRequest; res: DriveFilesShowResponse };
 	'drive/files/update': { req: DriveFilesUpdateRequest; res: DriveFilesUpdateResponse };
-	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: EmptyResponse };
+	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: DriveFilesUploadFromUrlResponse };
 	'drive/folders': { req: DriveFoldersRequest; res: DriveFoldersResponse };
 	'drive/folders/create': { req: DriveFoldersCreateRequest; res: DriveFoldersCreateResponse };
 	'drive/folders/delete': { req: DriveFoldersDeleteRequest; res: EmptyResponse };
