@@ -62,7 +62,7 @@ type ToKebab<T extends readonly string[]> = T extends readonly [
 	: T extends readonly [
 			infer XH extends string,
 			...infer XR extends readonly string[]
-	  ]
+		]
 	? `${XH}${XR extends readonly string[] ? `-${ToKebab<XR>}` : ''}`
 	: '';
 
@@ -139,7 +139,7 @@ function toStories(component: string): Promise<string> {
 								kind={'init' as const}
 								shorthand
 							/> as estree.Property,
-					  ]
+						]
 					: []),
 			]}
 		/> as estree.ObjectExpression;
@@ -173,7 +173,7 @@ function toStories(component: string): Promise<string> {
 									/> as estree.ImportNamespaceSpecifier,
 								]}
 							/> as estree.ImportDeclaration,
-					  ]
+						]
 					: []),
 				...(hasImplStories
 					? []
@@ -184,7 +184,7 @@ function toStories(component: string): Promise<string> {
 									<import-default-specifier local={identifier} /> as estree.ImportDefaultSpecifier,
 								]}
 							/> as estree.ImportDeclaration,
-					  ]),
+						]),
 				...(hasMetaStories
 					? [
 							<import-declaration
@@ -401,7 +401,8 @@ function toStories(component: string): Promise<string> {
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 (async () => {
 	const globs = await Promise.all([
-		glob('src/components/global/*.vue'),
+		glob('src/components/global/Mk*.vue'),
+		glob('src/components/global/RouterView.vue'),
 		glob('src/components/Mk{A,B}*.vue'),
 		glob('src/components/MkDigitalClock.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
