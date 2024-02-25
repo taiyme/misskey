@@ -559,20 +559,20 @@ export function getRenoteMenu(props: {
 			text: i18n.ts._tms.pakuru,
 			icon: 'ti ti-swipe',
 			action: () => {
-				if (!props.mock) {
-					pakuru(appearNote).then(() => {
-						tooltipFromElement({
-							targetElement: props.renoteButton.value,
-							text: i18n.ts._tms.didPakuru,
-							primary: true,
-						});
-					}).catch((err) => {
-						os.alert({
-							type: 'error',
-							text: err.message + '\n' + err.id,
-						});
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didPakuru,
+						primary: true,
 					});
-				}
+				};
+				if (props.mock) return tooltip();
+				pakuru(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message + '\n' + err.id,
+					});
+				});
 			},
 		});
 	}
@@ -582,20 +582,20 @@ export function getRenoteMenu(props: {
 			text: i18n.ts._tms.numberquote,
 			icon: 'ti ti-exposure-plus-1',
 			action: () => {
-				if (!props.mock) {
-					numberquote(appearNote).then(() => {
-						tooltipFromElement({
-							targetElement: props.renoteButton.value,
-							text: i18n.ts._tms.didNumberquote,
-							primary: true,
-						});
-					}).catch((err) => {
-						os.alert({
-							type: 'error',
-							text: err.message + '\n' + err.id,
-						});
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didNumberquote,
+						primary: true,
 					});
-				}
+				};
+				if (props.mock) return tooltip();
+				numberquote(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message + '\n' + err.id,
+					});
+				});
 			},
 		});
 	}
