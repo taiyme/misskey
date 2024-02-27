@@ -4857,6 +4857,14 @@ export interface Locale extends ILocale {
      */
     readonly "replaying": string;
     /**
+     * リプレイを終了
+     */
+    readonly "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    readonly "copyReplayData": string;
+    /**
      * ランキング
      */
     readonly "ranking": string;
@@ -4884,11 +4892,57 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     readonly "enableHorizontalSwipe": string;
+    /**
+     * 読み込み中
+     */
+    readonly "loading": string;
+    /**
+     * やめる
+     */
+    readonly "surrender": string;
+    /**
+     * リトライ
+     */
+    readonly "gameRetry": string;
     readonly "_bubbleGame": {
         /**
          * 遊び方
          */
         readonly "howToPlay": string;
+        /**
+         * ホールド
+         */
+        readonly "hold": string;
+        readonly "_score": {
+            /**
+             * スコア
+             */
+            readonly "score": string;
+            /**
+             * 稼いだ金額
+             */
+            readonly "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            readonly "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            readonly "maxChain": string;
+            /**
+             * {yen}円
+             */
+            readonly "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            readonly "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            readonly "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         readonly "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -9172,7 +9226,7 @@ export interface Locale extends ILocale {
          */
         readonly "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         readonly "updateUserNote": string;
         /**
@@ -9219,6 +9273,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         readonly "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        readonly "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -9655,6 +9713,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         readonly "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        readonly "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        readonly "useAvatarAsStone": string;
     };
     readonly "_offlineScreen": {
         /**
