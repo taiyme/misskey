@@ -43,7 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
-		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
+		<div :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false">
+			<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'"/>
+		</div>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
@@ -698,15 +700,19 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .collapsedRenoteTargetText {
 	overflow: hidden;
-	flex-shrink: 1;
+	flex: 1;
+	min-width: 0;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-size: 90%;
 	opacity: 0.7;
+	padding: 2px 4px;
+	border-radius: 4px;
+	transition: background-color 0.2s ease;
 	cursor: pointer;
 
 	&:hover {
-		text-decoration: underline;
+		background-color: var(--X5);
 	}
 }
 
@@ -871,6 +877,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 		padding: 12px 26px 0 26px;
 	}
 
+	.collapsedRenoteTarget {
+		padding: 0 26px 12px;
+		margin-top: 4px;
+	}
+
 	.article {
 		padding: 24px 26px;
 	}
@@ -888,6 +899,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.renote {
 		padding: 10px 22px 0 22px;
+	}
+
+	.collapsedRenoteTarget {
+		padding: 0 22px 10px;
+		margin-top: 4px;
 	}
 
 	.article {
