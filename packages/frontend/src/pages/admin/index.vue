@@ -91,8 +91,12 @@ const isWide = ref(false);
 const WIDE_THRESHOLD = 600 as const;
 
 watch(isWide, () => {
-	if (isWide.value && isRoot.value) {
-		router.replace(INITIAL_PAGE_PATH);
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
 	}
 });
 
@@ -107,8 +111,12 @@ onMounted(() => {
 		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
 		ro.observe(rootEl.value);
 	}
-	if (isWide.value && isRoot.value) {
-		router.replace(INITIAL_PAGE_PATH);
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
 	}
 });
 
@@ -116,8 +124,12 @@ onActivated(() => {
 	if (rootEl.value != null) {
 		isWide.value = rootEl.value.offsetWidth >= WIDE_THRESHOLD;
 	}
-	if (isWide.value && isRoot.value) {
-		router.replace(INITIAL_PAGE_PATH);
+	if (isRoot.value) {
+		if (isWide.value) {
+			router.replace(INITIAL_PAGE_PATH);
+		} else {
+			childPageMetadata.value = null;
+		}
 	}
 });
 
