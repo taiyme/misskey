@@ -9824,6 +9824,28 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            readonly "_superMenuDisplayMode": {
+                /**
+                 * 設定メニューの表示モード
+                 */
+                readonly "label": string;
+                /**
+                 * 主にスマートフォン・タブレットデバイス向けの設定です。
+                 */
+                readonly "caption": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * クラシック
+                 */
+                readonly "classic": string;
+                /**
+                 * リスト強制
+                 */
+                readonly "forceList": string;
+            };
         };
         readonly "_flags": {
             /**

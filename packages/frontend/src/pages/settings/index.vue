@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSpacer :contentMax="700" :marginMin="16">
 					<div>
 						<MkInfo v-if="emailNotConfigured" warn :class="$style.navInfo">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="!isWide"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :wideMode="isWide"></MkSuperMenu>
 					</div>
 				</MkSpacer>
 			</div>
@@ -36,6 +36,7 @@ import * as os from '@/os.js';
 import { clearCache } from '@/scripts/clear-cache.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import { SuperMenuDef } from '@/types/tms/super-menu.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 
@@ -141,7 +142,7 @@ provideReactiveMetadata(pageMetadata);
 definePageMetadata(() => pageMetadata.value);
 
 //#region menuDef
-const menuDef = computed(() => [{
+const menuDef = computed<SuperMenuDef>(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
 		icon: 'ti ti-user',
@@ -257,14 +258,14 @@ const menuDef = computed(() => [{
 		to: '/settings/preferences-backups',
 		active: currentPage.value?.route.name === 'preferences-backups',
 	}, {
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-trash',
 		text: i18n.ts.clearCache,
 		action: async () => {
 			await clearCache();
 		},
 	}, {
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-power',
 		text: i18n.ts.logout,
 		action: async () => {

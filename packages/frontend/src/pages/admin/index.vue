@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo v-if="noMaintainerInformation" warn :class="$style.navInfo">{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="noBotProtection" warn :class="$style.navInfo">{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="noEmailServer" warn :class="$style.navInfo">{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="!isWide"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :wideMode="isWide"></MkSuperMenu>
 					</div>
 				</MkSpacer>
 			</div>
@@ -42,6 +42,7 @@ import { lookupUser, lookupUserByEmail } from '@/scripts/lookup-user.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
+import { SuperMenuDef } from '@/types/tms/super-menu.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 
@@ -157,15 +158,15 @@ provideReactiveMetadata(pageMetadata);
 definePageMetadata(() => pageMetadata.value);
 
 //#region menuDef
-const menuDef = computed(() => [{
+const menuDef = computed<SuperMenuDef>(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-search',
 		text: i18n.ts.lookup,
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
-		type: 'button',
+		type: 'button' as const,
 		icon: 'ti ti-user-plus',
 		text: i18n.ts.createInviteCode,
 		action: invite,

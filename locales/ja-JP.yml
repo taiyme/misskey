@@ -2618,6 +2618,12 @@ _tms:
   _settings:
     title: "taiyme拡張機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
+    _superMenuDisplayMode:
+      label: "設定メニューの表示モード"
+      caption: "主にスマートフォン・タブレットデバイス向けの設定です。"
+      default: "デフォルト"
+      classic: "クラシック"
+      forceList: "リスト強制"
   _flags:
     title: "taiyme実験的機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
