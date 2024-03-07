@@ -4,23 +4,65 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="rrevdjwu" :class="{ grid }">
-	<div v-for="group in def" class="group">
-		<div v-if="group.title" class="title">{{ group.title }}</div>
+<div
+	:class="{
+		[$style.root]: true,
+		[$style.gridView]: !props.wideMode && tmsStore.reactiveState.superMenuDisplayMode.value === 'default',
+		[$style.listView]: !props.wideMode && tmsStore.reactiveState.superMenuDisplayMode.value === 'forceList',
+		[$style.classicView]: !props.wideMode && tmsStore.reactiveState.superMenuDisplayMode.value === 'classic',
+	}"
+>
+	<div v-for="(group, i) in props.def" :key="`group:${i}`" :class="$style.group">
+		<div v-if="group.title" :class="$style.groupTitle">{{ group.title }}</div>
 
-		<div class="items">
-			<template v-for="(item, i) in group.items">
-				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
+		<div :class="$style.items">
+			<template v-for="(item, j) in group.items">
+				<a
+					v-if="item.type === 'a'"
+					:key="`group:${i}-a:${j}`"
+					:href="item.href"
+					:target="item.target"
+					tabindex="0"
+					class="_button"
+					:class="{
+						[$style.item]: true,
+						[$style.danger]: item.danger,
+						[$style.active]: item.active,
+					}"
+				>
+					<span v-if="item.icon" :class="$style.itemIcon"><i :class="item.icon" class="ti-fw"></i></span>
+					<span :class="$style.itemText">{{ item.text }}</span>
 				</a>
-				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
+				<button
+					v-else-if="item.type === 'button'"
+					:key="`group:${i}-button:${j}`"
+					tabindex="0"
+					class="_button"
+					:class="{
+						[$style.item]: true,
+						[$style.danger]: item.danger,
+						[$style.active]: item.active,
+					}"
+					:disabled="item.active"
+					@click="(ev) => item.action(ev)"
+				>
+					<span v-if="item.icon" :class="$style.itemIcon"><i :class="item.icon" class="ti-fw"></i></span>
+					<span :class="$style.itemText">{{ item.text }}</span>
 				</button>
-				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<span v-if="item.icon" class="icon"><i :class="item.icon" class="ti-fw"></i></span>
-					<span class="text">{{ item.text }}</span>
+				<MkA
+					v-else
+					:key="`group:${i}-link:${j}`"
+					:to="item.to"
+					tabindex="0"
+					class="_button"
+					:class="{
+						[$style.item]: true,
+						[$style.danger]: item.danger,
+						[$style.active]: item.active,
+					}"
+				>
+					<span v-if="item.icon" :class="$style.itemIcon"><i :class="item.icon" class="ti-fw"></i></span>
+					<span :class="$style.itemText">{{ item.text }}</span>
 				</MkA>
 			</template>
 		</div>
@@ -29,129 +71,175 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { tmsStore } from '@/tms/store.js';
+import { SuperMenuDef } from '@/types/tms/super-menu.js';
 
 const props = defineProps<{
-	def: any[];
-	grid?: boolean;
+	def: SuperMenuDef;
+	wideMode?: boolean;
 }>();
 </script>
 
-<style lang="scss" scoped>
-.rrevdjwu {
-	> .group {
+<style lang="scss" module>
+.root {
+	.group {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
 		& + .group {
 			margin-top: 16px;
 			padding-top: 16px;
 			border-top: solid 0.5px var(--divider);
 		}
+	}
 
-		> .title {
-			opacity: 0.7;
-			margin: 0 0 8px 0;
-			font-size: 0.9em;
+	.groupTitle {
+		opacity: 0.7;
+		font-size: 0.9em;
+	}
+
+	.item {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 9px 8px;
+		border-radius: 9px;
+		font-size: 0.9em;
+		transition: background-color 0.1s ease;
+
+		&:hover {
+			text-decoration: none;
 		}
 
-		> .items {
-			> .item {
-				display: flex;
-				align-items: center;
-				width: 100%;
-				box-sizing: border-box;
-				padding: 9px 16px 9px 8px;
-				border-radius: 9px;
-				font-size: 0.9em;
+		&.active, &:hover, &:focus {
+			color: var(--accent);
+			background-color: var(--accentedBg);
+		}
 
-				&:hover {
-					text-decoration: none;
-					background: var(--panelHighlight);
-				}
+		&.danger {
+			color: var(--error);
+		}
+	}
 
-				&.active {
-					color: var(--accent);
-					background: var(--accentedBg);
-				}
+	.itemIcon {
+		display: block;
+		width: 20px;
+		flex-shrink: 0;
+		text-align: center;
+		opacity: 0.8;
+	}
 
-				&.danger {
-					color: var(--error);
-				}
+	.itemText {
+		display: block;
+		white-space: normal;
+		flex-shrink: 1;
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+}
 
-				> .icon {
-					width: 32px;
-					margin-right: 2px;
-					flex-shrink: 0;
-					text-align: center;
-					opacity: 0.8;
-				}
+.gridView {
+	.group {
+		padding-right: 16px;
+		padding-left: 16px;
+	}
 
-				> .text {
-					white-space: normal;
-					padding-right: 12px;
-					flex-shrink: 1;
-				}
+	.groupTitle {
+		font-size: 1em;
+	}
 
+	.items {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+		gap: 16px;
+	}
+
+	.item {
+		flex-direction: column;
+		gap: 6px;
+		text-align: center;
+		padding: 0;
+
+		&.active, &:hover, &:focus {
+			background-color: transparent;
+			color: var(--accent);
+			transition: none;
+
+			> .itemIcon {
+				background-color: var(--accentedBg);
 			}
 		}
 	}
 
-	&.grid {
-		> .group {
-			& + .group {
-				padding-top: 0;
-				border-top: none;
-			}
+	.itemIcon {
+		display: grid;
+		place-content: center;
+		font-size: 1.5em;
+		width: 60px;
+		height: 60px;
+		aspect-ratio: 1;
+		background-color: var(--panel);
+		border-radius: 100%;
+		transition: background-color 0.1s ease;
+	}
 
-			margin-left: 0;
-			margin-right: 0;
+	.itemText {
+		width: 100%;
+		font-size: 0.8em;
+	}
+}
 
-			> .title {
-				font-size: 1em;
-				opacity: 0.7;
-				margin: 0 0 8px 16px;
-			}
+.classicView {
+	.group {
+		padding-right: 16px;
+		padding-left: 16px;
 
-			> .items {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-				grid-gap: 16px;
-				padding: 0 16px;
-
-				> .item {
-					flex-direction: column;
-					text-align: center;
-					padding: 0;
-
-					&:hover {
-						text-decoration: none;
-						background: none;
-						color: var(--accent);
-
-						> .icon {
-							background: var(--accentedBg);
-						}
-					}
-
-					> .icon {
-						display: grid;
-						place-content: center;
-						margin-right: 0;
-						margin-bottom: 6px;
-						font-size: 1.5em;
-						width: 60px;
-						height: 60px;
-						aspect-ratio: 1;
-						background: var(--panel);
-						border-radius: 100%;
-					}
-
-					> .text {
-						padding-right: 0;
-						width: 100%;
-						font-size: 0.8em;
-					}
-				}
-			}
+		& + .group {
+			padding-top: 0;
+			border-top: 0;
 		}
+	}
+
+	.groupTitle {
+		font-size: 1em;
+	}
+
+	.items {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+		gap: 8px;
+	}
+
+	.item {
+		flex-direction: column;
+		gap: 12px;
+		padding: 18px 16px 16px 16px;
+		background-color: var(--panel);
+		border-radius: 8px;
+		text-align: center;
+	}
+
+	.itemIcon {
+		font-size: 1.5em;
+	}
+
+	.itemText {
+		width: 100%;
+		font-size: 0.8em;
+	}
+}
+
+.listView {
+	.groupTitle {
+		font-size: 1em;
+	}
+
+	.item {
+		font-size: 1em;
+		padding: 10px 8px;
 	}
 }
 </style>
