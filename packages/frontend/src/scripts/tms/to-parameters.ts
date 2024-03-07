@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
+import { toASCII } from 'punycode';
 import { $i, getAccounts } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { unique } from '@/scripts/array.js';
@@ -16,16 +17,19 @@ export class ParametersError extends Error {
 	public readonly message: string;
 	public readonly code: string;
 	public readonly id: string;
+	public readonly kind: string;
 
 	constructor(error: {
 		readonly message: string;
 		readonly code: string;
 		readonly id: string;
+		readonly kind: string;
 	}) {
-		super(error.message);
-		this.message = error.message;
+		super(`${error.message} (kind: ${error.kind})`);
+		this.message = `${error.message} (kind: ${error.kind})`;
 		this.code = error.code;
 		this.id = error.id;
+		this.kind = error.kind;
 	}
 }
 
@@ -33,43 +37,17 @@ export type NoteEntity = Misskey.entities.Note;
 export type NoteEntityOrId = NoteEntity | string;
 export type NoteParameters = Misskey.Endpoints['notes/create']['req'];
 
-type UserLike = {
+export type MeEntity = {
 	readonly meId: string;
 	readonly token: string;
 };
 
 export const toParameters = async (noteEntityOrId: NoteEntityOrId, fromId?: string | null): Promise<{
 	readonly parameters: NoteParameters;
-	readonly me: UserLike;
+	readonly me: MeEntity;
 }> => {
-	const meId = fromId ?? $i?.id ?? null;
-	if (meId == null) {
-		throw new ParametersError({
-			message: '[toParameters]: meId is required. (kind: taiyme)',
-			code: 'MEID_IS_REQUIRED',
-			id: '6024ed6b-9ab0-4905-8cac-36f5c75aea59',
-		});
-	}
-
-	const token = (await getAccounts()).find(({ id }) => id === meId)?.token ?? null;
-	if (token == null) {
-		throw new ParametersError({
-			message: '[toParameters]: token is required. (kind: taiyme)',
-			code: 'TOKEN_IS_REQUIRED',
-			id: '34825d40-8c57-43b8-ac75-04a7bb9bd56d',
-		});
-	}
-
-	const me = { meId, token } as const satisfies UserLike;
-
+	const me = await toMeEntity(fromId);
 	const note = await toNoteEntity(noteEntityOrId, me);
-	if (note == null) {
-		throw new ParametersError({
-			message: '[toParameters]: No such note. (kind: taiyme)',
-			code: 'NO_SUCH_NOTE',
-			id: 'c756e6b2-b56c-45b6-8978-7d178fb3862e',
-		});
-	}
 
 	const text = makeText(note);
 	const cw = makeCw(note);
@@ -91,10 +69,41 @@ export const toParameters = async (noteEntityOrId: NoteEntityOrId, fromId?: stri
 	return { parameters, me } as const;
 };
 
-const toNoteEntity = async (noteEntityOrId: NoteEntityOrId, { token }: UserLike): Promise<NoteEntity | null> => {
+const toMeEntity = async (fromId?: string | null): Promise<MeEntity> => {
+	const meId = fromId ?? $i?.id ?? null;
+	if (meId == null) {
+		throw new ParametersError({
+			message: 'meId is required.',
+			code: 'MEID_IS_REQUIRED',
+			id: '6024ed6b-9ab0-4905-8cac-36f5c75aea59',
+			kind: 'tms/toMeEntity',
+		});
+	}
+
+	const token = (await getAccounts()).find(({ id }) => id === meId)?.token ?? null;
+	if (token == null) {
+		throw new ParametersError({
+			message: 'token is required.',
+			code: 'TOKEN_IS_REQUIRED',
+			id: '34825d40-8c57-43b8-ac75-04a7bb9bd56d',
+			kind: 'tms/toMeEntity',
+		});
+	}
+
+	return { meId, token } as const satisfies MeEntity;
+};
+
+const toNoteEntity = async (noteEntityOrId: NoteEntityOrId, { token }: MeEntity): Promise<NoteEntity> => {
 	if (typeof noteEntityOrId === 'string') {
 		const fetchedNote = await misskeyApi('notes/show', { noteId: noteEntityOrId }, token).catch(() => null);
-		if (fetchedNote == null) return null;
+		if (fetchedNote == null) {
+			throw new ParametersError({
+				message: 'No such note.',
+				code: 'NO_SUCH_NOTE',
+				id: 'c756e6b2-b56c-45b6-8978-7d178fb3862e',
+				kind: 'tms/toNoteEntity',
+			});
+		}
 		const appearNote = getAppearNote(fetchedNote);
 		return appearNote;
 	}
@@ -103,24 +112,24 @@ const toNoteEntity = async (noteEntityOrId: NoteEntityOrId, { token }: UserLike)
 };
 
 const adjustRemoteMentions = (str: string, host: string): string => {
-	const tokens = mfm.parse(str);
-	const mentionNode = (node: mfm.MfmNode): void => {
+	const ast = mfm.parse(str);
+	const fixMentionNode = (node: mfm.MfmNode): void => {
 		if (node.type === 'mention') {
 			if (node.props.host == null) {
-				node.props.host = host;
-				node.props.acct = `${node.props.acct}@${host}`;
+				node.props.host = toASCII(host);
+				node.props.acct = `@${node.props.username}@${node.props.host}`;
 			}
 		}
 		if (node.children) {
 			for (const child of node.children) {
-				mentionNode(child);
+				fixMentionNode(child);
 			}
 		}
 	};
-	for (const node of tokens) {
-		mentionNode(node);
+	for (const node of ast) {
+		fixMentionNode(node);
 	}
-	return mfm.toString(tokens);
+	return mfm.toString(ast);
 };
 
 const makeText = ({ text, user: { host } }: NoteEntity): NoteParameters['text'] => {
@@ -136,7 +145,7 @@ const makeCw = ({ cw, user: { host } }: NoteEntity): NoteParameters['cw'] => {
 	return adjustRemoteMentions(cw, host);
 };
 
-const makeFileIds = async ({ files, fileIds, userId }: NoteEntity, { meId, token }: UserLike): Promise<NoteParameters['fileIds']> => {
+const makeFileIds = async ({ files, fileIds, userId }: NoteEntity, { meId, token }: MeEntity): Promise<NoteParameters['fileIds']> => {
 	if (files == null || files.length === 0) return undefined;
 	if (fileIds == null || fileIds.length === 0) return undefined;
 	if (userId === meId) return fileIds;
@@ -155,14 +164,15 @@ const makeFileIds = async ({ files, fileIds, userId }: NoteEntity, { meId, token
 		return await Promise.all(promises).then(x => x.map(({ id }) => id));
 	} catch {
 		throw new ParametersError({
-			message: '[toParameters]: File upload failed. (kind: taiyme)',
+			message: 'File upload failed.',
 			code: 'FILE_UPLOAD_FAILED',
 			id: '1de1dd90-03c0-4bd0-8258-9a1aefb9cd94',
+			kind: 'tms/makeFileIds',
 		});
 	}
 };
 
-const makeVisibleUserIds = ({ visibility, visibleUserIds, userId }: NoteEntity, { meId }: UserLike): NoteParameters['visibleUserIds'] => {
+const makeVisibleUserIds = ({ visibility, visibleUserIds, userId }: NoteEntity, { meId }: MeEntity): NoteParameters['visibleUserIds'] => {
 	if (visibility !== 'specified') return undefined;
 	const uniqueUserIds = unique([...visibleUserIds ?? [], userId, meId]);
 	if (uniqueUserIds.length === 0) return undefined;
