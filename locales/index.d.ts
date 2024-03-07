@@ -4657,6 +4657,10 @@ export interface Locale extends ILocale {
      */
     readonly "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    readonly "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     readonly "fileAttachedOnly": string;
@@ -4857,6 +4861,14 @@ export interface Locale extends ILocale {
      */
     readonly "replaying": string;
     /**
+     * リプレイを終了
+     */
+    readonly "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    readonly "copyReplayData": string;
+    /**
      * ランキング
      */
     readonly "ranking": string;
@@ -4884,11 +4896,57 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     readonly "enableHorizontalSwipe": string;
+    /**
+     * 読み込み中
+     */
+    readonly "loading": string;
+    /**
+     * やめる
+     */
+    readonly "surrender": string;
+    /**
+     * リトライ
+     */
+    readonly "gameRetry": string;
     readonly "_bubbleGame": {
         /**
          * 遊び方
          */
         readonly "howToPlay": string;
+        /**
+         * ホールド
+         */
+        readonly "hold": string;
+        readonly "_score": {
+            /**
+             * スコア
+             */
+            readonly "score": string;
+            /**
+             * 稼いだ金額
+             */
+            readonly "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            readonly "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            readonly "maxChain": string;
+            /**
+             * {yen}円
+             */
+            readonly "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            readonly "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            readonly "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         readonly "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -6385,6 +6443,10 @@ export interface Locale extends ILocale {
              */
             readonly "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            readonly "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             readonly "canInvite": string;
@@ -6474,6 +6536,10 @@ export interface Locale extends ILocale {
             readonly "avatarDecorationLimit": string;
         };
         readonly "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            readonly "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */
@@ -8851,6 +8917,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         readonly "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        readonly "flushNotification": string;
         readonly "_types": {
             /**
              * すべて
@@ -9172,7 +9242,7 @@ export interface Locale extends ILocale {
          */
         readonly "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         readonly "updateUserNote": string;
         /**
@@ -9219,6 +9289,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         readonly "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        readonly "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -9655,6 +9729,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         readonly "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        readonly "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        readonly "useAvatarAsStone": string;
     };
     readonly "_offlineScreen": {
         /**
@@ -9766,6 +9848,28 @@ export interface Locale extends ILocale {
              * リノートメニューに「{x}」を追加します。
              */
             readonly "addXToRenoteMenu": ParameterizedString<"x">;
+            readonly "_superMenuDisplayMode": {
+                /**
+                 * 設定メニューの表示モード
+                 */
+                readonly "label": string;
+                /**
+                 * 主にスマートフォン・タブレットデバイス向けの設定です。
+                 */
+                readonly "caption": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * クラシック
+                 */
+                readonly "classic": string;
+                /**
+                 * リスト強制
+                 */
+                readonly "forceList": string;
+            };
         };
         readonly "_flags": {
             /**

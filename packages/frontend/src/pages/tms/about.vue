@@ -10,9 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSpacer :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
 				<TmsNoCache><TmsSoftwareBanner/></TmsNoCache>
-				<div style="text-align: center;">
-					{{ i18n.ts._tms._about.description }}
-				</div>
+				<div style="text-align: center;">{{ i18n.ts._tms._about.description }}</div>
 				<FormSection>
 					<div class="_gaps_s">
 						<TmsSoftwareRepository/>
@@ -55,7 +53,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { contributors, patrons, projectMembers } from '@/tms/contributors.js';
-import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import TmsMemberCard from '@/components/TmsMemberCard.vue';
