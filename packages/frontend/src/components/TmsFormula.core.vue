@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- eslint-disable vue/no-v-html -->
 <template>
-<div v-if="props.block" :class="$style.mathBlockRoot">
+<div v-if="props.displayMode" :class="$style.mathBlockRoot">
 	<div :class="$style.mathBlockInner" v-html="rawHtml"></div>
 </div>
 <span v-else v-html="rawHtml"></span>
@@ -17,13 +17,13 @@ import katex from 'katex';
 
 const props = defineProps<{
 	formula: string;
-	block: boolean;
+	displayMode: boolean;
 }>();
 
 const rawHtml = computed(() => {
 	return katex.renderToString(props.formula, {
 		throwOnError: false,
-		displayMode: props.block,
+		displayMode: props.displayMode,
 	});
 });
 </script>

@@ -440,7 +440,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(TmsFormula, {
 					key: Math.random(),
 					formula: token.props.formula,
-					block: false,
+					displayMode: false,
 				})];
 			}
 
@@ -448,7 +448,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(TmsFormula, {
 					key: Math.random(),
 					formula: token.props.formula,
-					block: true,
+					displayMode: true,
 				})];
 			}
 
