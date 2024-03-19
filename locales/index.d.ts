@@ -9809,6 +9809,22 @@ export interface Locale extends ILocale {
          * センシティブなファイルを表示しています。
          */
         readonly "displayingSensitiveFiles": string;
+        /**
+         * パクる
+         */
+        readonly "pakuru": string;
+        /**
+         * 数字引用する
+         */
+        readonly "numberquote": string;
+        /**
+         * パクりました
+         */
+        readonly "didPakuru": string;
+        /**
+         * 数字引用しました
+         */
+        readonly "didNumberquote": string;
         readonly "_about": {
             /**
              * taiymeについて
@@ -9861,6 +9877,26 @@ export interface Locale extends ILocale {
                  * リスト強制
                  */
                 readonly "forceList": string;
+            };
+            readonly "_pakuru": {
+                /**
+                 * 「パクる」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「パクる」を追加します。
+                 */
+                readonly "caption": string;
+            };
+            readonly "_numberquote": {
+                /**
+                 * 「数字引用」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「数字引用する」を追加します。
+                 */
+                readonly "caption": string;
             };
         };
         readonly "_flags": {

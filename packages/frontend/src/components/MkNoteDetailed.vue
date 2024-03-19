@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
 			</button>
 			<button
-				v-if="canRenote"
+				v-if="canRenote || canPakuru"
 				ref="renoteButton"
 				class="_button"
 				:class="$style.noteFooterButton"
@@ -229,6 +229,7 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { getAppearNote, isPureRenote } from '@/scripts/tms/is-pure-renote.js';
+import { tmsStore } from '@/tms/store.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
@@ -278,6 +279,7 @@ const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultS
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
+const canPakuru = computed(() => tmsStore.state.usePakuru || tmsStore.state.useNumberquote);
 
 const keymap = {
 	'r': () => reply(true),

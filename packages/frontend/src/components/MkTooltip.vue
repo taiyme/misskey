@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
 	appear @afterLeave="emit('closed')"
 >
-	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
+	<div v-show="showing" ref="el" :class="[$style.root, { [$style.primary]: primary }]" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
 			<template v-if="text">
 				<Mfm v-if="asMfm" :text="text"/>
@@ -28,7 +28,7 @@ import * as os from '@/os.js';
 import { calcPopupPosition } from '@/scripts/popup-position.js';
 import { defaultStore } from '@/store.js';
 
-const props = withDefaults(defineProps<{
+export type TooltipProps = {
 	showing: boolean;
 	targetElement?: HTMLElement;
 	x?: number;
@@ -38,7 +38,10 @@ const props = withDefaults(defineProps<{
 	maxWidth?: number;
 	direction?: 'top' | 'bottom' | 'right' | 'left';
 	innerMargin?: number;
-}>(), {
+	primary?: boolean;
+};
+
+const props = withDefaults(defineProps<TooltipProps>(), {
 	maxWidth: 250,
 	direction: 'top',
 	innerMargin: 0,
@@ -113,5 +116,11 @@ onUnmounted(() => {
 	border: solid 0.5px var(--divider);
 	pointer-events: none;
 	transform-origin: center center;
+
+	&.primary {
+		border: none;
+		background: var(--accent);
+		color: var(--fgOnAccent);
+	}
 }
 </style>

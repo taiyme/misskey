@@ -2613,6 +2613,10 @@ _tms:
   reportIssuesToGithub: "問題の報告や要望はGitHubで受け付けています。"
   displayingGifFiles: "GIFファイルを表示しています。"
   displayingSensitiveFiles: "センシティブなファイルを表示しています。"
+  pakuru: "パクる"
+  numberquote: "数字引用する"
+  didPakuru: "パクりました"
+  didNumberquote: "数字引用しました"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
@@ -2628,6 +2632,12 @@ _tms:
       default: "デフォルト"
       classic: "クラシック"
       forceList: "リスト強制"
+    _pakuru:
+      label: "「パクる」機能を有効にする"
+      caption: "リノートメニューに「パクる」を追加します。"
+    _numberquote:
+      label: "「数字引用」機能を有効にする"
+      caption: "リノートメニューに「数字引用する」を追加します。"
   _flags:
     title: "taiyme実験的機能"
     description: "これらの機能はtaiymeで独自実装したものです。"

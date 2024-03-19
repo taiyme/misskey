@@ -972,6 +972,9 @@ type DriveFilesUpdateResponse = operations['drive/files/update']['responses']['2
 type DriveFilesUploadFromUrlRequest = operations['drive/files/upload-from-url']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type DriveFilesUploadFromUrlResponse = operations['drive/files/upload-from-url']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type DriveFolder = components['schemas']['DriveFolder'];
 
 // @public (undocumented)
@@ -1333,6 +1336,7 @@ declare namespace entities {
         DriveFilesUpdateRequest,
         DriveFilesUpdateResponse,
         DriveFilesUploadFromUrlRequest,
+        DriveFilesUploadFromUrlResponse,
         DriveFoldersRequest,
         DriveFoldersResponse,
         DriveFoldersCreateRequest,

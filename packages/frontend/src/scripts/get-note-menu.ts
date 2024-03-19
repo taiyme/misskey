@@ -21,6 +21,10 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
+import { numberquote } from '@/scripts/tms/numberquote.js';
+import { pakuru } from '@/scripts/tms/pakuru.js';
+import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
+import { tmsStore } from '@/tms/store.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -469,6 +473,7 @@ export function getRenoteMenu(props: {
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
+	const pakuruItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
 		channelRenoteItems.push(...[{
@@ -549,11 +554,64 @@ export function getRenoteMenu(props: {
 		}]);
 	}
 
-	const renoteItems = [
-		...normalRenoteItems,
-		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [{ type: 'divider' }] as MenuItem[] : [],
-		...channelRenoteItems,
-	];
+	if (tmsStore.state.usePakuru) {
+		pakuruItems.push({
+			text: i18n.ts._tms.pakuru,
+			icon: 'ti ti-swipe',
+			action: () => {
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didPakuru,
+						primary: true,
+					});
+				};
+				if (props.mock) return tooltip();
+				pakuru(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message + '\n' + err.id,
+					});
+				});
+			},
+		});
+	}
+
+	if (tmsStore.state.useNumberquote) {
+		pakuruItems.push({
+			text: i18n.ts._tms.numberquote,
+			icon: 'ti ti-exposure-plus-1',
+			action: () => {
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didNumberquote,
+						primary: true,
+					});
+				};
+				if (props.mock) return tooltip();
+				numberquote(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: err.message + '\n' + err.id,
+					});
+				});
+			},
+		});
+	}
+
+	const renoteItems: MenuItem[] = [];
+	if (normalRenoteItems.length > 0) {
+		renoteItems.push(...normalRenoteItems);
+	}
+	if (channelRenoteItems.length > 0) {
+		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
+		renoteItems.push(...channelRenoteItems);
+	}
+	if (pakuruItems.length > 0) {
+		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
+		renoteItems.push(...pakuruItems);
+	}
 
 	return {
 		menu: renoteItems,

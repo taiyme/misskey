@@ -17,6 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSelect>
 		</div>
 	</FormSection>
+	<FormSection>
+		<div class="_gaps">
+			<MkSwitch v-model="usePakuru">
+				<template #label>{{ i18n.ts._tms._settings._pakuru.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._pakuru.caption }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="useNumberquote">
+				<template #label>{{ i18n.ts._tms._settings._numberquote.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._numberquote.caption }}</template>
+			</MkSwitch>
+		</div>
+	</FormSection>
 </div>
 </template>
 
@@ -26,9 +38,12 @@ import { i18n } from '@/i18n.js';
 import { tmsStore } from '@/tms/store.js';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 //#region 即時変更
 const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDisplayMode'));
+const usePakuru = computed(tmsStore.makeGetterSetter('usePakuru'));
+const useNumberquote = computed(tmsStore.makeGetterSetter('useNumberquote'));
 //#endregion
 
 const edited = ref(false);
