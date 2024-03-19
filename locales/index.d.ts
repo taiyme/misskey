@@ -9856,14 +9856,6 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
-            /**
-             * 「{x}」機能を有効にする
-             */
-            readonly "enableFeatureX": ParameterizedString<"x">;
-            /**
-             * リノートメニューに「{x}」を追加します。
-             */
-            readonly "addXToRenoteMenu": ParameterizedString<"x">;
             readonly "_superMenuDisplayMode": {
                 /**
                  * 設定メニューの表示モード
@@ -9885,6 +9877,26 @@ export interface Locale extends ILocale {
                  * リスト強制
                  */
                 readonly "forceList": string;
+            };
+            readonly "_pakuru": {
+                /**
+                 * 「パクる」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「パクる」を追加します。
+                 */
+                readonly "caption": string;
+            };
+            readonly "_numberquote": {
+                /**
+                 * 「数字引用」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「数字引用する」を追加します。
+                 */
+                readonly "caption": string;
             };
         };
         readonly "_flags": {

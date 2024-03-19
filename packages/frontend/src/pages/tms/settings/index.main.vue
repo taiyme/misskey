@@ -20,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps">
 			<MkSwitch v-model="usePakuru">
-				<template #label>{{ i18n.tsx._tms._settings.enableFeatureX({ x: i18n.ts._tms.pakuru }) }}</template>
-				<template #caption>{{ i18n.tsx._tms._settings.addXToRenoteMenu({ x: i18n.ts._tms.pakuru }) }}</template>
+				<template #label>{{ i18n.ts._tms._settings._pakuru.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._pakuru.caption }}</template>
 			</MkSwitch>
 			<MkSwitch v-model="useNumberquote">
-				<template #label>{{ i18n.tsx._tms._settings.enableFeatureX({ x: i18n.ts._tms.numberquote }) }}</template>
-				<template #caption>{{ i18n.tsx._tms._settings.addXToRenoteMenu({ x: i18n.ts._tms.numberquote }) }}</template>
+				<template #label>{{ i18n.ts._tms._settings._numberquote.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._numberquote.caption }}</template>
 			</MkSwitch>
 		</div>
 	</FormSection>

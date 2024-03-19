@@ -2626,14 +2626,18 @@ _tms:
   _settings:
     title: "taiyme拡張機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
-    enableFeatureX: "「{x}」機能を有効にする"
-    addXToRenoteMenu: "リノートメニューに「{x}」を追加します。"
     _superMenuDisplayMode:
       label: "設定メニューの表示モード"
       caption: "主にスマートフォン・タブレットデバイス向けの設定です。"
       default: "デフォルト"
       classic: "クラシック"
       forceList: "リスト強制"
+    _pakuru:
+      label: "「パクる」機能を有効にする"
+      caption: "リノートメニューに「パクる」を追加します。"
+    _numberquote:
+      label: "「数字引用」機能を有効にする"
+      caption: "リノートメニューに「数字引用する」を追加します。"
   _flags:
     title: "taiyme実験的機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
