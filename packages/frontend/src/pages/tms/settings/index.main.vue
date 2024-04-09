@@ -19,11 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 	<FormSection>
 		<div class="_gaps">
-			<MkSwitch v-model="usePakuru">
+			<MkSwitch v-model="enablePakuru">
 				<template #label>{{ i18n.ts._tms._settings._pakuru.label }}</template>
 				<template #caption>{{ i18n.ts._tms._settings._pakuru.caption }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="useNumberquote">
+			<MkSwitch v-model="enableNumberquote">
 				<template #label>{{ i18n.ts._tms._settings._numberquote.label }}</template>
 				<template #caption>{{ i18n.ts._tms._settings._numberquote.caption }}</template>
 			</MkSwitch>
@@ -42,8 +42,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 
 //#region 即時変更
 const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDisplayMode'));
-const usePakuru = computed(tmsStore.makeGetterSetter('usePakuru'));
-const useNumberquote = computed(tmsStore.makeGetterSetter('useNumberquote'));
+const enablePakuru = computed(tmsStore.makeGetterSetter('enablePakuru'));
+const enableNumberquote = computed(tmsStore.makeGetterSetter('enableNumberquote'));
 //#endregion
 
 const edited = ref(false);

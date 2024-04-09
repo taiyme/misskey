@@ -554,7 +554,7 @@ export function getRenoteMenu(props: {
 		}]);
 	}
 
-	if (tmsStore.state.usePakuru) {
+	if (tmsStore.state.enablePakuru) {
 		pakuruItems.push({
 			text: i18n.ts._tms.pakuru,
 			icon: 'ti ti-swipe',
@@ -577,7 +577,7 @@ export function getRenoteMenu(props: {
 		});
 	}
 
-	if (tmsStore.state.useNumberquote) {
+	if (tmsStore.state.enableNumberquote) {
 		pakuruItems.push({
 			text: i18n.ts._tms.numberquote,
 			icon: 'ti ti-exposure-plus-1',

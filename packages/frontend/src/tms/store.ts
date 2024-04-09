@@ -14,11 +14,11 @@ export const tmsStore = markRaw(new Storage('tmsMain', {
 		where: 'deviceAccount',
 		default: 'default' as 'default' | 'classic' | 'forceList',
 	},
-	usePakuru: {
+	enablePakuru: {
 		where: 'device',
 		default: false,
 	},
-	useNumberquote: {
+	enableNumberquote: {
 		where: 'device',
 		default: false,
 	},
