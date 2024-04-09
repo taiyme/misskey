@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -70,7 +70,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 				url: url,
 				folderId: defaultStore.state.uploadFolder,
 				marker,
-			});
+			}).catch(() => {});
 
 			os.alert({
 				title: i18n.ts.uploadFromUrlRequested,

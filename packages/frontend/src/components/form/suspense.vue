@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkLoading/>
 </div>
 <div v-else-if="resolved">
-	<slot :result="result"></slot>
+	<slot :result="(result as T)"></slot>
 </div>
 <div v-else>
 	<div :class="$style.error">
@@ -18,19 +18,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import { ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	p: () => Promise<any>;
+	p: () => Promise<T>;
 }>();
 
 const pending = ref(true);
 const resolved = ref(false);
 const rejected = ref(false);
-const result = ref<any>(null);
+const result = ref<T>();
 
 const process = () => {
 	if (props.p == null) {

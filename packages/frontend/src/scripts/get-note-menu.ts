@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -20,20 +20,19 @@ import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { parseErrorMessage } from '@/scripts/tms/error.js';
+import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
+import { numberquote } from '@/scripts/tms/numberquote.js';
+import { pakuru } from '@/scripts/tms/pakuru.js';
+import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
+import { tmsStore } from '@/tms/store.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const clips = await clipsCache.fetch();
 	const menu: MenuItem[] = [...clips.map(clip => ({
@@ -102,10 +101,13 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 		icon: 'ti ti-exclamation-circle',
 		text,
 		action: (): void => {
-			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
+			const localUrl = `${url}/notes/${note.id}`;
+			let noteInfo = '';
+			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
+			noteInfo += `Local Note: ${localUrl}\n`;
 			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
-				initialComment: `Note: ${u}\n-----\n`,
+				initialComment: `${noteInfo}-----\n`,
 			}, {}, 'closed');
 		},
 	};
@@ -129,14 +131,7 @@ export function getNoteMenu(props: {
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const cleanups = [] as (() => void)[];
 
@@ -144,6 +139,7 @@ export function getNoteMenu(props: {
 		os.confirm({
 			type: 'warning',
 			text: i18n.ts.noteDeleteConfirm,
+			note: appearNote,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -161,6 +157,7 @@ export function getNoteMenu(props: {
 		os.confirm({
 			type: 'warning',
 			text: i18n.ts.deleteAndEditConfirm,
+			note: appearNote,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -475,17 +472,11 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
 }) {
-	const isRenote = (
-		props.note.renote != null &&
-		props.note.text == null &&
-		props.note.fileIds.length === 0 &&
-		props.note.poll == null
-	);
-
-	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
+	const appearNote = getAppearNote(props.note);
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
+	const pakuruItems: MenuItem[] = [];
 
 	if (appearNote.channel) {
 		channelRenoteItems.push(...[{
@@ -566,11 +557,64 @@ export function getRenoteMenu(props: {
 		}]);
 	}
 
-	const renoteItems = [
-		...normalRenoteItems,
-		...(channelRenoteItems.length > 0 && normalRenoteItems.length > 0) ? [{ type: 'divider' }] as MenuItem[] : [],
-		...channelRenoteItems,
-	];
+	if (tmsStore.state.enablePakuru) {
+		pakuruItems.push({
+			text: i18n.ts._tms.pakuru,
+			icon: 'ti ti-swipe',
+			action: () => {
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didPakuru,
+						primary: true,
+					});
+				};
+				if (props.mock) return tooltip();
+				pakuru(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: parseErrorMessage(err),
+					});
+				});
+			},
+		});
+	}
+
+	if (tmsStore.state.enableNumberquote) {
+		pakuruItems.push({
+			text: i18n.ts._tms.numberquote,
+			icon: 'ti ti-exposure-plus-1',
+			action: () => {
+				const tooltip = (): void => {
+					tooltipFromElement({
+						targetElement: props.renoteButton.value,
+						text: i18n.ts._tms.didNumberquote,
+						primary: true,
+					});
+				};
+				if (props.mock) return tooltip();
+				numberquote(appearNote).then(() => tooltip()).catch((err) => {
+					os.alert({
+						type: 'error',
+						text: parseErrorMessage(err),
+					});
+				});
+			},
+		});
+	}
+
+	const renoteItems: MenuItem[] = [];
+	if (normalRenoteItems.length > 0) {
+		renoteItems.push(...normalRenoteItems);
+	}
+	if (channelRenoteItems.length > 0) {
+		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
+		renoteItems.push(...channelRenoteItems);
+	}
+	if (pakuruItems.length > 0) {
+		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
+		renoteItems.push(...pakuruItems);
+	}
 
 	return {
 		menu: renoteItems,

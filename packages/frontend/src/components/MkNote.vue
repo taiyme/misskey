@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -43,7 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
-		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
+		<div :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false">
+			<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'"/>
+		</div>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
@@ -93,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<MkReactionsViewer :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
+			<MkReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16" @mockUpdateMyReaction="emitUpdReaction">
 				<template #more>
 					<div :class="$style.reactionOmitted">{{ i18n.ts.more }}</div>
 				</template>
@@ -101,27 +103,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<footer :class="$style.footer">
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
-					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
+					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
 				<button
-					v-if="canRenote"
+					v-if="canRenote || canPakuru"
 					ref="renoteButton"
 					:class="$style.footerButton"
 					class="_button"
 					@mousedown="renote()"
 				>
 					<i class="ti ti-repeat"></i>
-					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ appearNote.renoteCount }}</p>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.renoteCount) }}</p>
 				</button>
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--eventReactionHeart);"></i>
+					<i v-else-if="appearNote.myReaction != null" class="ti ti-minus" style="color: var(--accent);"></i>
+					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
 					<i v-else class="ti ti-plus"></i>
-				</button>
-				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
-					<i class="ti ti-minus"></i>
+					<p v-if="(appearNote.reactionAcceptance === 'likeOnly' || defaultStore.state.showReactionsCount) && appearNote.reactionCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.reactionCount) }}</p>
 				</button>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
 					<i class="ti ti-paperclip"></i>
@@ -175,6 +177,7 @@ import { pleaseLogin } from '@/scripts/please-login.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
+import number from '@/filters/number.js';
 import * as os from '@/os.js';
 import * as sound from '@/scripts/sound.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -193,6 +196,8 @@ import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { getAppearNote, isPureRenote } from '@/scripts/tms/is-pure-renote.js';
+import { tmsStore } from '@/tms/store.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -235,13 +240,7 @@ if (noteViewInterruptors.length > 0) {
 	});
 }
 
-const isRenote = (
-	note.value.renote != null &&
-	note.value.text == null &&
-	note.value.cw == null &&
-	note.value.fileIds && note.value.fileIds.length === 0 &&
-	note.value.poll == null
-);
+const isRenote = isPureRenote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
@@ -249,11 +248,11 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
+const appearNote = computed(() => getAppearNote(note.value));
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
-const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value) : null);
+const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null);
 const isLong = shouldCollapsed(appearNote.value, urls.value ?? []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
 const isDeleted = ref(false);
@@ -263,6 +262,7 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
+const canPakuru = computed(() => tmsStore.reactiveState.enablePakuru.value || tmsStore.reactiveState.enableNumberquote.value);
 const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenote && (
 		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
@@ -385,7 +385,7 @@ function react(viaKeyboard = false): void {
 		}
 	} else {
 		blur();
-		reactionPicker.show(reactButton.value ?? null, reaction => {
+		reactionPicker.show(reactButton.value ?? null, note.value, reaction => {
 			sound.playMisskeySfx('reaction');
 
 			if (props.mock) {
@@ -418,6 +418,14 @@ function undoReact(targetNote: Misskey.entities.Note): void {
 	misskeyApi('notes/reactions/delete', {
 		noteId: targetNote.id,
 	});
+}
+
+function toggleReact() {
+	if (appearNote.value.myReaction == null) {
+		react();
+	} else {
+		undoReact(appearNote.value);
+	}
 }
 
 function onContextmenu(ev: MouseEvent): void {
@@ -703,15 +711,19 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .collapsedRenoteTargetText {
 	overflow: hidden;
-	flex-shrink: 1;
+	flex: 1;
+	min-width: 0;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-size: 90%;
 	opacity: 0.7;
+	padding: 2px 4px;
+	border-radius: 4px;
+	transition: background-color 0.2s ease;
 	cursor: pointer;
 
 	&:hover {
-		text-decoration: underline;
+		background-color: var(--X5);
 	}
 }
 
@@ -876,6 +888,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 		padding: 12px 26px 0 26px;
 	}
 
+	.collapsedRenoteTarget {
+		padding: 0 26px 12px;
+		margin-top: 4px;
+	}
+
 	.article {
 		padding: 24px 26px;
 	}
@@ -893,6 +910,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 	.renote {
 		padding: 10px 22px 0 22px;
+	}
+
+	.collapsedRenoteTarget {
+		padding: 0 22px 10px;
+		margin-top: 4px;
 	}
 
 	.article {

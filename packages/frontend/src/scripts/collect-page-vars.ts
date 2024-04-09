@@ -1,24 +1,24 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 interface StringPageVar {
-	name: string,
-	type: 'string',
-	value: string
+	name: string;
+	type: 'string';
+	value: string;
 }
 
 interface NumberPageVar {
-	name: string,
-	type: 'number',
-	value: number
+	name: string;
+	type: 'number';
+	value: number;
 }
 
 interface BooleanPageVar {
-	name: string,
-	type: 'boolean',
-	value: boolean
+	name: string;
+	type: 'boolean';
+	value: boolean;
 }
 
 type PageVar = StringPageVar | NumberPageVar | BooleanPageVar;

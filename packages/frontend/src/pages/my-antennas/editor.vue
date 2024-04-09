@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -61,13 +61,13 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	antenna: Misskey.entities.Antenna
+	antenna: Misskey.entities.Antenna;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'created'): void,
-	(ev: 'updated'): void,
-	(ev: 'deleted'): void,
+	(ev: 'created'): void;
+	(ev: 'updated'): void;
+	(ev: 'deleted'): void;
 }>();
 
 const name = ref<string>(props.antenna.name);

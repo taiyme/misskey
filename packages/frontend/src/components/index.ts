@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -82,6 +82,6 @@ declare module '@vue/runtime-core' {
 		MkFooterSpacer: typeof MkFooterSpacer;
 		MkStickyContainer: typeof MkStickyContainer;
 		MkLazy: typeof MkLazy;
-		TmsNoCache: typeof TmsNoCache,
+		TmsNoCache: typeof TmsNoCache;
 	}
 }

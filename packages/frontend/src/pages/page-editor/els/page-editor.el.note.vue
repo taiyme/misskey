@@ -1,14 +1,14 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-note"></i> {{ i18n.ts._pages.blocks.note }}</template>
 
-	<section style="padding: 0 16px 0 16px;">
+	<section style="padding: 16px;" class="_gaps_s">
 		<MkInput v-model="id">
 			<template #label>{{ i18n.ts._pages.blocks._note.id }}</template>
 			<template #caption>{{ i18n.ts._pages.blocks._note.idDescription }}</template>
@@ -34,11 +34,12 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	modelValue: any
+	modelValue: any;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
+	(ev: 'remove'): void;
 }>();
 
 const id = ref<any>(props.modelValue.note);

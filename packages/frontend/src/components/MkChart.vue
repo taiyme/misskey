@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
 import { onMounted, ref, shallowRef, watch, PropType } from 'vue';
+import * as Misskey from 'misskey-js';
 import { Chart } from 'chart.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
@@ -34,44 +35,22 @@ import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
 
-const props = defineProps({
-	src: {
-		type: String,
-		required: true,
-	},
-	args: {
-		type: Object,
-		required: false,
-	},
-	limit: {
-		type: Number,
-		required: false,
-		default: 90,
-	},
-	span: {
-		type: String as PropType<'hour' | 'day'>,
-		required: true,
-	},
-	detailed: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-	stacked: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-	bar: {
-		type: Boolean,
-		required: false,
-		default: false,
-	},
-	aspectRatio: {
-		type: Number,
-		required: false,
-		default: null,
-	},
+const props = withDefaults(defineProps<{
+	src: string;
+	args?: {
+		user?: Misskey.entities.UserLite | null;
+		host?: string | null;
+		withoutAll?: boolean | null;
+	};
+	limit?: number;
+	span: 'hour' | 'day';
+	detailed?: boolean;
+	stacked?: boolean;
+	bar?: boolean;
+	aspectRatio?: number | null;
+}>(), {
+	limit: 90,
+	aspectRatio: null,
 });
 
 const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
@@ -240,7 +219,7 @@ const render = () => {
 					},
 					external: externalTooltipHandler,
 					callbacks: {
-						label: (item) => chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString(),
+						label: (item) => `${item.dataset.label}: ${chartData?.bytes ? bytes(item.parsed.y * 1000, 1) : item.parsed.y.toString()}`,
 					},
 				},
 				zoom: props.detailed ? {

@@ -1993,6 +1993,10 @@ export interface Locale extends ILocale {
      */
     readonly "showNoteActionsOnlyHover": string;
     /**
+     * ノートのリアクション数を表示する
+     */
+    readonly "showReactionsCount": string;
+    /**
      * 履歴はありません
      */
     readonly "noHistory": string;
@@ -3981,6 +3985,10 @@ export interface Locale extends ILocale {
      */
     readonly "pleaseDonate": ParameterizedString<"host">;
     /**
+     * 対応するソースコードは{anchor}から利用可能です。
+     */
+    readonly "correspondingSourceIsAvailable": ParameterizedString<"anchor">;
+    /**
      * ロール
      */
     readonly "roles": string;
@@ -4180,6 +4188,18 @@ export interface Locale extends ILocale {
      * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
      */
     readonly "sensitiveWordsDescription2": string;
+    /**
+     * 禁止ワード
+     */
+    readonly "prohibitedWords": string;
+    /**
+     * 設定したワードが含まれるノートを投稿しようとした際、エラーとなるようにします。改行で区切って複数設定できます。
+     */
+    readonly "prohibitedWordsDescription": string;
+    /**
+     * スペースで区切るとAND指定になり、キーワードをスラッシュで囲むと正規表現になります。
+     */
+    readonly "prohibitedWordsDescription2": string;
     /**
      * 非表示ハッシュタグ
      */
@@ -4641,6 +4661,10 @@ export interface Locale extends ILocale {
      */
     readonly "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    readonly "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     readonly "fileAttachedOnly": string;
@@ -4672,6 +4696,34 @@ export interface Locale extends ILocale {
      * 外部サービス
      */
     readonly "externalServices": string;
+    /**
+     * ソースコード
+     */
+    readonly "sourceCode": string;
+    /**
+     * ソースコードはまだ提供されていません。この問題の修正について管理者に問い合わせてください。
+     */
+    readonly "sourceCodeIsNotYetProvided": string;
+    /**
+     * リポジトリURL
+     */
+    readonly "repositoryUrl": string;
+    /**
+     * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。Misskeyを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/misskey-dev/misskey と記入します。
+     */
+    readonly "repositoryUrlDescription": string;
+    /**
+     * リポジトリを公開していない場合、代わりにtarballを提供する必要があります。詳細は.config/example.ymlを参照してください。
+     */
+    readonly "repositoryUrlOrTarballRequired": string;
+    /**
+     * フィードバック
+     */
+    readonly "feedback": string;
+    /**
+     * フィードバックURL
+     */
+    readonly "feedbackUrl": string;
     /**
      * 運営者情報
      */
@@ -4813,6 +4865,14 @@ export interface Locale extends ILocale {
      */
     readonly "replaying": string;
     /**
+     * リプレイを終了
+     */
+    readonly "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    readonly "copyReplayData": string;
+    /**
      * ランキング
      */
     readonly "ranking": string;
@@ -4840,11 +4900,57 @@ export interface Locale extends ILocale {
      * スワイプしてタブを切り替える
      */
     readonly "enableHorizontalSwipe": string;
+    /**
+     * 読み込み中
+     */
+    readonly "loading": string;
+    /**
+     * やめる
+     */
+    readonly "surrender": string;
+    /**
+     * リトライ
+     */
+    readonly "gameRetry": string;
     readonly "_bubbleGame": {
         /**
          * 遊び方
          */
         readonly "howToPlay": string;
+        /**
+         * ホールド
+         */
+        readonly "hold": string;
+        readonly "_score": {
+            /**
+             * スコア
+             */
+            readonly "score": string;
+            /**
+             * 稼いだ金額
+             */
+            readonly "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            readonly "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            readonly "maxChain": string;
+            /**
+             * {yen}円
+             */
+            readonly "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            readonly "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            readonly "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         readonly "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -6341,6 +6447,10 @@ export interface Locale extends ILocale {
              */
             readonly "canPublicNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            readonly "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             readonly "canInvite": string;
@@ -6430,6 +6540,10 @@ export interface Locale extends ILocale {
             readonly "avatarDecorationLimit": string;
         };
         readonly "_condition": {
+            /**
+             * マニュアルロールにアサイン済み
+             */
+            readonly "roleAssignedTo": string;
             /**
              * ローカルユーザー
              */
@@ -6691,6 +6805,10 @@ export interface Locale extends ILocale {
          * ソースを表示
          */
         readonly "viewSource": string;
+        /**
+         * ログを表示
+         */
+        readonly "viewLog": string;
     };
     readonly "_preferencesBackups": {
         /**
@@ -6801,6 +6919,14 @@ export interface Locale extends ILocale {
          * ソースコード
          */
         readonly "source": string;
+        /**
+         * オリジナル
+         */
+        readonly "original": string;
+        /**
+         * {name}はオリジナルのMisskeyを改変したバージョンを使用しています。
+         */
+        readonly "thisIsModifiedVersion": ParameterizedString<"name">;
         /**
          * Misskeyを翻訳
          */
@@ -8509,6 +8635,10 @@ export interface Locale extends ILocale {
          * 説明
          */
         readonly "summary": string;
+        /**
+         * 非公開に設定するとプロフィールに表示されなくなりますが、URLを知っている人は引き続きアクセスできます。
+         */
+        readonly "visibilityDescription": string;
     };
     readonly "_pages": {
         /**
@@ -8792,6 +8922,10 @@ export interface Locale extends ILocale {
          */
         readonly "reactedBySomeUsers": ParameterizedString<"n">;
         /**
+         * {n}人がいいねしました
+         */
+        readonly "likedBySomeUsers": ParameterizedString<"n">;
+        /**
          * {n}人がリノートしました
          */
         readonly "renotedBySomeUsers": ParameterizedString<"n">;
@@ -8799,6 +8933,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         readonly "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        readonly "flushNotification": string;
         readonly "_types": {
             /**
              * すべて
@@ -9120,7 +9258,7 @@ export interface Locale extends ILocale {
          */
         readonly "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         readonly "updateUserNote": string;
         /**
@@ -9167,6 +9305,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         readonly "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        readonly "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -9603,6 +9745,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         readonly "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        readonly "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        readonly "useAvatarAsStone": string;
     };
     readonly "_offlineScreen": {
         /**
@@ -9615,6 +9765,10 @@ export interface Locale extends ILocale {
         readonly "header": string;
     };
     readonly "_tms": {
+        /**
+         * taiy
+         */
+        readonly "taiy": string;
         /**
          * taiyme
          */
@@ -9636,6 +9790,10 @@ export interface Locale extends ILocale {
          */
         readonly "poweredByTaiyme": ParameterizedString<"name">;
         /**
+         * {name}を支援
+         */
+        readonly "supportX": ParameterizedString<"name">;
+        /**
          * コミットハッシュ
          */
         readonly "commitHash": string;
@@ -9651,6 +9809,22 @@ export interface Locale extends ILocale {
          * センシティブなファイルを表示しています。
          */
         readonly "displayingSensitiveFiles": string;
+        /**
+         * パクる
+         */
+        readonly "pakuru": string;
+        /**
+         * 数字引用する
+         */
+        readonly "numberquote": string;
+        /**
+         * パクりました
+         */
+        readonly "didPakuru": string;
+        /**
+         * 数字引用しました
+         */
+        readonly "didNumberquote": string;
         readonly "_about": {
             /**
              * taiymeについて
@@ -9660,14 +9834,6 @@ export interface Locale extends ILocale {
              * taiymeは、Misskeyから派生したオープンソースのソフトウェアです。
              */
             readonly "description": string;
-            /**
-             * ソースコード
-             */
-            readonly "source": string;
-            /**
-             * 寄付する
-             */
-            readonly "donate": string;
             /**
              * プロジェクトメンバー
              */
@@ -9690,6 +9856,56 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            readonly "_superMenuDisplayMode": {
+                /**
+                 * 設定メニューの表示モード
+                 */
+                readonly "label": string;
+                /**
+                 * 主にスマートフォン・タブレットデバイス向けの設定です。
+                 */
+                readonly "caption": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * クラシック
+                 */
+                readonly "classic": string;
+                /**
+                 * リスト強制
+                 */
+                readonly "forceList": string;
+            };
+            readonly "_pakuru": {
+                /**
+                 * 「パクる」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。
+                 */
+                readonly "caption": string;
+                /**
+                 * 「パクる」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
+                 */
+                readonly "warning": string;
+            };
+            readonly "_numberquote": {
+                /**
+                 * 「数字引用」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。
+                 */
+                readonly "caption": string;
+                /**
+                 * 「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
+                 */
+                readonly "warning": string;
+            };
         };
         readonly "_flags": {
             /**
@@ -9821,6 +10037,12 @@ export interface Locale extends ILocale {
                     readonly "selectDescription": string;
                 };
             };
+        };
+        readonly "_admin": {
+            /**
+             * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。
+             */
+            readonly "repositoryUrlDescription": string;
         };
     };
 }

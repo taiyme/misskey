@@ -1,16 +1,22 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a
+	ref="rootEl"
+	:href="to"
+	:class="active ? activeClass : null"
+	@click.prevent="nav"
+	@contextmenu.prevent.stop="onContextmenu"
+>
 	<slot></slot>
 </a>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, shallowRef } from 'vue';
 import * as os from '@/os.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 import { url } from '@/config.js';
@@ -36,6 +42,14 @@ const active = computed(() => {
 	if (resolved.route.name == null) return false;
 	if (router.currentRoute.value.name == null) return false;
 	return resolved.route.name === router.currentRoute.value.name;
+});
+
+const rootEl = shallowRef<HTMLAnchorElement | null>(null);
+
+const getAnchorElement = (): HTMLAnchorElement | null => rootEl.value;
+
+defineExpose({
+	getAnchorElement,
 });
 
 function onContextmenu(ev) {

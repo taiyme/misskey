@@ -1,17 +1,18 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component
-	:is="props.member.href == null ? 'div' : 'a'"
-	:class="$style.root"
-	v-bind="props.member.href == null ? {} : { href: props.member.href, target: '_blank' }"
+<a
+	:class="[$style.root, '_noSelect']"
+	:href="props.member.href"
+	target="_blank"
+	rel="nofollow noopener"
 >
-	<img :class="$style.icon" :src="props.member.iconUrl" alt=""/>
+	<img :class="[$style.icon, '_ghost']" :src="props.member.iconUrl" alt=""/>
 	<span :class="$style.name">{{ props.member.name }}</span>
-</component>
+</a>
 </template>
 
 <script lang="ts" setup>

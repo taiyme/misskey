@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -60,7 +60,6 @@ async function create() {
 }
 
 const headerActions = computed(() => [{
-	asFullButton: true,
 	icon: 'ti ti-refresh',
 	text: i18n.ts.reload,
 	handler: () => {

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -41,7 +41,7 @@ import { isSupportShare } from '@/scripts/navigator.js';
 import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = defineProps<{
-	clipId: string,
+	clipId: string;
 }>();
 
 const clip = ref<Misskey.entities.Clip | null>(null);

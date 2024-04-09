@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -7,21 +7,22 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
+import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 
 interface PostFormAction {
-	title: string,
+	title: string;
 	handler: <T>(form: T, update: (key: unknown, value: unknown) => void) => void;
 }
 
 interface UserAction {
-	title: string,
+	title: string;
 	handler: (user: Misskey.entities.UserDetailed) => void;
 }
 
 interface NoteAction {
-	title: string,
+	title: string;
 	handler: (note: Misskey.entities.Note) => void;
 }
 
@@ -225,6 +226,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	advancedMfm: {
 		where: 'device',
 		default: true,
+	},
+	showReactionsCount: {
+		where: 'device',
+		default: false,
 	},
 	enableQuickAddMfmFunction: {
 		where: 'device',

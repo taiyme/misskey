@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -14,7 +14,7 @@ import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import XNotification from '@/components/MkNotification.vue';
 
-defineProps<{
+const props = defineProps<{
 	notification: Misskey.entities.Notification;
 }>();
 </script>

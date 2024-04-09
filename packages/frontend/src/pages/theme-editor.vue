@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -215,12 +215,10 @@ async function saveAs() {
 watch(theme, apply, { deep: true });
 
 const headerActions = computed(() => [{
-	asFullButton: true,
 	icon: 'ti ti-eye',
 	text: i18n.ts.preview,
 	handler: showPreview,
 }, {
-	asFullButton: true,
 	icon: 'ti ti-check',
 	text: i18n.ts.saveAs,
 	handler: saveAs,

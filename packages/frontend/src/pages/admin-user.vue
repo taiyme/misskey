@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -521,7 +521,7 @@ const headerTabs = computed(() => [{
 definePageMetadata(() => ({
 	title: user.value ? acct(user.value) : i18n.ts.userInfo,
 	icon: 'ti ti-user-exclamation',
-}))
+}));
 </script>
 
 <style lang="scss" scoped>

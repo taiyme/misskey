@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -18,10 +18,10 @@ import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {
-		faviconUrl?: string | null
-		name?: string | null
-		themeColor?: string | null
-	}
+		faviconUrl?: string | null;
+		name?: string | null;
+		themeColor?: string | null;
+	};
 }>();
 
 // if no instance data is given, this is for the local instance

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -22,8 +22,8 @@ import XPie from './pie.vue';
 import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
-	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>,
-	meta: Misskey.entities.ServerInfoResponse
+	connection: Misskey.ChannelConnection<Misskey.Channels['serverStats']>;
+	meta: Misskey.entities.ServerInfoResponse;
 }>();
 
 const usage = ref<number>(0);

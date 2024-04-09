@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -38,11 +38,11 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import { notificationTypes } from '@/const.js';
 import { i18n } from '@/i18n.js';
 
-type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
+type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 
 const emit = defineEmits<{
-	(ev: 'done', v: { excludeTypes: string[] }): void,
-	(ev: 'closed'): void,
+	(ev: 'done', v: { excludeTypes: string[]; }): void;
+	(ev: 'closed'): void;
 }>();
 
 const props = withDefaults(defineProps<{

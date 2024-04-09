@@ -1,11 +1,11 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" @remove="() => $emit('remove')">
+<XContainer :draggable="true" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
@@ -22,11 +22,12 @@ import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/scripts/autocomplete.js';
 
 const props = defineProps<{
-	modelValue: any
+	modelValue: any;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
+	(ev: 'remove'): void;
 }>();
 
 let autocomplete: Autocomplete;

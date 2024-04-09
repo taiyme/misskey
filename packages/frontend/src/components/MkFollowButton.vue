@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -46,16 +46,16 @@ import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
-	user: Misskey.entities.UserDetailed,
-	full?: boolean,
-	large?: boolean,
+	user: Misskey.entities.UserDetailed;
+	full?: boolean;
+	large?: boolean;
 }>(), {
 	full: false,
 	large: false,
 });
 
 const emit = defineEmits<{
-	(_: 'update:user', value: Misskey.entities.UserDetailed): void
+	(_: 'update:user', value: Misskey.entities.UserDetailed): void;
 }>();
 
 const isFollowing = ref(props.user.isFollowing);

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,9 +25,9 @@ import MkSignin from '@/components/MkSignin.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	autoSet?: boolean;
-	message?: string,
+	message?: string;
 }>(), {
 	autoSet: false,
 	message: '',

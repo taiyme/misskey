@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:buttonsLeft="buttonsLeft"
 	:buttonsRight="buttonsRight"
 	:contextmenu="contextmenu"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>
 		<template v-if="pageMetadata">
@@ -48,7 +48,7 @@ const props = defineProps<{
 	initialPath: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 

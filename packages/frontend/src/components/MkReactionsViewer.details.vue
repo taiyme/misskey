@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -27,7 +27,7 @@ import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { getEmojiName } from '@/scripts/emojilist.js';
 
-defineProps<{
+const props = defineProps<{
 	showing: boolean;
 	reaction: string;
 	users: any[]; // TODO
@@ -44,7 +44,7 @@ function getReactionName(reaction: string): string {
 	if (trimLocal.startsWith(':')) {
 		return trimLocal;
 	}
-	return getEmojiName(reaction) ?? reaction;
+	return getEmojiName(reaction);
 }
 </script>
 

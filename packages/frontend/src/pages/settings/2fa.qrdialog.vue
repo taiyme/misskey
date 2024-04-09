@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -114,7 +114,7 @@ import { signinRequired } from '@/account.js';
 
 const $i = signinRequired();
 
-defineProps<{
+const props = defineProps<{
 	twoFactorData: {
 		qr: string;
 		url: string;

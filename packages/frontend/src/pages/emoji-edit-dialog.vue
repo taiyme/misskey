@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:initialHeight="500"
 	:canResize="false"
 	@close="windowEl.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
 	<template v-else #header>New emoji</template>
@@ -95,7 +95,7 @@ import { selectFile } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = defineProps<{
-	emoji?: any,
+	emoji?: any;
 }>();
 
 const windowEl = ref<InstanceType<typeof MkWindow> | null>(null);
@@ -116,8 +116,8 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
 
 const emit = defineEmits<{
-	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
-	(ev: 'closed'): void
+	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any; }): void;
+	(ev: 'closed'): void;
 }>();
 
 async function changeImage(ev) {
@@ -135,7 +135,7 @@ async function addRole() {
 	const { canceled, result: role } = await os.select({
 		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
 	});
-	if (canceled) return;
+	if (canceled || role == null) return;
 
 	rolesThatCanBeUsedThisEmojiAsReaction.value.push(role);
 }

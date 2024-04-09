@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -29,7 +29,7 @@ import { useScrollPositionManager } from '@/nirax.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 import { mainRouter } from '@/router/main.js';
 
-defineProps<{
+const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();

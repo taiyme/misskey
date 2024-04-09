@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
 	min: number;
 	max: number;
 	step?: number;
-	textConverter?: (value: number) => string,
+	textConverter?: (value: number) => string;
 	showTicks?: boolean;
 	easing?: boolean;
 	continuousUpdate?: boolean;

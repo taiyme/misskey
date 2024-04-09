@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -17,6 +17,7 @@ import MkCodeInline from '@/components/MkCodeInline.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
+import TmsFormula from '@/components/TmsFormula.vue';
 import { host } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import { nyaize as doNyaize } from '@/scripts/nyaize.js';
@@ -407,6 +408,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						useOriginalSize: scale >= 2.5,
 						menu: props.enableEmojiMenu,
 						menuReaction: props.enableEmojiMenuReaction,
+						fallbackToImage: false,
 					})];
 				} else {
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -435,11 +437,19 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'mathInline': {
-				return [h('code', token.props.formula)];
+				return [h(TmsFormula, {
+					key: Math.random(),
+					formula: token.props.formula,
+					displayMode: false,
+				})];
 			}
 
 			case 'mathBlock': {
-				return [h('code', token.props.formula)];
+				return [h(TmsFormula, {
+					key: Math.random(),
+					formula: token.props.formula,
+					displayMode: true,
+				})];
 			}
 
 			case 'search': {

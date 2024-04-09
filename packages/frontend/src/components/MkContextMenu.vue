@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+		<MkMenu :items="items" :align="'left'" @close="emit('closed')"/>
 	</div>
 </Transition>
 </template>

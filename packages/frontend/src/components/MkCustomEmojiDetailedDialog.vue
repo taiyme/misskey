@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -64,7 +64,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkLink from '@/components/MkLink.vue';
 
 const props = defineProps<{
-	emoji: Misskey.entities.EmojiDetailed,
+	emoji: Misskey.entities.EmojiDetailed;
 }>();
 
 const emit = defineEmits<{

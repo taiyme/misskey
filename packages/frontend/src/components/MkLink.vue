@@ -1,11 +1,17 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
 <component
-	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel ?? 'nofollow noopener'" :target="target"
+	:is="self ? 'MkA' : 'a'"
+	ref="rootEl"
+	style="word-break: break-all;"
+	class="_link"
+	:[attr]="self ? url.substring(local.length) : url"
+	:rel="rel ?? 'nofollow noopener'"
+	:target="target"
 	:title="url"
 >
 	<slot></slot>
@@ -14,10 +20,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, shallowRef } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
+import MkA from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -29,13 +36,18 @@ const self = props.url.startsWith(local);
 const attr = self ? 'to' : 'href';
 const target = self ? null : '_blank';
 
-const el = ref<HTMLElement>();
+const rootEl = shallowRef<HTMLAnchorElement | InstanceType<typeof MkA> | null>(null);
+const anchorElement = computed(() => {
+	if (rootEl.value == null) return null;
+	if (rootEl.value instanceof HTMLAnchorElement) return rootEl.value;
+	return rootEl.value.getAnchorElement();
+});
 
-useTooltip(el, (showing) => {
+useTooltip(anchorElement, (showing) => {
 	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 		showing,
 		url: props.url,
-		source: el.value,
+		source: anchorElement.value,
 	}, {}, 'closed');
 });
 </script>

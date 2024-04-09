@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -50,7 +50,7 @@ const ready = async (): Promise<void> => {
 	await tmsFlaskStore.loaded;
 };
 
-const XMain = defineAsyncComponent(() => import('@/pages/tms/flags.main.vue'));
+const XMain = defineAsyncComponent(() => import('@/pages/tms/flags/index.main.vue'));
 const xMain = shallowRef<InstanceType<typeof XMain> | null>(null);
 
 definePageMetadata(() => ({

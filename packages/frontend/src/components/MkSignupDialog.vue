@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="500"
 	:height="600"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 

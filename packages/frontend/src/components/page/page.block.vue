@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -25,9 +25,9 @@ function getComponent(type: string) {
 	}
 }
 
-defineProps<{
-	block: Misskey.entities.PageBlock,
-	h: number,
-	page: Misskey.entities.Page,
+const props = defineProps<{
+	block: Misskey.entities.PageBlock;
+	h: number;
+	page: Misskey.entities.Page;
 }>();
 </script>

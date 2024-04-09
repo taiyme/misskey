@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -32,6 +32,9 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/scripts/sound.js';
+import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
+import { customEmojisMap } from '@/custom-emojis.js';
+import { getUnicodeEmoji } from '@/scripts/emojilist.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -48,12 +51,16 @@ const emit = defineEmits<{
 
 const buttonEl = shallowRef<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
+const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
+const emoji = computed(() => customEmojisMap.get(emojiName.value) ?? getUnicodeEmoji(props.reaction));
+
+const canToggle = computed(() => {
+	return !props.reaction.match(/@\w/) && $i && emoji.value && checkReactionPermissions($i, props.note, emoji.value);
+});
+const canGetInfo = computed(() => !props.reaction.match(/@\w/) && props.reaction.includes(':'));
 
 async function toggleReaction() {
 	if (!canToggle.value) return;
-
-	// TODO: その絵文字を使う権限があるかどうか確認
 
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
@@ -101,8 +108,8 @@ async function toggleReaction() {
 }
 
 async function menu(ev) {
-	if (!canToggle.value) return;
-	if (!props.reaction.includes(':')) return;
+	if (!canGetInfo.value) return;
+
 	os.popupMenu([{
 		text: i18n.ts.info,
 		icon: 'ti ti-info-circle',

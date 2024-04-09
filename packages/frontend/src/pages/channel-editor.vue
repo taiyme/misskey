@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -100,7 +100,7 @@ const bannerId = ref<string | null>(null);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
-const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const pinnedNotes = ref<{ id: Misskey.entities.Note['id']; }[]>([]);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -15,7 +15,7 @@ import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu.js';
 
-defineProps<{
+const props = defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;

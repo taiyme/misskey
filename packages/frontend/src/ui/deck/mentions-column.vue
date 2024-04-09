@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,7 +17,7 @@ import XColumn from './column.vue';
 import { Column } from './deck-store.js';
 import MkNotes from '@/components/MkNotes.vue';
 
-defineProps<{
+const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();

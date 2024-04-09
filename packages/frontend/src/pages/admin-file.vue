@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -90,7 +90,7 @@ const info = ref<Misskey.entities.AdminDriveShowFileResponse | null>(null);
 const isSensitive = ref<boolean>(false);
 
 const props = defineProps<{
-	fileId: string,
+	fileId: string;
 }>();
 
 async function fetch() {

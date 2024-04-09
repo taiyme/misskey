@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:okButtonDisabled="false"
 	:canClose="false"
 	@close="dialog?.close()"
-	@closed="$emit('closed')"
+	@closed="emit('closed')"
 	@ok="ok()"
 >
 	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
-	(ev: 'done', result: { name: string | null, permissions: string[] }): void;
+	(ev: 'done', result: { name: string | null; permissions: string[]; }): void;
 }>();
 
 const defaultPermissions = Misskey.permissions.filter(p => !p.startsWith('read:admin') && !p.startsWith('write:admin'));
