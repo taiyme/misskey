@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, readonly, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
+import { alert } from '@/os.js';
 import { tmsStore } from '@/tms/store.js';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -42,8 +43,33 @@ import MkSwitch from '@/components/MkSwitch.vue';
 
 //#region 即時変更
 const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDisplayMode'));
-const enablePakuru = computed(tmsStore.makeGetterSetter('enablePakuru'));
-const enableNumberquote = computed(tmsStore.makeGetterSetter('enableNumberquote'));
+//#endregion
+
+//#region 即時変更 (ダイアログ付き)
+const enablePakuru = computed({
+	get: () => tmsStore.reactiveState.enablePakuru.value,
+	set: async (newValue) => {
+		if (!enablePakuru.value && newValue) { // false -> true
+			await alert({
+				type: 'warning',
+				text: i18n.ts._tms._settings._pakuru.warning,
+			});
+		}
+		tmsStore.set('enablePakuru', newValue);
+	},
+});
+const enableNumberquote = computed({
+	get: () => tmsStore.reactiveState.enableNumberquote.value,
+	set: async (newValue) => {
+		if (!enableNumberquote.value && newValue) { // false -> true
+			await alert({
+				type: 'warning',
+				text: i18n.ts._tms._settings._numberquote.warning,
+			});
+		}
+		tmsStore.set('enableNumberquote', newValue);
+	},
+});
 //#endregion
 
 const edited = ref(false);

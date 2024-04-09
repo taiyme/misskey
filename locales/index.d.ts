@@ -9884,9 +9884,13 @@ export interface Locale extends ILocale {
                  */
                 readonly "label": string;
                 /**
-                 * リノートメニューに「パクる」を追加します。
+                 * リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。
                  */
                 readonly "caption": string;
+                /**
+                 * 「パクる」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
+                 */
+                readonly "warning": string;
             };
             readonly "_numberquote": {
                 /**
@@ -9894,9 +9898,13 @@ export interface Locale extends ILocale {
                  */
                 readonly "label": string;
                 /**
-                 * リノートメニューに「数字引用する」を追加します。
+                 * リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。
                  */
                 readonly "caption": string;
+                /**
+                 * 「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
+                 */
+                readonly "warning": string;
             };
         };
         readonly "_flags": {
