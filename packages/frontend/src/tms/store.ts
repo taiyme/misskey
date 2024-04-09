@@ -34,4 +34,12 @@ export const tmsStore = markRaw(new Storage('tmsMain', {
 		where: 'device',
 		default: false,
 	},
+	enableImanonashi: {
+		where: 'device',
+		default: false,
+	},
+	enableImanonashiConfirm: {
+		where: 'device',
+		default: false,
+	},
 }));

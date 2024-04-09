@@ -9997,6 +9997,18 @@ export interface Locale extends ILocale {
          * 数字引用しました
          */
         readonly "didNumberquote": string;
+        /**
+         * いまのなし
+         */
+        readonly "imanonashi": string;
+        /**
+         * いまのなしに成功しました
+         */
+        readonly "imanonashiSucceeded": string;
+        /**
+         * いまのなしに失敗しました
+         */
+        readonly "imanonashiFailed": string;
         readonly "_about": {
             /**
              * taiymeについて
@@ -10135,6 +10147,30 @@ export interface Locale extends ILocale {
                  * 「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
                  */
                 readonly "warning": string;
+            };
+            readonly "_imanonashi": {
+                /**
+                 * 「いまのなし」機能を有効にする
+                 */
+                readonly "label": string;
+                /**
+                 * 「いまのなし」と投稿すると、直近のノートを精査し、いまのなし自体とリノートを除外した一番最近のノートを削除します。
+                 */
+                readonly "caption": string;
+                /**
+                 * 一度投稿したものは完全に削除することができません。「いまのなし」を過信しないようにしましょう。
+                 */
+                readonly "warning": string;
+            };
+            readonly "_imanonashiConfirm": {
+                /**
+                 * ノートの削除を確認する
+                 */
+                readonly "label": string;
+                /**
+                 * 「いまのなし」でノートを削除するときに確認します。
+                 */
+                readonly "caption": string;
             };
         };
         readonly "_flags": {

@@ -53,6 +53,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</div>
 	</FormSection>
+	<FormSection>
+		<div class="_gaps">
+			<MkSwitch v-model="enableImanonashi">
+				<template #label>{{ i18n.ts._tms._settings._imanonashi.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._imanonashi.caption }}</template>
+			</MkSwitch>
+			<MkSwitch v-model="enableImanonashiConfirm">
+				<template #label>{{ i18n.ts._tms._settings._imanonashiConfirm.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._imanonashiConfirm.caption }}</template>
+			</MkSwitch>
+		</div>
+	</FormSection>
 </div>
 </template>
 
@@ -69,6 +81,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 //#region 即時変更
 const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDisplayMode'));
 const pullToRefreshAllReload = computed(tmsStore.makeGetterSetter('pullToRefreshAllReload'));
+const enableImanonashiConfirm = computed(tmsStore.makeGetterSetter('enableImanonashiConfirm'));
 //#endregion
 
 //#region 即時変更 (ダイアログ付き)
@@ -108,6 +121,18 @@ const enableNumberquote = computed({
 			});
 		}
 		tmsStore.set('enableNumberquote', newValue);
+	},
+});
+const enableImanonashi = computed({
+	get: () => tmsStore.reactiveState.enableImanonashi.value,
+	set: async (newValue) => {
+		if (!enableImanonashi.value && newValue) { // false -> true
+			await alert({
+				type: 'warning',
+				text: i18n.ts._tms._settings._imanonashi.warning,
+			});
+		}
+		tmsStore.set('enableImanonashi', newValue);
 	},
 });
 //#endregion

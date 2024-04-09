@@ -2663,6 +2663,9 @@ _tms:
   numberquote: "数字引用する"
   didPakuru: "パクりました"
   didNumberquote: "数字引用しました"
+  imanonashi: "いまのなし"
+  imanonashiSucceeded: "いまのなしに成功しました"
+  imanonashiFailed: "いまのなしに失敗しました"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
@@ -2702,6 +2705,13 @@ _tms:
       label: "「数字引用」機能を有効にする"
       caption: "リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。"
       warning: "「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。"
+    _imanonashi:
+      label: "「いまのなし」機能を有効にする"
+      caption: "「いまのなし」と投稿すると、直近のノートを精査し、いまのなし自体とリノートを除外した一番最近のノートを削除します。"
+      warning: "一度投稿したものは完全に削除することができません。「いまのなし」を過信しないようにしましょう。"
+    _imanonashiConfirm:
+      label: "ノートの削除を確認する"
+      caption: "「いまのなし」でノートを削除するときに確認します。"
   _flags:
     title: "taiyme実験的機能"
     description: "これらの機能はtaiymeで独自実装したものです。"

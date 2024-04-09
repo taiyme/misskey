@@ -129,6 +129,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { imanonashi } from '@/scripts/tms/imanonashi.js';
 
 const $i = signinRequired();
 
@@ -812,8 +813,15 @@ async function post(ev?: MouseEvent) {
 		token = storedAccounts.find(x => x.id === postAccount.value?.id)?.token;
 	}
 
+	const me = {
+		meId: postAccount.value != null ? postAccount.value.id : $i.id,
+		token,
+	} as const;
+
 	posting.value = true;
-	misskeyApi('notes/create', postData, token).then(() => {
+	misskeyApi('notes/create', postData, token).then(({ createdNote }) => {
+		imanonashi(createdNote, me);
+
 		if (props.freezeAfterPosted) {
 			posted.value = true;
 		} else {
