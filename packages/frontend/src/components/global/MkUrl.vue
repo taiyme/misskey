@@ -36,6 +36,7 @@ import { url as local } from '@/config.js';
 import * as os from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
+import { isEnabledUrlPreview } from '@/instance.js';
 import MkA from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
@@ -57,7 +58,7 @@ const anchorElement = computed(() => {
 	return rootEl.value.getAnchorElement();
 });
 
-if (props.showUrlPreview) {
+if (props.showUrlPreview && isEnabledUrlPreview.value) {
 	useTooltip(anchorElement, (showing) => {
 		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,

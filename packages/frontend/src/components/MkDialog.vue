@@ -169,7 +169,7 @@ function onKeydown(evt: KeyboardEvent) {
 }
 
 function onInputKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Enter') {
+	if (evt.key === 'Enter' && okButtonDisabledReason.value === null) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		ok();

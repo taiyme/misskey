@@ -18,6 +18,7 @@ type PureRenote = OverrideProperties<Misskey.entities.Note, {
 export const isPureRenote = (note: Misskey.entities.Note): note is PureRenote => {
 	if (note.renote == null) return false;
 
+	if (note.reply != null) return false; // it's quoted with reply
 	if (note.text != null) return false; // it's quoted with text
 	if (note.cw != null) return false; // it's quoted with cw
 	if (note.fileIds != null && note.fileIds.length !== 0) return false; // it's quoted with files

@@ -24,6 +24,7 @@ import { computed, defineAsyncComponent, shallowRef } from 'vue';
 import { url as local } from '@/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import * as os from '@/os.js';
+import { isEnabledUrlPreview } from '@/instance.js';
 import MkA from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
@@ -43,13 +44,15 @@ const anchorElement = computed(() => {
 	return rootEl.value.getAnchorElement();
 });
 
-useTooltip(anchorElement, (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: anchorElement.value,
-	}, {}, 'closed');
-});
+if (isEnabledUrlPreview.value) {
+	useTooltip(anchorElement, (showing) => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: anchorElement.value,
+		}, {}, 'closed');
+	});
+}
 </script>
 
 <style lang="scss" module>
