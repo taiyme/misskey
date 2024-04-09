@@ -39,6 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</template>
 		</MkSelect>
+		<div v-if="note" :class="$style.note">
+			<div :class="$style.noteInner">
+				<TmsMockNoteSimple :note="note"/>
+			</div>
+		</div>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
 			<MkButton v-if="showOkButton" data-cy-modal-dialog-ok inline primary rounded :autofocus="!input && !select" :disabled="okButtonDisabledReason" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" data-cy-modal-dialog-cancel inline rounded @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
@@ -52,10 +57,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
+import TmsMockNoteSimple from '@/components/TmsMockNoteSimple.vue';
 import { i18n } from '@/i18n.js';
 
 type Input = {
@@ -83,6 +90,7 @@ const props = withDefaults(defineProps<{
 	text?: string;
 	input?: Input;
 	select?: Select;
+	note?: Misskey.entities.Note;
 	icon?: string;
 	actions?: {
 		text: string;
@@ -231,6 +239,22 @@ onBeforeUnmount(() => {
 
 .text {
 	margin: 16px 0 0 0;
+}
+
+.note {
+	margin: 16px auto 0 auto;
+	box-sizing: border-box;
+	max-width: 320px;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+	border: 1px solid var(--divider);
+	border-radius: 8px;
+	padding: 8px;
+	text-align: start;
+}
+
+.noteInner {
+	opacity: 0.8;
 }
 
 .buttons {

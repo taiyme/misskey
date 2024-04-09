@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
@@ -41,7 +41,7 @@ const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const isLong = shouldCollapsed(props.note, []);
+const isLong = inject<boolean>('disableNoteCollapsed') ? false : shouldCollapsed(props.note, []);
 
 const collapsed = ref(isLong);
 </script>

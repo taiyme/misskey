@@ -230,6 +230,7 @@ export function confirm(props: {
 	text?: string;
 	okText?: string;
 	cancelText?: string;
+	note?: Misskey.entities.Note;
 }): Promise<{ canceled: boolean; }> {
 	return new Promise(resolve => {
 		popup(MkDialog, {
