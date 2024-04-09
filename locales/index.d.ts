@@ -1617,6 +1617,10 @@ export interface Locale extends ILocale {
      */
     readonly "antennaExcludeKeywords": string;
     /**
+     * Botアカウントを除外
+     */
+    readonly "antennaExcludeBots": string;
+    /**
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります
      */
     readonly "antennaKeywordsDescription": string;
@@ -4912,6 +4916,26 @@ export interface Locale extends ILocale {
      * リトライ
      */
     readonly "gameRetry": string;
+    /**
+     * 使用しない場合は空欄にしてください
+     */
+    readonly "notUsePleaseLeaveBlank": string;
+    /**
+     * ワンタイムパスワードを使う
+     */
+    readonly "useTotp": string;
+    /**
+     * バックアップコードを使う
+     */
+    readonly "useBackupCode": string;
+    /**
+     * アプリを起動
+     */
+    readonly "launchApp": string;
+    /**
+     * 動画・音声の再生にブラウザのUIを使用する
+     */
+    readonly "useNativeUIForVideoAudioPlayer": string;
     readonly "_bubbleGame": {
         /**
          * 遊び方
@@ -7526,13 +7550,9 @@ export interface Locale extends ILocale {
          */
         readonly "step1": ParameterizedString<"a" | "b">;
         /**
-         * 次に、表示されているQRコードをアプリでスキャンします。
+         * 次に、表示されているQRコードをアプリでスキャンするか、ボタンをクリックして端末上でアプリを開きます。
          */
         readonly "step2": string;
-        /**
-         * QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。
-         */
-        readonly "step2Click": string;
         /**
          * デスクトップアプリを使用する場合は次のURIを入力します
          */
@@ -7625,6 +7645,10 @@ export interface Locale extends ILocale {
          * バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。
          */
         readonly "backupCodesExhaustedWarning": string;
+        /**
+         * 詳細なガイドはこちら
+         */
+        readonly "moreDetailedGuideHere": string;
     };
     readonly "_permissions": {
         /**
@@ -8811,6 +8835,14 @@ export interface Locale extends ILocale {
              */
             readonly "button": string;
             /**
+             * 動的ブロック
+             */
+            readonly "dynamic": string;
+            /**
+             * このブロックは廃止されています。今後は{play}を利用してください。
+             */
+            readonly "dynamicDescription": ParameterizedString<"play">;
+            /**
              * ノート埋め込み
              */
             readonly "note": string;
@@ -9763,6 +9795,74 @@ export interface Locale extends ILocale {
          * サーバーに接続できません
          */
         readonly "header": string;
+    };
+    readonly "_urlPreviewSetting": {
+        /**
+         * URLプレビューの設定
+         */
+        readonly "title": string;
+        /**
+         * URLプレビューを有効にする
+         */
+        readonly "enable": string;
+        /**
+         * プレビュー取得時のタイムアウト(ms)
+         */
+        readonly "timeout": string;
+        /**
+         * プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。
+         */
+        readonly "timeoutDescription": string;
+        /**
+         * Content-Lengthの最大値(byte)
+         */
+        readonly "maximumContentLength": string;
+        /**
+         * Content-Lengthがこの値を超えた場合、プレビューは生成されません。
+         */
+        readonly "maximumContentLengthDescription": string;
+        /**
+         * Content-Lengthが取得できた場合のみプレビューを生成
+         */
+        readonly "requireContentLength": string;
+        /**
+         * 相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。
+         */
+        readonly "requireContentLengthDescription": string;
+        /**
+         * User-Agent
+         */
+        readonly "userAgent": string;
+        /**
+         * プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。
+         */
+        readonly "userAgentDescription": string;
+        /**
+         * プレビューを生成するプロキシのエンドポイント
+         */
+        readonly "summaryProxy": string;
+        /**
+         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
+         */
+        readonly "summaryProxyDescription": string;
+        /**
+         * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
+         */
+        readonly "summaryProxyDescription2": string;
+    };
+    readonly "_mediaControls": {
+        /**
+         * ピクチャインピクチャ
+         */
+        readonly "pip": string;
+        /**
+         * 再生速度
+         */
+        readonly "playbackRate": string;
+        /**
+         * ループ再生
+         */
+        readonly "loop": string;
     };
     readonly "_tms": {
         /**
