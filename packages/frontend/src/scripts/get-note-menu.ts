@@ -20,6 +20,7 @@ import { clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { parseErrorMessage } from '@/scripts/tms/error.js';
 import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
 import { numberquote } from '@/scripts/tms/numberquote.js';
 import { pakuru } from '@/scripts/tms/pakuru.js';
@@ -138,6 +139,7 @@ export function getNoteMenu(props: {
 		os.confirm({
 			type: 'warning',
 			text: i18n.ts.noteDeleteConfirm,
+			note: appearNote,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -155,6 +157,7 @@ export function getNoteMenu(props: {
 		os.confirm({
 			type: 'warning',
 			text: i18n.ts.deleteAndEditConfirm,
+			note: appearNote,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 
@@ -570,7 +573,7 @@ export function getRenoteMenu(props: {
 				pakuru(appearNote).then(() => tooltip()).catch((err) => {
 					os.alert({
 						type: 'error',
-						text: err.message + '\n' + err.id,
+						text: parseErrorMessage(err),
 					});
 				});
 			},
@@ -593,7 +596,7 @@ export function getRenoteMenu(props: {
 				numberquote(appearNote).then(() => tooltip()).catch((err) => {
 					os.alert({
 						type: 'error',
-						text: err.message + '\n' + err.id,
+						text: parseErrorMessage(err),
 					});
 				});
 			},

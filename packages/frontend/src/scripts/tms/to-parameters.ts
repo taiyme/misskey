@@ -11,27 +11,35 @@ import { defaultStore } from '@/store.js';
 import { unique } from '@/scripts/array.js';
 import { deepClone } from '@/scripts/clone.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { TmsError } from '@/scripts/tms/error.js';
 import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
 
-export class ParametersError extends Error {
-	public readonly message: string;
-	public readonly code: string;
-	public readonly id: string;
-	public readonly kind: string;
-
-	constructor(error: {
-		readonly message: string;
-		readonly code: string;
-		readonly id: string;
-		readonly kind: string;
-	}) {
-		super(`${error.message} (kind: ${error.kind})`);
-		this.message = `${error.message} (kind: ${error.kind})`;
-		this.code = error.code;
-		this.id = error.id;
-		this.kind = error.kind;
-	}
-}
+const errors = {
+	meIdIsRequired: {
+		message: 'meId is required.',
+		code: 'MEID_IS_REQUIRED',
+		id: '6024ed6b-9ab0-4905-8cac-36f5c75aea59',
+		kind: 'toParameters',
+	},
+	tokenIsRequired: {
+		message: 'token is required.',
+		code: 'TOKEN_IS_REQUIRED',
+		id: '34825d40-8c57-43b8-ac75-04a7bb9bd56d',
+		kind: 'toParameters',
+	},
+	noSuchNote: {
+		message: 'No such note.',
+		code: 'NO_SUCH_NOTE',
+		id: 'c756e6b2-b56c-45b6-8978-7d178fb3862e',
+		kind: 'toParameters',
+	},
+	fileUploadFailed: {
+		message: 'File upload failed.',
+		code: 'FILE_UPLOAD_FAILED',
+		id: '1de1dd90-03c0-4bd0-8258-9a1aefb9cd94',
+		kind: 'toParameters',
+	},
+} as const;
 
 export type NoteEntity = Misskey.entities.Note;
 export type NoteEntityOrId = NoteEntity | string;
@@ -72,22 +80,12 @@ export const toParameters = async (noteEntityOrId: NoteEntityOrId, fromId?: stri
 const toMeEntity = async (fromId?: string | null): Promise<MeEntity> => {
 	const meId = fromId ?? $i?.id ?? null;
 	if (meId == null) {
-		throw new ParametersError({
-			message: 'meId is required.',
-			code: 'MEID_IS_REQUIRED',
-			id: '6024ed6b-9ab0-4905-8cac-36f5c75aea59',
-			kind: 'tms/toMeEntity',
-		});
+		throw new TmsError(errors.meIdIsRequired);
 	}
 
 	const token = (await getAccounts()).find(({ id }) => id === meId)?.token ?? null;
 	if (token == null) {
-		throw new ParametersError({
-			message: 'token is required.',
-			code: 'TOKEN_IS_REQUIRED',
-			id: '34825d40-8c57-43b8-ac75-04a7bb9bd56d',
-			kind: 'tms/toMeEntity',
-		});
+		throw new TmsError(errors.tokenIsRequired);
 	}
 
 	return { meId, token } as const satisfies MeEntity;
@@ -97,12 +95,7 @@ const toNoteEntity = async (noteEntityOrId: NoteEntityOrId, { token }: MeEntity)
 	if (typeof noteEntityOrId === 'string') {
 		const fetchedNote = await misskeyApi('notes/show', { noteId: noteEntityOrId }, token).catch(() => null);
 		if (fetchedNote == null) {
-			throw new ParametersError({
-				message: 'No such note.',
-				code: 'NO_SUCH_NOTE',
-				id: 'c756e6b2-b56c-45b6-8978-7d178fb3862e',
-				kind: 'tms/toNoteEntity',
-			});
+			throw new TmsError(errors.noSuchNote);
 		}
 		const appearNote = getAppearNote(fetchedNote);
 		return appearNote;
@@ -163,12 +156,7 @@ const makeFileIds = async ({ files, fileIds, userId }: NoteEntity, { meId, token
 	try {
 		return await Promise.all(promises).then(x => x.map(({ id }) => id));
 	} catch {
-		throw new ParametersError({
-			message: 'File upload failed.',
-			code: 'FILE_UPLOAD_FAILED',
-			id: '1de1dd90-03c0-4bd0-8258-9a1aefb9cd94',
-			kind: 'tms/makeFileIds',
-		});
+		throw new TmsError(errors.fileUploadFailed);
 	}
 };
 
