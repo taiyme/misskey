@@ -23,18 +23,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, watch } from 'vue';
+import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
-import { lookupNote } from '@/scripts/lookup-note';
-import { lookupFile } from '@/scripts/lookup-file';
-import { lookupInstance } from '@/scripts/lookup-instance';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -42,7 +40,7 @@ const router = useRouter();
 
 const indexInfo = {
 	title: i18n.ts.controlPanel,
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	hideHeader: true,
 };
 
@@ -77,59 +75,59 @@ const menuDef = $computed(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
 		type: 'button',
-		icon: 'ti ti-search',
+		icon: 'fas fa-search',
 		text: i18n.ts.lookup,
 		action: lookup,
 	}, ...(instance.disableRegistration ? [{
 		type: 'button',
-		icon: 'ti ti-user',
+		icon: 'fas fa-user',
 		text: i18n.ts.invite,
 		action: invite,
 	}] : [])],
 }, {
 	title: i18n.ts.administration,
 	items: [{
-		icon: 'ti ti-dashboard',
+		icon: 'fas fa-tachometer-alt',
 		text: i18n.ts.dashboard,
 		to: '/admin/overview',
 		active: currentPage?.route.name === 'overview',
 	}, {
-		icon: 'ti ti-users',
+		icon: 'fas fa-users',
 		text: i18n.ts.users,
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
 	}, {
-		icon: 'ti ti-mood-happy',
+		icon: 'fas fa-laugh',
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage?.route.name === 'emojis',
 	}, {
-		icon: 'ti ti-whirl',
+		icon: 'fas fa-globe',
 		text: i18n.ts.federation,
 		to: '/about#federation',
 		active: currentPage?.route.name === 'federation',
 	}, {
-		icon: 'ti ti-clock-play',
+		icon: 'fas fa-clipboard-list',
 		text: i18n.ts.jobQueue,
 		to: '/admin/queue',
 		active: currentPage?.route.name === 'queue',
 	}, {
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		text: i18n.ts.files,
 		to: '/admin/files',
 		active: currentPage?.route.name === 'files',
 	}, {
-		icon: 'ti ti-speakerphone',
+		icon: 'fas fa-broadcast-tower',
 		text: i18n.ts.announcements,
 		to: '/admin/announcements',
 		active: currentPage?.route.name === 'announcements',
 	}, {
-		icon: 'ti ti-ad',
+		icon: 'fas fa-audio-description',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
 		active: currentPage?.route.name === 'ads',
 	}, {
-		icon: 'ti ti-exclamation-circle',
+		icon: 'fas fa-exclamation-circle',
 		text: i18n.ts.abuseReports,
 		to: '/admin/abuses',
 		active: currentPage?.route.name === 'abuses',
@@ -137,47 +135,47 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.settings,
 	items: [{
-		icon: 'ti ti-settings',
+		icon: 'fas fa-cog',
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
 	}, {
-		icon: 'ti ti-mail',
+		icon: 'fas fa-envelope',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
 		active: currentPage?.route.name === 'email-settings',
 	}, {
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		text: i18n.ts.objectStorage,
 		to: '/admin/object-storage',
 		active: currentPage?.route.name === 'object-storage',
 	}, {
-		icon: 'ti ti-lock',
+		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/admin/security',
 		active: currentPage?.route.name === 'security',
 	}, {
-		icon: 'ti ti-planet',
+		icon: 'fas fa-globe',
 		text: i18n.ts.relays,
 		to: '/admin/relays',
 		active: currentPage?.route.name === 'relays',
 	}, {
-		icon: 'ti ti-share',
+		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/admin/integrations',
 		active: currentPage?.route.name === 'integrations',
 	}, {
-		icon: 'ti ti-ban',
+		icon: 'fas fa-ban',
 		text: i18n.ts.instanceBlocking,
 		to: '/admin/instance-block',
 		active: currentPage?.route.name === 'instance-block',
 	}, {
-		icon: 'ti ti-ghost',
+		icon: 'fas fa-ghost',
 		text: i18n.ts.proxyAccount,
 		to: '/admin/proxy-account',
 		active: currentPage?.route.name === 'proxy-account',
 	}, {
-		icon: 'ti ti-adjustments',
+		icon: 'fas fa-cogs',
 		text: i18n.ts.other,
 		to: '/admin/other-settings',
 		active: currentPage?.route.name === 'other-settings',
@@ -185,7 +183,7 @@ const menuDef = $computed(() => [{
 }, {
 	title: i18n.ts.info,
 	items: [{
-		icon: 'ti ti-database',
+		icon: 'fas fa-database',
 		text: i18n.ts.database,
 		to: '/admin/database',
 		active: currentPage?.route.name === 'database',
@@ -236,27 +234,27 @@ const invite = () => {
 const lookup = (ev) => {
 	os.popupMenu([{
 		text: i18n.ts.user,
-		icon: 'ti ti-user',
+		icon: 'fas fa-user',
 		action: () => {
 			lookupUser();
 		},
 	}, {
 		text: i18n.ts.note,
-		icon: 'ti ti-pencil',
+		icon: 'fas fa-pencil-alt',
 		action: () => {
-			lookupNote();
+			alert('TODO');
 		},
 	}, {
 		text: i18n.ts.file,
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		action: () => {
-			lookupFile();
+			alert('TODO');
 		},
 	}, {
 		text: i18n.ts.instance,
-		icon: 'ti ti-planet',
+		icon: 'fas fa-globe',
 		action: () => {
-			lookupInstance();
+			alert('TODO');
 		},
 	}], ev.currentTarget ?? ev.target);
 };

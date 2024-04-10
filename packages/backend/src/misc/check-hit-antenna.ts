@@ -1,7 +1,7 @@
 import { Antenna } from '@/models/entities/antenna.js';
 import { Note } from '@/models/entities/note.js';
 import { User } from '@/models/entities/user.js';
-import { UserListJoinings, UserGroupJoinings, Blockings, Followings } from '@/models/index.js';
+import { UserListJoinings, UserGroupJoinings, Blockings } from '@/models/index.js';
 import { getFullApAccount } from './convert-host.js';
 import * as Acct from '@/misc/acct.js';
 import { Packed } from './schema.js';
@@ -11,36 +11,26 @@ const blockingCache = new Cache<User['id'][]>(1000 * 60 * 5);
 
 // NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
-export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
-	if (note.visibility === 'specified') {
-		if (note.userId !== antenna.userId) {
-			if (note.visibleUserIds == null) return false;
-			if (!note.visibleUserIds.includes(antenna.userId)) return false;
-		}
-	}
-
-	if (note.visibility === 'followers') {
-		if (note.userId !== antenna.userId) {
-			const isFollowing = await Followings.count({
-				where: {
-					followerId: antenna.userId,
-					followeeId: note.userId,
-				},
-				take: 1,
-			}).then(n => n > 0);
-	
-			if (!isFollowing) return false;
-		}
-	}
+/**
+ * noteUserFollowers / antennaUserFollowing はどちらか一方が指定されていればよい
+ */
+export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }, noteUserFollowers?: User['id'][], antennaUserFollowing?: User['id'][]): Promise<boolean> {
+	if (note.visibility === 'specified') return false;
 
 	// アンテナ作成者がノート作成者にブロックされていたらスキップ
 	const blockings = await blockingCache.fetch(noteUser.id, () => Blockings.findBy({ blockerId: noteUser.id }).then(res => res.map(x => x.blockeeId)));
-	if (blockings.includes(antenna.userId)) return false;
+	if (blockings.some(blocking => blocking === antenna.userId)) return false;
+
+	if (note.visibility === 'followers') {
+		if (noteUserFollowers && !noteUserFollowers.includes(antenna.userId)) return false;
+		if (antennaUserFollowing && !antennaUserFollowing.includes(note.userId)) return false;
+	}
 
 	if (!antenna.withReplies && note.replyId != null) return false;
 
 	if (antenna.src === 'home') {
-		// TODO
+		if (noteUserFollowers && !noteUserFollowers.includes(antenna.userId)) return false;
+		if (antennaUserFollowing && !antennaUserFollowing.includes(note.userId)) return false;
 	} else if (antenna.src === 'list') {
 		const listUsers = (await UserListJoinings.findBy({
 			userListId: antenna.userListId!,
@@ -69,15 +59,13 @@ export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'No
 		.filter(xs => xs.length > 0);
 
 	if (keywords.length > 0) {
-		if (note.text == null && note.cw == null) return false;
-
-		const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+		if (note.text == null) return false;
 
 		const matched = keywords.some(and =>
 			and.every(keyword =>
 				antenna.caseSensitive
-					? _text.includes(keyword)
-					: _text.toLowerCase().includes(keyword.toLowerCase())
+					? note.text!.includes(keyword)
+					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
 
 		if (!matched) return false;
@@ -89,15 +77,13 @@ export async function checkHitAntenna(antenna: Antenna, note: (Note | Packed<'No
 		.filter(xs => xs.length > 0);
 
 	if (excludeKeywords.length > 0) {
-		if (note.text == null && note.cw == null) return false;
-
-		const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+		if (note.text == null) return false;
 
 		const matched = excludeKeywords.some(and =>
 			and.every(keyword =>
 				antenna.caseSensitive
-					? _text.includes(keyword)
-					: _text.toLowerCase().includes(keyword.toLowerCase())
+					? note.text!.includes(keyword)
+					: note.text!.toLowerCase().includes(keyword.toLowerCase())
 			));
 
 		if (matched) return false;

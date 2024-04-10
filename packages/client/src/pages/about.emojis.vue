@@ -2,12 +2,12 @@
 <div class="driuhtrh">
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="$ts.search">
-			<template #prefix><i class="ti ti-search"></i></template>
+			<template #prefix><i class="fas fa-search"></i></template>
 		</MkInput>
 
 		<!-- たくさんあると邪魔
 		<div class="tags">
-			<span class="tag _button" v-for="tag in tags" :key="tag" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
+			<span class="tag _button" v-for="tag in tags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
 		</div>
 		-->
 	</div>
@@ -29,13 +29,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkTab from '@/components/MkTab.vue';
+import * as os from '@/os';
 import { emojiCategories, emojiTags } from '@/instance';
 
 export default defineComponent({

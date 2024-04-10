@@ -18,9 +18,12 @@
 								<MkA v-user-preview="req.follower.id" class="name" :to="userPage(req.follower)"><MkUserName :user="req.follower"/></MkA>
 								<p class="acct">@{{ acct(req.follower) }}</p>
 							</div>
-							<div class="commands">
-								<MkButton class="command" rounded primary @click="accept(req.follower)"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
-								<MkButton class="command" rounded danger @click="reject(req.follower)"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+							<div v-if="req.follower.description" class="description" :title="req.follower.description">
+								<Mfm :text="req.follower.description" :is-note="false" :author="req.follower" :i="$i" :custom-emojis="req.follower.emojis" :plain="true" :nowrap="true"/>
+							</div>
+							<div class="actions">
+								<button class="_button" @click="accept(req.follower)"><i class="fas fa-check"></i></button>
+								<button class="_button" @click="reject(req.follower)"><i class="fas fa-times"></i></button>
 							</div>
 						</div>
 					</div>
@@ -32,37 +35,39 @@
 </template>
 
 <script lang="ts" setup>
-import { shallowRef, computed } from 'vue';
-import { User } from 'misskey-js/built/entities';
+import { ref, computed } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkButton from '@/components/MkButton.vue';
 import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
+const paginationComponent = ref<InstanceType<typeof MkPagination>>();
 
 const pagination = {
 	endpoint: 'following/requests/list' as const,
 	limit: 10,
 };
 
-const accept = (user: User): void => {
+function accept(user) {
 	os.api('following/requests/accept', { userId: user.id }).then(() => {
-		paginationComponent.value?.reload();
+		paginationComponent.value.reload();
 	});
-};
+}
 
-const reject = (user: User): void => {
+function reject(user) {
 	os.api('following/requests/reject', { userId: user.id }).then(() => {
-		paginationComponent.value?.reload();
+		paginationComponent.value.reload();
 	});
-};
+}
+
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.followRequests,
-	icon: 'ti ti-user-plus',
+	icon: 'fas fa-user-clock',
 })));
 </script>
 
@@ -85,11 +90,13 @@ definePageMetadata(computed(() => ({
 			display: flex;
 			width: calc(100% - 54px);
 			position: relative;
-			flex-wrap: wrap;
-			gap: 8px;
 
 			> .name {
-				flex: 1 1 50%;
+				width: 45%;
+
+				@media (max-width: 500px) {
+					width: 100%;
+				}
 
 				> .name,
 				> .acct {
@@ -127,11 +134,6 @@ definePageMetadata(computed(() => ({
 				@media (max-width: 500px) {
 					display: none;
 				}
-			}
-
-			> .commands {
-				display: flex;
-				gap: 8px;
 			}
 
 			> .actions {

@@ -1,7 +1,7 @@
 <template>
 <div class="wbrkwale">
 	<MkLoading v-if="fetching"/>
-	<TransitionGroup v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
+	<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="instances">
 		<MkA v-for="(instance, i) in instances" :key="instance.id" :to="`/instance-info/${instance.host}`" class="instance">
 			<img v-if="instance.iconUrl" :src="instance.iconUrl" alt=""/>
 			<div class="body">
@@ -10,12 +10,12 @@
 			</div>
 			<MkMiniChart class="chart" :src="charts[i].requests.received"/>
 		</MkA>
-	</TransitionGroup>
+	</transition-group>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';

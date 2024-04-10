@@ -13,7 +13,7 @@
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_content grwlizim owned">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_gap" :channel="channel"/>
 			</MkPagination>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, defineComponent, inject } from 'vue';
 import MkChannelPreview from '@/components/MkChannelPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -53,7 +53,7 @@ function create() {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
@@ -61,19 +61,19 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts._channel.featured,
-	icon: 'ti ti-comet',
+	icon: 'fas fa-fire-alt',
 }, {
 	key: 'following',
 	title: i18n.ts._channel.following,
-	icon: 'ti ti-heart',
+	icon: 'fas fa-heart',
 }, {
 	key: 'owned',
 	title: i18n.ts._channel.owned,
-	icon: 'ti ti-edit',
+	icon: 'fas fa-edit',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.channel,
-	icon: 'ti ti-device-tv',
+	icon: 'fas fa-satellite-dish',
 })));
 </script>

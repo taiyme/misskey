@@ -9,7 +9,7 @@
 		</div>
 
 		<div v-else-if="tab === 'my'" class="rknalgpo my">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkButton class="new" @click="create()"><i class="fas fa-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="myPagesPagination">
 				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -55,7 +55,7 @@ function create() {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.create,
 	handler: create,
 }]);
@@ -63,20 +63,20 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts._pages.featured,
-	icon: 'ti ti-flare',
+	icon: 'fas fa-fire-alt',
 }, {
 	key: 'my',
 	title: i18n.ts._pages.my,
-	icon: 'ti ti-edit',
+	icon: 'fas fa-edit',
 }, {
 	key: 'liked',
 	title: i18n.ts._pages.liked,
-	icon: 'ti ti-heart',
+	icon: 'fas fa-heart',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.pages,
-	icon: 'ti ti-note',
+	icon: 'fas fa-sticky-note',
 })));
 </script>
 

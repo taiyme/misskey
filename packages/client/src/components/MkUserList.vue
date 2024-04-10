@@ -19,18 +19,15 @@
 import { ref } from 'vue';
 import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 
-defineProps<{
+const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 }>();
 
 const pagingComponent = ref<InstanceType<typeof MkPagination>>();
-
-defineExpose({
-	pagingComponent,
-});
 </script>
 
 <style lang="scss" scoped>

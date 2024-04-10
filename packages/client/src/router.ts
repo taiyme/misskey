@@ -3,6 +3,7 @@ import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
+import { ui } from '@/config';
 
 const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loader: loader,
@@ -177,10 +178,6 @@ export const routes = [{
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
 	}, {
-		path: '/taiyme-services',
-		name: 'taiyme-services',
-		component: page(() => import('./pages/settings/taiyme-services.vue')),
-	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],
@@ -216,8 +213,6 @@ export const routes = [{
 	query: {
 		q: 'query',
 		channel: 'channel',
-		type: 'type',
-		origin: 'origin',
 	},
 }, {
 	path: '/authorize-follow',
@@ -429,14 +424,6 @@ export const routes = [{
 }, {
 	path: '/my/clips',
 	component: page(() => import('./pages/my-clips/index.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/groups',
-	component: page(() => import('./pages/my-groups/index.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/groups/:groupId',
-	component: page(() => import('./pages/my-groups/group.vue')),
 	loginRequired: true,
 }, {
 	path: '/my/antennas/create',

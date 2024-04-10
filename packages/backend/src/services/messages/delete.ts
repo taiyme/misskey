@@ -22,7 +22,7 @@ async function postDeleteMessage(message: MessagingMessage) {
 
 		if (Users.isLocalUser(user) && Users.isRemoteUser(recipient)) {
 			const activity = renderActivity(renderDelete(renderTombstone(`${config.url}/notes/${message.id}`), user));
-			deliver(user, activity, recipient.inbox, false);
+			deliver(user, activity, recipient.inbox);
 		}
 	} else if (message.groupId) {
 		publishGroupMessagingStream(message.groupId, 'deleted', message.id);

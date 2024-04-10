@@ -44,6 +44,7 @@ import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { $i, login } from '@/account';
+import { appendQuery, query } from '@/scripts/url';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -69,10 +70,9 @@ async function accept(): Promise<void> {
 
 	state = 'accepted';
 	if (props.callback) {
-		const cbUrl = new URL(props.callback);
-		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(cbUrl.protocol)) throw new Error('invalid url');
-		cbUrl.searchParams.set('session', props.session);
-		location.href = cbUrl.href;
+		location.href = appendQuery(props.callback, query({
+			session: props.session,
+		}));
 	}
 }
 

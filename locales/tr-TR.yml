@@ -53,7 +53,6 @@ _mfm:
 _sfx:
   notification: "Bildirim"
 _widgets:
-  profile: "Profil"
   notifications: "Bildirim"
   timeline: "Zaman çizelgesi"
 _profile:
@@ -61,6 +60,4 @@ _profile:
 _deck:
   _columns:
     notifications: "Bildirim"
-    favorites: "Favoriler"
     tl: "Zaman çizelgesi"
-

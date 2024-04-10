@@ -1,19 +1,19 @@
 <template>
-<Transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
+<transition :name="$store.state.animation ? 'window' : ''" appear @after-leave="$emit('closed')">
 	<div v-if="showing" ref="rootEl" class="ebkgocck" :class="{ maximized }">
 		<div class="body _shadow _narrow_" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div class="header" :class="{ mini }" @contextmenu.prevent.stop="onContextmenu">
 				<span class="left">
-					<button v-for="button in buttonsLeft" :key="button.title" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
 				</span>
 				<span class="title" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<span class="right">
-					<button v-for="button in buttonsRight" :key="button.title" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
-					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="button _button" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
-					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="button _button" @click="maximize()"><i class="ti ti-rectangle"></i></button>
-					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="button _button" @click="close()"><i class="ti ti-x"></i></button>
+					<button v-for="button in buttonsRight" v-tooltip="button.title" class="button _button" :class="{ highlighted: button.highlighted }" @click="button.onClick"><i :class="button.icon"></i></button>
+					<button v-if="canResize && maximized" class="button _button" @click="unMaximize()"><i class="fas fa-window-restore"></i></button>
+					<button v-else-if="canResize && !maximized" class="button _button" @click="maximize()"><i class="fas fa-window-maximize"></i></button>
+					<button v-if="closeButton" class="button _button" @click="close()"><i class="fas fa-times"></i></button>
 				</span>
 			</div>
 			<div class="body">
@@ -39,8 +39,6 @@ import { onBeforeUnmount, onMounted, provide } from 'vue';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
-import { i18n } from '@/i18n';
-import { disableContextmenu } from '@/scripts/touch';
 
 const minHeight = 50;
 const minWidth = 250;
@@ -102,8 +100,8 @@ function close() {
 	showing = false;
 }
 
-function onKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Escape' || evt.key === 'Esc') {
+function onKeydown(evt) {
+	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();
@@ -111,7 +109,6 @@ function onKeydown(evt: KeyboardEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}
@@ -427,10 +424,10 @@ defineExpose({
 		border-radius: var(--radius);
 
 		> .header {
-			--height: 39px;
+			--height: 42px;
 
 			&.mini {
-				--height: 32px;
+				--height: 38px;
 			}
 
 			display: flex;

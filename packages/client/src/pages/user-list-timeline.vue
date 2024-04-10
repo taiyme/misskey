@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch, inject } from 'vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -65,11 +65,11 @@ async function timetravel() {
 }
 
 const headerActions = $computed(() => list ? [{
-	icon: 'ti ti-calendar-time',
+	icon: 'fas fa-calendar-alt',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
@@ -78,7 +78,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => list ? {
 	title: list.name,
-	icon: 'ti ti-list',
+	icon: 'fas fa-list-ul',
 } : null));
 </script>
 

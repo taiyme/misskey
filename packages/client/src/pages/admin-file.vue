@@ -32,11 +32,11 @@
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
 			<div class="_formBlock">
-				<MkSwitch v-model="isSensitive" @update:model-value="toggleIsSensitive">NSFW</MkSwitch>
+				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
 			</div>
 
 			<div class="_formBlock">
-				<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+				<MkButton danger @click="del"><i class="fas fa-trash-alt"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
 		</div>
 		<div v-else-if="tab === 'ip' && info" class="_formRoot">
@@ -75,6 +75,7 @@ import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { acct } from '@/filters/user';
 import { iAmAdmin, iAmModerator } from '@/account';
 
 let tab = $ref('overview');
@@ -113,7 +114,7 @@ async function toggleIsSensitive(v) {
 
 const headerActions = $computed(() => [{
 	text: i18n.ts.openInNewTab,
-	icon: 'ti ti-external-link',
+	icon: 'fas fa-external-link-alt',
 	handler: () => {
 		window.open(file.url, '_blank');
 	},
@@ -122,20 +123,20 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'ti ti-info-circle',
+	icon: 'fas fa-info-circle',
 }, iAmModerator ? {
 	key: 'ip',
 	title: 'IP',
-	icon: 'ti ti-password',
+	icon: 'fas fa-bars-staggered',
 } : null, {
 	key: 'raw',
 	title: 'Raw data',
-	icon: 'ti ti-code',
+	icon: 'fas fa-code',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: file ? i18n.ts.file + ': ' + file.name : i18n.ts.file,
-	icon: 'ti ti-file',
+	icon: 'fas fa-file',
 })));
 </script>
 

@@ -1,10 +1,10 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="ti ti-photo"></i> {{ $ts._pages.blocks.image }}</template>
+	<template #header><i class="fas fa-image"></i> {{ $ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
-			<i class="ti ti-folder"></i>
+			<i class="fas fa-folder-open"></i>
 		</button>
 	</template>
 

@@ -8,7 +8,6 @@ import { Users, Relays } from '@/models/index.js';
 import { genId } from '@/misc/gen-id.js';
 import { Cache } from '@/misc/cache.js';
 import { Relay } from '@/models/entities/relay.js';
-import { deepClone } from '@/misc/clone.js';
 import { createSystemUser } from './create-system-user.js';
 
 const ACTOR_USERNAME = 'relay.actor' as const;
@@ -37,7 +36,7 @@ export async function addRelay(inbox: string) {
 	const relayActor = await getRelayActor();
 	const follow = await renderFollowRelay(relay, relayActor);
 	const activity = renderActivity(follow);
-	deliver(relayActor, activity, relay.inbox, false);
+	deliver(relayActor, activity, relay.inbox);
 
 	return relay;
 }
@@ -55,7 +54,7 @@ export async function removeRelay(inbox: string) {
 	const follow = renderFollowRelay(relay, relayActor);
 	const undo = renderUndo(follow, relayActor);
 	const activity = renderActivity(undo);
-	deliver(relayActor, activity, relay.inbox, false);
+	deliver(relayActor, activity, relay.inbox);
 
 	await Relays.delete(relay.id);
 }
@@ -89,12 +88,14 @@ export async function deliverToRelays(user: { id: User['id']; host: null; }, act
 	}));
 	if (relays.length === 0) return;
 
-	const copy = deepClone(activity);
+	// TODO
+	//const copy = structuredClone(activity);
+	const copy = JSON.parse(JSON.stringify(activity));
 	if (!copy.to) copy.to = ['https://www.w3.org/ns/activitystreams#Public'];
 
 	const signed = await attachLdSignature(copy, user);
 
 	for (const relay of relays) {
-		deliver(user, signed, relay.inbox, false);
+		deliver(user, signed, relay.inbox);
 	}
 }

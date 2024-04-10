@@ -8,8 +8,6 @@ import config from '@/config/index.js';
 import { query, appendQuery } from '@/prelude/url.js';
 import { Meta } from '@/models/entities/meta.js';
 import { fetchMeta } from '@/misc/fetch-meta.js';
-import { sanitizeUrl } from '@/misc/sanitize-url.js';
-import { deepClone } from '@/misc/clone.js';
 import { Users, DriveFolders } from '../index.js';
 
 type PackOptions = {
@@ -31,7 +29,9 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 
 	getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
-			const properties = deepClone(file.properties);
+			// TODO
+			//const properties = structuredClone(file.properties);
+			const properties = JSON.parse(JSON.stringify(file.properties));
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
 			}
@@ -132,8 +132,8 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : (sanitizeUrl(this.getPublicUrl(file, false)) ?? null),
-			thumbnailUrl: sanitizeUrl(this.getPublicUrl(file, true)) ?? null,
+			url: opts.self ? file.url : this.getPublicUrl(file, false),
+			thumbnailUrl: this.getPublicUrl(file, true),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {
@@ -166,8 +166,8 @@ export const DriveFileRepository = db.getRepository(DriveFile).extend({
 			isSensitive: file.isSensitive,
 			blurhash: file.blurhash,
 			properties: opts.self ? file.properties : this.getPublicProperties(file),
-			url: opts.self ? file.url : (sanitizeUrl(this.getPublicUrl(file, false)) ?? null),
-			thumbnailUrl: sanitizeUrl(this.getPublicUrl(file, true)) ?? null,
+			url: opts.self ? file.url : this.getPublicUrl(file, false),
+			thumbnailUrl: this.getPublicUrl(file, true),
 			comment: file.comment,
 			folderId: file.folderId,
 			folder: opts.detail && file.folderId ? DriveFolders.pack(file.folderId, {

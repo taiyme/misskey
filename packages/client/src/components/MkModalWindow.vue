@@ -1,13 +1,13 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
-	<div ref="rootEl" class="ebkgoccj _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : undefined) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
+	<div ref="rootEl" class="ebkgoccj _narrow_" :style="{ width: `${width}px`, height: scroll ? (height ? `${height}px` : null) : (height ? `min(${height}px, 100%)` : '100%') }" @keydown="onKeydown">
 		<div ref="headerEl" class="header">
-			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
+			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
-			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
-			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="ti ti-check"></i></button>
+			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="fas fa-times"></i></button>
+			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="fas fa-check"></i></button>
 		</div>
 		<div class="body">
 			<slot :width="bodyWidth" :height="bodyHeight"></slot>
@@ -20,7 +20,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import MkModal from './MkModal.vue';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	withOkButton: boolean;
 	okButtonDisabled: boolean;
 	width: number;
@@ -47,30 +47,28 @@ let headerEl = $ref<HTMLElement>();
 let bodyWidth = $ref(0);
 let bodyHeight = $ref(0);
 
-const close = (): void => {
-	modal?.close();
+const close = () => {
+	modal.close();
 };
 
-const onBgClick = (): void => {
+const onBgClick = () => {
 	emit('click');
 };
 
-const onKeydown = (evt: KeyboardEvent): void => {
-	if (evt.key === 'Escape' || evt.key === 'Esc') {
+const onKeydown = (evt) => {
+	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();
 	}
 };
 
-const ro = new ResizeObserver(() => {
-	if (!rootEl || !headerEl) return;
+const ro = new ResizeObserver((entries, observer) => {
 	bodyWidth = rootEl.offsetWidth;
 	bodyHeight = rootEl.offsetHeight - headerEl.offsetHeight;
 });
 
 onMounted(() => {
-	if (!rootEl || !headerEl) return;
 	bodyWidth = rootEl.offsetWidth;
 	bodyHeight = rootEl.offsetHeight - headerEl.offsetHeight;
 	ro.observe(rootEl);

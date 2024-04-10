@@ -1,7 +1,22 @@
 import { execa } from 'execa';
 
 (async () => {
-	execa('swc', ['src', '-d', 'built', '-D', '-w'], {
+	// なぜかchokidarが動かない影響で、watchされない
+	/*
+	execa('tsc-alias', ['-w', '-p', 'tsconfig.json'], {
+		stdout: process.stdout,
+		stderr: process.stderr,
+	});
+	*/
+
+	setInterval(() => {
+		execa('tsc-alias', ['-p', 'tsconfig.json'], {
+			stdout: process.stdout,
+			stderr: process.stderr,
+		});
+	}, 3000);
+
+	execa('tsc', ['-w', '-p', 'tsconfig.json'], {
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});

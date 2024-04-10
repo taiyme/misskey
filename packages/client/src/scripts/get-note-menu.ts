@@ -1,24 +1,30 @@
-import { defineAsyncComponent, Ref } from 'vue';
+import { defineAsyncComponent, Ref, inject } from 'vue';
 import * as misskey from 'misskey-js';
+import { pleaseLogin } from './please-login';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import * as os from '@/os';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
-	menuButton?: Ref<HTMLElement>;
+	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClipPage?: Ref<misskey.entities.Clip>;
 }) {
-	const appearNote = isPureRenote(props.note) ? props.note.renote : props.note;
+	const isRenote = (
+		props.note.renote != null &&
+		props.note.text == null &&
+		props.note.fileIds.length === 0 &&
+		props.note.poll == null
+	);
+
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
 
 	function del(): void {
 		os.confirm({
@@ -67,12 +73,12 @@ export function getNoteMenu(props: {
 	}
 
 	function copyContent(): void {
-		copyText(appearNote.text);
+		copyToClipboard(appearNote.text);
 		os.success();
 	}
 
 	function copyLink(): void {
-		copyText(`${url}/notes/${appearNote.id}`);
+		copyToClipboard(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
@@ -89,23 +95,81 @@ export function getNoteMenu(props: {
 		});
 	}
 
+	async function clip(): Promise<void> {
+		const clips = await os.api('clips/list');
+		os.popupMenu([{
+			icon: 'fas fa-plus',
+			text: i18n.ts.createNew,
+			action: async () => {
+				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
+					name: {
+						type: 'string',
+						label: i18n.ts.name,
+					},
+					description: {
+						type: 'string',
+						required: false,
+						multiline: true,
+						label: i18n.ts.description,
+					},
+					isPublic: {
+						type: 'boolean',
+						label: i18n.ts.public,
+						default: false,
+					},
+				});
+				if (canceled) return;
+
+				const clip = await os.apiWithDialog('clips/create', result);
+
+				os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
+			},
+		}, null, ...clips.map(clip => ({
+			text: clip.name,
+			action: () => {
+				os.promiseDialog(
+					os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
+					null,
+					async (err) => {
+						if (err.id === '734806c4-542c-463a-9311-15c512803965') {
+							const confirm = await os.confirm({
+								type: 'warning',
+								text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+							});
+							if (!confirm.canceled) {
+								os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
+								if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
+							}
+						} else {
+							os.alert({
+								type: 'error',
+								text: err.message + '\n' + err.id,
+							});
+						}
+					},
+				);
+			},
+		}))], props.menuButton.value, {
+		}).then(focus);
+	}
+
 	async function unclip(): Promise<void> {
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClipPage.value.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
 
-	// async function promote(): Promise<void> {
-	// 	const { canceled, result: days } = await os.inputNumber({
-	// 		title: i18n.ts.numberOfDays,
-	// 	});
+	async function promote(): Promise<void> {
+		const { canceled, result: days } = await os.inputNumber({
+			title: i18n.ts.numberOfDays,
+		});
 
-	// 	if (canceled) return;
+		if (canceled) return;
 
-	// 	os.apiWithDialog('admin/promo/create', {
-	// 		noteId: appearNote.id,
-	// 		expiresAt: Date.now() + (86400000 * days),
-	// 	});
-	// }
+		os.apiWithDialog('admin/promo/create', {
+			noteId: appearNote.id,
+			expiresAt: Date.now() + (86400000 * days),
+		});
+	}
 
 	function share(): void {
 		navigator.share({
@@ -113,12 +177,6 @@ export function getNoteMenu(props: {
 			text: appearNote.text,
 			url: `${url}/notes/${appearNote.id}`,
 		});
-	}
-
-	function showReactions(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
-			noteId: appearNote.id,
-		}, {}, 'closed');
 	}
 
 	async function translate(): Promise<void> {
@@ -141,154 +199,84 @@ export function getNoteMenu(props: {
 		menu = [
 			...(
 				props.currentClipPage?.value.userId === $i.id ? [{
-					icon: 'ti ti-backspace',
+					icon: 'fas fa-circle-minus',
 					text: i18n.ts.unclip,
 					danger: true,
 					action: unclip,
 				}, null] : []
-			), {
-				icon: 'ti ti-users',
-				text: i18n.ts.reactions,
-				action: showReactions,
-			}, {
-				icon: 'ti ti-copy',
+			),
+			{
+				icon: 'fas fa-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
 			}, {
-				icon: 'ti ti-link',
+				icon: 'fas fa-link',
 				text: i18n.ts.copyLink,
 				action: copyLink,
 			}, (appearNote.url || appearNote.uri) ? {
-				icon: 'ti ti-external-link',
+				icon: 'fas fa-external-link-square-alt',
 				text: i18n.ts.showOnRemote,
 				action: () => {
 					window.open(appearNote.url || appearNote.uri, '_blank');
 				},
 			} : undefined,
 			{
-				icon: 'ti ti-share',
+				icon: 'fas fa-share-alt',
 				text: i18n.ts.share,
 				action: share,
 			},
 			instance.translatorAvailable ? {
-				icon: 'ti ti-language-hiragana',
+				icon: 'fas fa-language',
 				text: i18n.ts.translate,
 				action: translate,
 			} : undefined,
 			null,
 			statePromise.then(state => state.isFavorited ? {
-				icon: 'ti ti-star',
+				icon: 'fas fa-star',
 				text: i18n.ts.unfavorite,
 				action: () => toggleFavorite(false),
 			} : {
-				icon: 'ti ti-star',
+				icon: 'fas fa-star',
 				text: i18n.ts.favorite,
 				action: () => toggleFavorite(true),
 			}),
 			{
-				type: 'parent',
-				icon: 'ti ti-paperclip',
+				icon: 'fas fa-paperclip',
 				text: i18n.ts.clip,
-				children: async () => {
-					const clips = await os.api('clips/list');
-					return [{
-						icon: 'ti ti-plus',
-						text: i18n.ts.createNew,
-						action: async () => {
-							const { canceled, result } = await os.form(i18n.ts.createNewClip, {
-								name: {
-									type: 'string',
-									label: i18n.ts.name,
-									max: 100,
-								},
-								description: {
-									type: 'string',
-									required: false,
-									multiline: true,
-									label: i18n.ts.description,
-									max: 2048,
-								},
-								isPublic: {
-									type: 'boolean',
-									label: i18n.ts.public,
-									default: false,
-								},
-							});
-							if (canceled) return;
-
-							const clip = await os.apiWithDialog('clips/create', result);
-
-							os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
-						},
-					}, null, ...clips.map(clip => ({
-						text: clip.name,
-						action: () => {
-							os.promiseDialog(
-								os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
-								null,
-								async (err) => {
-									if (err.id === '734806c4-542c-463a-9311-15c512803965') {
-										const confirm = await os.confirm({
-											type: 'warning',
-											text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
-										});
-										if (!confirm.canceled) {
-											os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-											if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
-										}
-									} else {
-										os.alert({
-											type: 'error',
-											text: err.message + '\n' + err.id,
-										});
-									}
-								},
-							);
-						},
-					}))];
-				},
+				action: () => clip(),
 			},
 			(appearNote.userId !== $i.id) ? statePromise.then(state => state.isWatching ? {
-				icon: 'ti ti-eye-off',
+				icon: 'fas fa-eye-slash',
 				text: i18n.ts.unwatch,
 				action: () => toggleWatch(false),
 			} : {
-				icon: 'ti ti-eye',
+				icon: 'fas fa-eye',
 				text: i18n.ts.watch,
 				action: () => toggleWatch(true),
 			}) : undefined,
 			statePromise.then(state => state.isMutedThread ? {
-				icon: 'ti ti-message-off',
+				icon: 'fas fa-comment-slash',
 				text: i18n.ts.unmuteThread,
 				action: () => toggleThreadMute(false),
 			} : {
-				icon: 'ti ti-message-off',
+				icon: 'fas fa-comment-slash',
 				text: i18n.ts.muteThread,
 				action: () => toggleThreadMute(true),
 			}),
 			appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
-				icon: 'ti ti-pin',
+				icon: 'fas fa-thumbtack',
 				text: i18n.ts.unpin,
 				action: () => togglePin(false),
 			} : {
-				icon: 'ti ti-pin',
+				icon: 'fas fa-thumbtack',
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
-			} : undefined,
-			appearNote.userId !== $i.id ? {
-				type: 'parent',
-				icon: 'ti ti-user',
-				text: i18n.ts.user,
-				children: async () => {
-					const user = await os.api('users/show', { userId: appearNote.userId });
-					return getUserMenu(user);
-				},
 			} : undefined,
 			/*
 		...($i.isModerator || $i.isAdmin ? [
 			null,
 			{
-				icon: 'ti ti-speakerphone',
+				icon: 'fas fa-bullhorn',
 				text: i18n.ts.promote,
 				action: promote
 			}]
@@ -297,7 +285,7 @@ export function getNoteMenu(props: {
 			...(appearNote.userId !== $i.id ? [
 				null,
 				{
-					icon: 'ti ti-exclamation-circle',
+					icon: 'fas fa-exclamation-circle',
 					text: i18n.ts.reportAbuse,
 					action: () => {
 						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
@@ -312,12 +300,12 @@ export function getNoteMenu(props: {
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
 				null,
 				appearNote.userId === $i.id ? {
-					icon: 'ti ti-edit',
+					icon: 'fas fa-edit',
 					text: i18n.ts.deleteAndEdit,
 					action: delEdit,
 				} : undefined,
 				{
-					icon: 'ti ti-trash',
+					icon: 'fas fa-trash-alt',
 					text: i18n.ts.delete,
 					danger: true,
 					action: del,
@@ -327,15 +315,15 @@ export function getNoteMenu(props: {
 		.filter(x => x !== undefined);
 	} else {
 		menu = [{
-			icon: 'ti ti-copy',
+			icon: 'fas fa-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
 		}, {
-			icon: 'ti ti-link',
+			icon: 'fas fa-link',
 			text: i18n.ts.copyLink,
 			action: copyLink,
 		}, (appearNote.url || appearNote.uri) ? {
-			icon: 'ti ti-external-link',
+			icon: 'fas fa-external-link-square-alt',
 			text: i18n.ts.showOnRemote,
 			action: () => {
 				window.open(appearNote.url || appearNote.uri, '_blank');
@@ -346,7 +334,7 @@ export function getNoteMenu(props: {
 
 	if (noteActions.length > 0) {
 		menu = menu.concat([null, ...noteActions.map(action => ({
-			icon: 'ti ti-plug',
+			icon: 'fas fa-plug',
 			text: action.title,
 			action: () => {
 				action.handler(appearNote);

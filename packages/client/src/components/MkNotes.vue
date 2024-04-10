@@ -24,7 +24,7 @@ import XList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
-defineProps<{
+const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
 }>();

@@ -10,7 +10,7 @@
 					</button>
 				</template>
 				<template #footer>
-					<button class="_button add" @click="chooseEmoji"><i class="ti ti-plus"></i></button>
+					<button class="_button add" @click="chooseEmoji"><i class="fas fa-plus"></i></button>
 				</template>
 			</XDraggable>
 		</div>
@@ -46,8 +46,8 @@
 
 	<FormSection>
 		<div style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-			<FormButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</FormButton>
-			<FormButton inline danger @click="setDefault"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</FormButton>
+			<FormButton inline @click="preview"><i class="fas fa-eye"></i> {{ i18n.ts.preview }}</FormButton>
+			<FormButton inline danger @click="setDefault"><i class="fas fa-undo"></i> {{ i18n.ts.default }}</FormButton>
 		</div>
 	</FormSection>
 </div>
@@ -56,6 +56,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import XDraggable from 'vuedraggable';
+import FormInput from '@/components/form/input.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import FormButton from '@/components/MkButton.vue';
@@ -65,9 +66,8 @@ import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { deepClone } from '@/scripts/clone';
 
-let reactions = $ref(deepClone(defaultStore.state.reactions));
+let reactions = $ref(JSON.parse(JSON.stringify(defaultStore.state.reactions)));
 
 const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPickerSize'));
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
@@ -101,7 +101,7 @@ async function setDefault() {
 	});
 	if (canceled) return;
 
-	reactions = deepClone(defaultStore.def.reactions.default);
+	reactions = JSON.parse(JSON.stringify(defaultStore.def.reactions.default));
 }
 
 function chooseEmoji(ev: MouseEvent) {
@@ -126,9 +126,9 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.reaction,
-	icon: 'ti ti-mood-happy',
+	icon: 'fas fa-laugh',
 	action: {
-		icon: 'ti ti-eye',
+		icon: 'fas fa-eye',
 		handler: preview,
 	},
 });

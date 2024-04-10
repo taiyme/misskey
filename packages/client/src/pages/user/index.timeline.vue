@@ -16,6 +16,7 @@ import { ref, computed } from 'vue';
 import * as misskey from 'misskey-js';
 import XNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
+import * as os from '@/os';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -29,7 +30,7 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
-		includeReplies: include.value === 'replies' || include.value === 'files',
+		includeReplies: include.value === 'replies',
 		withFiles: include.value === 'files',
 	})),
 };

@@ -6,16 +6,16 @@
 	v-hotkey="keymap"
 	v-size="{ max: [500, 450, 350, 300] }"
 	class="tkcbzcuz"
-	:tabindex="!isDeleted ? '-1' : undefined"
-	:class="{ renote: isRenote, showActionsOnlyOnHover }"
+	:tabindex="!isDeleted ? '-1' : null"
+	:class="{ renote: isRenote }"
 >
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" class="reply-to"/>
-	<div v-if="pinned" class="info"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<div v-if="(appearNote as any /* 定義されていないため */)._prId_" class="info"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>
-	<div v-if="(appearNote as any /* 定義されていないため */)._featuredId_" class="info"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>
+	<div v-if="pinned" class="info"><i class="fas fa-thumbtack"></i> {{ i18n.ts.pinnedNote }}</div>
+	<div v-if="appearNote._prId_" class="info"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="fas fa-times"></i></button></div>
+	<div v-if="appearNote._featuredId_" class="info"><i class="fas fa-bolt"></i> {{ i18n.ts.featured }}</div>
 	<div v-if="isRenote" class="renote">
 		<MkAvatar class="avatar" :user="note.user"/>
-		<i class="ti ti-repeat"></i>
+		<i class="fas fa-retweet"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span">
 			<template #user>
 				<MkA v-user-preview="note.userId" class="name" :to="userPage(note.user)">
@@ -25,37 +25,33 @@
 		</I18n>
 		<div class="info">
 			<button ref="renoteTime" class="_button time" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots dropdownIcon"></i>
+				<i v-if="isMyRenote" class="fas fa-ellipsis-h dropdownIcon"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<MkVisibility :note="note"/>
 		</div>
 	</div>
-	<div v-if="renoteCollapsed" class="collapsed-renote">
-		<MkAvatar class="avatar" :user="appearNote.user"/>
-		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" class="text" @click="renoteCollapsed = false"/>
-	</div>
-	<article v-else ref="articleEl" class="article" :style="{ '--articleTop': `${(el?.clientHeight ?? 0) - (articleEl?.clientHeight ?? 0)}px` }" @contextmenu.stop="onContextmenu">
+	<article class="article" @contextmenu.stop="onContextmenu">
 		<MkAvatar class="avatar" :user="appearNote.user"/>
 		<div class="main">
 			<XNoteHeader class="header" :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			<div class="body">
 				<p v-if="appearNote.cw != null" class="cw">
 					<Mfm v-if="appearNote.cw != ''" class="text" :text="appearNote.cw" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 					<XCwButton v-model="showContent" :note="appearNote"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" class="content" :class="{ collapsed, isLong }">
-					<div ref="textEl" class="text">
+					<div class="text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+						<MkA v-if="appearNote.replyId" class="reply" :to="`/notes/${appearNote.replyId}`"><i class="fas fa-reply"></i></MkA>
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 						<a v-if="appearNote.renote != null" class="rp">RN:</a>
 						<div v-if="translating || translation" class="translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else class="translated">
-								<b>{{ $t('translatedFrom', { x: (translation as any /* 定義されていないため */).sourceLang }) }}: </b>
-								<Mfm :text="(translation as any /* 定義されていないため */).text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
+								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :custom-emojis="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
@@ -65,34 +61,32 @@
 					<XPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" class="poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" class="url-preview"/>
 					<div v-if="appearNote.renote" class="renote"><XNoteSimple :note="appearNote.renote"/></div>
-					<button v-if="isLong && collapsed" class="fade _button" @click="collapsedFlag = false">
+					<button v-if="isLong && collapsed" class="fade _button" @click="collapsed = false">
 						<span>{{ i18n.ts.showMore }}</span>
 					</button>
-					<button v-else-if="isLong && !collapsed" class="showLess _button" @click="collapsedFlag = true">
+					<button v-else-if="isLong && !collapsed" class="showLess _button" @click="collapsed = true">
 						<span>{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
-				<MkA v-if="(appearNote as any /* 定義されていないため */).channel && !inChannel" class="channel" :to="`/channels/${(appearNote as any /* 定義されていないため */).channel.id}`"><i class="ti ti-device-tv"></i> {{ (appearNote as any /* 定義されていないため */).channel.name }}</MkA>
+				<MkA v-if="appearNote.channel && !inChannel" class="channel" :to="`/channels/${appearNote.channel.id}`"><i class="fas fa-satellite-dish"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
-			<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 			<footer class="footer">
+				<XReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button class="button _button" @click="reply()">
-					<i class="ti ti-arrow-back-up"></i>
+					<template v-if="appearNote.reply"><i class="fas fa-reply-all"></i></template>
+					<template v-else><i class="fas fa-reply"></i></template>
 					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
 				</button>
 				<XRenoteButton ref="renoteButton" class="button" :note="appearNote" :count="appearNote.renoteCount"/>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @click="react()">
-					<i class="ti ti-plus"></i>
+					<i class="fas fa-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
-					<i class="ti ti-minus"></i>
+					<i class="fas fa-minus"></i>
 				</button>
 				<button ref="menuButton" class="button _button" @click="menu()">
-					<i class="ti ti-dots"></i>
+					<i class="fas fa-ellipsis-h"></i>
 				</button>
-				<MkA v-if="showActionsOnlyOnHover" class="button _button" style="text-decoration: none;" :to="notePage(appearNote)">
-					<i class="ti ti-info-circle"></i>
-				</MkA>
 			</footer>
 		</div>
 	</article>
@@ -101,7 +95,7 @@
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" class="name" :to="userPage(appearNote.user)">
-				<MkUserName :nowrap="false" :user="appearNote.user"/>
+				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
 	</I18n>
@@ -109,8 +103,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, ref, Ref, computed } from 'vue';
-import { ReactiveVariable } from 'vue/macros';
+import { computed, inject, onMounted, onUnmounted, reactive, ref, Ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -127,7 +120,6 @@ import MkVisibility from '@/components/MkVisibility.vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import { checkWordMute } from '@/scripts/check-word-mute';
-import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { defaultStore, noteViewInterruptors } from '@/store';
@@ -137,13 +129,6 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
-import { getNoteSummary } from '@/scripts/get-note-summary';
-import { deepClone } from '@/scripts/clone';
-import { isTouchUsing, disableContextmenu } from '@/scripts/touch';
-import { deviceKind } from '@/scripts/device-kind';
-import { shownNoteIds } from '@/os';
-import { tmsStore } from '@/tms/store';
-import { isPureRenote } from '@/scripts/tms/is-pure-renote';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -152,93 +137,74 @@ const props = defineProps<{
 
 const inChannel = inject('inChannel', null);
 
-let note = $ref<misskey.entities.Note>(deepClone(props.note));
+let note = $ref(JSON.parse(JSON.stringify(props.note)));
 
 // plugin
 if (noteViewInterruptors.length > 0) {
 	onMounted(async () => {
-		let result = deepClone(note);
+		let result = JSON.parse(JSON.stringify(note));
 		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result) as ReactiveVariable<misskey.entities.Note>; // unknownのため
+			result = await interruptor.handler(result);
 		}
 		note = result;
 	});
 }
 
-const isRenote = isPureRenote(note);
-
-const textEl = ref<HTMLElement>();
-let textElHeight = $ref<number | null>(null);
-onMounted(() => {
-	if (textEl.value) {
-		const resizeObserver = new ResizeObserver(() => {
-			textElHeight = textEl.value?.offsetHeight ?? 0;
-		});
-		resizeObserver.observe(textEl.value);
-	}
-});
+const isRenote = (
+	note.renote != null &&
+	note.text == null &&
+	note.fileIds.length === 0 &&
+	note.poll == null
+);
 
 const el = ref<HTMLElement>();
-const articleEl = ref<HTMLElement>();
 const menuButton = ref<HTMLElement>();
 const renoteButton = ref<InstanceType<typeof XRenoteButton>>();
 const renoteTime = ref<HTMLElement>();
 const reactButton = ref<HTMLElement>();
-let appearNote = $computed(() => isPureRenote(note) ? note.renote : note); // 本当はisRenoteを使いたいけど型推論してくれない
-const isMyRenote = $i && ($i.id === note.userId || $i.isModerator || $i.isAdmin);
+let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const { collapseNote, collapseNoteHeight, collapseNoteFile, collapseNoteUrl, collapseNotePoll } = tmsStore.state;
-const isLong = $computed(() => {
-	return collapseNote && !!(
-		appearNote.cw == null && 
-		appearNote.text != null && (
-			// textElHeight: null の場合は文字数で判定する
-			(!!collapseNoteHeight && (textElHeight == null ? appearNote.text.length > 500 : textElHeight >= collapseNoteHeight)) ||
-			(!!collapseNoteFile && (appearNote.files.length >= collapseNoteFile)) ||
-			(!!collapseNoteUrl && (urls && urls.length >= collapseNoteUrl)) ||
-			(!!collapseNotePoll && (appearNote.poll?.choices.length ?? 0) >= collapseNotePoll)
-		)
-	);
-});
-const collapsedFlag = ref(true);
-const collapsed = $computed(() => collapsedFlag.value && isLong);
+const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.split('\n').length > 9) ||
+	(appearNote.text.length > 500)
+));
+const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
 const translation = ref(null);
 const translating = ref(false);
-const showTicker = defaultStore.state.instanceTicker === 'always' || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const showActionsOnlyOnHover = computed(() => tmsStore.state.showActionsOnlyOnHover && !isTouchUsing && deviceKind !== 'smartphone');
-let renoteCollapsed = $ref(tmsStore.state.collapseRenote && isRenote && (($i && $i.id === note.userId) || shownNoteIds.has(appearNote.id)));
-shownNoteIds.add(appearNote.id);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 
 const keymap = {
-	'r': (): void => reply(true),
-	'e|a|plus': (): void => react(true),
-	'q': (): void => renoteButton.value?.renote(true),
-	'up|k|shift+tab': (): void => focusBefore(),
-	'down|j|tab': (): void => focusAfter(),
-	'esc': (): void => blur(),
-	'm|o': (): void => menu(true),
+	'r': () => reply(true),
+	'e|a|plus': () => react(true),
+	'q': () => renoteButton.value.renote(true),
+	'up|k|shift+tab': focusBefore,
+	'down|j|tab': focusAfter,
+	'esc': blur,
+	'm|o': () => menu(true),
+	's': () => showContent.value !== showContent.value,
 };
 
 useNoteCapture({
-	rootEl: el as Ref<HTMLElement>, // undefinedを除外するため
+	rootEl: el,
 	note: $$(appearNote),
 	isDeletedRef: isDeleted,
 });
 
-const reply = (viaKeyboard = false): void => {
+function reply(viaKeyboard = false): void {
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
+	}, () => {
+		focus();
 	});
-};
+}
 
-const react = (_viaKeyboard = false): void => {
-	if (!reactButton.value) return;
-
+function react(viaKeyboard = false): void {
 	pleaseLogin();
 	blur();
 	reactionPicker.show(reactButton.value, reaction => {
@@ -246,73 +212,52 @@ const react = (_viaKeyboard = false): void => {
 			noteId: appearNote.id,
 			reaction: reaction,
 		});
-	}, focus);
-};
+	}, () => {
+		focus();
+	});
+}
 
-const undoReact = (note_: misskey.entities.Note): void => {
-	const oldReaction = note_.myReaction;
+function undoReact(note): void {
+	const oldReaction = note.myReaction;
 	if (!oldReaction) return;
 	os.api('notes/reactions/delete', {
-		noteId: note_.id,
+		noteId: note.id,
 	});
-};
+}
 
 const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
-const onContextmenu = (ev: MouseEvent): void => {
-	if (disableContextmenu) return;
-	const isLink = (elem: HTMLElement): boolean => {
-		if (elem.tagName === 'A') return true;
-		if (elem.parentElement) {
-			return isLink(elem.parentElement);
+function onContextmenu(ev: MouseEvent): void {
+	const isLink = (el: HTMLElement) => {
+		if (el.tagName === 'A') return true;
+		if (el.parentElement) {
+			return isLink(el.parentElement);
 		}
-
-		return false;
 	};
-	if (!(ev.target instanceof HTMLElement)) return;
 	if (isLink(ev.target)) return;
-	if (window.getSelection()?.toString() !== '') return;
+	if (window.getSelection().toString() !== '') return;
 
 	if (defaultStore.state.useReactionPickerForContextMenu) {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(
-			getNoteMenu({
-				note,
-				translating,
-				translation,
-				// menuButton,
-				isDeleted,
-				currentClipPage: currentClipPage ?? undefined,
-			}),
-			ev,
-		).then(focus);
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
 	}
-};
+}
 
-const menu = (viaKeyboard = false): void => {
-	os.popupMenu(
-		getNoteMenu({
-			note,
-			translating,
-			translation,
-			// menuButton,
-			isDeleted,
-			currentClipPage: currentClipPage ?? undefined,
-		}),
-		menuButton.value,
-		{ viaKeyboard },
-	).then(focus);
-};
+function menu(viaKeyboard = false): void {
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
+		viaKeyboard,
+	}).then(focus);
+}
 
-const showRenoteMenu = (viaKeyboard = false): void => {
+function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash-alt',
 		danger: true,
-		action: (): void => {
+		action: () => {
 			os.api('notes/delete', {
 				noteId: note.id,
 			});
@@ -321,30 +266,30 @@ const showRenoteMenu = (viaKeyboard = false): void => {
 	}], renoteTime.value, {
 		viaKeyboard: viaKeyboard,
 	});
-};
+}
 
-const focus = (): void => {
-	el.value?.focus();
-};
+function focus() {
+	el.value.focus();
+}
 
-const blur = (): void => {
-	el.value?.blur();
-};
+function blur() {
+	el.value.blur();
+}
 
-const focusBefore = (): void => {
-	if (el.value) focusPrev(el.value);
-};
+function focusBefore() {
+	focusPrev(el.value);
+}
 
-const focusAfter = (): void => {
-	if (el.value) focusNext(el.value);
-};
+function focusAfter() {
+	focusNext(el.value);
+}
 
-const readPromo = (): void => {
+function readPromo() {
 	os.api('promo/read', {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -361,7 +306,7 @@ const readPromo = (): void => {
 	// 今度はその処理自体がパフォーマンス低下の原因にならないか懸念される。また、被リアクションでも高さは変化するため、やはり多少のズレは生じる
 	// 一度レンダリングされた要素はブラウザがよしなにサイズを覚えておいてくれるような実装になるまで待った方が良さそう(なるのか？)
 	//content-visibility: auto;
-	//contain-intrinsic-size: 0 128px;
+  //contain-intrinsic-size: 0 128px;
 
 	&:focus-visible {
 		outline: none;
@@ -387,34 +332,6 @@ const readPromo = (): void => {
 
 	&:hover > .article > .main > .footer > .button {
 		opacity: 1;
-	}
-
-	&.showActionsOnlyOnHover {
-		> .article > .main > .footer {
-			visibility: hidden;
-			position: absolute;
-			top: calc(12px + var(--articleTop, 0px));
-			right: 12px;
-			padding: 0 4px;
-			margin-bottom: 0 !important;
-			background: var(--popup);
-			border-radius: 8px;
-			box-shadow: 0px 4px 32px var(--shadow);
-
-			> .button {
-				font-size: 80%;
-
-				&:not(:last-child) {
-					margin-right: 6px !important;
-				}
-			}
-		}
-
-		&:hover {
-			> .article > .main > .footer {
-				visibility: visible;
-			}
-		}
 	}
 
 	> .info {
@@ -459,6 +376,7 @@ const readPromo = (): void => {
 			width: 28px;
 			height: 28px;
 			margin: 0 8px 0 0;
+			border-radius: 6px;
 		}
 
 		> i {
@@ -493,36 +411,6 @@ const readPromo = (): void => {
 
 	> .renote + .article {
 		padding-top: 8px;
-	}
-
-	> .collapsed-renote {
-		display: flex;
-		align-items: center;
-		line-height: 28px;
-		white-space: pre;
-		padding: 0 32px 18px;
-
-		> .avatar {
-			flex-shrink: 0;
-			display: inline-block;
-			width: 28px;
-			height: 28px;
-			margin: 0 8px 0 0;
-		}
-
-		> .text {
-			overflow: hidden;
-			flex-shrink: 1;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			font-size: 90%;
-			opacity: 0.7;
-			cursor: pointer;
-
-			&:hover {
-				text-decoration: underline;
-			}
-		}
 	}
 
 	> .article {
@@ -560,13 +448,10 @@ const readPromo = (): void => {
 				> .content {
 					&.isLong {
 						> .showLess {
-							display: block;
-							position: sticky;
-							z-index: 1;
-							bottom: var(--minBottomSpacing);
-							left: 0;
 							width: 100%;
-							height: 64px;
+							margin-top: 1em;
+							position: sticky;
+							bottom: 1em;
 
 							> span {
 								display: inline-block;
@@ -587,7 +472,6 @@ const readPromo = (): void => {
 						> .fade {
 							display: block;
 							position: absolute;
-							z-index: 1;
 							bottom: 0;
 							left: 0;
 							width: 100%;
@@ -708,11 +592,6 @@ const readPromo = (): void => {
 
 		> .info {
 			padding: 8px 16px 0 16px;
-		}
-
-		> .collapsed-renote {
-			padding: 0 16px 9px;
-			margin-top: 4px;
 		}
 
 		> .article {

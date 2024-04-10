@@ -19,23 +19,18 @@
 				</div>
 				<FormSection>
 					<div class="_formLinks">
-						<FormLink to="https://github.com/taiyme/misskey" external>
-							<template #icon><i class="ti ti-git-fork"></i></template>
-							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>taiyme/misskey</template>
-						</FormLink>
 						<FormLink to="https://github.com/misskey-dev/misskey" external>
-							<template #icon><i class="ti ti-code"></i></template>
+							<template #icon><i class="fas fa-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}
-							<template #suffix>misskey-dev/misskey</template>
+							<template #suffix>GitHub</template>
 						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
-							<template #icon><i class="ti ti-language-hiragana"></i></template>
+							<template #icon><i class="fas fa-language"></i></template>
 							{{ i18n.ts._aboutMisskey.translation }}
 							<template #suffix>Crowdin</template>
 						</FormLink>
 						<FormLink to="https://www.patreon.com/syuilo" external>
-							<template #icon><i class="ti ti-pig-money"></i></template>
+							<template #icon><i class="fas fa-hand-holding-medical"></i></template>
 							{{ i18n.ts._aboutMisskey.donate }}
 							<template #suffix>Patreon</template>
 						</FormLink>

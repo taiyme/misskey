@@ -1,6 +1,6 @@
 <template>
 <div class="_formRoot">
-	<FormLink class="_formBlock" @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormLink class="_formBlock" @click="configure"><template #icon><i class="fas fa-cog"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
 	<FormSection>
 		<FormLink class="_formBlock" @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 		<FormLink class="_formBlock" @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
@@ -12,6 +12,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import { notificationTypes } from 'misskey-js';
+import FormButton from '@/components/MkButton.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
@@ -54,6 +55,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.notifications,
-	icon: 'ti ti-bell',
+	icon: 'fas fa-bell',
 });
 </script>

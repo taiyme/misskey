@@ -1,8 +1,7 @@
 import * as Acct from 'misskey-js/built/acct';
 import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
 import * as os from '@/os';
 import { userActions } from '@/store';
@@ -10,7 +9,7 @@ import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 
-export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
+export function getUserMenu(user, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	async function pushList() {
@@ -154,70 +153,70 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 	}
 
 	let menu = [{
-		icon: 'ti ti-at',
+		icon: 'fas fa-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyText(`@${user.username}@${user.host || host}`);
+			copyToClipboard(`@${user.username}@${user.host || host}`);
 		},
 	}, {
-		icon: 'ti ti-info-circle',
+		icon: 'fas fa-info-circle',
 		text: i18n.ts.info,
 		action: () => {
 			router.push(`/user-info/${user.id}`);
 		},
 	}, {
-		icon: 'ti ti-mail',
+		icon: 'fas fa-envelope',
 		text: i18n.ts.sendMessage,
 		action: () => {
 			os.post({ specified: user });
 		},
 	}, meId !== user.id ? {
 		type: 'link',
-		icon: 'ti ti-messages',
+		icon: 'fas fa-comments',
 		text: i18n.ts.startMessaging,
 		to: '/my/messaging/' + Acct.toString(user),
 	} : undefined, null, {
-		icon: 'ti ti-list',
+		icon: 'fas fa-list-ul',
 		text: i18n.ts.addToList,
 		action: pushList,
 	}, meId !== user.id ? {
-		icon: 'ti ti-users',
+		icon: 'fas fa-users',
 		text: i18n.ts.inviteToGroup,
 		action: inviteGroup,
 	} : undefined] as any;
 
 	if ($i && meId !== user.id) {
 		menu = menu.concat([null, {
-			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
+			icon: user.isMuted ? 'fas fa-eye' : 'fas fa-eye-slash',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
 		}, {
-			icon: 'ti ti-ban',
+			icon: 'fas fa-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
 			action: toggleBlock,
 		}]);
 
 		if (user.isFollowed) {
 			menu = menu.concat([{
-				icon: 'ti ti-link-off',
+				icon: 'fas fa-unlink',
 				text: i18n.ts.breakFollow,
 				action: invalidateFollow,
 			}]);
 		}
 
 		menu = menu.concat([null, {
-			icon: 'ti ti-exclamation-circle',
+			icon: 'fas fa-exclamation-circle',
 			text: i18n.ts.reportAbuse,
 			action: reportAbuse,
 		}]);
 
 		if (iAmModerator) {
 			menu = menu.concat([null, {
-				icon: 'ti ti-microphone-2-off',
+				icon: 'fas fa-microphone-slash',
 				text: user.isSilenced ? i18n.ts.unsilence : i18n.ts.silence,
 				action: toggleSilence,
 			}, {
-				icon: 'ti ti-snowflake',
+				icon: 'fas fa-snowflake',
 				text: user.isSuspended ? i18n.ts.unsuspend : i18n.ts.suspend,
 				action: toggleSuspend,
 			}]);
@@ -226,7 +225,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 	if ($i && meId === user.id) {
 		menu = menu.concat([null, {
-			icon: 'ti ti-pencil',
+			icon: 'fas fa-pencil-alt',
 			text: i18n.ts.editProfile,
 			action: () => {
 				router.push('/settings/profile');
@@ -236,7 +235,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 	if (userActions.length > 0) {
 		menu = menu.concat([null, ...userActions.map(action => ({
-			icon: 'ti ti-plug',
+			icon: 'fas fa-plug',
 			text: action.title,
 			action: () => {
 				action.handler(user);

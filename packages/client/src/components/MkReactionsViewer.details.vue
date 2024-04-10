@@ -1,9 +1,9 @@
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="bqxuuuey">
 		<div class="reaction">
 			<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
-			<div class="name">{{ getReactionName(reaction) }}</div>
+			<div class="name">{{ reaction.replace('@.', '') }}</div>
 		</div>
 		<div class="users">
 			<div v-for="u in users" :key="u.id" class="user">
@@ -20,10 +20,8 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
 
-defineProps<{
-	showing: boolean;
+const props = defineProps<{
 	reaction: string;
 	users: any[]; // TODO
 	count: number;
@@ -34,14 +32,6 @@ defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
-
-const getReactionName = (reaction: string): string => {
-	const trimLocal = reaction.replace('@.', '');
-	if (trimLocal.startsWith(':')) {
-		return trimLocal;
-	}
-	return getEmojiName(reaction) ?? reaction;
-};
 </script>
 
 <style lang="scss" scoped>
@@ -57,10 +47,6 @@ const getReactionName = (reaction: string): string => {
 			width: 60px;
 			font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
 			margin: 0 auto;
-		}
-
-		> .mk-emoji-fallback {
-			display: none;				
 		}
 
 		> .name {

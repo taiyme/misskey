@@ -69,7 +69,6 @@ _mfm:
 _sfx:
   notification: "ಅಧಿಸೂಚನೆಗಳು"
 _widgets:
-  profile: "ಪ್ರೊಫೈಲು"
   notifications: "ಅಧಿಸೂಚನೆಗಳು"
   timeline: "ಸಮಯಸಾಲು"
 _cw:
@@ -83,7 +82,5 @@ _notification:
 _deck:
   _columns:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"
-    favorites: "ಮೆಚ್ಚಿನವುಗಳು"
     tl: "ಸಮಯಸಾಲು"
     mentions: "ಹೆಸರಿಸಿದ"
-

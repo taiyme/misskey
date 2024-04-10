@@ -1,7 +1,7 @@
 <template>
 <div class="mkw-jobQueue _monospace" :class="{ _panel: !widgetProps.transparent }">
 	<div class="inbox">
-		<div class="label">Inbox queue<i v-if="current.inbox.waiting > 0" class="ti ti-alert-triangle icon"></i></div>
+		<div class="label">Inbox queue<i v-if="current.inbox.waiting > 0" class="fas fa-exclamation-triangle icon"></i></div>
 		<div class="values">
 			<div>
 				<div>Process</div>
@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div class="deliver">
-		<div class="label">Deliver queue<i v-if="current.deliver.waiting > 0" class="ti ti-alert-triangle icon"></i></div>
+		<div class="label">Deliver queue<i v-if="current.deliver.waiting > 0" class="fas fa-exclamation-triangle icon"></i></div>
 		<div class="values">
 			<div>
 				<div>Process</div>
@@ -46,14 +46,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, reactive } from 'vue';
-import { v4 as uuid } from 'uuid';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { GetFormResultType } from '@/scripts/form';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { stream } from '@/stream';
 import number from '@/filters/number';
 import * as sound from '@/scripts/sound';
-import { deepClone } from '@/scripts/clone';
+import * as os from '@/os';
 
 const name = 'jobQueue';
 
@@ -101,12 +100,12 @@ const prev = reactive({} as typeof current);
 const jammedSound = sound.setVolume(sound.getAudio('syuilo/queue-jammed'), 1);
 
 for (const domain of ['inbox', 'deliver']) {
-	prev[domain] = deepClone(current[domain]);
+	prev[domain] = JSON.parse(JSON.stringify(current[domain]));
 }
 
 const onStats = (stats) => {
 	for (const domain of ['inbox', 'deliver']) {
-		prev[domain] = deepClone(current[domain]);
+		prev[domain] = JSON.parse(JSON.stringify(current[domain]));
 		current[domain].activeSincePrevTick = stats[domain].activeSincePrevTick;
 		current[domain].active = stats[domain].active;
 		current[domain].waiting = stats[domain].waiting;
@@ -128,7 +127,7 @@ connection.on('stats', onStats);
 connection.on('statsLog', onStatsLog);
 
 connection.send('requestLog', {
-	id: uuid(),
+	id: Math.random().toString().substr(2, 8),
 	length: 1,
 });
 

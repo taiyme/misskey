@@ -1,15 +1,15 @@
 <template>
 <div class="_formRoot">
-	<FormInput v-model="name" :max="100" class="_formBlock">
+	<FormInput v-model="name" class="_formBlock">
 		<template #label>Name</template>
 	</FormInput>
 
-	<FormInput v-model="url" :max="1024" type="url" class="_formBlock">
+	<FormInput v-model="url" type="url" class="_formBlock">
 		<template #label>URL</template>
 	</FormInput>
 
-	<FormInput v-model="secret" :max="1024" class="_formBlock">
-		<template #prefix><i class="ti ti-lock"></i></template>
+	<FormInput v-model="secret" class="_formBlock">
+		<template #prefix><i class="fas fa-lock"></i></template>
 		<template #label>Secret</template>
 	</FormInput>
 
@@ -26,7 +26,7 @@
 	</FormSection>
 
 	<div class="_formBlock" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
-		<FormButton primary inline @click="create"><i class="ti ti-check"></i> {{ i18n.ts.create }}</FormButton>
+		<FormButton primary inline @click="create"><i class="fas fa-check"></i> {{ i18n.ts.create }}</FormButton>
 	</div>
 </div>
 </template>
@@ -77,6 +77,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: 'Create new webhook',
-	icon: 'ti ti-webhook',
+	icon: 'fas fa-bolt',
 });
 </script>

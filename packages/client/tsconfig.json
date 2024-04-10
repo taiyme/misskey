@@ -23,13 +23,25 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
 		},
-		"typeRoots": ["node_modules/@types", "@types"],
-		"types": ["vite/client"],
-		"lib": ["esnext", "dom"],
+		"typeRoots": [
+			"node_modules/@types",
+			"@types",
+		],
+		"types": [
+			"vite/client",
+		],
+		"lib": [
+			"esnext",
+			"dom"
+		],
 		"jsx": "preserve"
 	},
 	"compileOnSave": false,
-	"include": ["./**/*.ts", "./**/*.vue"]
+	"include": [
+		".eslintrc.js",
+		"./**/*.ts",
+		"./**/*.vue"
+	]
 }

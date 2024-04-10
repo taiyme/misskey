@@ -12,11 +12,11 @@
 	<div class="tbhwbxda">
 		<div class="form">
 			<FormSplit :min-width="170">
-				<MkInput v-model="username" :autofocus="true" @update:model-value="search">
+				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" @update:model-value="search">
+				<MkInput v-model="host" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { nextTick, onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import MkInput from '@/components/form/input.vue';
 import FormSplit from '@/components/form/split.vue';
@@ -72,9 +72,9 @@ let host = $ref('');
 let users: misskey.entities.UserDetailed[] = $ref([]);
 let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
 let selected: misskey.entities.UserDetailed | null = $ref(null);
-let dialogEl = $ref<InstanceType<typeof XModalWindow>>();
+let dialogEl = $ref();
 
-const search = (): void => {
+const search = () => {
 	if (username === '' && host === '') {
 		users = [];
 		return;
@@ -84,33 +84,33 @@ const search = (): void => {
 		host: host,
 		limit: 10,
 		detail: false,
-	}).then((_users) => {
-		users = _users as unknown as misskey.entities.UserDetailed[];
+	}).then(_users => {
+		users = _users;
 	});
 };
 
-const ok = (): void => {
+const ok = () => {
 	if (selected == null) return;
 	emit('ok', selected);
-	dialogEl?.close();
+	dialogEl.close();
 
 	// 最近使ったユーザー更新
 	let recents = defaultStore.state.recentlyUsedUsers;
-	recents = recents.filter(x => x !== selected?.id);
+	recents = recents.filter(x => x !== selected.id);
 	recents.unshift(selected.id);
 	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
 };
 
-const cancel = (): void => {
+const cancel = () => {
 	emit('cancel');
-	dialogEl?.close();
+	dialogEl.close();
 };
 
 onMounted(() => {
 	os.api('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
-	}).then(showUsers => {
-		recentUsers = showUsers;
+	}).then(users => {
+		recentUsers = users;
 	});
 });
 </script>

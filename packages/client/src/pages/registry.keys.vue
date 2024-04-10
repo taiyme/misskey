@@ -18,7 +18,7 @@
 		<FormSection v-if="keys">
 			<template #label>{{ i18n.ts.keys }}</template>
 			<div class="_formLinks">
-				<FormLink v-for="key in keys" :key="key[0]" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
+				<FormLink v-for="key in keys" :to="`/registry/value/system/${scope.join('/')}/${key[0]}`" class="_monospace">{{ key[0] }}<template #suffix>{{ key[1].toUpperCase() }}</template></FormLink>
 			</div>
 		</FormSection>
 	</MkSpacer>
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -88,7 +88,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.registry,
-	icon: 'ti ti-adjustments',
+	icon: 'fas fa-cogs',
 });
 </script>
 

@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-size="{ max: [400] }" class="yweeujhr">
-			<MkButton primary class="start" @click="start"><i class="ti ti-plus"></i> {{ $ts.startMessaging }}</MkButton>
+			<MkButton primary class="start" @click="start"><i class="fas fa-plus"></i> {{ $ts.startMessaging }}</MkButton>
 
 			<div v-if="messages.length > 0" class="history">
 				<MkA
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, onMounted, onUnmounted } from 'vue';
+import { defineAsyncComponent, defineComponent, inject, markRaw, onMounted, onUnmounted } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import MkButton from '@/components/MkButton.vue';
 import { acct } from '@/filters/user';
@@ -96,11 +96,11 @@ function onRead(ids) {
 function start(ev) {
 	os.popupMenu([{
 		text: i18n.ts.messagingWithUser,
-		icon: 'ti ti-user',
+		icon: 'fas fa-user',
 		action: () => { startUser(); },
 	}, {
 		text: i18n.ts.messagingWithGroup,
-		icon: 'ti ti-users',
+		icon: 'fas fa-users',
 		action: () => { startGroup(); },
 	}], ev.currentTarget ?? ev.target);
 }
@@ -158,7 +158,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.messaging,
-	icon: 'ti ti-messages',
+	icon: 'fas fa-comments',
 });
 </script>
 

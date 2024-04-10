@@ -26,9 +26,9 @@
 
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
-				<FormSwitch v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
-				<FormSwitch v-model="isBlocked" class="_formBlock" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
-				<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</FormSwitch>
+				<FormSwitch v-model="isBlocked" class="_formBlock" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</FormSwitch>
+				<MkButton @click="refreshMetadata"><i class="fas fa-refresh"></i> Refresh metadata</MkButton>
 			</FormSection>
 
 			<FormSection>
@@ -128,6 +128,7 @@ import MkSelect from '@/components/form/select.vue';
 import FormSwitch from '@/components/form/switch.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
+import bytes from '@/filters/bytes';
 import { iAmModerator } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
@@ -191,7 +192,7 @@ fetch();
 
 const headerActions = $computed(() => [{
 	text: `https://${props.host}`,
-	icon: 'ti ti-external-link',
+	icon: 'fas fa-external-link-alt',
 	handler: () => {
 		window.open(`https://${props.host}`, '_blank');
 	},
@@ -200,24 +201,24 @@ const headerActions = $computed(() => [{
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'ti ti-info-circle',
+	icon: 'fas fa-info-circle',
 }, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'ti ti-chart-line',
+	icon: 'fas fa-chart-simple',
 }, {
 	key: 'users',
 	title: i18n.ts.users,
-	icon: 'ti ti-users',
+	icon: 'fas fa-users',
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'ti ti-code',
+	icon: 'fas fa-code',
 }]);
 
 definePageMetadata({
 	title: props.host,
-	icon: 'ti ti-server',
+	icon: 'fas fa-server',
 });
 </script>
 

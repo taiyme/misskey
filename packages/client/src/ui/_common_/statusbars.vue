@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
+import * as os from '@/os';
 import { defaultStore } from '@/store';
 const XRss = defineAsyncComponent(() => import('./statusbar-rss.vue'));
 const XFederation = defineAsyncComponent(() => import('./statusbar-federation.vue'));

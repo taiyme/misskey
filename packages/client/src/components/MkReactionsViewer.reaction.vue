@@ -2,11 +2,12 @@
 <button
 	v-if="count > 0"
 	ref="buttonRef"
+	v-ripple="canToggle"
 	class="hkzvhatu _button"
-	:class="[{ reacted: note.myReaction == reaction, canToggle }, useEasyReactionsViewer ? 'easy' : 'normal']"
-	@click="react"
+	:class="{ reacted: note.myReaction == reaction, canToggle }"
+	@click="toggleReaction()"
 >
-	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis" :use-fallback-icon="true"/>
+	<XReactionIcon class="icon" :reaction="reaction" :custom-emojis="note.emojis"/>
 	<span class="count">{{ count }}</span>
 </button>
 </template>
@@ -16,13 +17,9 @@ import { computed, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
-import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
-import { tmsStore } from '@/tms/store';
-import { getReactMenu, toggleReact } from '@/scripts/tms/get-react-menu';
 
 const props = defineProps<{
 	reaction: string;
@@ -31,51 +28,45 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const useEasyReactionsViewer = computed(() => tmsStore.state.useEasyReactionsViewer);
-
 const buttonRef = ref<HTMLElement>();
 
-const canToggle = computed(() => !props.reaction.match(/@\w/) && !!$i);
+const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
-const react = (): void => {
-	const param = {
-		reaction: props.reaction,
-		note: props.note,
-		canToggle: canToggle,
-		reactButton: buttonRef,
-	};
-	if (tmsStore.state.useReactionMenu) {
-		getReactMenu(param);
+const toggleReaction = () => {
+	if (!canToggle.value) return;
+
+	const oldReaction = props.note.myReaction;
+	if (oldReaction) {
+		os.api('notes/reactions/delete', {
+			noteId: props.note.id,
+		}).then(() => {
+			if (oldReaction !== props.reaction) {
+				os.api('notes/reactions/create', {
+					noteId: props.note.id,
+					reaction: props.reaction,
+				});
+			}
+		});
 	} else {
-		toggleReact(param);
+		os.api('notes/reactions/create', {
+			noteId: props.note.id,
+			reaction: props.reaction,
+		});
 	}
 };
 
-const reactAnime = (): void => {
+const anime = () => {
 	if (document.hidden) return;
-	if (!defaultStore.state.animation) return;
 
-	const el = buttonRef.value;
-	if (el) {
-		const rect = el.getBoundingClientRect();
-		const x = rect.left + 16;
-		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(MkReactionEffect, {
-			reaction: props.reaction,
-			emojis: props.note.emojis,
-			x,
-			y,
-			originElement: el,
-		}, {}, 'end');
-	}
+	// TODO: 新しくリアクションが付いたことが視覚的に分かりやすいアニメーション
 };
 
 watch(() => props.count, (newCount, oldCount) => {
-	if (oldCount < newCount) reactAnime();
+	if (oldCount < newCount) anime();
 });
 
 onMounted(() => {
-	if (!props.isInitial) reactAnime();
+	if (!props.isInitial) anime();
 });
 
 useTooltip(buttonRef, async (showing) => {
@@ -101,86 +92,44 @@ useTooltip(buttonRef, async (showing) => {
 
 <style lang="scss" scoped>
 .hkzvhatu {
-	&.normal {
-		display: inline-block;
-		height: 32px;
-		padding: 0 6px;
-		border-radius: 4px;
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border-radius: 4px;
 
-		&.canToggle {
-			background-color: rgba(0, 0, 0, 0.05);
+	&.canToggle {
+		background: rgba(0, 0, 0, 0.05);
 
-			&:hover {
-				background-color: rgba(0, 0, 0, 0.1);
-			}
-		}
-
-		&:not(.canToggle) {
-			cursor: default;
-		}
-
-		&.reacted {
-			background-color: var(--accent);
-
-			&:hover {
-				background-color: var(--accent);
-			}
-
-			> .count {
-				color: var(--fgOnAccent);
-			}
-
-			> .icon {
-				filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-			}
-		}
-
-		> .count {
-			font-size: 0.9em;
-			line-height: 32px;
-			margin: 0 0 0 4px;
+		&:hover {
+			background: rgba(0, 0, 0, 0.1);
 		}
 	}
 
-	&.easy {
-		background-color: var(--panel);
-		color: var(--fgTransparentWeak);
-		box-sizing: border-box;
-		display: grid;
-		grid-template-columns: auto auto;
-		grid-template-rows: 32px;
-		align-items: center;
-		border-radius: 4px;
-		box-shadow: 0 4px 14px -8px var(--shadow);
-		overflow: hidden;
+	&:not(.canToggle) {
+		cursor: default;
+	}
 
-		&.canToggle {
-			box-shadow: 0 4px 14px -8px var(--shadow), 0 0 0 1px var(--divider); // SEE: https://dskd.jp/archives/73.html
-		}
+	&.reacted {
+		background: var(--accent);
 
-		&.canToggle:hover,
-		&.reacted {
-			background-color: var(--accent);
-			color: var(--fgOnAccent);
-		}
-
-		&:not(.canToggle) {
-			cursor: default;
-		}
-
-		> .icon {
-			background-color: #fff;
-			box-sizing: border-box;
-			padding: 4px;
-			max-width: 100%; // はみ出し防止
-			height: 32px !important; // MkEmojiのheight上書き, 100%を指定するとGeckoエンジンで描画がバグる
+		&:hover {
+			background: var(--accent);
 		}
 
 		> .count {
-			box-sizing: border-box;
-			padding: 0 6px;
-			font-size: 0.9em;
+			color: var(--fgOnAccent);
 		}
+
+		> .icon {
+			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+		}
+	}
+
+	> .count {
+		font-size: 0.9em;
+		line-height: 32px;
+		margin: 0 0 0 4px;
 	}
 }
 </style>

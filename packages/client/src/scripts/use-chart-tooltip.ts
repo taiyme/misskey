@@ -1,4 +1,4 @@
-import { onUnmounted, onDeactivated, ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import * as os from '@/os';
 import MkChartTooltip from '@/components/MkChartTooltip.vue';
 
@@ -22,10 +22,6 @@ export function useChartTooltip() {
 
 	onUnmounted(() => {
 		if (disposeTooltipComponent) disposeTooltipComponent();
-	});
-
-	onDeactivated(() => {
-		tooltipShowing.value = false;
 	});
 
 	function handler(context) {

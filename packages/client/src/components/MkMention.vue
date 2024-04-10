@@ -41,15 +41,10 @@ const bgCss = bg.toRgbString();
 
 <style lang="scss" scoped>
 .akbvjaqn {
-	display: inline-flex;
+	display: inline-block;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--mention);
-  vertical-align: middle;
-  align-items: center;
-  overflow: hidden;
-  max-width: 100%;
-	box-sizing: border-box;
 
 	&.isMe {
 		color: var(--mentionMe);
@@ -64,14 +59,8 @@ const bgCss = bg.toRgbString();
 		border-radius: 100%;
 	}
 
-	> .main {
-		overflow: hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-
-		> .host {
-			opacity: 0.5;
-		}
+	> .main > .host {
+		opacity: 0.5;
 	}
 }
 </style>

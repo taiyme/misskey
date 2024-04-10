@@ -4,7 +4,6 @@
 	<div class="main _formRoot">
 		<slot></slot>
 	</div>
-	<p class="caption"><slot name="caption"></slot></p>
 </div>
 </template>
 
@@ -31,16 +30,6 @@
 	> .label {
 		font-weight: bold;
 		margin: 1.5em 0 16px 0;
-
-		&:empty {
-			display: none;
-		}
-	}
-
-	> .caption {
-		font-size: 0.85em;
-		padding: 8px 0 0 0;
-		color: var(--fgTransparentWeak);
 
 		&:empty {
 			display: none;

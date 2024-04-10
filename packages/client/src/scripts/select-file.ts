@@ -1,6 +1,5 @@
 import { ref } from 'vue';
 import { DriveFile } from 'misskey-js/built/entities';
-import { v4 as uuid } from 'uuid';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
@@ -49,7 +48,7 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			}).then(({ canceled, result: url }) => {
 				if (canceled) return;
 
-				const marker = uuid();
+				const marker = Math.random().toString(); // TODO: UUIDとか使う
 
 				const connection = stream.useChannel('main');
 				connection.on('urlUploadFinished', urlResponse => {
@@ -81,15 +80,15 @@ function select(src: any, label: string | null, multiple: boolean): Promise<Driv
 			ref: keepOriginal,
 		}, {
 			text: i18n.ts.upload,
-			icon: 'ti ti-upload',
+			icon: 'fas fa-upload',
 			action: chooseFileFromPc,
 		}, {
 			text: i18n.ts.fromDrive,
-			icon: 'ti ti-cloud',
+			icon: 'fas fa-cloud',
 			action: chooseFileFromDrive,
 		}, {
 			text: i18n.ts.fromUrl,
-			icon: 'ti ti-link',
+			icon: 'fas fa-link',
 			action: chooseFileFromUrl,
 		}], src);
 	});

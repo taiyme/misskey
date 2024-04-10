@@ -2,14 +2,14 @@
  * Gulp tasks
  */
 
-import fs from 'fs';
-import gulp from 'gulp';
-import replace from 'gulp-replace';
-import terser from 'gulp-terser';
-import cssnano from 'gulp-cssnano';
+const fs = require('fs');
+const gulp = require('gulp');
+const replace = require('gulp-replace');
+const terser = require('gulp-terser');
+const cssnano = require('gulp-cssnano');
 
-import locales from './locales/index.js';
-import meta from './package.json' assert { type: "json" };
+const locales = require('./locales');
+const meta = require('./package.json');
 
 gulp.task('copy:backend:views', () =>
 	gulp.src('./packages/backend/src/server/web/views/**/*').pipe(gulp.dest('./packages/backend/built/server/web/views'))
@@ -19,8 +19,8 @@ gulp.task('copy:client:fonts', () =>
 	gulp.src('./packages/client/node_modules/three/examples/fonts/**/*').pipe(gulp.dest('./built/_client_dist_/fonts/'))
 );
 
-gulp.task('copy:client:tabler-icons', () =>
-	gulp.src('./packages/client/node_modules/@tabler/icons-webfont/**').pipe(gulp.dest('./built/_client_dist_/tabler-icons/'))
+gulp.task('copy:client:fontawesome', () =>
+	gulp.src('./packages/client/node_modules/@fortawesome/fontawesome-free/**/*').pipe(gulp.dest('./built/_client_dist_/fontawesome/'))
 );
 
 gulp.task('copy:client:locales', cb => {
@@ -53,7 +53,7 @@ gulp.task('build:backend:style', () => {
 });
 
 gulp.task('build', gulp.parallel(
-	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts', 'copy:client:tabler-icons'
+	'copy:client:locales', 'copy:backend:views', 'build:backend:script', 'build:backend:style', 'copy:client:fonts', 'copy:client:fontawesome'
 ));
 
 gulp.task('default', gulp.task('build'));

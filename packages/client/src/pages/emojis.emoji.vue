@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import * as os from '@/os';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -24,9 +24,9 @@ function menu(ev) {
 		text: ':' + props.emoji.name + ':',
 	}, {
 		text: i18n.ts.copy,
-		icon: 'ti ti-copy',
+		icon: 'fas fa-copy',
 		action: () => {
-			copyText(`:${props.emoji.name}:`);
+			copyToClipboard(`:${props.emoji.name}:`);
 			os.success();
 		}
 	}], ev.currentTarget ?? ev.target);

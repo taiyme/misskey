@@ -7,24 +7,24 @@
 				:parent-folder="folder"
 				@move="move"
 				@upload="upload"
-				@remove-file="removeFile"
-				@remove-folder="removeFolder"
+				@removeFile="removeFile"
+				@removeFolder="removeFolder"
 			/>
-			<template v-for="f in hierarchyFolders" :key="f.id">
-				<span class="separator"><i class="ti ti-chevron-right"></i></span>
+			<template v-for="f in hierarchyFolders">
+				<span class="separator"><i class="fas fa-angle-right"></i></span>
 				<XNavFolder
 					:folder="f"
 					:parent-folder="folder"
 					@move="move"
 					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
 				/>
 			</template>
-			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
+			<span v-if="folder != null" class="separator"><i class="fas fa-angle-right"></i></span>
 			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
 		</div>
-		<button class="menu _button" @click="showMenu"><i class="ti ti-dots"></i></button>
+		<button class="menu _button" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 	</nav>
 	<div
 		ref="main" class="main"
@@ -37,50 +37,44 @@
 	>
 		<div ref="contents" class="contents">
 			<div v-show="folders.length > 0" ref="foldersContainer" class="folders">
-				<div :class="$style.gridLayout">
-					<XFolder
-						v-for="(f, i) in folders"
-						:key="f.id"
-						v-anim="i"
-						class="folder"
-						:class="$style.gridItem"
-						:folder="f"
-						:select-mode="select === 'folder'"
-						:is-selected="selectedFolders.some(x => x.id === f.id)"
-						@chosen="chooseFolder"
-						@move="move"
-						@upload="upload"
-						@remove-file="removeFile"
-						@remove-folder="removeFolder"
-						@dragstart="isDragSource = true"
-						@dragend="isDragSource = false"
-					/>
-				</div>
-				<div :class="$style.loadMore">
-					<MkButton v-if="moreFolders" ref="moreFolders" primary rounded>{{ i18n.ts.loadMore }}</MkButton>
-				</div>
+				<XFolder
+					v-for="(f, i) in folders"
+					:key="f.id"
+					v-anim="i"
+					class="folder"
+					:folder="f"
+					:select-mode="select === 'folder'"
+					:is-selected="selectedFolders.some(x => x.id === f.id)"
+					@chosen="chooseFolder"
+					@move="move"
+					@upload="upload"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
+					@dragstart="isDragSource = true"
+					@dragend="isDragSource = false"
+				/>
+				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
+				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" class="files">
-				<div :class="$style.gridLayout">
-					<XFile
-						v-for="(file, i) in files"
-						:key="file.id"
-						v-anim="i"
-						class="file"
-						:class="$style.gridItem"
-						:file="file"
-						:select-mode="select === 'file'"
-						:is-selected="selectedFiles.some(x => x.id === file.id)"
-						@chosen="chooseFile"
-						@dragstart="isDragSource = true"
-						@dragend="isDragSource = false"
-					/>
-				</div>
-				<div :class="$style.loadMore">
-					<MkButton v-show="moreFiles" ref="loadMoreFiles" primary rounded @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
-				</div>
+				<XFile
+					v-for="(file, i) in files"
+					:key="file.id"
+					v-anim="i"
+					class="file"
+					:file="file"
+					:select-mode="select === 'file'"
+					:is-selected="selectedFiles.some(x => x.id === file.id)"
+					@chosen="chooseFile"
+					@dragstart="isDragSource = true"
+					@dragend="isDragSource = false"
+				/>
+				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
+				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-if="files.length === 0 && folders.length === 0 && !fetching" class="empty">
+			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
 				<p v-if="draghover">{{ i18n.t('empty-draghover') }}</p>
 				<p v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
 				<p v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</p>
@@ -94,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { markRaw, nextTick, onActivated, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from './MkButton.vue';
 import XNavFolder from '@/components/MkDrive.navFolder.vue';
@@ -105,8 +99,6 @@ import { stream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { uploadFile, uploads } from '@/scripts/upload';
-import { disableContextmenu } from '@/scripts/touch';
-import { parseObject } from '@/scripts/tms/parse';
 
 const props = withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
@@ -236,7 +228,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		const file = parseObject<Misskey.entities.DriveFile>(driveFile);
+		const file = JSON.parse(driveFile);
 		if (files.value.some(f => f.id === file.id)) return;
 		removeFile(file.id);
 		os.api('drive/files/update', {
@@ -249,7 +241,7 @@ function onDrop(ev: DragEvent): any {
 	//#region ドライブのフォルダ
 	const driveFolder = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FOLDER_);
 	if (driveFolder != null && driveFolder !== '') {
-		const droppedFolder = parseObject<Misskey.entities.DriveFolder>(driveFolder);
+		const droppedFolder = JSON.parse(driveFolder);
 
 		// 移動先が自分自身ならreject
 		if (folder.value && droppedFolder.id === folder.value.id) return false;
@@ -581,26 +573,26 @@ function getMenu() {
 		type: 'label',
 	}, {
 		text: i18n.ts.upload,
-		icon: 'ti ti-upload',
+		icon: 'fas fa-upload',
 		action: () => { selectLocalFile(); },
 	}, {
 		text: i18n.ts.fromUrl,
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		action: () => { urlUpload(); },
 	}, null, {
 		text: folder.value ? folder.value.name : i18n.ts.drive,
 		type: 'label',
 	}, folder.value ? {
 		text: i18n.ts.renameFolder,
-		icon: 'ti ti-forms',
+		icon: 'fas fa-i-cursor',
 		action: () => { renameFolder(folder.value); },
 	} : undefined, folder.value ? {
 		text: i18n.ts.deleteFolder,
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash-alt',
 		action: () => { deleteFolder(folder.value as Misskey.entities.DriveFolder); },
 	} : undefined, {
 		text: i18n.ts.createFolder,
-		icon: 'ti ti-folder-plus',
+		icon: 'fas fa-folder-plus',
 		action: () => { createFolder(); },
 	}];
 }
@@ -610,7 +602,6 @@ function showMenu(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
 	os.contextMenu(getMenu(), ev);
 }
 
@@ -747,7 +738,22 @@ onBeforeUnmount(() => {
 
 			> .folders,
 			> .files {
-				margin-bottom: 8px;
+				display: flex;
+				flex-wrap: wrap;
+
+				> .folder,
+				> .file {
+					flex-grow: 1;
+					width: 128px;
+					margin: 4px;
+					box-sizing: border-box;
+				}
+
+				> .padding {
+					flex-grow: 1;
+					pointer-events: none;
+					width: 128px + 8px;
+				}
 			}
 
 			> .empty {
@@ -776,23 +782,5 @@ onBeforeUnmount(() => {
 	> input {
 		display: none;
 	}
-}
-</style>
-
-<style lang="scss" module>
-.gridLayout {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-	gap: 8px;
-}
-
-.gridItem {
-	box-sizing: border-box;
-	width: 100%;
-}
-
-.loadMore {
-	display: grid;
-	place-items: center;
 }
 </style>

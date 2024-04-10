@@ -29,7 +29,7 @@
 			</main>
 			<div class="powered-by">
 				<b><MkA to="/">{{ host }}</MkA></b>
-				<small>Powered by <a href="https://github.com/taiyme/misskey" target="_blank">taiyme/misskey</a></small>
+				<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 			</div>
 		</div>
 	</div>
@@ -37,9 +37,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
+import { search } from '@/scripts/search';
 import * as os from '@/os';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -74,13 +75,11 @@ export default defineComponent({
 	computed: {
 		keymap(): any {
 			return {
-				'd': (): void => {
+				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
 					this.$store.set('darkMode', !this.$store.state.darkMode);
 				},
-				's': (): void => {
-					mainRouter.push('/search');
-				},
+				's': search,
 				'h|/': this.help,
 			};
 		},

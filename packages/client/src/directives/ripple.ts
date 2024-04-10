@@ -1,4 +1,4 @@
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import Ripple from '@/components/MkRipple.vue';
 import { popup } from '@/os';
 
 export default {
@@ -12,7 +12,7 @@ export default {
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 
-			popup(MkRippleEffect, { x, y }, {}, 'end');
+			popup(Ripple, { x, y }, {}, 'end');
 		});
 	}
 };

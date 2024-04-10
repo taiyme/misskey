@@ -24,25 +24,27 @@
 				<template #label>{{ i18n.ts.value }} (JSON)</template>
 			</FormTextarea>
 
-			<MkButton class="_formBlock" primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+			<MkButton class="_formBlock" primary @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
 
 			<MkKeyValue class="_formBlock">
 				<template #key>{{ i18n.ts.updatedAt }}</template>
 				<template #value><MkTime :time="value.updatedAt" mode="detail"/></template>
 			</MkKeyValue>
 
-			<MkButton danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+			<MkButton danger @click="del"><i class="fas fa-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</template>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormTextarea from '@/components/form/textarea.vue';
@@ -113,7 +115,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.registry,
-	icon: 'ti ti-adjustments',
+	icon: 'fas fa-cogs',
 });
 </script>
 

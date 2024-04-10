@@ -6,7 +6,7 @@
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
-						<template #prefix><i class="ti ti-search"></i></template>
+						<template #prefix><i class="fas fa-search"></i></template>
 						<template #label>{{ i18n.ts.search }}</template>
 					</MkInput>
 					<MkSwitch v-model="selectMode" style="margin: 8px 0;">
@@ -39,7 +39,7 @@
 				<div v-else-if="tab === 'remote'" class="remote">
 					<FormSplit>
 						<MkInput v-model="queryRemote" :debounce="true" type="search">
-							<template #prefix><i class="ti ti-search"></i></template>
+							<template #prefix><i class="fas fa-search"></i></template>
 							<template #label>{{ i18n.ts.search }}</template>
 						</MkInput>
 						<MkInput v-model="host" :debounce="true">
@@ -68,11 +68,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, defineComponent, ref, toRef } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/form/input.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import MkTab from '@/components/MkTab.vue';
 import MkSwitch from '@/components/form/switch.vue';
 import FormSplit from '@/components/form/split.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file';
@@ -163,49 +164,49 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 		text: ':' + emoji.name + ':',
 	}, {
 		text: i18n.ts.import,
-		icon: 'ti ti-plus',
+		icon: 'fas fa-plus',
 		action: () => { im(emoji); },
 	}], ev.currentTarget ?? ev.target);
 };
 
 const menu = (ev: MouseEvent) => {
 	os.popupMenu([{
-		icon: 'ti ti-download',
+		icon: 'fas fa-download',
 		text: i18n.ts.export,
 		action: async () => {
 			os.api('export-custom-emojis', {
 			})
-				.then(() => {
-					os.alert({
-						type: 'info',
-						text: i18n.ts.exportRequested,
-					});
-				}).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: err.message,
-					});
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.ts.exportRequested,
 				});
+			}).catch((err) => {
+				os.alert({
+					type: 'error',
+					text: err.message,
+				});
+			});
 		},
 	}, {
-		icon: 'ti ti-upload',
+		icon: 'fas fa-upload',
 		text: i18n.ts.import,
 		action: async () => {
 			const file = await selectFile(ev.currentTarget ?? ev.target);
 			os.api('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
-				.then(() => {
-					os.alert({
-						type: 'info',
-						text: i18n.ts.importRequested,
-					});
-				}).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: err.message,
-					});
+			.then(() => {
+				os.alert({
+					type: 'info',
+					text: i18n.ts.importRequested,
 				});
+			}).catch((err) => {
+				os.alert({
+					type: 'error',
+					text: err.message,
+				});
+			});
 		},
 	}], ev.currentTarget ?? ev.target);
 };
@@ -272,11 +273,11 @@ const delBulk = async () => {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.addEmoji,
 	handler: add,
 }, {
-	icon: 'ti ti-dots',
+	icon: 'fas fa-ellipsis-h',
 	handler: menu,
 }]);
 
@@ -290,7 +291,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.customEmojis,
-	icon: 'ti ti-mood-happy',
+	icon: 'fas fa-laugh',
 })));
 </script>
 

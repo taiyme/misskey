@@ -1,7 +1,7 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity">
-	<template #header><i class="ti ti-chart-line"></i>{{ i18n.ts._widgets.activity }}</template>
-	<template #func><button class="_button" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
+	<template #header><i class="fas fa-chart-simple"></i>{{ i18n.ts._widgets.activity }}</template>
+	<template #func><button class="_button" @click="toggleView()"><i class="fas fa-sort"></i></button></template>
 
 	<div>
 		<MkLoading v-if="fetching"/>
@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import XCalendar from './activity.calendar.vue';
 import XChart from './activity.chart.vue';
 import { GetFormResultType } from '@/scripts/form';

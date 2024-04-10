@@ -1,11 +1,7 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="matxzzsk">
-	<div class="label" @click="focus">
-		<span v-if="$slots.label" class="label-text"><slot name="label"></slot></span>
-		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
-	</div>
-	<div class="input" :class="{ inline, disabled, focused, invalid }">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ inline, disabled, focused }">
 		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
 		<input
 			ref="inputEl"
@@ -23,25 +19,23 @@
 			:list="id"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown"
+			@keydown="onKeydown($event)"
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :value="data"/>
 		</datalist>
 		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
+import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
-import { length } from 'stringz';
-import { v4 as uuid } from 'uuid';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
@@ -55,20 +49,19 @@ const props = defineProps<{
 	pattern?: string;
 	placeholder?: string;
 	autofocus?: boolean;
-	autocomplete?: string;
+	autocomplete?: boolean;
 	spellcheck?: boolean;
-	step?: number;
+	step?: any;
 	datalist?: string[];
 	inline?: boolean;
 	debounce?: boolean;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
-	max?: number;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: Event): void;
+	(ev: 'change', _ev: KeyboardEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string | number): void;
@@ -76,11 +69,12 @@ const emit = defineEmits<{
 
 const { modelValue, type, autofocus } = toRefs(props);
 const v = ref(modelValue.value);
-const id = uuid();
+const id = Math.random().toString(); // TODO: uuid?
 const focused = ref(false);
 const changed = ref(false);
 const invalid = ref(false);
-const inputEl = ref<HTMLInputElement>();
+const filled = computed(() => v.value !== '' && v.value != null);
+const inputEl = ref<HTMLElement>();
 const prefixEl = ref<HTMLElement>();
 const suffixEl = ref<HTMLElement>();
 const height =
@@ -88,23 +82,12 @@ const height =
 	props.large ? 40 :
 	38;
 
-const textLength = $computed((): number => {
-	if (typeof v.value !== 'string') return 0;
-	return length(v.value);
-});
-
-const maxTextLength = $computed((): number | null => {
-	return props.max ?? null;
-});
-
-const focus = (): void => inputEl.value?.focus();
-const onInput = (ev: Event): void => {
+const focus = () => inputEl.value.focus();
+const onInput = (ev: KeyboardEvent) => {
 	changed.value = true;
 	emit('change', ev);
 };
-const onKeydown = (ev: KeyboardEvent): void => {
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-
+const onKeydown = (ev: KeyboardEvent) => {
 	emit('keydown', ev);
 
 	if (ev.code === 'Enter') {
@@ -112,10 +95,10 @@ const onKeydown = (ev: KeyboardEvent): void => {
 	}
 };
 
-const updated = (): void => {
+const updated = () => {
 	changed.value = false;
-	if (type?.value === 'number') {
-		emit('update:modelValue', parseFloat(v.value as string));
+	if (type.value === 'number') {
+		emit('update:modelValue', parseFloat(v.value));
 	} else {
 		emit('update:modelValue', v.value);
 	}
@@ -127,9 +110,7 @@ watch(modelValue, newValue => {
 	v.value = newValue;
 });
 
-watch(v, () => {
-	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
-
+watch(v, newValue => {
 	if (!props.manualSave) {
 		if (props.debounce) {
 			debouncedUpdated();
@@ -137,12 +118,13 @@ watch(v, () => {
 			updated();
 		}
 	}
+
+	invalid.value = inputEl.value.validity.badInput;
 });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する
 useInterval(() => {
-	if (!inputEl.value) return;
 	if (prefixEl.value) {
 		if (prefixEl.value.offsetWidth) {
 			inputEl.value.style.paddingLeft = prefixEl.value.offsetWidth + 'px';
@@ -173,26 +155,9 @@ onMounted(() => {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
-		min-height: 1.35em; // line-height
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 8px;
 
 		&:empty {
 			display: none;
-		}
-
-		> .label-text {
-			overflow-wrap: break-word;
-		}
-
-		> .text-count {
-			opacity: 0.7;
-
-			&.over {
-				color: var(--error);
-			}
 		}
 	}
 

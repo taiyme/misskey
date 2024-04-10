@@ -22,20 +22,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onActivated, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import { scroll } from '@/scripts/scroll';
 import { signout , $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
 
 const indexInfo = {
 	title: i18n.ts.settings,
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	hideHeader: true,
 };
 const INFO = ref(indexInfo);
@@ -57,42 +58,42 @@ const ro = new ResizeObserver((entries, observer) => {
 const menuDef = computed(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
-		icon: 'ti ti-user',
+		icon: 'fas fa-user',
 		text: i18n.ts.profile,
 		to: '/settings/profile',
 		active: currentPage?.route.name === 'profile',
 	}, {
-		icon: 'ti ti-lock-open',
+		icon: 'fas fa-lock-open',
 		text: i18n.ts.privacy,
 		to: '/settings/privacy',
 		active: currentPage?.route.name === 'privacy',
 	}, {
-		icon: 'ti ti-mood-happy',
+		icon: 'fas fa-laugh',
 		text: i18n.ts.reaction,
 		to: '/settings/reaction',
 		active: currentPage?.route.name === 'reaction',
 	}, {
-		icon: 'ti ti-cloud',
+		icon: 'fas fa-cloud',
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: currentPage?.route.name === 'drive',
 	}, {
-		icon: 'ti ti-bell',
+		icon: 'fas fa-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
 		active: currentPage?.route.name === 'notifications',
 	}, {
-		icon: 'ti ti-mail',
+		icon: 'fas fa-envelope',
 		text: i18n.ts.email,
 		to: '/settings/email',
 		active: currentPage?.route.name === 'email',
 	}, {
-		icon: 'ti ti-share',
+		icon: 'fas fa-share-alt',
 		text: i18n.ts.integration,
 		to: '/settings/integration',
 		active: currentPage?.route.name === 'integration',
 	}, {
-		icon: 'ti ti-lock',
+		icon: 'fas fa-lock',
 		text: i18n.ts.security,
 		to: '/settings/security',
 		active: currentPage?.route.name === 'security',
@@ -100,32 +101,32 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.clientSettings,
 	items: [{
-		icon: 'ti ti-adjustments',
+		icon: 'fas fa-cogs',
 		text: i18n.ts.general,
 		to: '/settings/general',
 		active: currentPage?.route.name === 'general',
 	}, {
-		icon: 'ti ti-palette',
+		icon: 'fas fa-palette',
 		text: i18n.ts.theme,
 		to: '/settings/theme',
 		active: currentPage?.route.name === 'theme',
 	}, {
-		icon: 'ti ti-menu-2',
+		icon: 'fas fa-bars',
 		text: i18n.ts.navbar,
 		to: '/settings/navbar',
 		active: currentPage?.route.name === 'navbar',
 	}, {
-		icon: 'ti ti-equal-double',
+		icon: 'fas fa-bars-progress',
 		text: i18n.ts.statusbar,
 		to: '/settings/statusbar',
 		active: currentPage?.route.name === 'statusbar',
 	}, {
-		icon: 'ti ti-music',
+		icon: 'fas fa-music',
 		text: i18n.ts.sounds,
 		to: '/settings/sounds',
 		active: currentPage?.route.name === 'sounds',
 	}, {
-		icon: 'ti ti-plug',
+		icon: 'fas fa-plug',
 		text: i18n.ts.plugins,
 		to: '/settings/plugin',
 		active: currentPage?.route.name === 'plugin',
@@ -133,50 +134,50 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.otherSettings,
 	items: [{
-		icon: 'ti ti-package',
+		icon: 'fas fa-boxes',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
 	}, {
-		icon: 'ti ti-planet-off',
+		icon: 'fas fa-volume-mute',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
 		active: currentPage?.route.name === 'instance-mute',
 	}, {
-		icon: 'ti ti-ban',
+		icon: 'fas fa-ban',
 		text: i18n.ts.muteAndBlock,
 		to: '/settings/mute-block',
 		active: currentPage?.route.name === 'mute-block',
 	}, {
-		icon: 'ti ti-message-off',
+		icon: 'fas fa-comment-slash',
 		text: i18n.ts.wordMute,
 		to: '/settings/word-mute',
 		active: currentPage?.route.name === 'word-mute',
 	}, {
-		icon: 'ti ti-api',
+		icon: 'fas fa-key',
 		text: 'API',
 		to: '/settings/api',
 		active: currentPage?.route.name === 'api',
 	}, {
-		icon: 'ti ti-webhook',
+		icon: 'fas fa-bolt',
 		text: 'Webhook',
 		to: '/settings/webhook',
 		active: currentPage?.route.name === 'webhook',
 	}, {
-		icon: 'ti ti-dots',
+		icon: 'fas fa-ellipsis-h',
 		text: i18n.ts.other,
 		to: '/settings/other',
 		active: currentPage?.route.name === 'other',
 	}],
 }, {
 	items: [{
-		icon: 'ti ti-device-floppy',
+		icon: 'fas fa-floppy-disk',
 		text: i18n.ts.preferencesBackups,
 		to: '/settings/preferences-backups',
 		active: currentPage?.route.name === 'preferences-backups',
 	}, {
 		type: 'button',
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash',
 		text: i18n.ts.clearCache,
 		action: () => {
 			localStorage.removeItem('locale');
@@ -185,7 +186,7 @@ const menuDef = computed(() => [{
 		},
 	}, {
 		type: 'button',
-		icon: 'ti ti-power',
+		icon: 'fas fa-sign-in-alt fa-flip-horizontal',
 		text: i18n.ts.logout,
 		action: async () => {
 			const { canceled } = await os.confirm({
@@ -196,13 +197,6 @@ const menuDef = computed(() => [{
 			signout();
 		},
 		danger: true,
-	}],
-}, {
-	items: [{
-		icon: 'ti ti-square-plus',
-		text: 'taiyme',
-		to: '/settings/taiyme-services',
-		active: currentPage?.route.name === 'taiyme-services',
 	}],
 }]);
 

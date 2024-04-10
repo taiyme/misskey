@@ -34,13 +34,12 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import { disableContextmenu } from '@/scripts/touch';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -64,30 +63,30 @@ const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(pro
 function getMenu() {
 	return [{
 		text: i18n.ts.rename,
-		icon: 'ti ti-forms',
+		icon: 'fas fa-i-cursor',
 		action: rename,
 	}, {
 		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: props.file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
+		icon: props.file.isSensitive ? 'fas fa-eye' : 'fas fa-eye-slash',
 		action: toggleSensitive,
 	}, {
 		text: i18n.ts.describeFile,
-		icon: 'ti ti-forms',
+		icon: 'fas fa-i-cursor',
 		action: describe,
 	}, null, {
 		text: i18n.ts.copyUrl,
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		action: copyUrl,
 	}, {
 		type: 'a',
 		href: props.file.url,
 		target: '_blank',
 		text: i18n.ts.download,
-		icon: 'ti ti-download',
+		icon: 'fas fa-download',
 		download: props.file.name,
 	}, null, {
 		text: i18n.ts.delete,
-		icon: 'ti ti-trash',
+		icon: 'fas fa-trash-alt',
 		danger: true,
 		action: deleteFile,
 	}];
@@ -102,7 +101,6 @@ function onClick(ev: MouseEvent) {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
 	os.contextMenu(getMenu(), ev);
 }
 
@@ -163,7 +161,7 @@ function toggleSensitive() {
 }
 
 function copyUrl() {
-	copyText(props.file.url);
+	copyToClipboard(props.file.url);
 	os.success();
 }
 /*

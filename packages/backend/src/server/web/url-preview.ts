@@ -1,14 +1,14 @@
 import Koa from 'koa';
-import { summaly } from 'summaly';
+import summaly from 'summaly';
 import { fetchMeta } from '@/misc/fetch-meta.js';
 import Logger from '@/services/logger.js';
 import config from '@/config/index.js';
 import { query } from '@/prelude/url.js';
-import { getJson, httpAgent, httpsAgent } from '@/misc/fetch.js';
+import { getJson } from '@/misc/fetch.js';
 
 const logger = new Logger('url-preview');
 
-export const urlPreviewHandler = async (ctx: Koa.Context): Promise<void> => {
+export const urlPreviewHandler = async (ctx: Koa.Context) => {
 	const url = ctx.query.url;
 	if (typeof url !== 'string') {
 		ctx.status = 400;
@@ -28,29 +28,15 @@ export const urlPreviewHandler = async (ctx: Koa.Context): Promise<void> => {
 		: `Getting preview of ${url}@${lang} ...`);
 
 	try {
-		const summary = meta.summalyProxy
-			? await getJson<ReturnType<typeof summaly>>(`${meta.summalyProxy}?${query({
-				url: url,
-				lang: lang ?? 'ja-JP',
-			})}`)
-			: await summaly(url, {
-				followRedirects: false,
-				lang: lang ?? 'ja-JP',
-				agent: {
-					http: httpAgent,
-					https: httpsAgent,
-				},
-			});
+		const summary = meta.summalyProxy ? await getJson(`${meta.summalyProxy}?${query({
+			url: url,
+			lang: lang ?? 'ja-JP',
+		})}`) : await summaly.default(url, {
+			followRedirects: false,
+			lang: lang ?? 'ja-JP',
+		});
 
 		logger.succ(`Got preview of ${url}: ${summary.title}`);
-
-		if (!(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
-			throw new Error('unsupported schema included');
-		}
-
-		if (summary.player.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
-			throw new Error('unsupported schema included');
-		}
 
 		summary.icon = wrap(summary.icon);
 		summary.thumbnail = wrap(summary.thumbnail);
@@ -61,13 +47,13 @@ export const urlPreviewHandler = async (ctx: Koa.Context): Promise<void> => {
 		ctx.body = summary;
 	} catch (err) {
 		logger.warn(`Failed to get preview of ${url}: ${err}`);
-		ctx.status = 422;
+		ctx.status = 200;
 		ctx.set('Cache-Control', 'max-age=86400, immutable');
 		ctx.body = '{}';
 	}
 };
 
-function wrap(url: string | null): string | null {
+function wrap(url?: string): string | null {
 	return url != null
 		? url.match(/^https?:\/\//)
 			? `${config.url}/proxy/preview.webp?${query({

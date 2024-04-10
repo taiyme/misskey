@@ -5,31 +5,25 @@
 			<i :class="icon"></i>
 		</div>
 		<div v-else-if="!input && !select" class="icon" :class="type">
-			<i v-if="type === 'success'" class="ti ti-check"></i>
-			<i v-else-if="type === 'error'" class="ti ti-circle-x"></i>
-			<i v-else-if="type === 'warning'" class="ti ti-alert-triangle"></i>
-			<i v-else-if="type === 'info'" class="ti ti-info-circle"></i>
-			<i v-else-if="type === 'question'" class="ti ti-question-circle"></i>
-			<MkLoading v-else-if="type === 'waiting'" :em="true"/>
+			<i v-if="type === 'success'" class="fas fa-check"></i>
+			<i v-else-if="type === 'error'" class="fas fa-times-circle"></i>
+			<i v-else-if="type === 'warning'" class="fas fa-exclamation-triangle"></i>
+			<i v-else-if="type === 'info'" class="fas fa-info-circle"></i>
+			<i v-else-if="type === 'question'" class="fas fa-question-circle"></i>
+			<i v-else-if="type === 'waiting'" class="fas fa-spinner fa-pulse"></i>
 		</div>
-		<header v-if="title">
-			<Mfm v-if="allowMfm" :text="title"/>
-			<span v-else>{{ title }}</span>
-		</header>
-		<div v-if="text" class="body">
-			<Mfm v-if="allowMfm" :text="text"/>
-			<span v-else>{{ text }}</span>
-		</div>
-		<MkInput v-if="input" v-model="inputValue" :max="input.max" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
-			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
+		<header v-if="title"><Mfm :text="title"/></header>
+		<div v-if="text" class="body"><Mfm :text="text"/></div>
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
+			<template v-if="input.type === 'password'" #prefix><i class="fas fa-lock"></i></template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
-				<option v-for="item in select.items" :key="item.value" :value="item.value">{{ item.text }}</option>
+				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
 			</template>
 			<template v-else>
-				<optgroup v-for="groupedItem in select.groupedItems" :key="groupedItem.label" :label="groupedItem.label">
-					<option v-for="item in groupedItem.items" :key="item.value" :value="item.value">{{ item.text }}</option>
+				<optgroup v-for="groupedItem in select.groupedItems" :label="groupedItem.label">
+					<option v-for="item in groupedItem.items" :value="item.value">{{ item.text }}</option>
 				</optgroup>
 			</template>
 		</MkSelect>
@@ -56,7 +50,6 @@ type Input = {
 	type: HTMLInputElement['type'];
 	placeholder?: string | null;
 	default: any | null;
-	max?: number;
 };
 
 type Select = {
@@ -89,13 +82,11 @@ const props = withDefaults(defineProps<{
 	showOkButton?: boolean;
 	showCancelButton?: boolean;
 	cancelableByBgClick?: boolean;
-	allowMfm?: boolean;
 }>(), {
 	type: 'info',
 	showOkButton: true,
 	showCancelButton: false,
 	cancelableByBgClick: true,
-	allowMfm: false,
 });
 
 const emit = defineEmits<{
@@ -164,7 +155,7 @@ onBeforeUnmount(() => {
 	border-radius: var(--radius);
 
 	> .icon {
-		font-size: 24px;
+		font-size: 32px;
 
 		&.info {
 			color: #55c4dd;

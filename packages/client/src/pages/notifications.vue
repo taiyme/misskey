@@ -50,7 +50,7 @@ function setFilter(ev) {
 		},
 	}));
 	const items = includeTypes != null ? [{
-		icon: 'ti ti-x',
+		icon: 'fas fa-times',
 		text: i18n.ts.clear,
 		action: () => {
 			includeTypes = null;
@@ -61,12 +61,12 @@ function setFilter(ev) {
 
 const headerActions = $computed(() => [tab === 'all' ? {
 	text: i18n.ts.filter,
-	icon: 'ti ti-filter',
+	icon: 'fas fa-filter',
 	highlighted: includeTypes != null,
 	handler: setFilter,
 } : undefined, tab === 'all' ? {
 	text: i18n.ts.markAllAsRead,
-	icon: 'ti ti-check',
+	icon: 'fas fa-check',
 	handler: () => {
 		os.apiWithDialog('notifications/mark-all-as-read');
 	},
@@ -81,15 +81,15 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'mentions',
 	title: i18n.ts.mentions,
-	icon: 'ti ti-at',
+	icon: 'fas fa-at',
 }, {
 	key: 'directNotes',
 	title: i18n.ts.directNotes,
-	icon: 'ti ti-mail',
+	icon: 'fas fa-envelope',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.notifications,
-	icon: 'ti ti-bell',
+	icon: 'fas fa-bell',
 })));
 </script>

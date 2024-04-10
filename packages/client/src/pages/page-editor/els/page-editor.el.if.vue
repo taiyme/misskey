@@ -1,22 +1,22 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="ti ti-question-mark"></i> {{ $ts._pages.blocks.if }}</template>
+	<template #header><i class="fas fa-question"></i> {{ $ts._pages.blocks.if }}</template>
 	<template #func>
 		<button class="_button" @click="add()">
-			<i class="ti ti-plus"></i>
+			<i class="fas fa-plus"></i>
 		</button>
 	</template>
 
 	<section class="romcojzs">
 		<MkSelect v-model="value.var">
 			<template #label>{{ $ts._pages.blocks._if.variable }}</template>
-			<option v-for="(v, i) in hpml.getVarsByType('boolean')" :key="i" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in hpml.getVarsByType('boolean')" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$ts._pages.script.pageVariables">
-				<option v-for="(v, i) in hpml.getPageVarsByType('boolean')" :key="i" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getPageVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$ts._pages.script.enviromentVariables">
-				<option v-for="(v, i) in hpml.getEnvVarsByType('boolean')" :key="i" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getEnvVarsByType('boolean')" :value="v">{{ v }}</option>
 			</optgroup>
 		</MkSelect>
 

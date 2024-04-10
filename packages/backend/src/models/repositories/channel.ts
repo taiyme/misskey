@@ -3,7 +3,6 @@ import { Channel } from '@/models/entities/channel.js';
 import { Packed } from '@/misc/schema.js';
 import { DriveFiles, ChannelFollowings, NoteUnreads } from '../index.js';
 import { User } from '@/models/entities/user.js';
-import { sanitizeUrl } from '@/misc/sanitize-url.js';
 
 export const ChannelRepository = db.getRepository(Channel).extend({
 	async pack(
@@ -29,7 +28,7 @@ export const ChannelRepository = db.getRepository(Channel).extend({
 			name: channel.name,
 			description: channel.description,
 			userId: channel.userId,
-			bannerUrl: banner ? (sanitizeUrl(DriveFiles.getPublicUrl(banner, false)) ?? null) : null,
+			bannerUrl: banner ? DriveFiles.getPublicUrl(banner, false) : null,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
 

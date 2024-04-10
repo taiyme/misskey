@@ -77,8 +77,7 @@ export default class DeliverManager {
 	public async execute() {
 		if (!Users.isLocalUser(this.actor)) return;
 
-		// Map<inbox: string, isSharedInbox: boolean>
-		const inboxes = new Map<string, boolean>();
+		const inboxes = new Set<string>();
 
 		/*
 		build inbox list
@@ -106,7 +105,7 @@ export default class DeliverManager {
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox || following.followerInbox;
-				inboxes.set(inbox, following.followerSharedInbox !== null);
+				inboxes.add(inbox);
 			}
 		}
 
@@ -118,11 +117,11 @@ export default class DeliverManager {
 			// check that they actually have an inbox
 			&& recipe.to.inbox != null,
 		)
-		.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
+		.forEach(recipe => inboxes.add(recipe.to.inbox!));
 
 		// deliver
 		for (const inbox of inboxes) {
-			deliver(this.actor, this.activity, inbox[0], inbox[1]);
+			deliver(this.actor, this.activity, inbox);
 		}
 	}
 }

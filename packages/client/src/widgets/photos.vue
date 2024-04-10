@@ -1,6 +1,6 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" class="mkw-photos">
-	<template #header><i class="ti ti-camera"></i>{{ i18n.ts._widgets.photos }}</template>
+	<template #header><i class="fas fa-camera"></i>{{ i18n.ts._widgets.photos }}</template>
 
 	<div class="">
 		<MkLoading v-if="fetching"/>
@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import { getStaticImageUrl } from '@/scripts/get-static-image-url';

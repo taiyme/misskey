@@ -13,7 +13,6 @@
 							<span v-if="suspended" class="suspended">Suspended</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
-							<span v-if="admin" class="admin">Administrator</span>
 						</span>
 					</div>
 				</div>
@@ -59,7 +58,7 @@
 					<div class="_formBlock">
 						<MkKeyValue v-if="user.host" oneline style="margin: 1em 0;">
 							<template #key>{{ i18n.ts.instanceInfo }}</template>
-							<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="ti ti-chevron-right"></i></MkA></template>
+							<template #value><MkA :to="`/instance-info/${user.host}`" class="_link">{{ user.host }} <i class="fas fa-angle-right"></i></MkA></template>
 						</MkKeyValue>
 						<MkKeyValue v-else oneline style="margin: 1em 0;">
 							<template #key>{{ i18n.ts.instanceInfo }}</template>
@@ -75,7 +74,7 @@
 						</MkKeyValue>
 					</div>
 
-					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="ti ti-refresh"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
+					<FormButton v-if="user.host != null" class="_formBlock" @click="updateRemoteUser"><i class="fas fa-sync"></i> {{ i18n.ts.updateRemoteUser }}</FormButton>
 
 					<FormFolder class="_formBlock">
 						<template #label>Raw</template>
@@ -86,16 +85,12 @@
 				</FormSection>
 			</div>
 			<div v-else-if="tab === 'moderation'" class="_formRoot">
-				<FormSelect v-if="user.host == null && $i.isAdmin" v-model="userState" class="_formBlock" @update:model-value="selectUserState">
-					<option value="admin">{{ i18n.ts.administrator }}</option>
-					<option value="moderator">{{ i18n.ts.moderator }}</option>
-					<option value="users">{{ i18n.ts.users }}</option>
-				</FormSelect>
-				<FormSwitch v-if="silenced || ['moderator', 'users'].includes(userState)" v-model="silenced" class="_formBlock" @update:model-value="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
-				<FormSwitch v-if="suspended || userState === 'users'" v-model="suspended" class="_formBlock" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
+				<FormSwitch v-if="user.host == null && $i.isAdmin && (moderator || !user.isAdmin)" v-model="moderator" class="_formBlock" @update:modelValue="toggleModerator">{{ i18n.ts.moderator }}</FormSwitch>
+				<FormSwitch v-model="silenced" class="_formBlock" @update:modelValue="toggleSilence">{{ i18n.ts.silence }}</FormSwitch>
+				<FormSwitch v-model="suspended" class="_formBlock" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</FormSwitch>
 				{{ i18n.ts.reflectMayTakeTime }}
 				<div class="_formBlock">
-					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
+					<FormButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="fas fa-key"></i> {{ i18n.ts.resetPassword }}</FormButton>
 					<FormButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</FormButton>
 				</div>
 				<FormTextarea v-model="moderationNote" manual-save class="_formBlock">
@@ -132,9 +127,9 @@
 			<div v-else-if="tab === 'chart'" class="_formRoot">
 				<div class="cmhjzshm">
 					<div class="selects">
-						<FormSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
+						<MkSelect v-model="chartSrc" style="margin: 0 10px 0 0; flex: 1;">
 							<option value="per-user-notes">{{ i18n.ts.notes }}</option>
-						</FormSelect>
+						</MkSelect>
 					</div>
 					<div class="charts">
 						<div class="label">{{ i18n.t('recentNHours', { n: 90 }) }}</div>
@@ -163,17 +158,20 @@ import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormTextarea from '@/components/form/textarea.vue';
 import FormSwitch from '@/components/form/switch.vue';
-import FormSelect from '@/components/form/select.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormButton from '@/components/MkButton.vue';
 import FormInput from '@/components/form/input.vue';
+import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkSelect from '@/components/form/select.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
+import number from '@/filters/number';
+import bytes from '@/filters/bytes';
 import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -193,12 +191,10 @@ let info = $ref();
 let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
-let admin = $ref(false);
 let silenced = $ref(false);
 let suspended = $ref(false);
 let driveCapacityOverrideMb: number | null = $ref(0);
 let moderationNote = $ref('');
-let userState: 'admin' | 'moderator' | 'users' = $ref('users');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
 	limit: 10,
@@ -220,14 +216,10 @@ function createFetcher() {
 			info = _info;
 			ips = _ips;
 			moderator = info.isModerator;
-			admin = info.isAdmin;
 			silenced = info.isSilenced;
 			suspended = info.isSuspended;
 			driveCapacityOverrideMb = user.driveCapacityOverrideMb;
 			moderationNote = info.moderationNote;
-			userState = user.host == null ? (
-				admin ? 'admin' : moderator ? 'moderator' : 'users'
-			) : 'users';
 
 			watch($$(moderationNote), async () => {
 				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
@@ -263,46 +255,6 @@ async function resetPassword() {
 	});
 }
 
-async function selectUserState(v) {
-	const userId = user.id;
-	let rejected = $ref(false);
-	const reject = () => {
-		rejected = true;
-	};
-
-	switch (v) {
-		case 'admin': {
-			if (!rejected && moderator) await os.api('admin/moderators/remove', { userId }).catch(reject);
-			if (!rejected && !admin) await os.api('admin/admin/add', { userId }).catch(reject);
-			break;
-		}
-		case 'moderator': {
-			if (!rejected && admin) await os.api('admin/admin/remove', { userId }).catch(reject);
-			if (!rejected && !moderator) await os.api('admin/moderators/add', { userId }).catch(reject);
-			break;
-		}
-		case 'users': {
-			if (!rejected && moderator) await os.api('admin/moderators/remove', { userId }).catch(reject);
-			if (!rejected && admin) await os.api('admin/admin/remove', { userId }).catch(reject);
-			break;
-		}
-	}
-
-	if (rejected) {
-		const reqState = userState;
-		userState = user.host == null ? (
-			admin ? 'admin' : moderator ? 'moderator' : 'users'
-		) : 'users';
-
-		await os.alert({
-			type: 'error',
-			text: `rejected:\n${userState} -> ${reqState}`,
-		});
-	} else {
-		await refreshUser();
-	}
-}
-
 async function toggleSilence(v) {
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -327,6 +279,11 @@ async function toggleSuspend(v) {
 		await os.api(v ? 'admin/suspend-user' : 'admin/unsuspend-user', { userId: user.id });
 		await refreshUser();
 	}
+}
+
+async function toggleModerator(v) {
+	await os.api(v ? 'admin/moderators/add' : 'admin/moderators/remove', { userId: user.id });
+	await refreshUser();
 }
 
 async function deleteAllFiles() {
@@ -407,24 +364,24 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
-	icon: 'ti ti-info-circle',
+	icon: 'fas fa-info-circle',
 }, iAmModerator ? {
 	key: 'moderation',
 	title: i18n.ts.moderation,
-	icon: 'ti ti-user-exclamation',
+	icon: 'fas fa-shield-halved',
 } : null, {
 	key: 'chart',
 	title: i18n.ts.charts,
-	icon: 'ti ti-chart-line',
+	icon: 'fas fa-chart-simple',
 }, {
 	key: 'raw',
 	title: 'Raw',
-	icon: 'ti ti-code',
+	icon: 'fas fa-code',
 }].filter(x => x != null));
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
-	icon: 'ti ti-info-circle',
+	icon: 'fas fa-info-circle',
 })));
 </script>
 
@@ -472,7 +429,7 @@ definePageMetadata(computed(() => ({
 				display: none;
 			}
 
-			> .suspended, > .silenced, > .moderator, > .admin {
+			> .suspended, > .silenced, > .moderator {
 				display: inline-block;
 				border: solid 1px;
 				border-radius: 6px;
@@ -493,12 +450,6 @@ definePageMetadata(computed(() => ({
 			> .moderator {
 				color: var(--success);
 				border-color: var(--success);
-			}
-
-			> .admin {
-				color: var(--fgOnAccent);
-				border-color: var(--accent);
-				background-color: var(--accent);
 			}
 		}
 	}

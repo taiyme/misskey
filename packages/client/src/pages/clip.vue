@@ -53,7 +53,7 @@ watch(() => props.clipId, async () => {
 provide('currentClipPage', $$(clip));
 
 const headerActions = $computed(() => clip && isOwned ? [{
-	icon: 'ti ti-pencil',
+	icon: 'fas fa-pencil-alt',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
 		const { canceled, result } = await os.form(clip.name, {
@@ -61,7 +61,6 @@ const headerActions = $computed(() => clip && isOwned ? [{
 				type: 'string',
 				label: i18n.ts.name,
 				default: clip.name,
-				max: 100,
 			},
 			description: {
 				type: 'string',
@@ -69,7 +68,6 @@ const headerActions = $computed(() => clip && isOwned ? [{
 				multiline: true,
 				label: i18n.ts.description,
 				default: clip.description,
-				max: 2048,
 			},
 			isPublic: {
 				type: 'boolean',
@@ -85,7 +83,7 @@ const headerActions = $computed(() => clip && isOwned ? [{
 		});
 	},
 }, {
-	icon: 'ti ti-trash',
+	icon: 'fas fa-trash-alt',
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
@@ -103,7 +101,7 @@ const headerActions = $computed(() => clip && isOwned ? [{
 
 definePageMetadata(computed(() => clip ? {
 	title: clip.name,
-	icon: 'ti ti-paperclip',
+	icon: 'fas fa-paperclip',
 } : null));
 </script>
 

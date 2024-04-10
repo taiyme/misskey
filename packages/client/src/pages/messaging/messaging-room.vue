@@ -38,9 +38,9 @@
 				</I18n>
 				<MkEllipsis/>
 			</div>
-			<Transition :name="animation ? 'fade' : ''">
+			<transition :name="animation ? 'fade' : ''">
 				<div v-show="showIndicator" class="new-message">
-					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="ti ti-fw ti-arrow-down-circle"></i>{{ i18n.ts.newMessageExists }}</button>
+					<button class="_buttonPrimary" @click="onIndicatorClick"><i class="fas fa-fw fa-arrow-circle-down"></i>{{ i18n.ts.newMessageExists }}</button>
 				</div>
 			</transition>
 			<XForm v-if="!fetching" ref="formEl" :user="user" :group="group" class="form"/>
@@ -65,7 +65,6 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { parseObject } from '@/scripts/tms/parse';
 
 const props = defineProps<{
 	userAcct?: string;
@@ -179,7 +178,7 @@ function onDrop(ev: DragEvent): void {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		const file = parseObject<Misskey.entities.DriveFile>(driveFile);
+		const file = JSON.parse(driveFile);
 		formEl.file = file;
 	}
 	//#endregion
@@ -286,7 +285,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 	avatar: user,
 } : {
 	title: group?.name,
-	icon: 'ti ti-users',
+	icon: 'fas fa-users',
 } : null));
 </script>
 
@@ -337,6 +336,7 @@ definePageMetadata(computed(() => !fetching ? user ? {
 		z-index: 2;
 		bottom: 0;
 		padding-top: 8px;
+		bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
 
 		> .new-message {
 			width: 100%;

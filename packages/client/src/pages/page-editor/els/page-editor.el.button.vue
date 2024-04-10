@@ -1,7 +1,7 @@
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
-	<template #header><i class="ti ti-bolt"></i> {{ $ts._pages.blocks.button }}</template>
+	<template #header><i class="fas fa-bolt"></i> {{ $ts._pages.blocks.button }}</template>
 
 	<section class="xfhsjczc">
 		<MkInput v-model="value.text"><template #label>{{ $ts._pages.blocks._button.text }}</template></MkInput>
@@ -22,12 +22,12 @@
 			<MkSelect v-model="value.var">
 				<template #label>{{ $ts._pages.blocks._button._action._pushEvent.variable }}</template>
 				<option :value="null">{{ $t('_pages.blocks._button._action._pushEvent.no-variable') }}</option>
-				<option v-for="(v, i) in hpml.getVarsByType()" :key="i" :value="v.name">{{ v.name }}</option>
+				<option v-for="v in hpml.getVarsByType()" :value="v.name">{{ v.name }}</option>
 				<optgroup :label="$ts._pages.script.pageVariables">
-					<option v-for="(v, i) in hpml.getPageVarsByType()" :key="i" :value="v">{{ v }}</option>
+					<option v-for="v in hpml.getPageVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
 				<optgroup :label="$ts._pages.script.enviromentVariables">
-					<option v-for="(v, i) in hpml.getEnvVarsByType()" :key="i" :value="v">{{ v }}</option>
+					<option v-for="v in hpml.getEnvVarsByType()" :value="v">{{ v }}</option>
 				</optgroup>
 			</MkSelect>
 		</template>

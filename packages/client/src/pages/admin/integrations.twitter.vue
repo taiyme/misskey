@@ -9,23 +9,23 @@
 			<FormInfo class="_formBlock">Callback URL: {{ `${uri}/api/tw/cb` }}</FormInfo>
 		
 			<FormInput v-model="twitterConsumerKey" class="_formBlock">
-				<template #prefix><i class="ti ti-key"></i></template>
+				<template #prefix><i class="fas fa-key"></i></template>
 				<template #label>Consumer Key</template>
 			</FormInput>
 
 			<FormInput v-model="twitterConsumerSecret" class="_formBlock">
-				<template #prefix><i class="ti ti-key"></i></template>
+				<template #prefix><i class="fas fa-key"></i></template>
 				<template #label>Consumer Secret</template>
 			</FormInput>
 		</template>
 
-		<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+		<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 	</div>
 </FormSuspense>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { defineComponent } from 'vue';
 import FormSwitch from '@/components/form/switch.vue';
 import FormInput from '@/components/form/input.vue';
 import FormButton from '@/components/MkButton.vue';

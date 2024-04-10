@@ -1,20 +1,20 @@
 <template>
 <div class="rrevdjwu" :class="{ grid }">
-	<div v-for="group in def" :key="JSON.stringify(group)" class="group">
+	<div v-for="group in def" class="group">
 		<div v-if="group.title" class="title">{{ group.title }}</div>
 
 		<div class="items">
-			<template v-for="(item, i) in group.items" :key="JSON.stringify(item)">
+			<template v-for="(item, i) in group.items">
 				<a v-if="item.type === 'a'" :href="item.href" :target="item.target" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</a>
 				<button v-else-if="item.type === 'button'" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }" :disabled="item.active" @click="ev => item.action(ev)">
-					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</button>
 				<MkA v-else :to="item.to" :tabindex="i" class="_button item" :class="{ danger: item.danger, active: item.active }">
-					<i v-if="item.icon" class="icon ti-fw" :class="item.icon"></i>
+					<i v-if="item.icon" class="icon fa-fw" :class="item.icon"></i>
 					<span class="text">{{ item.text }}</span>
 				</MkA>
 			</template>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, unref } from 'vue';
 
 export default defineComponent({
 	props: {

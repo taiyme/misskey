@@ -1,7 +1,6 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="_formRoot">
-	<div class="llvierxe" :style="{ backgroundImage: $i?.bannerUrl ? `url(${ $i.bannerUrl })` : undefined }">
+	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" :disable-link="true" @click="changeAvatar"/>
 			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
@@ -9,7 +8,7 @@
 		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<FormInput v-model="profile.name" :max="50" manual-save class="_formBlock">
+	<FormInput v-model="profile.name" :max="30" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</FormInput>
 
@@ -18,14 +17,14 @@
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</FormTextarea>
 
-	<FormInput v-model="profile.location" :max="50" manual-save class="_formBlock">
+	<FormInput v-model="profile.location" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.location }}</template>
-		<template #prefix><i class="ti ti-map-pin"></i></template>
+		<template #prefix><i class="fas fa-map-marker-alt"></i></template>
 	</FormInput>
 
 	<FormInput v-model="profile.birthday" type="date" manual-save class="_formBlock">
 		<template #label>{{ i18n.ts.birthday }}</template>
-		<template #prefix><i class="ti ti-cake"></i></template>
+		<template #prefix><i class="fas fa-birthday-cake"></i></template>
 	</FormInput>
 
 	<FormSelect v-model="profile.lang" class="_formBlock">
@@ -35,11 +34,11 @@
 
 	<FormSlot class="_formBlock">
 		<FormFolder>
-			<template #icon><i class="ti ti-list"></i></template>
+			<template #icon><i class="fas fa-table-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
 			<div class="_formRoot">
-				<FormSplit v-for="(record, i) in fields" :key="i" :min-width="250" class="_formBlock">
+				<FormSplit v-for="(record, i) in fields" :min-width="250" class="_formBlock">
 					<FormInput v-model="record.name" small>
 						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
 					</FormInput>
@@ -47,8 +46,8 @@
 						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
 					</FormInput>
 				</FormSplit>
-				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="fas fa-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton inline primary @click="saveFields"><i class="fas fa-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 		</FormFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -70,6 +69,7 @@ import FormSelect from '@/components/form/select.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormSlot from '@/components/form/slot.vue';
+import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -78,14 +78,14 @@ import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const profile = reactive({
-	name: $i?.name ?? '',
-	description: $i?.description ?? '',
-	location: $i?.location ?? '',
-	birthday: $i?.birthday ?? '',
-	lang: $i?.lang ?? '',
-	isBot: !!$i?.isBot,
-	isCat: !!$i?.isCat,
-	showTimelineReplies: !!$i?.showTimelineReplies,
+	name: $i.name,
+	description: $i.description,
+	location: $i.location,
+	birthday: $i.birthday,
+	lang: $i.lang,
+	isBot: $i.isBot,
+	isCat: $i.isCat,
+	showTimelineReplies: $i.showTimelineReplies,
 });
 
 watch(() => profile, () => {
@@ -94,26 +94,26 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = reactive($i?.fields.map(field => ({ name: field.name, value: field.value })) ?? []);
+const fields = reactive($i.fields.map(field => ({ name: field.name, value: field.value })));
 
-const addField = (): void => {
+function addField() {
 	fields.push({
 		name: '',
 		value: '',
 	});
-};
+}
 
 while (fields.length < 4) {
 	addField();
 }
 
-const saveFields = (): void => {
+function saveFields() {
 	os.apiWithDialog('i/update', {
 		fields: fields.filter(field => field.name !== '' && field.value !== ''),
 	});
-};
+}
 
-const save = (): void => {
+function save() {
 	os.apiWithDialog('i/update', {
 		name: profile.name || null,
 		description: profile.description || null,
@@ -124,12 +124,10 @@ const save = (): void => {
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
 	});
-};
+}
 
-const changeAvatar = (ev: MouseEvent): void => {
+function changeAvatar(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.avatar).then(async (file) => {
-		if (!$i) return;
-
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -149,12 +147,10 @@ const changeAvatar = (ev: MouseEvent): void => {
 		$i.avatarId = i.avatarId;
 		$i.avatarUrl = i.avatarUrl;
 	});
-};
+}
 
-const changeBanner = (ev: MouseEvent): void => {
+function changeBanner(ev) {
 	selectFile(ev.currentTarget ?? ev.target, i18n.ts.banner).then(async (file) => {
-		if (!$i) return;
-
 		let originalOrCropped = file;
 
 		const { canceled } = await os.confirm({
@@ -174,15 +170,15 @@ const changeBanner = (ev: MouseEvent): void => {
 		$i.bannerId = i.bannerId;
 		$i.bannerUrl = i.bannerUrl;
 	});
-};
+}
 
-// const headerActions = $computed(() => []);
+const headerActions = $computed(() => []);
 
-// const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.profile,
-	icon: 'ti ti-user',
+	icon: 'fas fa-user',
 });
 </script>
 

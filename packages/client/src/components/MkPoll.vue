@@ -4,7 +4,7 @@
 		<li v-for="(choice, i) in note.poll.choices" :key="i" :class="{ voted: choice.voted }" @click="vote(i)">
 			<div class="backdrop" :style="{ 'width': `${showResult ? (choice.votes / total * 100) : 0}%` }"></div>
 			<span>
-				<template v-if="choice.isVoted"><i class="ti ti-check"></i></template>
+				<template v-if="choice.isVoted"><i class="fas fa-check"></i></template>
 				<Mfm :text="choice.text" :plain="true" :custom-emojis="note.emojis"/>
 				<span v-if="showResult" class="votes">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref, toRef } from 'vue';
 import * as misskey from 'misskey-js';
 import { sum } from '@/scripts/array';
 import { pleaseLogin } from '@/scripts/please-login';

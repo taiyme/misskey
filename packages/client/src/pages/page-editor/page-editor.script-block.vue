@@ -4,7 +4,7 @@
 	<template #header><i v-if="icon" :class="icon"></i> <template v-if="title">{{ title }} <span v-if="typeText" class="turmquns">({{ typeText }})</span></template><template v-else-if="typeText">{{ typeText }}</template></template>
 	<template #func>
 		<button class="_button" @click="changeType()">
-			<i class="ti ti-pencil"></i>
+			<i class="fas fa-pencil-alt"></i>
 		</button>
 	</template>
 
@@ -25,15 +25,15 @@
 	</section>
 	<section v-else-if="modelValue.type === 'ref'" class="hpdwcrvs">
 		<select v-model="modelValue.value">
-			<option v-for="(v, i) in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :key="i" :value="v.name">{{ v.name }}</option>
+			<option v-for="v in hpml.getVarsByType(getExpectedType ? getExpectedType() : null).filter(x => x.name !== name)" :value="v.name">{{ v.name }}</option>
 			<optgroup :label="$ts._pages.script.argVariables">
-				<option v-for="(v, i) in fnSlots" :key="i" :value="v.name">{{ v.name }}</option>
+				<option v-for="v in fnSlots" :value="v.name">{{ v.name }}</option>
 			</optgroup>
 			<optgroup :label="$ts._pages.script.pageVariables">
-				<option v-for="(v, i) in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getPageVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 			<optgroup :label="$ts._pages.script.enviromentVariables">
-				<option v-for="(v, i) in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :key="i" :value="v">{{ v }}</option>
+				<option v-for="v in hpml.getEnvVarsByType(getExpectedType ? getExpectedType() : null)" :value="v">{{ v }}</option>
 			</optgroup>
 		</select>
 	</section>
@@ -116,7 +116,7 @@ export default defineComponent({
 	computed: {
 		icon(): any {
 			if (this.modelValue.type === null) return null;
-			if (this.modelValue.type.startsWith('fn:')) return 'ti ti-plug';
+			if (this.modelValue.type.startsWith('fn:')) return 'fas fa-plug';
 			return blockDefs.find(x => x.type === this.modelValue.type).icon;
 		},
 		typeText(): any {

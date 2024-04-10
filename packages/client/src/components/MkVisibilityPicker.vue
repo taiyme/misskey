@@ -1,42 +1,42 @@
 <template>
-<MkModal ref="modal" v-slot="{ type }" :z-priority="'high'" :src="src" @click="modal?.close()" @closed="emit('closed')">
-	<div class="gqyayizv _popup" :class="{ asDrawer: type === 'drawer' }">
+<MkModal ref="modal" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
+	<div class="gqyayizv _popup">
 		<button key="public" class="_button" :class="{ active: v === 'public' }" data-index="1" @click="choose('public')">
-			<div class="prefix"><i class="ti ti-world"></i></div>
-			<div class="text">
-				<span class="label">{{ i18n.ts._visibility.public }}</span>
-				<span class="description">{{ i18n.ts._visibility.publicDescription }}</span>
+			<div><i class="fas fa-globe"></i></div>
+			<div>
+				<span>{{ i18n.ts._visibility.public }}</span>
+				<span>{{ i18n.ts._visibility.publicDescription }}</span>
 			</div>
 		</button>
 		<button key="home" class="_button" :class="{ active: v === 'home' }" data-index="2" @click="choose('home')">
-			<div class="prefix"><i class="ti ti-home"></i></div>
-			<div class="text">
-				<span class="label">{{ i18n.ts._visibility.home }}</span>
-				<span class="description">{{ i18n.ts._visibility.homeDescription }}</span>
+			<div><i class="fas fa-home"></i></div>
+			<div>
+				<span>{{ i18n.ts._visibility.home }}</span>
+				<span>{{ i18n.ts._visibility.homeDescription }}</span>
 			</div>
 		</button>
 		<button key="followers" class="_button" :class="{ active: v === 'followers' }" data-index="3" @click="choose('followers')">
-			<div class="prefix"><i class="ti ti-lock"></i></div>
-			<div class="text">
-				<span class="label">{{ i18n.ts._visibility.followers }}</span>
-				<span class="description">{{ i18n.ts._visibility.followersDescription }}</span>
+			<div><i class="fas fa-unlock"></i></div>
+			<div>
+				<span>{{ i18n.ts._visibility.followers }}</span>
+				<span>{{ i18n.ts._visibility.followersDescription }}</span>
 			</div>
 		</button>
 		<button key="specified" :disabled="localOnly" class="_button" :class="{ active: v === 'specified' }" data-index="4" @click="choose('specified')">
-			<div class="prefix"><i class="ti ti-mail"></i></div>
-			<div class="text">
-				<span class="label">{{ i18n.ts._visibility.specified }}</span>
-				<span class="description">{{ i18n.ts._visibility.specifiedDescription }}</span>
+			<div><i class="fas fa-envelope"></i></div>
+			<div>
+				<span>{{ i18n.ts._visibility.specified }}</span>
+				<span>{{ i18n.ts._visibility.specifiedDescription }}</span>
 			</div>
 		</button>
 		<div class="divider"></div>
 		<button key="localOnly" class="_button localOnly" :class="{ active: localOnly }" data-index="5" @click="localOnly = !localOnly">
-			<div class="prefix"><i class="ti ti-world-off"></i></div>
-			<div class="text">
-				<span class="label">{{ i18n.ts._visibility.disableFederation }}</span>
-				<span class="description">{{ i18n.ts._visibility.disableFederationDescription }}</span>
+			<div><i class="fas fa-biohazard"></i></div>
+			<div>
+				<span>{{ i18n.ts._visibility.localOnly }}</span>
+				<span>{{ i18n.ts._visibility.localOnlyDescription }}</span>
 			</div>
-			<div class="suffix"><i :class="localOnly ? 'ti ti-toggle-right' : 'ti ti-toggle-left'"></i></div>
+			<div><i :class="localOnly ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"></i></div>
 		</button>
 	</div>
 </MkModal>
@@ -74,7 +74,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 	v = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {
-		modal?.close();
+		modal.close();
 	});
 }
 </script>
@@ -115,7 +115,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 			background: inherit;
 		}
 
-		> .prefix {
+		> *:nth-child(1) {
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -127,20 +127,23 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 			margin-bottom: auto;
 		}
 
-		> .text {
+		> *:nth-child(2) {
 			flex: 1 1 auto;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 
-			> .label {
+			> span:first-child {
 				display: block;
 				font-weight: bold;
 			}
 
-			> .description {
+			> span:last-child:not(:first-child) {
 				opacity: 0.6;
 			}
 		}
 
-		> .suffix {
+		> *:nth-child(3) {
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -151,14 +154,6 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 			margin-top: auto;
 			margin-bottom: auto;
 		}
-	}
-
-	&.asDrawer {
-		padding: 12px 0 max(env(safe-area-inset-bottom, 0px), 12px) 0;
-		width: 100%;
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
 	}
 }
 </style>

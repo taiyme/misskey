@@ -45,7 +45,6 @@
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
-import { v4 as uuid } from 'uuid';
 import bytes from '@/filters/bytes';
 
 const props = defineProps<{
@@ -71,7 +70,7 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: uuid(),
+		id: Math.random().toString().substr(2, 8)
 	});
 });
 

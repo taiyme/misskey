@@ -3,14 +3,14 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div class="fcuexfpr">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
 					<div v-if="showNext" class="_gap">
 						<XNotes class="_content" :pagination="nextPagination" :no-gap="true"/>
 					</div>
 
 					<div class="main _gap">
-						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
+						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="fas fa-chevron-up"></i></MkButton>
 						<div class="note _gap">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
 							<XNoteDetailed :key="note.id" v-model:note="note" class="note"/>
@@ -25,7 +25,7 @@
 								</div>
 							</MkA>
 						</div>
-						<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
+						<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="fas fa-chevron-down"></i></MkButton>
 					</div>
 
 					<div v-if="showPrev" class="_gap">
@@ -41,8 +41,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineComponent, watch } from 'vue';
 import * as misskey from 'misskey-js';
+import XNote from '@/components/MkNote.vue';
 import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import XNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';

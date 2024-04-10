@@ -80,10 +80,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, host } from '@/config';
+import { version, instanceName , host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -117,20 +117,20 @@ const headerTabs = $computed(() => [{
 }, {
 	key: 'emojis',
 	title: i18n.ts.customEmojis,
-	icon: 'ti ti-mood-happy',
+	icon: 'fas fa-laugh',
 }, {
 	key: 'federation',
 	title: i18n.ts.federation,
-	icon: 'ti ti-whirl',
+	icon: 'fas fa-globe',
 }, {
 	key: 'charts',
 	title: i18n.ts.charts,
-	icon: 'ti ti-chart-line',
+	icon: 'fas fa-chart-simple',
 }]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.instanceInfo,
-	icon: 'ti ti-info-circle',
+	icon: 'fas fa-info-circle',
 })));
 </script>
 

@@ -354,14 +354,14 @@ export class Meta {
 
 	@Column('varchar', {
 		length: 512,
-		default: 'https://github.com/taiyme/misskey',
+		default: 'https://github.com/misskey-dev/misskey',
 		nullable: false,
 	})
 	public repositoryUrl: string;
 
 	@Column('varchar', {
 		length: 512,
-		default: 'https://github.com/taiyme/misskey/issues/new',
+		default: 'https://github.com/misskey-dev/misskey/issues/new',
 		nullable: true,
 	})
 	public feedbackUrl: string | null;

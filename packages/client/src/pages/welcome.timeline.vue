@@ -1,10 +1,10 @@
 <template>
 <div class="civpbkhh">
 	<div ref="scroll" class="scrollbox" v-bind:class="{ scroll: isScrolling }">
-		<div v-for="note in notes" :key="note.id" class="note">
+		<div v-for="note in notes" class="note">
 			<div class="content _panel">
 				<div class="body">
-					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
+					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="fas fa-reply"></i></MkA>
 					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" :custom-emojis="note.emojis"/>
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
@@ -12,7 +12,7 @@
 					<XMediaList :media-list="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<XPoll :note="note" :read-only="true"/>
+					<XPoll :note="note" :readOnly="true"/>
 				</div>
 			</div>
 			<XReactionsViewer ref="reactionsViewer" :note="note"/>

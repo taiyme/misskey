@@ -1,9 +1,9 @@
 <template>
 <span v-if="!fetching" class="xbhtxfms">
 	<template v-if="display === 'marquee'">
-		<Transition name="change" mode="default">
+		<transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
-				<span v-for="item in items" :key="item.link" class="item">
+				<span v-for="item in items" class="item">
 					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
 				</span>
 			</MarqueeText>
@@ -16,8 +16,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
 import MarqueeText from '@/components/MkMarquee.vue';
+import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 import { shuffle } from '@/scripts/shuffle';
 

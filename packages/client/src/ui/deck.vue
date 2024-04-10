@@ -7,7 +7,7 @@
 	<div class="main">
 		<XStatusBars class="statusbars"/>
 		<div ref="columnsEl" class="columns" :class="deckStore.reactiveState.columnAlign.value" @contextmenu.self.prevent="onContextmenu">
-			<template v-for="ids in layout" :key="ids.join('-')">
+			<template v-for="ids in layout">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
 					v-if="ids.length > 1"
@@ -34,27 +34,27 @@
 			</div>
 			<div class="sideMenu">
 				<div class="top">
-					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="ti ti-caret-down"></i></button>
-					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" class="_button button" @click="deleteProfile"><i class="ti ti-trash"></i></button>
+					<button v-tooltip.noDelay.left="`${i18n.ts._deck.profile}: ${deckStore.state.profile}`" class="_button button" @click="changeProfile"><i class="fas fa-caret-down"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts._deck.deleteProfile" class="_button button" @click="deleteProfile"><i class="fas fa-trash-can"></i></button>
 				</div>
 				<div class="middle">
-					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="ti ti-plus"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts._deck.addColumn" class="_button button" @click="addColumn"><i class="fas fa-plus"></i></button>
 				</div>
 				<div class="bottom">
-					<button v-tooltip.noDelay.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="ti ti-settings"></i></button>
+					<button v-tooltip.noDelay.left="i18n.ts.settings" class="_button button settings" @click="showSettings"><i class="fas fa-cog"></i></button>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<div v-if="isMobile" class="buttons">
-		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="icon ti ti-menu-2"></i><span v-if="menuIndicated" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button home _button" @click="mainRouter.push('/')"><i class="icon ti ti-home"></i></button>
-		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="icon ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="_indicatorCircle"></i></span></button>
-		<button class="button post _button" @click="os.post()"><i class="icon ti ti-pencil"></i></button>
+		<button class="button nav _button" @click="drawerMenuShowing = true"><i class="fas fa-bars"></i><span v-if="menuIndicated" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button home _button" @click="mainRouter.push('/')"><i class="fas fa-home"></i></button>
+		<button class="button notifications _button" @click="mainRouter.push('/my/notifications')"><i class="fas fa-bell"></i><span v-if="$i?.hasUnreadNotification" class="indicator"><i class="fas fa-circle"></i></span></button>
+		<button class="button post _button" @click="os.post()"><i class="fas fa-pencil-alt"></i></button>
 	</div>
 
-	<Transition :name="$store.state.animation ? 'menu-back' : ''">
+	<transition :name="$store.state.animation ? 'menu-back' : ''">
 		<div
 			v-if="drawerMenuShowing"
 			class="menu-back _modalBg"
@@ -63,7 +63,7 @@
 		></div>
 	</transition>
 
-	<Transition :name="$store.state.animation ? 'menu' : ''">
+	<transition :name="$store.state.animation ? 'menu' : ''">
 		<XDrawerMenu v-if="drawerMenuShowing" class="menu"/>
 	</transition>
 
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, provide, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
@@ -87,21 +87,11 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
-import { disableContextmenu } from '@/scripts/touch';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
-const isNoMainColumn = (): boolean => !deckStore.state.columns.some(x => x.type === 'main');
-
-if (isNoMainColumn()) {
-	const path = mainRouter.getCurrentPath();
-	if (new URL(path || '/', location.origin).pathname !== '/') {
-		os.pageWindow(path);
-	}
-}
-
-mainRouter.navHook = (path: string, flag: unknown): boolean => {
-	const noMainColumn = isNoMainColumn();
-	if (flag === 'forcePage' && !noMainColumn) return false;
+mainRouter.navHook = (path, flag): boolean => {
+	if (flag === 'forcePage') return false;
+	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
 	if (deckStore.state.navWindow || noMainColumn) {
 		os.pageWindow(path);
 		return true;
@@ -142,11 +132,9 @@ const addColumn = async (ev) => {
 		'main',
 		'widgets',
 		'notifications',
-		'favorites',
 		'tl',
 		'antenna',
 		'list',
-		'channel',
 		'mentions',
 		'direct',
 	];
@@ -168,7 +156,6 @@ const addColumn = async (ev) => {
 };
 
 const onContextmenu = (ev) => {
-	if (disableContextmenu) return;
 	os.contextMenu([{
 		text: i18n.ts._deck.addColumn,
 		action: addColumn,
@@ -207,7 +194,7 @@ function changeProfile(ev: MouseEvent) {
 			},
 		}))), null, {
 			text: i18n.ts._deck.newProfile,
-			icon: 'ti ti-plus',
+			icon: 'fas fa-plus',
 			action: async () => {
 				const { canceled, result: name } = await os.inputText({
 					title: i18n.ts._deck.profile,
@@ -366,46 +353,35 @@ async function deleteProfile() {
 		z-index: 1000;
 		bottom: 0;
 		left: 0;
-		padding: 12px 12px max(12px, env(safe-area-inset-bottom, 0px)) 12px;
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-gap: 8px;
+		padding: 16px;
+		display: flex;
 		width: 100%;
 		box-sizing: border-box;
-		-webkit-backdrop-filter: var(--blur, blur(32px));
-		backdrop-filter: var(--blur, blur(32px));
-		background-color: var(--header);
-		border-top: solid 0.5px var(--divider);
 
 		> .button {
 			position: relative;
+			flex: 1;
 			padding: 0;
-			aspect-ratio: 1;
-			width: 100%;
-			max-width: 60px;
 			margin: auto;
-			border-radius: 100%;
+			height: 64px;
+			border-radius: 8px;
 			background: var(--panel);
 			color: var(--fg);
 
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
+
+			@media (max-width: 400px) {
+				height: 60px;
+
+				&:not(:last-child) {
+					margin-right: 8px;
+				}
+			}
+
 			&:hover {
-				background: var(--panelHighlight);
-			}
-			&:active {
 				background: var(--X2);
-			}
-			
-			&.post {
-				background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-				color: var(--fgOnAccent);
-
-				&:hover {
-					background: linear-gradient(90deg, var(--X8), var(--X8));
-				}
-
-				&:active {
-					background: linear-gradient(90deg, var(--X8), var(--X8));
-				}
 			}
 
 			> .indicator {
@@ -417,9 +393,24 @@ async function deleteProfile() {
 				animation: blink 1s infinite;
 			}
 
-			> .icon {
-				font-size: 18px;
-				vertical-align: middle;
+			&:first-child {
+				margin-left: 0;
+			}
+
+			&:last-child {
+				margin-right: 0;
+			}
+
+			> * {
+				font-size: 20px;
+			}
+
+			&:disabled {
+				cursor: default;
+
+				> * {
+					opacity: 0.5;
+				}
 			}
 		}
 	}

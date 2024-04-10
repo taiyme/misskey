@@ -1,9 +1,0 @@
-{
-	"compilerOptions": {
-		"types": ["@types/node"],
-		"noEmit": true,
-		"allowJs": true
-	},
-	"extends": "./tsconfig.json",
-	"include": ["./src/**/*.ts", "ormconfig.js", "match.mjs", ".eslintrc.cjs"]
-}

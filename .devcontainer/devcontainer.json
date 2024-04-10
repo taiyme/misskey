@@ -1,6 +1,0 @@
-{
-	"name": "taiyme/misskey dev",
-	"dockerComposeFile": ["../docker-compose.dev.yml"],
-	"service": "web",
-	"workspaceFolder": "/workspaces"
-}

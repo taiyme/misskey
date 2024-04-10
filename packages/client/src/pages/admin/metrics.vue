@@ -1,6 +1,6 @@
 <template>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-cpu"></i> {{ $ts.cpuAndMemory }}</div>
+	<div class="_debobigegoLabel"><i class="fas fa-microchip"></i> {{ $ts.cpuAndMemory }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="cpumem"></canvas>
@@ -17,7 +17,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-database"></i> {{ $ts.disk }}</div>
+	<div class="_debobigegoLabel"><i class="fas fa-hdd"></i> {{ $ts.disk }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="disk"></canvas>
@@ -34,7 +34,7 @@
 	</div>
 </div>
 <div class="_debobigegoItem">
-	<div class="_debobigegoLabel"><i class="ti ti-arrows-right-left"></i> {{ $ts.network }}</div>
+	<div class="_debobigegoLabel"><i class="fas fa-exchange-alt"></i> {{ $ts.network }}</div>
 	<div class="_debobigegoPanel xhexznfu">
 		<div>
 			<canvas :ref="net"></canvas>
@@ -53,44 +53,43 @@
 <script lang="ts">
 import { defineComponent, markRaw } from 'vue';
 import {
-	Chart,
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
 } from 'chart.js';
-import { v4 as uuid } from 'uuid';
-import MkwFederation from '../../widgets/federation.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/form/select.vue';
 import MkInput from '@/components/form/input.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkwFederation from '../../widgets/federation.vue';
 import { version, url } from '@/config';
 import bytes from '@/filters/bytes';
 import number from '@/filters/number';
 
 Chart.register(
-	ArcElement,
-	LineElement,
-	BarElement,
-	PointElement,
-	BarController,
-	LineController,
-	CategoryScale,
-	LinearScale,
-	Legend,
-	Title,
-	Tooltip,
-	SubTitle,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  LineController,
+  CategoryScale,
+  LinearScale,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
 );
 
 const alpha = (hex, a) => {
@@ -155,13 +154,13 @@ export default defineComponent({
 			this.connection.on('stats', this.onStats);
 			this.connection.on('statsLog', this.onStatsLog);
 			this.connection.send('requestLog', {
-				id: uuid(),
+				id: Math.random().toString().substr(2, 8),
 				length: 150
 			});
 
 			this.$nextTick(() => {
 				this.queueConnection.send('requestLog', {
-					id: uuid(),
+					id: Math.random().toString().substr(2, 8),
 					length: 200
 				});
 			});

@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1000">
-		<Transition name="fade" mode="out-in">
+		<transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XFollowList :user="user" type="followers"/>
 			</div>
@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
 import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
@@ -49,7 +49,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => user ? {
-	icon: 'ti ti-user',
+	icon: 'fas fa-user',
 	title: user.name ? `${user.name} (@${user.username})` : `@${user.username}`,
 	subtitle: i18n.ts.followers,
 	userName: user,

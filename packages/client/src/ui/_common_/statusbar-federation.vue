@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="nmidsaqw">
 	<template v-if="display === 'marquee'">
-		<Transition name="change" mode="default">
+		<transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="instance in instances" :key="instance.id" class="item" :class="{ colored }" :style="{ background: colored ? instance.themeColor : null }">
 					<img v-if="instance.iconUrl" class="icon" :src="instance.iconUrl" alt=""/>
@@ -20,11 +20,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
+import { getNoteSummary } from '@/scripts/get-note-summary';
+import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	display?: 'marquee' | 'oneByOne';

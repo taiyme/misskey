@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, inject, watch } from 'vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -72,11 +72,11 @@ watch(() => props.antennaId, async () => {
 }, { immediate: true });
 
 const headerActions = $computed(() => antenna ? [{
-	icon: 'ti ti-calendar-time',
+	icon: 'fas fa-calendar-alt',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
-	icon: 'ti ti-settings',
+	icon: 'fas fa-cog',
 	text: i18n.ts.settings,
 	handler: settings,
 }] : []);
@@ -85,7 +85,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => antenna ? {
 	title: antenna.name,
-	icon: 'ti ti-antenna',
+	icon: 'fas fa-satellite',
 } : null));
 </script>
 

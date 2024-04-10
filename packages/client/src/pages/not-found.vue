@@ -17,6 +17,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.notFound,
-	icon: 'ti ti-alert-triangle',
+	icon: 'fas fa-exclamation-triangle',
 });
 </script>

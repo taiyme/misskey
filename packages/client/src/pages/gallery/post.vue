@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
 		<div class="_root">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
 					<div class="files">
 						<div v-for="file in post.files" :key="file.id" class="file">
@@ -14,17 +14,17 @@
 						<div class="title">{{ post.title }}</div>
 						<div class="description"><Mfm :text="post.description"/></div>
 						<div class="info">
-							<i class="ti ti-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
+							<i class="fas fa-clock"></i> <MkTime :time="post.createdAt" mode="detail"/>
 						</div>
 						<div class="actions">
 							<div class="like">
-								<MkButton v-if="post.isLiked" v-tooltip="i18n.ts._gallery.unlike" class="button" primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
-								<MkButton v-else v-tooltip="i18n.ts._gallery.like" class="button" @click="like()"><i class="ti ti-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+								<MkButton v-if="post.isLiked" v-tooltip="i18n.ts._gallery.unlike" class="button" primary @click="unlike()"><i class="fas fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
+								<MkButton v-else v-tooltip="i18n.ts._gallery.like" class="button" @click="like()"><i class="far fa-heart"></i><span v-if="post.likedCount > 0" class="count">{{ post.likedCount }}</span></MkButton>
 							</div>
 							<div class="other">
-								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="ti ti-pencil ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
-								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
+								<button v-if="$i && $i.id === post.user.id" v-tooltip="i18n.ts.edit" v-click-anime class="_button" @click="edit"><i class="fas fa-pencil-alt fa-fw"></i></button>
+								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="fas fa-retweet fa-fw"></i></button>
+								<button v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="fas fa-share-alt fa-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -38,7 +38,7 @@
 					</div>
 					<MkAd :prefer="['horizontal', 'horizontal-big']"/>
 					<MkContainer :max-height="300" :foldable="true" class="other">
-						<template #header><i class="ti ti-clock"></i> {{ i18n.ts.recentPosts }}</template>
+						<template #header><i class="fas fa-clock"></i> {{ i18n.ts.recentPosts }}</template>
 						<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
 							<div class="sdrarzaf">
 								<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
@@ -55,10 +55,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineComponent, inject, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -138,7 +139,7 @@ function edit() {
 watch(() => props.postId, fetchPost, { immediate: true });
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-pencil',
+	icon: 'fas fa-pencil-alt',
 	text: i18n.ts.edit,
 	handler: edit,
 }]);

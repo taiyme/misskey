@@ -3,7 +3,6 @@
 	<template v-if="props.graduations === 'dots'">
 		<circle
 			v-for="(angle, i) in graduationsMajor"
-			:key="i"
 			:cx="5 + (Math.sin(angle) * (5 - graduationsPadding))"
 			:cy="5 - (Math.cos(angle) * (5 - graduationsPadding))"
 			:r="0.125"
@@ -14,7 +13,6 @@
 	<template v-else-if="props.graduations === 'numbers'">
 		<text
 			v-for="(angle, i) in texts"
-			:key="i"
 			:x="5 + (Math.sin(angle) * (5 - textsPadding))"
 			:y="5 - (Math.cos(angle) * (5 - textsPadding))"
 			text-anchor="middle"
@@ -76,12 +74,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
-const angleDiff = (a: number, b: number): number => {
+const angleDiff = (a: number, b: number) => {
 	const x = Math.abs(a - b);
 	return Math.abs((x + Math.PI) % (Math.PI * 2) - Math.PI);
 };
@@ -147,7 +145,7 @@ let sAngle = $ref<number>(0);
 let disableSAnimate = $ref(false);
 let sOneRound = false;
 
-const tick = (): void => {
+function tick() {
 	const now = new Date();
 	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
 	s = now.getSeconds();
@@ -170,11 +168,11 @@ const tick = (): void => {
 		sAngle = Math.PI * s / 30;
 	}
 	sOneRound = s === 59;
-};
+}
 
 tick();
 
-const calcColors = (): void => {
+function calcColors() {
 	const computedStyle = getComputedStyle(document.documentElement);
 	const dark = tinycolor(computedStyle.getPropertyValue('--bg')).isDark();
 	const accent = tinycolor(computedStyle.getPropertyValue('--accent')).toHexString();
@@ -184,12 +182,12 @@ const calcColors = (): void => {
 	mHandColor = tinycolor(computedStyle.getPropertyValue('--fg')).toHexString();
 	hHandColor = accent;
 	nowColor = accent;
-};
+}
 
 calcColors();
 
 onMounted(() => {
-	const update = (): void => {
+	const update = () => {
 		if (enabled) {
 			tick();
 			window.setTimeout(update, 1000);

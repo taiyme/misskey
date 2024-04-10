@@ -1,11 +1,7 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <template>
 <div class="adhpbeos">
-	<div class="label" @click="focus">
-		<span v-if="$slots.label" class="label-text"><slot name="label"></slot></span>
-		<span v-if="textLength != null && maxTextLength != null" class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
-	</div>
-	<div class="input" :class="{ disabled, focused, invalid, tall, pre }">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="input" :class="{ disabled, focused, tall, pre }">
 		<textarea
 			ref="inputEl"
 			v-model="v"
@@ -20,109 +16,161 @@
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown"
+			@keydown="onKeydown($event)"
 			@input="onInput"
 		></textarea>
 	</div>
 	<div class="caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, nextTick, ref, watch, toRefs } from 'vue';
+<script lang="ts">
+import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
-import { length } from 'stringz';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
-const props = defineProps<{
-	modelValue: string;
-	type?: string;
-	required?: boolean;
-	readonly?: boolean;
-	disabled?: boolean;
-	pattern?: string;
-	placeholder?: string;
-	autofocus?: boolean;
-	autocomplete?: string;
-	spellcheck?: boolean;
-	code?: boolean;
-	tall?: boolean;
-	pre?: boolean;
-	debounce?: boolean;
-	manualSave?: boolean;
-	max?: number;
-}>();
+export default defineComponent({
+	components: {
+		MkButton,
+	},
 
-const emit = defineEmits<{
-	(ev: 'change', _ev: Event): void;
-	(ev: 'keydown', _ev: KeyboardEvent): void;
-	(ev: 'enter'): void;
-	(ev: 'update:modelValue', value: string | number): void;
-}>();
+	props: {
+		modelValue: {
+			required: true,
+		},
+		type: {
+			type: String,
+			required: false,
+		},
+		required: {
+			type: Boolean,
+			required: false,
+		},
+		readonly: {
+			type: Boolean,
+			required: false,
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+		},
+		pattern: {
+			type: String,
+			required: false,
+		},
+		placeholder: {
+			type: String,
+			required: false,
+		},
+		autofocus: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		autocomplete: {
+			required: false,
+		},
+		spellcheck: {
+			required: false,
+		},
+		code: {
+			type: Boolean,
+			required: false,
+		},
+		tall: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		pre: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		debounce: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		manualSave: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	},
 
-const { modelValue, autofocus } = toRefs(props);
-const v = ref(modelValue.value);
-const focused = ref(false);
-const changed = ref(false);
-const invalid = ref(false);
-const inputEl = ref<HTMLTextAreaElement>();
+	emits: ['change', 'keydown', 'enter', 'update:modelValue'],
 
-const textLength = $computed((): number => {
-	if (typeof v.value !== 'string') return 0;
-	return length(v.value);
-});
+	setup(props, context) {
+		const { modelValue, autofocus } = toRefs(props);
+		const v = ref(modelValue.value);
+		const focused = ref(false);
+		const changed = ref(false);
+		const invalid = ref(false);
+		const filled = computed(() => v.value !== '' && v.value != null);
+		const inputEl = ref(null);
 
-const maxTextLength = $computed((): number | null => {
-	return props.max ?? null;
-});
+		const focus = () => inputEl.value.focus();
+		const onInput = (ev) => {
+			changed.value = true;
+			context.emit('change', ev);
+		};
+		const onKeydown = (ev: KeyboardEvent) => {
+			context.emit('keydown', ev);
 
-const focus = (): void => inputEl.value?.focus();
-const onInput = (ev: Event): void => {
-	changed.value = true;
-	emit('change', ev);
-};
-const onKeydown = (ev: KeyboardEvent): void => {
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+			if (ev.code === 'Enter') {
+				context.emit('enter');
+			}
+		};
 
-	emit('keydown', ev);
+		const updated = () => {
+			changed.value = false;
+			context.emit('update:modelValue', v.value);
+		};
 
-	if (ev.code === 'Enter') {
-		emit('enter');
-	}
-};
+		const debouncedUpdated = debounce(1000, updated);
 
-const updated = (): void => {
-	changed.value = false;
-	emit('update:modelValue', v.value);
-};
+		watch(modelValue, newValue => {
+			v.value = newValue;
+		});
 
-const debouncedUpdated = debounce(1000, updated);
+		watch(v, newValue => {
+			if (!props.manualSave) {
+				if (props.debounce) {
+					debouncedUpdated();
+				} else {
+					updated();
+				}
+			}
 
-watch(modelValue, newValue => {
-	v.value = newValue;
-});
+			invalid.value = inputEl.value.validity.badInput;
+		});
 
-watch(v, () => {
-	invalid.value = !!inputEl.value?.validity.badInput || (textLength != null && maxTextLength != null && textLength > maxTextLength);
+		onMounted(() => {
+			nextTick(() => {
+				if (autofocus.value) {
+					focus();
+				}
+			});
+		});
 
-	if (!props.manualSave) {
-		if (props.debounce) {
-			debouncedUpdated();
-		} else {
-			updated();
-		}
-	}
-});
-
-onMounted(() => {
-	nextTick(() => {
-		if (autofocus.value) {
-			focus();
-		}
-	});
+		return {
+			v,
+			focused,
+			invalid,
+			changed,
+			filled,
+			inputEl,
+			focus,
+			onInput,
+			onKeydown,
+			updated,
+			i18n,
+		};
+	},
 });
 </script>
 
@@ -132,26 +180,9 @@ onMounted(() => {
 		font-size: 0.85em;
 		padding: 0 0 8px 0;
 		user-select: none;
-		min-height: 1.35em; // line-height
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 8px;
 
 		&:empty {
 			display: none;
-		}
-
-		> .label-text {
-			overflow-wrap: break-word;
-		}
-
-		> .text-count {
-			opacity: 0.7;
-
-			&.over {
-				color: var(--error);
-			}
 		}
 	}
 

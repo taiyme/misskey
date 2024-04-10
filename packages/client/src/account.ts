@@ -6,7 +6,6 @@ import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { parseObject } from '@/scripts/tms/parse';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -15,7 +14,7 @@ type Account = misskey.entities.MeDetailed;
 const accountData = localStorage.getItem('account');
 
 // TODO: 外部からはreadonlyに
-export const $i = accountData ? reactive(parseObject<Account>(accountData)) : null;
+export const $i = accountData ? reactive(JSON.parse(accountData) as Account) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin || $i.isModerator);
 export const iAmAdmin = $i != null && $i.isAdmin;
@@ -208,7 +207,7 @@ export async function openAccountMenu(opts: {
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
 			type: 'parent',
-			icon: 'ti ti-plus',
+			icon: 'fas fa-plus',
 			text: i18n.ts.addAccount,
 			children: [{
 				text: i18n.ts.existingAccount,
@@ -219,7 +218,7 @@ export async function openAccountMenu(opts: {
 			}],
 		}, {
 			type: 'link',
-			icon: 'ti ti-users',
+			icon: 'fas fa-users',
 			text: i18n.ts.manageAccounts,
 			to: '/settings/accounts',
 		}]], ev.currentTarget ?? ev.target, {

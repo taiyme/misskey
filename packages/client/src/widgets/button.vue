@@ -7,8 +7,9 @@
 </template>
 
 <script lang="ts" setup>
-import { AiScript, parse } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { AiScript, parse, utils } from '@syuilo/aiscript';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';

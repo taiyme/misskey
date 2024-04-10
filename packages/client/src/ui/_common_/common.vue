@@ -9,39 +9,28 @@
 
 <XUpload v-if="uploads.length > 0"/>
 
-<TransitionGroup :name="$store.state.animation ? 'notification' : ''" tag="div" class="notification-toast">
-	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" class="notification"/>
-</TransitionGroup>
-
 <XStreamIndicator/>
 
 <div v-if="pendingApiRequestsCount > 0" id="wait"></div>
 
 <div v-if="dev" id="devTicker"><span>DEV BUILD</span></div>
-
-<div v-if="$i && $i.isBot" id="botWarn"><span>{{ i18n.ts.loggedInAsBot }}</span></div>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
 import { swInject } from './sw-inject';
-import XNotification from './notification.vue';
-import { popups, pendingApiRequestsCount } from '@/os';
+import { popup, popups, pendingApiRequestsCount } from '@/os';
 import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { stream } from '@/stream';
-import { i18n } from '@/i18n';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<misskey.entities.Notification[]>([]);
-
-function onNotification(notification) {
+const onNotification = notification => {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
@@ -49,18 +38,13 @@ function onNotification(notification) {
 			id: notification.id,
 		});
 
-		notifications.unshift(notification);
-		window.setTimeout(() => {
-			if (notifications.length > 3) notifications.pop();
-		}, 500);
-
-		window.setTimeout(() => {
-			notifications = notifications.filter(x => x.id !== notification.id);
-		}, 6000);
+		popup(defineAsyncComponent(() => import('@/components/MkNotificationToast.vue')), {
+			notification,
+		}, {}, 'closed');
 	}
 
 	sound.play('notification');
-}
+};
 
 if ($i) {
 	const connection = stream.useChannel('main', null, 'UI');
@@ -72,48 +56,6 @@ if ($i) {
 	}
 }
 </script>
-
-<style lang="scss" scoped>
-.notification-move, .notification-enter-active, .notification-leave-active {
-	transition: opacity 0.3s, transform 0.3s !important;
-}
-.notification-enter-from, .notification-leave-to {
-	opacity: 0;
-	transform: translateX(-250px);
-}
-
-.notification-toast {
-	position: fixed;
-	z-index: 3900000;
-	left: 0;
-	width: 250px;
-	top: 32px;
-	padding: 0 32px;
-	pointer-events: none;
-	container-type: inline-size;
-
-	> .notification {
-		& + .notification {
-			margin-top: 8px;
-		}
-	}
-
-	@media (max-width: 500px) {
-		top: initial;
-		bottom: calc(var(--minBottomSpacing) + var(--margin));
-		padding: 0 var(--margin);
-		display: flex;
-		flex-direction: column-reverse;
-
-		> .notification {
-			& + .notification {
-				margin-top: 0;
-				margin-bottom: 8px;
-			}
-		}
-	}
-}
-</style>
 
 <style lang="scss">
 @keyframes dev-ticker-blink {
@@ -149,29 +91,6 @@ if ($i) {
 		border-left-color: var(--accent);
 		border-radius: 50%;
 		animation: progress-spinner 400ms linear infinite;
-	}
-}
-
-#botWarn {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	margin: auto;
-	width: 100%;
-	height: max-content;
-	text-align: center;
-	z-index: 2147483647;
-	color: #ff0;
-	background: rgba(0, 0, 0, 0.5);
-	padding: 4px 7px;
-	font-size: 14px;
-	pointer-events: none;
-	user-select: none;
-
-	> span {
-		animation: dev-ticker-blink 2s infinite;
 	}
 }
 

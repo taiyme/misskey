@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
 		<div class="mk-list-page">
-			<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+			<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 				<div v-if="list" class="_section">
 					<div class="_content">
 						<MkButton inline @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
@@ -13,7 +13,7 @@
 				</div>
 			</transition>
 
-			<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+			<transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
 				<div v-if="list" class="_section members _gap">
 					<div class="_title">{{ i18n.ts.members }}</div>
 					<div class="_content">
@@ -25,7 +25,7 @@
 									<MkAcct :user="user" class="acct"/>
 								</div>
 								<div class="action">
-									<button class="_button" @click="removeUser(user)"><i class="ti ti-x"></i></button>
+									<button class="_button" @click="removeUser(user)"><i class="fas fa-times"></i></button>
 								</div>
 							</div>
 						</div>
@@ -89,7 +89,6 @@ async function renameList() {
 	const { canceled, result: name } = await os.inputText({
 		title: i18n.ts.enterListName,
 		default: list.name,
-		max: 100,
 	});
 	if (canceled) return;
 
@@ -123,7 +122,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => list ? {
 	title: list.name,
-	icon: 'ti ti-list',
+	icon: 'fas fa-list-ul',
 } : null));
 </script>
 

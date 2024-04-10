@@ -2,7 +2,7 @@
 <div class="iltifgqe">
 	<div class="editor _panel _gap">
 		<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :line-numbers="false"/>
-		<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
+		<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="fas fa-play"></i></MkButton>
 	</div>
 
 	<MkContainer :foldable="true" class="_gap">
@@ -27,7 +27,6 @@ import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism-okaidia.css';
 import { PrismEditor } from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import { v4 as uuid } from 'uuid';
 import { AiScript, parse, utils } from '@syuilo/aiscript';
 import MkContainer from '@/components/MkContainer.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -66,7 +65,7 @@ async function run() {
 		},
 		out: (value) => {
 			logs.value.push({
-				id: uuid(),
+				id: Math.random(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -74,7 +73,7 @@ async function run() {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: uuid(),
+					id: Math.random(),
 					text: utils.valToString(params.val, true),
 					print: false,
 				}); break;
@@ -113,7 +112,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.scratchpad,
-	icon: 'ti ti-terminal-2',
+	icon: 'fas fa-terminal',
 });
 </script>
 

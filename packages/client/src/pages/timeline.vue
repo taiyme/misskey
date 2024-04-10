@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import { defineAsyncComponent, computed, watch } from 'vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import XPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
@@ -32,8 +32,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-
-provide('shouldOmitHeaderTitle', true);
 
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
@@ -81,9 +79,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await os.api('channels/followed', {
-		limit: 100,
-	});
+	const channels = await os.api('channels/followed');
 	const items = channels.map(channel => ({
 		type: 'link' as const,
 		text: channel.name,
@@ -118,35 +114,35 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => [{
 	key: 'home',
 	title: i18n.ts._timelines.home,
-	icon: 'ti ti-home',
+	icon: 'fas fa-home',
 	iconOnly: true,
 }, ...(isLocalTimelineAvailable ? [{
 	key: 'local',
 	title: i18n.ts._timelines.local,
-	icon: 'ti ti-planet',
+	icon: 'fas fa-comments',
 	iconOnly: true,
 }, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
-	icon: 'ti ti-rocket',
+	icon: 'fas fa-share-alt',
 	iconOnly: true,
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
+	icon: 'fas fa-globe',
 	iconOnly: true,
 }] : []), {
-	icon: 'ti ti-list',
+	icon: 'fas fa-list-ul',
 	title: i18n.ts.lists,
 	iconOnly: true,
 	onClick: chooseList,
 }, {
-	icon: 'ti ti-antenna',
+	icon: 'fas fa-satellite',
 	title: i18n.ts.antennas,
 	iconOnly: true,
 	onClick: chooseAntenna,
 }, {
-	icon: 'ti ti-device-tv',
+	icon: 'fas fa-satellite-dish',
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
@@ -154,7 +150,7 @@ const headerTabs = $computed(() => [{
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
-	icon: src === 'local' ? 'ti ti-planet' : src === 'social' ? 'ti ti-rocket' : src === 'global' ? 'ti ti-whirl' : 'ti ti-home',
+	icon: src === 'local' ? 'fas fa-comments' : src === 'social' ? 'fas fa-share-alt' : src === 'global' ? 'fas fa-globe' : 'fas fa-home',
 })));
 </script>
 

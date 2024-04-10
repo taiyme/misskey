@@ -1,7 +1,7 @@
 <template>
 <span v-if="!fetching" class="osdsvwzy">
 	<template v-if="display === 'marquee'">
-		<Transition name="change" mode="default">
+		<transition name="change" mode="default">
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
 				<span v-for="note in notes" :key="note.id" class="item">
 					<img class="avatar" :src="note.user.avatarUrl" decoding="async"/>
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os';

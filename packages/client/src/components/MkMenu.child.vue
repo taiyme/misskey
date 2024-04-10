@@ -1,13 +1,15 @@
 <template>
 <div ref="el" class="sfhdhdhr">
-	<MkMenu :items="items" :align="align" :width="width" :as-drawer="false" @close="onChildClosed"/>
+	<MkMenu ref="menu" :items="items" :align="align" :width="width" :as-drawer="false" @close="onChildClosed"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { on } from 'events';
+import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
+import * as os from '@/os';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -25,21 +27,11 @@ const emit = defineEmits<{
 const el = ref<HTMLElement>();
 const align = 'left';
 
-const SCROLLBAR_THICKNESS = 16;
-
 function setPosition() {
 	const rootRect = props.rootElement.getBoundingClientRect();
-	const parentRect = props.targetElement.getBoundingClientRect();
-	const myRect = el.value.getBoundingClientRect();
-
-	let left = props.targetElement.offsetWidth;
-	let top = (parentRect.top - rootRect.top) - 8;
-	if (rootRect.left + left + myRect.width >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
-		left = -myRect.width;
-	}
-	if (rootRect.top + top + myRect.height >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
-		top = top - ((rootRect.top + top + myRect.height) - (window.innerHeight - SCROLLBAR_THICKNESS));
-	}
+	const rect = props.targetElement.getBoundingClientRect();
+	const left = props.targetElement.offsetWidth;
+	const top = (rect.top - rootRect.top) - 8;
 	el.value.style.left = left + 'px';
 	el.value.style.top = top + 'px';
 }
@@ -52,24 +44,11 @@ function onChildClosed(actioned?: boolean) {
 	}
 }
 
-watch(() => props.targetElement, () => {
-	setPosition();
-});
-
-const ro = new ResizeObserver((entries, observer) => {
-	setPosition();
-});
-
 onMounted(() => {
-	ro.observe(el.value);
 	setPosition();
 	nextTick(() => {
 		setPosition();
 	});
-});
-
-onUnmounted(() => {
-	ro.disconnect();
 });
 
 defineExpose({

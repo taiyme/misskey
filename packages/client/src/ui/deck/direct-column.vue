@@ -1,6 +1,6 @@
 <template>
 <XColumn :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
-	<template #header><i class="ti ti-mail" style="margin-right: 8px;"></i>{{ column.name }}</template>
+	<template #header><i class="fas fa-envelope" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotes :pagination="pagination"/>
 </XColumn>
@@ -9,8 +9,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XColumn from './column.vue';
-import { Column } from './deck-store';
 import XNotes from '@/components/MkNotes.vue';
+import { Column } from './deck-store';
 
 defineProps<{
 	column: Column;

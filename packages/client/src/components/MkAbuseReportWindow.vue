@@ -1,7 +1,7 @@
 <template>
 <XWindow ref="uiWindow" :initial-width="400" :initial-height="500" :can-resize="true" @closed="emit('closed')">
 	<template #header>
-		<i class="ti ti-exclamation-circle" style="margin-right: 0.5em;"></i>
+		<i class="fas fa-exclamation-circle" style="margin-right: 0.5em;"></i>
 		<I18n :src="i18n.ts.reportAbuseOf" tag="span">
 			<template #name>
 				<b><MkAcct :user="user"/></b>
@@ -10,7 +10,7 @@
 	</template>
 	<div class="dpvffvvy _monolithic_">
 		<div class="_section">
-			<MkTextarea v-model="comment" :max="2048">
+			<MkTextarea v-model="comment">
 				<template #label>{{ i18n.ts.details }}</template>
 				<template #caption>{{ i18n.ts.fillAbuseReportDescription }}</template>
 			</MkTextarea>

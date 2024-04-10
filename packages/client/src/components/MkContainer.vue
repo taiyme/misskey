@@ -5,12 +5,12 @@
 		<div class="sub">
 			<slot name="func"></slot>
 			<button v-if="foldable" class="_button" @click="() => showBody = !showBody">
-				<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
-				<template v-else><i class="ti ti-chevron-down"></i></template>
+				<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+				<template v-else><i class="fas fa-angle-down"></i></template>
 			</button>
 		</div>
 	</header>
-	<Transition
+	<transition
 		:name="$store.state.animation ? 'container-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
@@ -23,7 +23,7 @@
 				<span>{{ $ts.showMore }}</span>
 			</button>
 		</div>
-	</Transition>
+	</transition>
 </div>
 </template>
 

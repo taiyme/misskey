@@ -5,12 +5,11 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { inject } from 'vue';
 import * as os from '@/os';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
-import { disableContextmenu } from '@/scripts/touch';
 import { i18n } from '@/i18n';
 import { useRouter } from '@/router';
 
@@ -36,35 +35,34 @@ const active = $computed(() => {
 });
 
 function onContextmenu(ev) {
-	if (disableContextmenu) return;
 	const selection = window.getSelection();
 	if (selection && selection.toString() !== '') return;
 	os.contextMenu([{
 		type: 'label',
 		text: props.to,
 	}, {
-		icon: 'ti ti-app-window',
+		icon: 'fas fa-window-maximize',
 		text: i18n.ts.openInWindow,
 		action: () => {
 			os.pageWindow(props.to);
 		},
 	}, {
-		icon: 'ti ti-player-eject',
+		icon: 'fas fa-expand-alt',
 		text: i18n.ts.showInPage,
 		action: () => {
 			router.push(props.to, 'forcePage');
 		},
 	}, null, {
-		icon: 'ti ti-external-link',
+		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(props.to, '_blank');
 		},
 	}, {
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyText(`${url}${props.to}`);
+			copyToClipboard(`${url}${props.to}`);
 		},
 	}], ev);
 }

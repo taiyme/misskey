@@ -1,15 +1,14 @@
 <template>
 <div v-size="{ max: [500] }" class="ssazuxis">
-	<header class="_button" :style="{ background: bg ?? undefined }" @click="showBody = !showBody">
+	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div class="title"><slot name="header"></slot></div>
 		<div class="divider"></div>
 		<button class="_button">
-			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
-			<template v-else><i class="ti ti-chevron-down"></i></template>
+			<template v-if="showBody"><i class="fas fa-angle-up"></i></template>
+			<template v-else><i class="fas fa-angle-down"></i></template>
 		</button>
 	</header>
-	<Transition
-		:name="$store.state.animation ? 'folder-toggle' : ''"
+	<transition :name="$store.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -18,7 +17,7 @@
 		<div v-show="showBody">
 			<slot></slot>
 		</div>
-	</Transition>
+	</transition>
 </div>
 </template>
 
@@ -33,18 +32,15 @@ export default defineComponent({
 		expanded: {
 			type: Boolean,
 			required: false,
-			default: true,
+			default: true
 		},
 		persistKey: {
 			type: String,
 			required: false,
-			default: null,
+			default: null
 		},
 	},
-	data(): ({
-		bg: string | null;
-		showBody: boolean;
-	}) {
+	data() {
 		return {
 			bg: null,
 			showBody: (this.persistKey && localStorage.getItem(localStoragePrefix + this.persistKey)) ? localStorage.getItem(localStoragePrefix + this.persistKey) === 't' : this.expanded,
@@ -55,10 +51,10 @@ export default defineComponent({
 			if (this.persistKey) {
 				localStorage.setItem(localStoragePrefix + this.persistKey, this.showBody ? 't' : 'f');
 			}
-		},
+		}
 	},
 	mounted() {
-		function getParentBg(el: HTMLElement | null): string {
+		function getParentBg(el: Element | null): string {
 			if (el == null || el.tagName === 'BODY') return 'var(--bg)';
 			const bg = el.style.background || el.style.backgroundColor;
 			if (bg) {
@@ -76,25 +72,26 @@ export default defineComponent({
 		toggleContent(show: boolean) {
 			this.showBody = show;
 		},
-		enter(el: HTMLElement) {
-			const { height: elementHeight } = el.getBoundingClientRect();
-			el.style.height = '0';
+
+		enter(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = 0;
 			el.offsetHeight; // reflow
-			el.style.height = `${elementHeight}px`;
+			el.style.height = elementHeight + 'px';
 		},
-		afterEnter(el: HTMLElement) {
-			el.style.height = '';
+		afterEnter(el) {
+			el.style.height = null;
 		},
-		leave(el: HTMLElement) {
-			const { height: elementHeight } = el.getBoundingClientRect();
-			el.style.height = `${elementHeight}px`;
+		leave(el) {
+			const elementHeight = el.getBoundingClientRect().height;
+			el.style.height = elementHeight + 'px';
 			el.offsetHeight; // reflow
-			el.style.height = '0';
+			el.style.height = 0;
 		},
-		afterLeave(el: HTMLElement) {
-			el.style.height = '';
+		afterLeave(el) {
+			el.style.height = null;
 		},
-	},
+	}
 });
 </script>
 

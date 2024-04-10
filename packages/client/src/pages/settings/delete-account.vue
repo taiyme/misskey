@@ -47,6 +47,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts._accountDelete.accountDelete,
-	icon: 'ti ti-alert-triangle',
+	icon: 'fas fa-exclamation-triangle',
 });
 </script>

@@ -2,13 +2,13 @@
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div ref="rootEl" class="hrmcaedk _narrow_" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
-			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
+			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="fas fa-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
 			<span v-if="pageMetadata?.value" class="title">
 				<i v-if="pageMetadata?.value.icon" class="icon" :class="pageMetadata?.value.icon"></i>
 				<span>{{ pageMetadata?.value.title }}</span>
 			</span>
-			<button class="_button" @click="$refs.modal.close()"><i class="ti ti-x"></i></button>
+			<button class="_button" @click="$refs.modal.close()"><i class="fas fa-times"></i></button>
 		</div>
 		<div class="body">
 			<MkStickyContainer>
@@ -24,13 +24,12 @@
 import { ComputedRef, provide } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { popout as _popout } from '@/scripts/popout';
-import { copyText } from '@/scripts/tms/clipboard';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import * as os from '@/os';
 import { mainRouter, routes } from '@/router';
 import { i18n } from '@/i18n';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { disableContextmenu } from '@/scripts/touch';
+import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
 import { Router } from '@/nirax';
 
 const props = defineProps<{
@@ -69,25 +68,25 @@ const contextmenu = $computed(() => {
 		type: 'label',
 		text: path,
 	}, {
-		icon: 'ti ti-player-eject',
+		icon: 'fas fa-expand-alt',
 		text: i18n.ts.showInPage,
 		action: expand,
 	}, {
-		icon: 'ti ti-window-maximize',
+		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.popout,
 		action: popout,
 	}, null, {
-		icon: 'ti ti-external-link',
+		icon: 'fas fa-external-link-alt',
 		text: i18n.ts.openInNewTab,
 		action: () => {
 			window.open(pageUrl, '_blank');
 			modal.close();
 		},
 	}, {
-		icon: 'ti ti-link',
+		icon: 'fas fa-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyText(pageUrl);
+			copyToClipboard(pageUrl);
 		},
 	}];
 });
@@ -112,7 +111,6 @@ function popout() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	if (disableContextmenu) return;
 	os.contextMenu(contextmenu, ev);
 }
 </script>

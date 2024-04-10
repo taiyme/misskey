@@ -30,11 +30,11 @@
 						</MkSelect>
 					</div>
 					<div class="inputs">
-						<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:model-value="$refs.users.reload()">
+						<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:modelValue="$refs.users.reload()">
 							<template #prefix>@</template>
 							<template #label>{{ i18n.ts.username }}</template>
 						</MkInput>
-						<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:model-value="$refs.users.reload()">
+						<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
 							<template #prefix>@</template>
 							<template #label>{{ i18n.ts.host }}</template>
 						</MkInput>
@@ -115,17 +115,17 @@ function show(user) {
 }
 
 const headerActions = $computed(() => [{
-	icon: 'ti ti-search',
+	icon: 'fas fa-search',
 	text: i18n.ts.search,
 	handler: searchUser,
 }, {
 	asFullButton: true,
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.addUser,
 	handler: addUser,
 }, {
 	asFullButton: true,
-	icon: 'ti ti-search',
+	icon: 'fas fa-search',
 	text: i18n.ts.lookup,
 	handler: lookupUser,
 }]);
@@ -134,7 +134,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.users,
-	icon: 'ti ti-users',
+	icon: 'fas fa-users',
 })));
 </script>
 

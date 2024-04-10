@@ -1,19 +1,17 @@
-import { VNode, defineComponent, h, PropType } from 'vue';
-import { CustomEmoji } from 'misskey-js/built/entities';
+import { VNode, defineComponent, h } from 'vue';
 import * as mfm from 'mfm-js';
-import { v4 as uuid } from 'uuid';
 import MkUrl from '@/components/global/MkUrl.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
+import { concat } from '@/scripts/array';
 import MkFormula from '@/components/MkFormula.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
-import { defaultStore } from '@/store';
-import { parseMfmText } from '@/scripts/tms/parse-mfm-text';
+import { MFM_TAGS } from '@/scripts/mfm-tags';
 
 export default defineComponent({
 	props: {
@@ -38,9 +36,7 @@ export default defineComponent({
 			default: null,
 		},
 		customEmojis: {
-			type: Array as PropType<CustomEmoji[]>,
 			required: false,
-			default: undefined,
 		},
 		isNote: {
 			type: Boolean,
@@ -51,41 +47,23 @@ export default defineComponent({
 	render() {
 		if (this.text == null || this.text === '') return;
 
-		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text);
+		const ast = (this.plain ? mfm.parseSimple : mfm.parse)(this.text, { fnNameList: MFM_TAGS });
 
-		const validTime = (t: unknown): string | null => {
-			if (typeof t !== 'string') return null;
+		const validTime = (t: string | null | undefined) => {
+			if (t == null) return null;
 			return t.match(/^[0-9.]+s$/) ? t : null;
 		};
 
-		const parseNumber = (n: unknown): number | null => {
-			if (typeof n === 'number') return n;
-			if (typeof n !== 'string') return null;
-			const parsedFloat = parseFloat(n);
-			if (Number.isNaN(parsedFloat)) return null;
-			return parsedFloat;
-		};
-
-		const validHex = (hex: unknown): hex is string => {
-			if (typeof hex !== 'string') return false;
-			// TODO: v13系との互換性のためにあえて残しているが、このままでは4桁,5桁の意図しない色コードを許可してしまう
-			// 6桁,3桁の色コードを許可するつもりなら /^([0-9a-f]{3}){1,2}$/i
-			// 加えて8桁,4桁の色コードを許可するのであれば /^(([0-9a-f]{3}){1,2}|([0-9a-f]{4}){1,2})$/i
-			return /^[0-9a-f]{3,6}$/i.test(hex);
-		};
-
-		const useAnim = defaultStore.state.animatedMfm;
-
-		const genEl = (ast: mfm.MfmNode[], parents: string[]) => ast.map((token): VNode | string | (VNode | string)[] => {
+		const genEl = (ast: mfm.MfmNode[]) => concat(ast.map((token): VNode[] => {
 			switch (token.type) {
 				case 'text': {
 					const text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
 
 					if (!this.plain) {
-						const res: (VNode | string)[] = [];
+						const res = [];
 						for (const t of text.split('\n')) {
 							res.push(h('br'));
-							res.push(...parseMfmText(t, parents));
+							res.push(t);
 						}
 						res.shift();
 						return res;
@@ -95,41 +73,41 @@ export default defineComponent({
 				}
 
 				case 'bold': {
-					return [h('b', genEl(token.children, [...parents, token.type]))];
+					return [h('b', genEl(token.children))];
 				}
 
 				case 'strike': {
-					return [h('del', genEl(token.children, [...parents, token.type]))];
+					return [h('del', genEl(token.children))];
 				}
 
 				case 'italic': {
 					return h('i', {
 						style: 'font-style: oblique;',
-					}, genEl(token.children, [...parents, token.type]));
+					}, genEl(token.children));
 				}
 
 				case 'fn': {
 					// TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
-					let style: string | undefined;
+					let style;
 					switch (token.props.name) {
 						case 'tada': {
-							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
+							const speed = validTime(token.props.args.speed) || '1s';
+							style = 'font-size: 150%;' + (this.$store.state.animatedMfm ? `animation: tada ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'jelly': {
-							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+							const speed = validTime(token.props.args.speed) || '1s';
+							style = (this.$store.state.animatedMfm ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
 							break;
 						}
 						case 'twitch': {
-							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+							const speed = validTime(token.props.args.speed) || '0.5s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-twitch ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'shake': {
-							const speed = validTime(token.props.args.speed) ?? '0.5s';
-							style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
+							const speed = validTime(token.props.args.speed) || '0.5s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-shake ${speed} ease infinite;` : '';
 							break;
 						}
 						case 'spin': {
@@ -141,18 +119,18 @@ export default defineComponent({
 								token.props.args.x ? 'mfm-spinX' :
 								token.props.args.y ? 'mfm-spinY' :
 								'mfm-spin';
-							const speed = validTime(token.props.args.speed) ?? '1.5s';
-							style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+							const speed = validTime(token.props.args.speed) || '1.5s';
+							style = this.$store.state.animatedMfm ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
 							break;
 						}
 						case 'jump': {
-							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
+							const speed = validTime(token.props.args.speed) || '0.75s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-jump ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'bounce': {
-							const speed = validTime(token.props.args.speed) ?? '0.75s';
-							style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+							const speed = validTime(token.props.args.speed) || '0.75s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
 							break;
 						}
 						case 'flip': {
@@ -166,17 +144,17 @@ export default defineComponent({
 						case 'x2': {
 							return h('span', {
 								class: 'mfm-x2',
-							}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							}, genEl(token.children));
 						}
 						case 'x3': {
 							return h('span', {
 								class: 'mfm-x3',
-							}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							}, genEl(token.children));
 						}
 						case 'x4': {
 							return h('span', {
 								class: 'mfm-x4',
-							}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							}, genEl(token.children));
 						}
 						case 'font': {
 							const family =
@@ -187,83 +165,55 @@ export default defineComponent({
 								token.props.args.emoji ? 'emoji' :
 								token.props.args.math ? 'math' :
 								null;
-							if (family) {
-								return h('span', {
-									class: `mfm-ff-${family}`,
-								}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
-							}
+							if (family) style = `font-family: ${family};`;
 							break;
 						}
 						case 'blur': {
 							return h('span', {
 								class: '_mfm_blur_',
-							}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							}, genEl(token.children));
 						}
 						case 'rainbow': {
-							const speed = validTime(token.props.args.speed) ?? '1s';
-							style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
+							const speed = validTime(token.props.args.speed) || '1s';
+							style = this.$store.state.animatedMfm ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 							break;
 						}
 						case 'sparkle': {
-							if (!useAnim) {
-								return genEl(token.children, [...parents, `${token.type}:${token.props.name}`]);
+							if (!this.$store.state.animatedMfm) {
+								return genEl(token.children);
 							}
-							return h(MkSparkle, {}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							return h(MkSparkle, {}, genEl(token.children));
 						}
 						case 'rotate': {
-							const degrees = parseNumber(token.props.args.deg) ?? 90;
+							const degrees = parseInt(token.props.args.deg) || '90';
 							style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
-							break;
-						}
-						case 'position': {
-							const x = parseNumber(token.props.args.x) ?? 0;
-							const y = parseNumber(token.props.args.y) ?? 0;
-							style = `transform: translateX(${x}em) translateY(${y}em);`;
-							break;
-						}
-						case 'scale': {
-							const x = Math.min(parseNumber(token.props.args.x) ?? 1, 5);
-							const y = Math.min(parseNumber(token.props.args.y) ?? 1, 5);
-							style = `transform: scale(${x}, ${y});`;
-							break;
-						}
-						case 'fg': {
-							let color = token.props.args.color;
-							if (!validHex(color)) color = 'f00';
-							style = `color: #${color};`;
-							break;
-						}
-						case 'bg': {
-							let color = token.props.args.color;
-							if (!validHex(color)) color = 'f00';
-							style = `background-color: #${color};`;
 							break;
 						}
 					}
 					if (style == null) {
-						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, [...parents, `${token.type}:${token.props.name}`]), ']']);
+						return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children), ']']);
 					} else {
 						return h('span', {
-							style: 'display: inline-block; ' + style,
-						}, genEl(token.children, [...parents, `${token.type}:${token.props.name}`]));
+							style: 'display: inline-block;' + style,
+						}, genEl(token.children));
 					}
 				}
 
 				case 'small': {
 					return [h('small', {
 						style: 'opacity: 0.7;',
-					}, genEl(token.children, [...parents, token.type]))];
+					}, genEl(token.children))];
 				}
 
 				case 'center': {
 					return [h('div', {
 						style: 'text-align:center;',
-					}, genEl(token.children, [...parents, token.type]))];
+					}, genEl(token.children))];
 				}
 
 				case 'url': {
 					return [h(MkUrl, {
-						key: uuid(),
+						key: Math.random(),
 						url: token.props.url,
 						rel: 'nofollow noopener',
 					})];
@@ -271,15 +221,15 @@ export default defineComponent({
 
 				case 'link': {
 					return [h(MkLink, {
-						key: uuid(),
+						key: Math.random(),
 						url: token.props.url,
 						rel: 'nofollow noopener',
-					}, genEl(token.children, [...parents, token.type]))];
+					}, genEl(token.children))];
 				}
 
 				case 'mention': {
 					return [h(MkMention, {
-						key: uuid(),
+						key: Math.random(),
 						host: (token.props.host == null && this.author && this.author.host != null ? this.author.host : token.props.host) || host,
 						username: token.props.username,
 					})];
@@ -287,7 +237,7 @@ export default defineComponent({
 
 				case 'hashtag': {
 					return [h(MkA, {
-						key: uuid(),
+						key: Math.random(),
 						to: this.isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/explore/tags/${encodeURIComponent(token.props.hashtag)}`,
 						style: 'color:var(--hashtag);',
 					}, `#${token.props.hashtag}`)];
@@ -295,15 +245,15 @@ export default defineComponent({
 
 				case 'blockCode': {
 					return [h(MkCode, {
-						key: uuid(),
+						key: Math.random(),
 						code: token.props.code,
-						lang: token.props.lang ?? undefined,
+						lang: token.props.lang,
 					})];
 				}
 
 				case 'inlineCode': {
 					return [h(MkCode, {
-						key: uuid(),
+						key: Math.random(),
 						code: token.props.code,
 						inline: true,
 					})];
@@ -313,28 +263,26 @@ export default defineComponent({
 					if (!this.nowrap) {
 						return [h('div', {
 							class: 'quote',
-						}, genEl(token.children, [...parents, token.type]))];
+						}, genEl(token.children))];
 					} else {
 						return [h('span', {
 							class: 'quote',
-						}, genEl(token.children, [...parents, token.type]))];
+						}, genEl(token.children))];
 					}
 				}
 
 				case 'emojiCode': {
 					return [h(MkEmoji, {
-						key: uuid(),
+						key: Math.random(),
 						emoji: `:${token.props.name}:`,
 						customEmojis: this.customEmojis,
 						normal: this.plain,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						host: this.author?.host,
 					})];
 				}
 
 				case 'unicodeEmoji': {
 					return [h(MkEmoji, {
-						key: uuid(),
+						key: Math.random(),
 						emoji: token.props.emoji,
 						customEmojis: this.customEmojis,
 						normal: this.plain,
@@ -343,7 +291,7 @@ export default defineComponent({
 
 				case 'mathInline': {
 					return [h(MkFormula, {
-						key: uuid(),
+						key: Math.random(),
 						formula: token.props.formula,
 						block: false,
 					})];
@@ -351,7 +299,7 @@ export default defineComponent({
 
 				case 'mathBlock': {
 					return [h(MkFormula, {
-						key: uuid(),
+						key: Math.random(),
 						formula: token.props.formula,
 						block: true,
 					})];
@@ -359,25 +307,24 @@ export default defineComponent({
 
 				case 'search': {
 					return [h(MkGoogle, {
-						key: uuid(),
+						key: Math.random(),
 						q: token.props.query,
 					})];
 				}
 
 				case 'plain': {
-					return [h('span', genEl(token.children, [...parents, token.type]))];
+					return [h('span', genEl(token.children))];
 				}
 
 				default: {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					console.error('unrecognized ast type:', (token as any).type);
+					console.error('unrecognized ast type:', token.type);
 
 					return [];
 				}
 			}
-		}).flat(Infinity) as (VNode | string)[];
+		}));
 
 		// Parse ast to DOM
-		return h('span', genEl(ast, []));
+		return h('span', genEl(ast));
 	},
 });

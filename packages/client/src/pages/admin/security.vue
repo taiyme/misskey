@@ -5,7 +5,7 @@
 		<FormSuspense :p="init">
 			<div class="_formRoot">
 				<FormFolder class="_formBlock">
-					<template #icon><i class="ti ti-shield"></i></template>
+					<template #icon><i class="fas fa-shield-alt"></i></template>
 					<template #label>{{ i18n.ts.botProtection }}</template>
 					<template v-if="enableHcaptcha" #suffix>hCaptcha</template>
 					<template v-else-if="enableRecaptcha" #suffix>reCAPTCHA</template>
@@ -15,7 +15,7 @@
 				</FormFolder>
 
 				<FormFolder class="_formBlock">
-					<template #icon><i class="ti ti-eye-off"></i></template>
+					<template #icon><i class="fas fa-eye-slash"></i></template>
 					<template #label>{{ i18n.ts.sensitiveMediaDetection }}</template>
 					<template v-if="sensitiveMediaDetection === 'all'" #suffix>{{ i18n.ts.all }}</template>
 					<template v-else-if="sensitiveMediaDetection === 'local'" #suffix>{{ i18n.ts.localOnly }}</template>
@@ -53,7 +53,7 @@
 						</FormSwitch>
 						-->
 
-						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 
@@ -64,7 +64,7 @@
 
 					<div class="_formRoot">
 						<span class="_formBlock">{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:model-value="save">
+						<FormSwitch v-model="enableActiveEmailValidation" class="_formBlock" @update:modelValue="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>
@@ -76,7 +76,7 @@
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_formRoot">
-						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:model-value="save">
+						<FormSwitch v-model="enableIpLogging" class="_formBlock" @update:modelValue="save">
 							<template #label>Enable</template>
 						</FormSwitch>
 					</div>
@@ -87,11 +87,11 @@
 
 					<div class="_formRoot">
 						<FormInput v-model="summalyProxy" class="_formBlock">
-							<template #prefix><i class="ti ti-link"></i></template>
+							<template #prefix><i class="fas fa-link"></i></template>
 							<template #label>Summaly Proxy URL</template>
 						</FormInput>
 
-						<FormButton primary class="_formBlock" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</FormButton>
+						<FormButton primary class="_formBlock" @click="save"><i class="fas fa-save"></i> {{ i18n.ts.save }}</FormButton>
 					</div>
 				</FormFolder>
 			</div>
@@ -107,6 +107,7 @@ import XHeader from './_header_.vue';
 import FormFolder from '@/components/form/folder.vue';
 import FormRadios from '@/components/form/radios.vue';
 import FormSwitch from '@/components/form/switch.vue';
+import FormInfo from '@/components/MkInfo.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import FormRange from '@/components/form/range.vue';
 import FormInput from '@/components/form/input.vue';
@@ -170,6 +171,6 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.security,
-	icon: 'ti ti-lock',
+	icon: 'fas fa-lock',
 });
 </script>

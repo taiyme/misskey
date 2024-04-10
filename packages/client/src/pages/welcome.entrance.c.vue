@@ -41,7 +41,7 @@
 							<template #n><b>{{ onlineUsersCount }}</b></template>
 						</I18n>
 					</div>
-					<button class="_button _acrylic menu" @click="showMenu"><i class="ti ti-dots"></i></button>
+					<button class="_button _acrylic menu" @click="showMenu"><i class="fas fa-ellipsis-h"></i></button>
 				</div>
 			</div>
 			<nav class="nav">
@@ -58,12 +58,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { toUnicode } from 'punycode/';
-import XTimeline from './welcome.timeline.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
 import XNote from '@/components/MkNote.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
+import XTimeline from './welcome.timeline.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import number from '@/filters/number';
@@ -124,19 +124,19 @@ export default defineComponent({
 		showMenu(ev) {
 			os.popupMenu([{
 				text: this.$t('aboutX', { x: instanceName }),
-				icon: 'ti ti-info-circle',
+				icon: 'fas fa-info-circle',
 				action: () => {
 					os.pageWindow('/about');
 				}
 			}, {
 				text: this.$ts.aboutMisskey,
-				icon: 'ti ti-info-circle',
+				icon: 'fas fa-info-circle',
 				action: () => {
 					os.pageWindow('/about-misskey');
 				}
 			}, null, {
 				text: this.$ts.help,
-				icon: 'ti ti-question-circle',
+				icon: 'fas fa-question-circle',
 				action: () => {
 					window.open(`https://misskey-hub.net/help.md`, '_blank');
 				}

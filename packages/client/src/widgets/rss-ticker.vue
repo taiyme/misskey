@@ -1,14 +1,14 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="widgetProps.showHeader" class="mkw-rss-ticker">
-	<template #header><i class="ti ti-rss"></i>RSS</template>
-	<template #func><button class="_button" @click="configure"><i class="ti ti-settings"></i></button></template>
+	<template #header><i class="fas fa-rss-square"></i>RSS</template>
+	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
 	<div class="ekmkgxbk">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<Transition name="change" mode="default">
+			<transition name="change" mode="default">
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
-					<span v-for="item in items" :key="item.link" class="item">
+					<span v-for="item in items" class="item">
 						<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
 					</span>
 				</MarqueeText>
@@ -19,10 +19,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import MarqueeText from '@/components/MkMarquee.vue';
 import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { shuffle } from '@/scripts/shuffle';

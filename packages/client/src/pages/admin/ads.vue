@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="uqshojas">
-			<div v-for="ad in ads" :key="ad.id" class="_panel _formRoot ad">
+			<div v-for="ad in ads" class="_panel _formRoot ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url" class="_formBlock">
 					<template #label>URL</template>
@@ -37,8 +37,8 @@
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
 				<div class="buttons _formBlock">
-					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-					<MkButton class="button" inline danger @click="remove(ad)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+					<MkButton class="button" inline primary style="margin-right: 12px;" @click="save(ad)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton class="button" inline danger @click="remove(ad)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
 				</div>
 			</div>
 		</div>
@@ -106,7 +106,7 @@ function save(ad) {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
@@ -115,7 +115,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.ads,
-	icon: 'ti ti-ad',
+	icon: 'fas fa-audio-description',
 });
 </script>
 

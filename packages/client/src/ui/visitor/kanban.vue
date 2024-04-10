@@ -29,7 +29,7 @@
 				</div>
 				<div v-if="poweredBy" class="powered-by">
 					<b><MkA to="/">{{ host }}</MkA></b>
-					<small>Powered by <a href="https://github.com/taiyme/misskey" target="_blank">taiyme/misskey</a></small>
+					<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
 				</div>
 			</template>
 		</div>
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, defineAsyncComponent } from 'vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import MkPagination from '@/components/MkPagination.vue';

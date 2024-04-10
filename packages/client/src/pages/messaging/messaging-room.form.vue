@@ -15,10 +15,10 @@
 	<footer>
 		<div v-if="file" class="file" @click="file = null">{{ file.name }}</div>
 		<div class="buttons">
-			<button class="_button" @click="chooseFile"><i class="ti ti-photo-plus"></i></button>
-			<button class="_button" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+			<button class="_button" @click="chooseFile"><i class="fas fa-photo-video"></i></button>
+			<button class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
 			<button class="send _button" :disabled="!canSend || sending" :title="i18n.ts.send" @click="send">
-				<template v-if="!sending"><i class="ti ti-send"></i></template><template v-if="sending"><MkLoading :em="true"/></template>
+				<template v-if="!sending"><i class="fas fa-paper-plane"></i></template><template v-if="sending"><i class="fas fa-spinner fa-pulse fa-fw"></i></template>
 			</button>
 		</div>
 	</footer>
@@ -40,7 +40,6 @@ import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 //import { Autocomplete } from '@/scripts/autocomplete';
 import { uploadFile } from '@/scripts/upload';
-import { parseObject } from '@/scripts/tms/parse';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -118,7 +117,7 @@ function onDrop(ev: DragEvent): void {
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
 	if (driveFile != null && driveFile !== '') {
-		file = parseObject<Misskey.entities.DriveFile>(driveFile);
+		file = JSON.parse(driveFile);
 		ev.preventDefault();
 	}
 	//#endregion
@@ -173,19 +172,11 @@ function clear() {
 	deleteDraft();
 }
 
-type DraftData = {
-	updatedAt: string;
-	data: {
-		text: typeof text;
-		file: typeof file;
-	};
-};
-
 function saveDraft() {
-	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
+	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
 	drafts[draftKey] = {
-		updatedAt: new Date().toJSON(),
+		updatedAt: new Date(),
 		// eslint-disable-next-line id-denylist
 		data: {
 			text: text,
@@ -197,7 +188,7 @@ function saveDraft() {
 }
 
 function deleteDraft() {
-	const drafts = parseObject<Record<string, DraftData>>(localStorage.getItem('message_drafts'));
+	const drafts = JSON.parse(localStorage.getItem('message_drafts') || '{}');
 
 	delete drafts[draftKey];
 
@@ -216,7 +207,7 @@ onMounted(() => {
 	//new Autocomplete(textEl, this, { model: 'text' });
 
 	// 書きかけの投稿を復元
-	const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('message_drafts'))[draftKey];
+	const draft = JSON.parse(localStorage.getItem('message_drafts') || '{}')[draftKey];
 	if (draft) {
 		text = draft.data.text;
 		file = draft.data.file;

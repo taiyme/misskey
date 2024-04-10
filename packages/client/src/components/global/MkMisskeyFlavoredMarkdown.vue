@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :custom-emojis="customEmojis" :is-note="isNote" class="havbbuyv" :class="{ nowrap }"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :customEmojis="customEmojis" :isNote="isNote" class="havbbuyv" :class="{ nowrap }"/>
 </template>
 
 <script lang="ts" setup>
@@ -29,36 +29,6 @@ const props = withDefaults(defineProps<{
 	&:hover {
 		filter: blur(0px);
 	}
-}
-
-.mfm-ff-serif {
-	display: inline-block;
-	font-family: serif;
-}
-
-.mfm-ff-monospace {
-	display: inline-block;
-	font-family: monospace;
-}
-
-.mfm-ff-cursive {
-	display: inline-block;
-	font-family: cursive;
-}
-
-.mfm-ff-fantasy {
-	display: inline-block;
-	font-family: fantasy;
-}
-
-.mfm-ff-emoji {
-	display: inline-block;
-	font-family: emoji;
-}
-
-.mfm-ff-math {
-	display: inline-block;
-	font-family: math;
 }
 
 .mfm-x2 {

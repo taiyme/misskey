@@ -3,7 +3,7 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="900">
 		<div class="ztgjmzrw">
-			<section v-for="announcement in announcements" :key="announcement.id" class="_card _gap announcements">
+			<section v-for="announcement in announcements" class="_card _gap announcements">
 				<div class="_content announcement">
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
@@ -16,8 +16,8 @@
 					</MkInput>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons">
-						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton class="button" inline @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+						<MkButton class="button" inline primary @click="save(announcement)"><i class="fas fa-save"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton class="button" inline @click="remove(announcement)"><i class="fas fa-trash-alt"></i> {{ i18n.ts.remove }}</MkButton>
 					</div>
 				</div>
 			</section>
@@ -92,7 +92,7 @@ function save(announcement) {
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
-	icon: 'ti ti-plus',
+	icon: 'fas fa-plus',
 	text: i18n.ts.add,
 	handler: add,
 }]);
@@ -101,7 +101,7 @@ const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.announcements,
-	icon: 'ti ti-speakerphone',
+	icon: 'fas fa-broadcast-tower',
 });
 </script>
 

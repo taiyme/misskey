@@ -5,7 +5,7 @@
 			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" class="sensitive">
-					<i class="ti ti-alert-triangle icon"></i>
+					<i class="fas fa-exclamation-triangle icon"></i>
 				</div>
 			</div>
 		</template>
@@ -18,7 +18,6 @@
 import { defineComponent, defineAsyncComponent } from 'vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import * as os from '@/os';
-import { disableContextmenu } from '@/scripts/touch';
 
 export default defineComponent({
 	components: {
@@ -111,23 +110,22 @@ export default defineComponent({
 		},
 
 		showFileMenu(file, ev: MouseEvent) {
-			if (disableContextmenu && ev.type === 'contextmenu') return;
 			if (this.menu) return;
 			this.menu = os.popupMenu([{
 				text: this.$ts.renameFile,
-				icon: 'ti ti-forms',
+				icon: 'fas fa-i-cursor',
 				action: () => { this.rename(file); },
 			}, {
 				text: file.isSensitive ? this.$ts.unmarkAsSensitive : this.$ts.markAsSensitive,
-				icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
+				icon: file.isSensitive ? 'fas fa-eye-slash' : 'fas fa-eye',
 				action: () => { this.toggleSensitive(file); },
 			}, {
 				text: this.$ts.describeFile,
-				icon: 'ti ti-forms',
+				icon: 'fas fa-i-cursor',
 				action: () => { this.describe(file); },
 			}, {
 				text: this.$ts.attachCancel,
-				icon: 'ti ti-circle-x',
+				icon: 'fas fa-times-circle',
 				action: () => { this.detachMedia(file.id); },
 			}], ev.currentTarget ?? ev.target).then(() => this.menu = null);
 		},

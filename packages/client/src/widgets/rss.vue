@@ -1,21 +1,22 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-rss">
-	<template #header><i class="ti ti-rss"></i>RSS</template>
-	<template #func><button class="_button" @click="configure"><i class="ti ti-settings"></i></button></template>
+	<template #header><i class="fas fa-rss-square"></i>RSS</template>
+	<template #func><button class="_button" @click="configure"><i class="fas fa-cog"></i></button></template>
 
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="feed">
-			<a v-for="item in items" :key="item.link" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
+			<a v-for="item in items" class="item" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a>
 		</div>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
+import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import { useInterval } from '@/scripts/use-interval';
 

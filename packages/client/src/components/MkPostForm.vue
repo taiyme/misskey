@@ -8,53 +8,52 @@
 	@drop.stop="onDrop"
 >
 	<header>
-		<button v-if="!fixed" class="cancel _button" @click="cancel"><i class="ti ti-x"></i></button>
+		<button v-if="!fixed" class="cancel _button" @click="cancel"><i class="fas fa-times"></i></button>
 		<button v-click-anime v-tooltip="i18n.ts.switchAccount" class="account _button" @click="openAccountMenu">
 			<MkAvatar :user="postAccount ?? $i" class="avatar"/>
 		</button>
 		<div class="right">
 			<span class="text-count" :class="{ over: textLength > maxTextLength }">{{ maxTextLength - textLength }}</span>
-			<span v-if="localOnly" class="local-only"><i class="ti ti-world-off"></i></span>
+			<span v-if="localOnly" class="local-only"><i class="fas fa-biohazard"></i></span>
 			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" class="_button visibility" :disabled="channel != null" @click="setVisibility">
-				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+				<span v-if="visibility === 'public'"><i class="fas fa-globe"></i></span>
+				<span v-if="visibility === 'home'"><i class="fas fa-home"></i></span>
+				<span v-if="visibility === 'followers'"><i class="fas fa-unlock"></i></span>
+				<span v-if="visibility === 'specified'"><i class="fas fa-envelope"></i></span>
 			</button>
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i></button>
+			<button v-tooltip="i18n.ts.previewNoteText" class="_button preview" :class="{ active: showPreview }" @click="showPreview = !showPreview"><i class="fas fa-file-code"></i></button>
+			<button class="submit _buttonGradate" :disabled="!canPost" data-cy-open-post-form-submit @click="post">{{ submitText }}<i :class="reply ? 'fas fa-reply' : renote ? 'fas fa-quote-right' : 'fas fa-paper-plane'"></i></button>
 		</div>
 	</header>
 	<div class="form" :class="{ fixed }">
 		<XNoteSimple v-if="reply" class="preview" :note="reply"/>
 		<XNoteSimple v-if="renote" class="preview" :note="renote"/>
-		<div v-if="quoteId" class="with-quote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+		<div v-if="quoteId" class="with-quote"><i class="fas fa-quote-left"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="fas fa-times"></i></button></div>
 		<div v-if="visibility === 'specified'" class="to-specified">
 			<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 			<div class="visibleUsers">
 				<span v-for="u in visibleUsers" :key="u.id">
 					<MkAcct :user="u"/>
-					<button class="_button" @click="removeVisibleUser(u)"><i class="ti ti-x"></i></button>
+					<button class="_button" @click="removeVisibleUser(u)"><i class="fas fa-times"></i></button>
 				</span>
-				<button class="_buttonPrimary" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
+				<button class="_buttonPrimary" @click="addVisibleUser"><i class="fas fa-plus fa-fw"></i></button>
 			</div>
 		</div>
-		<MkInfo v-if="hasNotSpecifiedMentions" warn class="info hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
-		<MkInfo v-if="annoyingPost" warn class="info annoyingPost">{{ i18n.ts.thisPostMayBeAnnoying }}</MkInfo>
+		<MkInfo v-if="hasNotSpecifiedMentions" warn class="hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" class="cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" class="text" :class="{ withCw: useCw }" :disabled="posting" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
 		<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" class="hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
+		<XPostFormAttaches class="attaches" :files="files" @updated="updateFiles" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
 		<XPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" class="preview" :text="text"/>
 		<footer>
-			<button v-tooltip="i18n.ts.attachFile" class="_button" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.poll" class="_button" :class="{ active: poll }" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-			<button v-tooltip="i18n.ts.useCw" class="_button" :class="{ active: useCw }" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-			<button v-tooltip="i18n.ts.mention" class="_button" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="{ active: withHashtags }" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-			<button v-tooltip="i18n.ts.emoji" class="_button" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="i18n.ts.attachFile" class="_button" @click="chooseFileFrom"><i class="fas fa-photo-video"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="{ active: poll }" @click="togglePoll"><i class="fas fa-poll-h"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="{ active: useCw }" @click="useCw = !useCw"><i class="fas fa-eye-slash"></i></button>
+			<button v-tooltip="i18n.ts.mention" class="_button" @click="insertMention"><i class="fas fa-at"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="{ active: withHashtags }" @click="withHashtags = !withHashtags"><i class="fas fa-hashtag"></i></button>
+			<button v-tooltip="i18n.ts.emoji" class="_button" @click="insertEmoji"><i class="fas fa-laugh-squint"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" @click="showActions"><i class="fas fa-plug"></i></button>
 		</footer>
 		<datalist id="hashtags">
 			<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -76,7 +75,6 @@ import XNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
 import XPollEditor from '@/components/MkPollEditor.vue';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { host, url } from '@/config';
 import { erase, unique } from '@/scripts/array';
 import { extractMentions } from '@/scripts/extract-mentions';
@@ -91,9 +89,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i, getAccounts, openAccountMenu as openAccountMenu_ } from '@/account';
 import { uploadFile } from '@/scripts/upload';
-import { deepClone } from '@/scripts/clone';
-import { parseObject, parseArray } from '@/scripts/tms/parse';
-import { imanonashi } from '@/scripts/tms/imanonashi';
 
 const modal = inject('modal');
 
@@ -104,7 +99,7 @@ const props = withDefaults(defineProps<{
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: 'public' | 'home' | 'followers' | 'specified';
+	initialVisibility?: typeof misskey.noteVisibilities;
 	initialFiles?: misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
 	initialVisibleUsers?: misskey.entities.User[];
@@ -141,14 +136,16 @@ let useCw = $ref(false);
 let showPreview = $ref(false);
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
-let visibility = $ref<'public' | 'home' | 'followers' | 'specified'>(props.initialVisibility ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility);
-let visibleUsers = $ref<misskey.entities.User[]>([]);
+let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
+let visibleUsers = $ref([]);
+if (props.initialVisibleUsers) {
+	props.initialVisibleUsers.forEach(pushVisibleUser);
+}
 let autocomplete = $ref(null);
 let draghover = $ref(false);
-let quoteId: string | null = $ref(null);
+let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
-let annoyingPost = $ref(false);
-let recentHashtags = $ref(parseArray<string[]>(localStorage.getItem('hashtags')));
+let recentHashtags = $ref(JSON.parse(localStorage.getItem('hashtags') || '[]'));
 let imeText = $ref('');
 
 const typing = throttle(3000, () => {
@@ -227,36 +224,12 @@ watch($$(visibleUsers), () => {
 	deep: true,
 });
 
-watch($$(text), () => checkAnnoyingPost());
-watch($$(useCw), () => checkAnnoyingPost());
-watch($$(visibility), () => checkAnnoyingPost());
-
-const pushVisibleUser = (user: misskey.entities.User): void => {
-	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
-		visibleUsers.push(user);
-	}
-};
-
-const addVisibleUser = (): void => {
-	os.selectUser().then(user => {
-		pushVisibleUser(user);
-	});
-};
-
-const removeVisibleUser = (user: misskey.entities.User): void => {
-	visibleUsers = erase(user, visibleUsers);
-};
-
-if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(pushVisibleUser);
-}
-
 if (props.mention) {
 	text = props.mention.host ? `@${props.mention.username}@${toASCII(props.mention.host)}` : `@${props.mention.username}`;
 	text += ' ';
 }
 
-if (props.reply && (props.reply.user.username !== $i?.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
+if (props.reply && (props.reply.user.username !== $i.username || (props.reply.user.host != null && props.reply.user.host !== host))) {
 	text = `@${props.reply.user.username}${props.reply.user.host != null ? '@' + toASCII(props.reply.user.host) : ''} `;
 }
 
@@ -272,7 +245,7 @@ if (props.reply && props.reply.text != null) {
 				`@${x.username}@${toASCII(otherHost)}`;
 
 		// 自分は除外
-		if ($i?.username === x.username && (x.host == null || x.host === host)) continue;
+		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
 
 		// 重複は除外
 		if (text.includes(`${mention} `)) continue;
@@ -291,12 +264,12 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 	visibility = props.reply.visibility;
 	if (props.reply.visibility === 'specified') {
 		os.api('users/show', {
-			userIds: props.reply.visibleUserIds?.filter(uid => uid !== $i?.id && uid !== props.reply?.userId) ?? [],
+			userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply.userId),
 		}).then(users => {
 			users.forEach(pushVisibleUser);
 		});
 
-		if (props.reply.userId !== $i?.id) {
+		if (props.reply.userId !== $i.id) {
 			os.api('users/show', { userId: props.reply.userId }).then(user => {
 				pushVisibleUser(user);
 			});
@@ -315,7 +288,7 @@ if (defaultStore.state.keepCw && props.reply && props.reply.cw) {
 	cw = props.reply.cw;
 }
 
-const watchForDraft = (): void => {
+function watchForDraft() {
 	watch($$(text), () => saveDraft());
 	watch($$(useCw), () => saveDraft());
 	watch($$(cw), () => saveDraft());
@@ -323,9 +296,9 @@ const watchForDraft = (): void => {
 	watch($$(files), () => saveDraft(), { deep: true });
 	watch($$(visibility), () => saveDraft());
 	watch($$(localOnly), () => saveDraft());
-};
+}
 
-const checkMissingMention = (): void => {
+function checkMissingMention() {
 	if (visibility === 'specified') {
 		const ast = mfm.parse(text);
 
@@ -337,35 +310,21 @@ const checkMissingMention = (): void => {
 		}
 		hasNotSpecifiedMentions = false;
 	}
-};
+}
 
-const addMissingMention = (): void => {
+function addMissingMention() {
 	const ast = mfm.parse(text);
 
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.some(u => (u.username === x.username) && (u.host === x.host))) {
-			os.api('users/show', { username: x.username, host: x.host ?? undefined }).then(user => {
+			os.api('users/show', { username: x.username, host: x.host }).then(user => {
 				visibleUsers.push(user);
 			});
 		}
 	}
-};
+}
 
-const checkAnnoyingPost = (): void => {
-	if (!useCw && visibility === 'public') {
-		annoyingPost = (
-			text.includes('$[x2') ||
-			text.includes('$[x3') ||
-			text.includes('$[x4') ||
-			text.includes('$[scale') ||
-			text.includes('$[position')
-		);
-	} else {
-		annoyingPost = false;
-	}
-};
-
-const togglePoll = (): void => {
+function togglePoll() {
 	if (poll) {
 		poll = null;
 	} else {
@@ -376,50 +335,50 @@ const togglePoll = (): void => {
 			expiredAfter: null,
 		};
 	}
-};
+}
 
-const addTag = (tag: string): void => {
+function addTag(tag: string) {
 	insertTextAtCursor(textareaEl, ` #${tag} `);
-};
+}
 
-const focus = (): void => {
+function focus() {
 	if (textareaEl) {
 		textareaEl.focus();
 		textareaEl.setSelectionRange(textareaEl.value.length, textareaEl.value.length);
 	}
-};
+}
 
-const chooseFileFrom = (ev: MouseEvent): void => {
+function chooseFileFrom(ev) {
 	selectFiles(ev.currentTarget ?? ev.target, i18n.ts.attachFile).then(files_ => {
 		for (const file of files_) {
 			files.push(file);
 		}
 	});
-};
+}
 
-const detachFile = (id: string): void => {
+function detachFile(id) {
 	files = files.filter(x => x.id !== id);
-};
+}
 
-const updateFiles = (_files: misskey.entities.DriveFile[]): void => {
+function updateFiles(_files) {
 	files = _files;
-};
+}
 
-const updateFileSensitive = (file: misskey.entities.DriveFile, sensitive: boolean): void => {
+function updateFileSensitive(file, sensitive) {
 	files[files.findIndex(x => x.id === file.id)].isSensitive = sensitive;
-};
+}
 
-const updateFileName = (file: misskey.entities.DriveFile, name: string): void => {
+function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
-};
+}
 
-const upload = (file: File, name?: string): void => {
+function upload(file: File, name?: string) {
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
-};
+}
 
-const setVisibility = (): void => {
+function setVisibility() {
 	if (props.channel) {
 		// TODO: information dialog
 		return;
@@ -430,60 +389,73 @@ const setVisibility = (): void => {
 		currentLocalOnly: localOnly,
 		src: visibilityButton,
 	}, {
-		changeVisibility: (v: typeof visibility) => {
+		changeVisibility: v => {
 			visibility = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('visibility', visibility);
 			}
 		},
-		changeLocalOnly: (v: typeof localOnly) => {
+		changeLocalOnly: v => {
 			localOnly = v;
 			if (defaultStore.state.rememberNoteVisibility) {
 				defaultStore.set('localOnly', localOnly);
 			}
 		},
 	}, 'closed');
-};
+}
 
-const clear = (): void => {
+function pushVisibleUser(user) {
+	if (!visibleUsers.some(u => u.username === user.username && u.host === user.host)) {
+		visibleUsers.push(user);
+	}
+}
+
+function addVisibleUser() {
+	os.selectUser().then(user => {
+		pushVisibleUser(user);
+	});
+}
+
+function removeVisibleUser(user) {
+	visibleUsers = erase(user, visibleUsers);
+}
+
+function clear() {
 	text = '';
 	files = [];
 	poll = null;
 	quoteId = null;
-};
+}
 
-const onKeydown = (ev: KeyboardEvent): void => {
-	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
-	if (ev.key === 'Escape' || ev.key === 'Esc') emit('esc');
+function onKeydown(ev: KeyboardEvent) {
+	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
+	if (ev.which === 27) emit('esc');
 	typing();
-};
+}
 
-const onCompositionUpdate = (ev: CompositionEvent): void => {
+function onCompositionUpdate(ev: CompositionEvent) {
 	imeText = ev.data;
 	typing();
-};
+}
 
-const onCompositionEnd = (_ev: CompositionEvent): void => {
+function onCompositionEnd(ev: CompositionEvent) {
 	imeText = '';
-};
+}
 
-const onPaste = async (ev: ClipboardEvent): Promise<void> => {
-	if (!ev.clipboardData) return;
-
-	Array.from(ev.clipboardData.items, (item, i) => {
-		if (item.kind !== 'file') return;
-		const file = item.getAsFile();
-		if (!file) return;
-		const lio = file.name.lastIndexOf('.');
-		const ext = lio >= 0 ? file.name.slice(lio) : '';
-		const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
-		upload(file, formatted);
-	});
+async function onPaste(ev: ClipboardEvent) {
+	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
+		if (item.kind === 'file') {
+			const file = item.getAsFile();
+			const lio = file.name.lastIndexOf('.');
+			const ext = lio >= 0 ? file.name.slice(lio) : '';
+			const formatted = `${formatTimeString(new Date(file.lastModified), defaultStore.state.pastedFileName).replace(/{{number}}/g, `${i + 1}`)}${ext}`;
+			upload(file, formatted);
+		}
+	}
 
 	const paste = ev.clipboardData.getData('text');
-	const path = url + '/notes/';
 
-	if (!props.renote && !quoteId && paste.startsWith(path)) {
+	if (!props.renote && !quoteId && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -495,13 +467,13 @@ const onPaste = async (ev: ClipboardEvent): Promise<void> => {
 				return;
 			}
 
-			quoteId = paste.slice((url + '/notes/').length).split(/[\/\?#]/, 1)[0] || null;
+			quoteId = paste.substr(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
 		});
 	}
-};
+}
 
-const onDragover = (ev: DragEvent): void => {
-	if (!ev.dataTransfer?.items[0]) return;
+function onDragover(ev) {
+	if (!ev.dataTransfer.items[0]) return;
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
 	const isDriveFile = ev.dataTransfer.types[0] === _DATA_TRANSFER_DRIVE_FILE_;
 	if (isFile || isDriveFile) {
@@ -524,18 +496,17 @@ const onDragover = (ev: DragEvent): void => {
 				break;
 		}
 	}
-};
+}
 
-const onDragenter = (_ev: DragEvent): void => {
+function onDragenter(ev) {
 	draghover = true;
-};
+}
 
-const onDragleave = (_ev: DragEvent): void => {
+function onDragleave(ev) {
 	draghover = false;
-};
+}
 
-const onDrop = (ev: DragEvent): void => {
-	if (!ev.dataTransfer) return;
+function onDrop(ev): void {
 	draghover = false;
 
 	// ファイルだったら
@@ -547,32 +518,19 @@ const onDrop = (ev: DragEvent): void => {
 
 	//#region ドライブのファイル
 	const driveFile = ev.dataTransfer.getData(_DATA_TRANSFER_DRIVE_FILE_);
-	if (driveFile) {
-		const file = parseObject<misskey.entities.DriveFile>(driveFile);
+	if (driveFile != null && driveFile !== '') {
+		const file = JSON.parse(driveFile);
 		files.push(file);
 		ev.preventDefault();
 	}
 	//#endregion
-};
+}
 
-type DraftData = {
-	updatedAt: string;
-	data: {
-		text: typeof text;
-		useCw: typeof useCw;
-		cw: typeof cw;
-		visibility: typeof visibility;
-		localOnly: typeof localOnly;
-		files: typeof files;
-		poll: typeof poll;
-	};
-};
-
-const saveDraft = (): void => {
-	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
+function saveDraft() {
+	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 	draftData[draftKey] = {
-		updatedAt: new Date().toJSON(),
+		updatedAt: new Date(),
 		data: {
 			text: text,
 			useCw: useCw,
@@ -585,27 +543,17 @@ const saveDraft = (): void => {
 	};
 
 	localStorage.setItem('drafts', JSON.stringify(draftData));
-};
+}
 
-const deleteDraft = (): void => {
-	const draftData = parseObject<Record<string, DraftData>>(localStorage.getItem('drafts'));
+function deleteDraft() {
+	const draftData = JSON.parse(localStorage.getItem('drafts') || '{}');
 
 	delete draftData[draftKey];
 
 	localStorage.setItem('drafts', JSON.stringify(draftData));
-};
+}
 
-const post = async (ev?: MouseEvent): Promise<void> => {
-	if (ev) {
-		const el = ev.currentTarget ?? ev.target;
-		if (el instanceof HTMLElement) {
-			const rect = el.getBoundingClientRect();
-			const x = rect.left + (el.offsetWidth / 2);
-			const y = rect.top + (el.offsetHeight / 2);
-			os.popup(MkRippleEffect, { x, y }, {}, 'end');
-		}
-	}
-
+async function post() {
 	let postData = {
 		text: text === '' ? undefined : text,
 		fileIds: files.length > 0 ? files.map(f => f.id) : undefined,
@@ -627,7 +575,7 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 	// plugin
 	if (notePostInterruptors.length > 0) {
 		for (const interruptor of notePostInterruptors) {
-			postData = await interruptor.handler(deepClone(postData)) as typeof postData;
+			postData = await interruptor.handler(JSON.parse(JSON.stringify(postData)));
 		}
 	}
 
@@ -635,24 +583,22 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 
 	if (postAccount) {
 		const storedAccounts = await getAccounts();
-		token = storedAccounts.find(x => x.id === postAccount?.id)?.token;
+		token = storedAccounts.find(x => x.id === postAccount.id)?.token;
 	}
 
 	posting = true;
-	os.api('notes/create', postData, token).then(({ createdNote }) => {
+	os.api('notes/create', postData, token).then(() => {
 		clear();
 		nextTick(() => {
 			deleteDraft();
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
-				const history = parseArray<string[]>(localStorage.getItem('hashtags'));
+				const history = JSON.parse(localStorage.getItem('hashtags') || '[]') as string[];
 				localStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
 			postAccount = null;
-
-			imanonashi(createdNote);
 		});
 	}).catch(err => {
 		posting = false;
@@ -661,55 +607,51 @@ const post = async (ev?: MouseEvent): Promise<void> => {
 			text: err.message + '\n' + (err as any).id,
 		});
 	});
-};
+}
 
-const cancel = (): void => {
+function cancel() {
 	emit('cancel');
-};
+}
 
-const insertMention = (): void => {
+function insertMention() {
 	os.selectUser().then(user => {
 		insertTextAtCursor(textareaEl, '@' + Acct.toString(user) + ' ');
 	});
-};
+}
 
-const insertEmoji = async (ev: MouseEvent): Promise<void> => {
-	const el = ev.currentTarget ?? ev.target;
-	if (!(el instanceof HTMLElement)) return;
-	os.openEmojiPicker(el, {}, textareaEl);
-};
+async function insertEmoji(ev: MouseEvent) {
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, textareaEl);
+}
 
-const showActions = (ev: MouseEvent): void => {
-	const el = ev.currentTarget ?? ev.target;
-	if (!(el instanceof HTMLElement)) return;
+function showActions(ev) {
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
-		action: (): void => {
+		action: () => {
 			action.handler({
 				text: text,
 			}, (key, value) => {
 				if (key === 'text') { text = value; }
 			});
 		},
-	})), el);
-};
+	})), ev.currentTarget ?? ev.target);
+}
 
 let postAccount = $ref<misskey.entities.UserDetailed | null>(null);
 
-const openAccountMenu = (ev: MouseEvent): void => {
+function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
 		withExtraOperation: false,
 		includeCurrentAccount: true,
-		active: postAccount != null ? postAccount.id : $i?.id,
+		active: postAccount != null ? postAccount.id : $i.id,
 		onChoose: (account) => {
-			if (account.id === $i?.id) {
+			if (account.id === $i.id) {
 				postAccount = null;
 			} else {
 				postAccount = account;
 			}
 		},
 	}, ev);
-};
+}
 
 onMounted(() => {
 	if (props.autofocus) {
@@ -728,7 +670,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = parseObject<Record<string, DraftData | undefined>>(localStorage.getItem('drafts'))[draftKey];
+			const draft = JSON.parse(localStorage.getItem('drafts') || '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;
@@ -782,7 +724,7 @@ onMounted(() => {
 
 		> .cancel {
 			padding: 0;
-			font-size: 1em;
+			font-size: 20px;
 			width: 64px;
 			line-height: 66px;
 		}
@@ -808,10 +750,6 @@ onMounted(() => {
 			> .text-count {
 				opacity: 0.7;
 				line-height: 66px;
-
-				&.over {
-					color: var(--error);
-				}
 			}
 
 			> .visibility {
@@ -919,12 +857,8 @@ onMounted(() => {
 			}
 		}
 
-		> .info {
-			margin: 0 20px 8px 20px;
-
-			&:last-child {
-				margin-bottom: 16px;
-			}
+		> .hasNotSpecifiedMentions {
+			margin: 0 20px 16px 20px;
 		}
 
 		> .cw,
@@ -981,9 +915,9 @@ onMounted(() => {
 				display: inline-block;
 				padding: 0;
 				margin: 0;
-				font-size: 1em;
-				width: 46px;
-				height: 46px;
+				font-size: 16px;
+				width: 48px;
+				height: 48px;
 				border-radius: 6px;
 
 				&:hover {

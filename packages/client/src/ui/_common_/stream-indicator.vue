@@ -38,8 +38,8 @@ onUnmounted(() => {
 .nsbbhtug {
 	position: fixed;
 	z-index: 16385;
-	bottom: calc(var(--minBottomSpacing) + var(--margin));
-	right: var(--margin);
+	bottom: 8px;
+	right: 8px;
 	margin: 0;
 	padding: 6px 12px;
 	font-size: 0.9em;

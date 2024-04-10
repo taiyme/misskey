@@ -1,8 +1,8 @@
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
 	<div class="beeadbfb">
 		<XReactionIcon :reaction="reaction" :custom-emojis="emojis" class="icon" :no-style="true"/>
-		<div class="name">{{ getReactionName(reaction) }}</div>
+		<div class="name">{{ reaction.replace('@.', '') }}</div>
 	</div>
 </MkTooltip>
 </template>
@@ -11,10 +11,8 @@
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import XReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
 
-defineProps<{
-	showing: boolean;
+const props = defineProps<{
 	reaction: string;
 	emojis: any[]; // TODO
 	targetElement: HTMLElement;
@@ -23,14 +21,6 @@ defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
-
-const getReactionName = (reaction: string): string => {
-	const trimLocal = reaction.replace('@.', '');
-	if (trimLocal.startsWith(':')) {
-		return trimLocal;
-	}
-	return getEmojiName(reaction) ?? reaction;
-};
 </script>
 
 <style lang="scss" scoped>

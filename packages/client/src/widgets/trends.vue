@@ -1,10 +1,10 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" class="mkw-trends">
-	<template #header><i class="ti ti-hash"></i>{{ i18n.ts._widgets.trends }}</template>
+	<template #header><i class="fas fa-hashtag"></i>{{ i18n.ts._widgets.trends }}</template>
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<TransitionGroup v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
+		<transition-group v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -12,14 +12,14 @@
 				</div>
 				<MkMiniChart class="chart" :src="stat.chart"/>
 			</div>
-		</TransitionGroup>
+		</transition-group>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';

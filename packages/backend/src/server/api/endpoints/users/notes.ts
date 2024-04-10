@@ -75,9 +75,7 @@ export default define(meta, paramDef, async (ps, me) => {
 		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	if (me == null || !me.isAdmin) { 
-		generateVisibilityQuery(query, me);
-	}
+	generateVisibilityQuery(query, me);
 	if (me) {
 		generateMutedUserQuery(query, me, user);
 		generateBlockedUserQuery(query, me);
