@@ -12,7 +12,7 @@ import { unique } from '@/scripts/array.js';
 import { deepClone } from '@/scripts/clone.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { TmsError } from '@/scripts/tms/error.js';
-import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
+import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
 
 const errors = {
 	meIdIsRequired: {

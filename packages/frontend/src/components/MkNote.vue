@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
-	<div v-if="isRenote" :class="$style.renote">
+	<div v-if="isRenoted" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
@@ -200,7 +200,8 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { getAppearNote, isPureRenote } from '@/scripts/tms/is-pure-renote.js';
+import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
+import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
 const props = withDefaults(defineProps<{
@@ -244,7 +245,7 @@ if (noteViewInterruptors.length > 0) {
 	});
 }
 
-const isRenote = isPureRenote(note.value);
+const isRenoted = isRenote(note.value) && !isQuote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
@@ -268,7 +269,7 @@ const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultS
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const canPakuru = computed(() => tmsStore.reactiveState.enablePakuru.value || tmsStore.reactiveState.enableNumberquote.value);
 const renoteCollapsed = ref(
-	defaultStore.state.collapseRenotes && isRenote && (
+	defaultStore.state.collapseRenotes && isRenoted && (
 		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
 		(appearNote.value.myReaction != null)
 	),
