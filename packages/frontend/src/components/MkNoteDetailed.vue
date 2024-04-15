@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
 	</div>
 	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
-	<div v-if="isRenote" :class="$style.renote">
+	<div v-if="isRenoted" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<span :class="$style.renoteText">
@@ -232,7 +232,8 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { getAppearNote, isPureRenote } from '@/scripts/tms/is-pure-renote.js';
+import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
+import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
 const props = withDefaults(defineProps<{
@@ -265,7 +266,7 @@ if (noteViewInterruptors.length > 0) {
 	});
 }
 
-const isRenote = isPureRenote(note.value);
+const isRenoted = isRenote(note.value) && !isQuote(note.value);
 
 const rootEl = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
