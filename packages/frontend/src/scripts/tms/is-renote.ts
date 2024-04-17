@@ -33,7 +33,6 @@ export const isRenote = (note: Note): note is Renote => {
 };
 
 export const isQuote = (note: Renote): note is Quote => {
-	// NOTE: SYNC WITH misc/is-quote.ts (backend)
 	return note.text != null ||
 		note.cw != null ||
 		note.replyId != null ||
