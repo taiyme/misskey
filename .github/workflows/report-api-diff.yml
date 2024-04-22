@@ -2,7 +2,8 @@ name: Report API Diff
 
 on:
   workflow_run:
-    types: [completed]
+    types:
+      - completed
     workflows:
       - Get api.json from Misskey # get-api-diff.yml
 

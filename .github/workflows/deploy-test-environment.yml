@@ -2,7 +2,8 @@ name: deploy-test-environment
 
 on:
   issue_comment:
-    types: [created]
+    types:
+      - created
   workflow_dispatch:
     inputs:
       repository:

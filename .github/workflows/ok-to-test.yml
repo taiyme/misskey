@@ -3,7 +3,8 @@ name: Ok To Test
 
 on:
   issue_comment:
-    types: [created]
+    types:
+      - created
 
 jobs:
   ok-to-test:

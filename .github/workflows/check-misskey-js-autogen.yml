@@ -4,7 +4,7 @@ on:
   pull_request_target:
     branches:
       - master
-      - develop
+      - taiyme
       - improve-misskey-js-autogen-check
     paths:
       - packages/backend/**
@@ -81,7 +81,9 @@ jobs:
   # pull_request_target safety: nothing is cloned from repository
   comment-misskey-js-autogen:
     runs-on: ubuntu-latest
-    needs: [generate-misskey-js, get-actual-misskey-js]
+    needs:
+      - generate-misskey-js
+      - get-actual-misskey-js
     permissions:
       pull-requests: write
     steps:
