@@ -59,10 +59,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
 						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+						<span v-if="appearNote.channel" style="margin-left: 0.5em;" :title="appearNote.channel.name"><i class="ti ti-device-tv"></i></span>
 					</div>
 				</div>
 				<div :class="$style.noteHeaderUsername"><MkAcct :user="appearNote.user"/></div>
-				<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+				<TmsInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" :channel="appearNote.channel" position="default"/>
 			</div>
 		</header>
 		<div :class="$style.noteContent">
@@ -206,7 +207,7 @@ import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import TmsInstanceTicker from '@/components/TmsInstanceTicker.vue';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
@@ -283,7 +284,7 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.value.renote?.url !== url && appearNote.value.renote?.uri !== url) : null;
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
+const showTicker = computed(() => (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance != null) || (appearNote.value.channel != null));
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);

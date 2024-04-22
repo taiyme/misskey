@@ -2663,6 +2663,13 @@ _tms:
   _settings:
     title: "taiyme拡張機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
+    _tickerPosition:
+      label: "インスタンス情報の表示位置"
+      default: "デフォルト"
+      leftVerticalBar: "縦 (左端)"
+      rightVerticalBar: "縦 (右端)"
+      leftWatermark: "透かし (左下)"
+      rightWatermark: "透かし (右下)"
     _superMenuDisplayMode:
       label: "設定メニューの表示モード"
       caption: "主にスマートフォン・タブレットデバイス向けの設定です。"
