@@ -9994,6 +9994,28 @@ export interface Locale extends ILocale {
                  */
                 readonly "forceList": string;
             };
+            readonly "_pullToRefreshSensitivity": {
+                /**
+                 * Pull-to-Refreshの感度
+                 */
+                readonly "label": string;
+                /**
+                 * 離してリロードするまでの所要スクロールを変更します。
+                 */
+                readonly "caption": string;
+                /**
+                 * 低感度
+                 */
+                readonly "low": string;
+                /**
+                 * 中感度 (規定)
+                 */
+                readonly "middle": string;
+                /**
+                 * 高感度
+                 */
+                readonly "high": string;
+            };
             readonly "_pakuru": {
                 /**
                  * 「パクる」機能を有効にする

@@ -14,6 +14,10 @@ export const tmsStore = markRaw(new Storage('tmsMain', {
 		where: 'deviceAccount',
 		default: 'default' as 'default' | 'classic' | 'forceList',
 	},
+	pullToRefreshSensitivity: {
+		where: 'device',
+		default: 'middle' as 'low' | 'middle' | 'high',
+	},
 	enablePakuru: {
 		where: 'device',
 		default: false,
