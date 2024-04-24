@@ -2670,6 +2670,9 @@ _tms:
       low: "低感度"
       middle: "中感度 (規定)"
       high: "高感度"
+    _pullToRefreshAllReload:
+      label: "Pull-to-Refreshでページ全体をリロードする"
+      caption: "タイムラインだけではなく、構成しているページ全体を再読み込みします。"
     _pakuru:
       label: "「パクる」機能を有効にする"
       caption: "リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。"

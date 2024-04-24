@@ -27,6 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="middle">{{ i18n.ts._tms._settings._pullToRefreshSensitivity.middle }}</option>
 				<option value="high">{{ i18n.ts._tms._settings._pullToRefreshSensitivity.high }}</option>
 			</MkSelect>
+			<MkSwitch v-model="pullToRefreshAllReload">
+				<template #label>{{ i18n.ts._tms._settings._pullToRefreshAllReload.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._pullToRefreshAllReload.caption }}</template>
+			</MkSwitch>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -56,6 +60,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 
 //#region 即時変更
 const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDisplayMode'));
+const pullToRefreshAllReload = computed(tmsStore.makeGetterSetter('pullToRefreshAllReload'));
 //#endregion
 
 //#region 即時変更 (ダイアログ付き)
