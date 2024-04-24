@@ -2664,6 +2664,12 @@ _tms:
       default: "デフォルト"
       classic: "クラシック"
       forceList: "リスト強制"
+    _pullToRefreshSensitivity:
+      label: "Pull-to-Refreshの感度"
+      caption: "離してリロードするまでの所要スクロールを変更します。"
+      low: "低感度"
+      middle: "中感度 (規定)"
+      high: "高感度"
     _pakuru:
       label: "「パクる」機能を有効にする"
       caption: "リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。"

@@ -18,6 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSection>
 	<FormSection>
+		<template #label>{{ i18n.ts.operations }}</template>
+		<div class="_gaps">
+			<MkSelect v-model="pullToRefreshSensitivity">
+				<template #label>{{ i18n.ts._tms._settings._pullToRefreshSensitivity.label }}</template>
+				<template #caption>{{ i18n.ts._tms._settings._pullToRefreshSensitivity.caption }}</template>
+				<option value="low">{{ i18n.ts._tms._settings._pullToRefreshSensitivity.low }}</option>
+				<option value="middle">{{ i18n.ts._tms._settings._pullToRefreshSensitivity.middle }}</option>
+				<option value="high">{{ i18n.ts._tms._settings._pullToRefreshSensitivity.high }}</option>
+			</MkSelect>
+		</div>
+	</FormSection>
+	<FormSection>
 		<div class="_gaps">
 			<MkSwitch v-model="enablePakuru">
 				<template #label>{{ i18n.ts._tms._settings._pakuru.label }}</template>
@@ -35,7 +47,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, readonly, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
-import { alert } from '@/os.js';
+import { alert, confirm } from '@/os.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
 import { tmsStore } from '@/tms/store.js';
 import FormSection from '@/components/form/section.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -46,6 +59,13 @@ const superMenuDisplayMode = computed(tmsStore.makeGetterSetter('superMenuDispla
 //#endregion
 
 //#region 即時変更 (ダイアログ付き)
+const pullToRefreshSensitivity = computed({
+	get: () => tmsStore.reactiveState.pullToRefreshSensitivity.value,
+	set: (newValue) => {
+		tmsStore.set('pullToRefreshSensitivity', newValue);
+		reloadAsk();
+	},
+});
 const enablePakuru = computed({
 	get: () => tmsStore.reactiveState.enablePakuru.value,
 	set: async (newValue) => {
@@ -71,6 +91,16 @@ const enableNumberquote = computed({
 	},
 });
 //#endregion
+
+const reloadAsk = async (): Promise<void> => {
+	const { canceled } = await confirm({
+		type: 'info',
+		text: i18n.ts.reloadToApplySetting,
+	});
+	if (canceled) return;
+
+	unisonReload();
+};
 
 const edited = ref(false);
 const changed = ref(false);
