@@ -9,7 +9,10 @@
 		},
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "20.10.0"
-		}
+		},
+		"docker-from-docker": {
+      "version": "latest"
+    }
 	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh",
@@ -21,7 +24,8 @@
 				"Vue.volar",
 				"Orta.vscode-jest",
 				"dbaeumer.vscode-eslint",
-				"mrmlnc.vscode-json5"
+				"mrmlnc.vscode-json5",
+				"github.vscode-github-actions"
 			]
 		}
 	}
