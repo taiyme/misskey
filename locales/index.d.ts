@@ -10016,6 +10016,16 @@ export interface Locale extends ILocale {
                  */
                 readonly "high": string;
             };
+            readonly "_pullToRefreshAllReload": {
+                /**
+                 * Pull-to-Refreshでページ全体をリロードする
+                 */
+                readonly "label": string;
+                /**
+                 * タイムラインだけではなく、構成しているページ全体を再読み込みします。
+                 */
+                readonly "caption": string;
+            };
             readonly "_pakuru": {
                 /**
                  * 「パクる」機能を有効にする

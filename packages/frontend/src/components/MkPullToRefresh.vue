@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import { getScrollContainer } from '@/scripts/scroll.js';
 import { isHorizontalSwipeSwiping } from '@/scripts/touch.js';
@@ -55,13 +55,26 @@ let disabled = false;
 
 const props = withDefaults(defineProps<{
 	refresher: () => Promise<void>;
+	disableAllReload?: boolean;
 }>(), {
 	refresher: () => Promise.resolve(),
+	disableAllReload: false,
 });
 
 const emit = defineEmits<{
 	(ev: 'refresh'): void;
 }>();
+
+const refresher = computed(() => {
+	if (!props.disableAllReload && tmsStore.reactiveState.pullToRefreshAllReload.value) {
+		return {
+			handler: async () => location.reload(),
+		} as const;
+	}
+	return {
+		handler: props.refresher,
+	} as const;
+});
 
 function getScreenY(event) {
 	if (supportPointerDesktop) {
@@ -122,7 +135,7 @@ function moveEnd() {
 			isRefreshing.value = true;
 			fixOverContent().then(() => {
 				emit('refresh');
-				props.refresher().then(() => {
+				refresher.value.handler().then(() => {
 					refreshFinished();
 				});
 			});
