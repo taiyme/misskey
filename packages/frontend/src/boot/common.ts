@@ -27,7 +27,7 @@ import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
 
 export async function common(createVue: () => App<Element>) {
-	console.info(`Misskey v${version}`);
+	console.info(`taiyme v${version}`);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
