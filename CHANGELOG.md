@@ -8,7 +8,14 @@
 - Enhance: アンテナでBotによるノートを除外できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/545)
 - Enhance: クリップのノート数を表示するように
+- Enhance: コンディショナルロールの条件として以下を新たに追加 (#13667)
+  - 猫ユーザーか
+  - botユーザーか
+  - サスペンド済みユーザーか
+  - 鍵アカウントユーザーか
+  - 「アカウントを見つけやすくする」が有効なユーザーか
 - Fix: Play作成時に設定した公開範囲が機能していない問題を修正
+- Fix: 正規化されていない状態のhashtagが連合されてきたhtmlに含まれているとhashtagが正しくhashtagに復元されない問題を修正
 
 ### Client
 - Feat: アップロードするファイルの名前をランダム文字列にできるように
