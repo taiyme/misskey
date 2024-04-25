@@ -8,4 +8,4 @@ GitHubのアカウントをお持ちの方は [Issue](https://github.com/taiyme/
 
 ## 支援について
 
-[Patreon (taiy)](https://www.patreon.com/taiy) から利用可能です。
+[Patreon](https://www.patreon.com/taiy) もしくは <https://u.taiy.me/donate> を参照してください。

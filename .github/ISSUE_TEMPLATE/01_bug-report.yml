@@ -1,42 +1,42 @@
-name: 🐛 Bug Report
-description: Create a report to help us improve
+name: 🐛 問題を報告する
+description: 改善に役立つ報告を作成します。
 labels: ["⚠️bug?"]
 
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting!
-        First, in order to avoid duplicate Issues, please search to see if the problem you found has already been reported.
-        Also, If you are NOT owner/admin of server, PLEASE DONT REPORT SERVER SPECIFIC ISSUES TO HERE! (e.g. feature XXX is not working in misskey.example) Please try with another misskey servers, and if your issue is only reproducible with specific server, contact your server's owner/admin first.
+        報告ありがとうございます！
+        まず、報告の重複を避けるために、発見した問題がすでに報告されているかどうかを検索してください。
+        また、サーバーの所有者/管理者ではない場合は、サーバー固有の問題をここに報告しないでください。 (例: XXX が taiyme.example で機能しません) 一度他のサーバーで試して、それでも特定のサーバーでのみ再現する場合は、まずサーバーの所有者/管理者にお問い合わせください。
 
   - type: textarea
     attributes:
-      label: 💡 Summary
-      description: Tell us what the bug is
+      label: 💡 概要
+      description: 問題の詳細を教えてください。
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 🥰 Expected Behavior
-      description: Tell us what should happen
+      label: 🥰 予想される挙動
+      description: 本来予想される挙動を教えてください。
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 🤬 Actual Behavior
+      label: 🤬 実際の挙動
       description: |
-        Tell us what happens instead of the expected behavior.
-        Please include errors from the developer console and/or server log files if you have access to them.
+        実際に発生している挙動を教えてください。
+        可能であれば、開発者コンソールやサーバーのログを含めてください。
     validations:
       required: true
 
   - type: textarea
     attributes:
-      label: 📝 Steps to Reproduce
-      placeholder: |
+      label: 📝 再現手順
+      value: |
         1.
         2.
         3.
@@ -45,53 +45,51 @@ body:
 
   - type: textarea
     attributes:
-      label: 💻 Frontend Environment
+      label: 💻 フロントエンドの環境
       description: |
-        Tell us where on the platform it happens
-        DO NOT WRITE "latest". Please provide the specific version.
+        問題が発生している環境を教えてください。
+        「最新版」とは書かず、具体的なバージョンをお知らせください。
 
-        Examples:
-          * Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
-          * Browser: Chrome 113.0.5672.126
-          * Server URL: misskey.io
-          * Misskey: 13.x.x
+        例:
+          - Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          - Browser: Chrome 113.0.5672.126
+          - Server URL: misskey.io
+          - Misskey: 13.x.x
       value: |
-        * Model and OS of the device(s):
-        * Browser:
-        * Server URL:
-        * Misskey:
-      render: markdown
+        - Model and OS of the device(s):
+        - Browser:
+        - Server URL:
+        - Misskey:
     validations:
       required: false
 
   - type: textarea
     attributes:
-      label: 🛰 Backend Environment (for server admin)
+      label: 🛰 バックエンドの環境 (サーバー管理者向け)
       description: |
-        Tell us where on the platform it happens
-        DO NOT WRITE "latest". Please provide the specific version.
-        If you are using a managed service, put that after the version.
+        問題が発生している環境を教えてください。
+        「最新版」とは書かず、具体的なバージョンをお知らせください。
+        マネージドサービスを利用している場合は、それも合わせて入力します。
 
-        Examples:
-          * Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
-          * Misskey: 13.x.x
-          * Node: 20.x.x
-          * PostgreSQL: 15.x.x
-          * Redis: 7.x.x
-          * OS and Architecture: Ubuntu 22.04.2 LTS aarch64
+        例:
+          - Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
+          - Misskey: 13.x.x
+          - Node: 20.x.x
+          - PostgreSQL: 15.x.x
+          - Redis: 7.x.x
+          - OS and Architecture: Ubuntu 22.04.2 LTS aarch64
       value: |
-        * Installation Method or Hosting Service:
-        * Misskey:
-        * Node:
-        * PostgreSQL:
-        * Redis:
-        * OS and Architecture:
-      render: markdown
+        - Installation Method or Hosting Service:
+        - Misskey:
+        - Node:
+        - PostgreSQL:
+        - Redis:
+        - OS and Architecture:
     validations:
       required: false
 
   - type: checkboxes
     attributes:
-      label: Do you want to address this bug yourself?
+      label: この問題は自分で解決したいですか？
       options:
-        - label: Yes, I will patch the bug myself and send a pull request
+        - label: はい、自分でパッチを当ててプルリクエストを作成します
