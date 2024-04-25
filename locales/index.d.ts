@@ -9992,6 +9992,32 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            readonly "_tickerPosition": {
+                /**
+                 * インスタンス情報の表示位置
+                 */
+                readonly "label": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * 縦 (左端)
+                 */
+                readonly "leftVerticalBar": string;
+                /**
+                 * 縦 (右端)
+                 */
+                readonly "rightVerticalBar": string;
+                /**
+                 * 透かし (左下)
+                 */
+                readonly "leftWatermark": string;
+                /**
+                 * 透かし (右下)
+                 */
+                readonly "rightWatermark": string;
+            };
             readonly "_superMenuDisplayMode": {
                 /**
                  * 設定メニューの表示モード

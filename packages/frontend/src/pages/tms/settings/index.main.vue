@@ -8,6 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<template #label>{{ i18n.ts.appearance }}</template>
 		<div class="_gaps">
+			<MkSelect v-model="tickerPosition">
+				<template #label>{{ i18n.ts._tms._settings._tickerPosition.label }}</template>
+				<option value="default">{{ i18n.ts._tms._settings._tickerPosition.default }}</option>
+				<option value="leftVerticalBar">{{ i18n.ts._tms._settings._tickerPosition.leftVerticalBar }}</option>
+				<option value="rightVerticalBar">{{ i18n.ts._tms._settings._tickerPosition.rightVerticalBar }}</option>
+				<option value="leftWatermark">{{ i18n.ts._tms._settings._tickerPosition.leftWatermark }}</option>
+				<option value="rightWatermark">{{ i18n.ts._tms._settings._tickerPosition.rightWatermark }}</option>
+			</MkSelect>
 			<MkSelect v-model="superMenuDisplayMode">
 				<template #label>{{ i18n.ts._tms._settings._superMenuDisplayMode.label }}</template>
 				<template #caption>{{ i18n.ts._tms._settings._superMenuDisplayMode.caption }}</template>
@@ -64,6 +72,13 @@ const pullToRefreshAllReload = computed(tmsStore.makeGetterSetter('pullToRefresh
 //#endregion
 
 //#region 即時変更 (ダイアログ付き)
+const tickerPosition = computed({
+	get: () => tmsStore.reactiveState.tickerPosition.value,
+	set: (newValue) => {
+		tmsStore.set('tickerPosition', newValue);
+		reloadAsk();
+	},
+});
 const pullToRefreshSensitivity = computed({
 	get: () => tmsStore.reactiveState.pullToRefreshSensitivity.value,
 	set: (newValue) => {
