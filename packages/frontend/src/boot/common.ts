@@ -8,7 +8,7 @@ import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, updateLocale, locale } from '@/config.js';
+import { version, lang, updateLocale, locale, commitHash } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n } from '@/i18n.js';
@@ -81,15 +81,16 @@ export async function common(createVue: () => App<Element>) {
 	//#endregion
 
 	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
+	const revision = commitHash ?? 'unknown';
+	const newLocaleVersion = `${version}+REV:${revision}`;
+	const localeOutdated = miLocalStorage.getItem('localeVersion') !== newLocaleVersion || locale == null;
 	if (localeOutdated) {
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json?rev=${revision}`);
 		if (res.status === 200) {
 			const newLocale = await res.text();
 			const parsedNewLocale = JSON.parse(newLocale);
 			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
+			miLocalStorage.setItem('localeVersion', newLocaleVersion);
 			updateLocale(parsedNewLocale);
 			updateI18n(parsedNewLocale);
 		}
