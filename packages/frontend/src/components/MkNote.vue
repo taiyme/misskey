@@ -796,6 +796,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .contentCollapsed {
 	position: relative;
+	min-height: 64px; // .collapsed
 	max-height: 9em;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
@@ -808,7 +809,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	left: 0;
 	z-index: 2;
 	width: 100%;
-	height: 64px;
+	height: 64px; // .contentCollapsed
 	background: linear-gradient(0deg, var(--panel), var(--X15));
 
 	&:hover > .collapsedLabel {
