@@ -440,7 +440,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	enableHorizontalSwipe: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	useNativeUIForVideoAudioPlayer: {
 		where: 'device',
