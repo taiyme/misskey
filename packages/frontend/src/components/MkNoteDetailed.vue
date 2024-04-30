@@ -377,7 +377,7 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});

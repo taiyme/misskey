@@ -25,6 +25,7 @@ import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
 import { numberquote } from '@/scripts/tms/numberquote.js';
 import { pakuru } from '@/scripts/tms/pakuru.js';
 import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
+import { smallerVisibility } from '@/scripts/tms/visibility.js';
 import { tmsStore } from '@/tms/store.js';
 
 export async function getNoteClipMenu(props: {
@@ -486,105 +487,115 @@ export function getNoteMenu(props: {
 	};
 }
 
-type Visibility = 'public' | 'home' | 'followers' | 'specified';
-
-// defaultStore.state.visibilityがstringなためstringも受け付けている
-function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
-	if (a === 'specified' || b === 'specified') return 'specified';
-	if (a === 'followers' || b === 'followers') return 'followers';
-	if (a === 'home' || b === 'home') return 'home';
-	// if (a === 'public' || b === 'public')
-	return 'public';
-}
-
 export function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
+	canRenote?: boolean;
 }) {
 	const appearNote = getAppearNote(props.note);
+	const canRenote = props.canRenote ?? true;
+
+	const rippleEffect = (): void => {
+		const el = props.renoteButton.value;
+		if (el == null) return;
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+	};
+
+	const tooltipEffect = (text: string): void => {
+		tooltipFromElement({
+			targetElement: props.renoteButton.value,
+			primary: true,
+			text,
+		});
+	};
+
+	const errorDialog = (err: unknown): void => {
+		os.alert({
+			type: 'error',
+			text: parseErrorMessage(err),
+		});
+	};
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
 	const pakuruItems: MenuItem[] = [];
 
-	if (appearNote.channel) {
-		channelRenoteItems.push(...[{
+	if (canRenote && appearNote.channel != null) {
+		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
-				const el = props.renoteButton.value;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				if (!props.mock) {
-					misskeyApi('notes/create', {
-						renoteId: appearNote.id,
-						channelId: appearNote.channelId,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				}
+				rippleEffect();
+				if (props.mock) return tooltipEffect(i18n.ts.renoted);
+				misskeyApi('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				}).then(() => tooltipEffect(i18n.ts.renoted)).catch(errorDialog);
 			},
-		}, {
-			text: i18n.ts.inChannelQuote,
-			icon: 'ti ti-quote',
-			action: () => {
-				if (!props.mock) {
+		});
+		if (!props.mock) {
+			channelRenoteItems.push({
+				text: i18n.ts.inChannelQuote,
+				icon: 'ti ti-quote',
+				action: () => {
 					os.post({
 						renote: appearNote,
 						channel: appearNote.channel,
 					});
-				}
-			},
-		}]);
+				},
+			});
+		}
 	}
 
-	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
-		normalRenoteItems.push(...[{
-			text: i18n.ts.renote,
+	if (canRenote && (appearNote.channel == null || appearNote.channel.allowRenoteToExternal)) {
+		let renoteVisibility = appearNote.visibility;
+		const renoteLocalOnly = appearNote.localOnly ?? false;
+
+		if (appearNote.channel?.isSensitive || $i?.isSilenced) {
+			renoteVisibility = smallerVisibility([renoteVisibility, 'home']);
+		}
+
+		const renoteButtonText = (() => {
+			if (renoteVisibility === 'home') {
+				if (renoteLocalOnly) return i18n.ts._tms.disableFederationHomeRenote;
+				return i18n.ts._tms.homeRenote;
+			}
+			if (renoteVisibility === 'followers') {
+				if (renoteLocalOnly) return i18n.ts._tms.disableFederationFollowersRenote;
+				return i18n.ts._tms.followersRenote;
+			}
+			if (renoteLocalOnly) return i18n.ts._tms.disableFederationRenote;
+			return i18n.ts.renote;
+		})();
+
+		normalRenoteItems.push({
+			text: renoteButtonText,
 			icon: 'ti ti-repeat',
 			action: () => {
-				const el = props.renoteButton.value;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-
-				let visibility = appearNote.visibility;
-				visibility = smallerVisibility(visibility, configuredVisibility);
-				if (appearNote.channel?.isSensitive) {
-					visibility = smallerVisibility(visibility, 'home');
-				}
-
-				if (!props.mock) {
-					misskeyApi('notes/create', {
-						localOnly,
-						visibility,
-						renoteId: appearNote.id,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
+				rippleEffect();
+				if (props.mock) return tooltipEffect(i18n.ts.renoted);
+				misskeyApi('notes/create', {
+					renoteId: appearNote.id,
+					visibility: renoteVisibility,
+					localOnly: renoteLocalOnly,
+				}).then(() => tooltipEffect(i18n.ts.renoted)).catch(errorDialog);
+			},
+		});
+		if (!props.mock) {
+			normalRenoteItems.push({
+				text: i18n.ts.quote,
+				icon: 'ti ti-quote',
+				action: () => {
+					os.post({
+						renote: appearNote,
 					});
-				}
-			},
-		}, (props.mock) ? undefined : {
-			text: i18n.ts.quote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-				});
-			},
-		}]);
+				},
+			});
+		}
 	}
 
 	if (tmsStore.state.enablePakuru) {
@@ -592,20 +603,8 @@ export function getRenoteMenu(props: {
 			text: i18n.ts._tms.pakuru,
 			icon: 'ti ti-swipe',
 			action: () => {
-				const tooltip = (): void => {
-					tooltipFromElement({
-						targetElement: props.renoteButton.value,
-						text: i18n.ts._tms.didPakuru,
-						primary: true,
-					});
-				};
-				if (props.mock) return tooltip();
-				pakuru(appearNote).then(() => tooltip()).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: parseErrorMessage(err),
-					});
-				});
+				if (props.mock) return tooltipEffect(i18n.ts._tms.didPakuru);
+				pakuru(appearNote).then(() => tooltipEffect(i18n.ts._tms.didPakuru)).catch(errorDialog);
 			},
 		});
 	}
@@ -615,20 +614,8 @@ export function getRenoteMenu(props: {
 			text: i18n.ts._tms.numberquote,
 			icon: 'ti ti-exposure-plus-1',
 			action: () => {
-				const tooltip = (): void => {
-					tooltipFromElement({
-						targetElement: props.renoteButton.value,
-						text: i18n.ts._tms.didNumberquote,
-						primary: true,
-					});
-				};
-				if (props.mock) return tooltip();
-				numberquote(appearNote).then(() => tooltip()).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: parseErrorMessage(err),
-					});
-				});
+				if (props.mock) return tooltipEffect(i18n.ts._tms.didNumberquote);
+				numberquote(appearNote).then(() => tooltipEffect(i18n.ts._tms.didNumberquote)).catch(errorDialog);
 			},
 		});
 	}
