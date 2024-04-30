@@ -9946,6 +9946,26 @@ export interface Locale extends ILocale {
          */
         readonly "displayingSensitiveFiles": string;
         /**
+         * ホームリノート
+         */
+        readonly "homeRenote": string;
+        /**
+         * フォロワーリノート
+         */
+        readonly "followersRenote": string;
+        /**
+         * リノート (連合なし)
+         */
+        readonly "disableFederationRenote": string;
+        /**
+         * ホームリノート (連合なし)
+         */
+        readonly "disableFederationHomeRenote": string;
+        /**
+         * フォロワーリノート (連合なし)
+         */
+        readonly "disableFederationFollowersRenote": string;
+        /**
          * パクる
          */
         readonly "pakuru": string;
