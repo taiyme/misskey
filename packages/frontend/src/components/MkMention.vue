@@ -70,6 +70,7 @@ const bgColorRef = computed(() => {
 
 <style lang="scss" module>
 .root {
+	box-sizing: border-box;
 	display: inline-flex;
 	max-width: 100%;
 	gap: 0.2em;
