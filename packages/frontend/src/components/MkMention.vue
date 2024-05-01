@@ -4,17 +4,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA v-user-preview="canonical" :class="[$style.root, { [$style.isMe]: isMe }]" :to="url" :style="{ background: bgCss }" :behavior="behavior">
-	<img :class="$style.icon" :src="avatarUrl" alt="">
-	<span>
+<MkA
+	v-user-preview="canonicalRef"
+	:class="[$style.root, { [$style.isMe]: isMeRef }]"
+	:to="userPageUrlRef"
+	:style="{ background: bgColorRef }"
+	:behavior="behavior"
+>
+	<img :class="$style.icon" :src="avatarUrlRef" alt="">
+	<span :class="$style.acct">
 		<span>@{{ username }}</span>
-		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span v-if="showHostRef" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 </template>
 
 <script lang="ts" setup>
-import { toUnicode } from 'punycode';
+import { toASCII, toUnicode } from 'punycode';
 import { computed } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config.js';
@@ -29,27 +35,47 @@ const props = defineProps<{
 	behavior?: MkABehavior;
 }>();
 
-const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
+const canonicalRef = computed(() => {
+	if (toASCII(props.host) === toASCII(localHost)) {
+		return `@${props.username}`;
+	}
+	return `@${props.username}@${toUnicode(props.host)}`;
+});
 
-const url = `/${canonical}`;
+const isMeRef = computed(() => {
+	if ($i == null) return false;
+	return canonicalRef.value.toLowerCase() === `@${$i.username}`.toLowerCase();
+});
 
-const isMe = $i && (
-	`@${props.username}@${toUnicode(props.host)}` === `@${$i.username}@${toUnicode(localHost)}`.toLowerCase()
-);
+const showHostRef = computed(() => {
+	return (toASCII(props.host) !== toASCII(localHost)) || defaultStore.reactiveState.showFullAcct.value;
+});
 
-const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue(isMe ? '--mentionMe' : '--mention'));
-bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
+const userPageUrlRef = computed(() => {
+	return `/${canonicalRef.value}`;
+});
 
-const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
-	? getStaticImageUrl(`/avatar/@${props.username}@${props.host}`)
-	: `/avatar/@${props.username}@${props.host}`,
-);
+const avatarUrlRef = computed(() => {
+	if (defaultStore.state.disableShowingAnimatedImages) {
+		return getStaticImageUrl(`/avatar/@${props.username}@${toASCII(props.host)}`);
+	}
+	return `/avatar/@${props.username}@${toASCII(props.host)}`;
+});
+
+const bgColorRef = computed(() => {
+	const fgColor = window.getComputedStyle(document.documentElement).getPropertyValue(isMeRef.value ? '--mentionMe' : '--mention');
+	return tinycolor(fgColor).setAlpha(0.1).toRgbString();
+});
 </script>
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
+	box-sizing: border-box;
+	display: inline-flex;
+	max-width: 100%;
+	gap: 0.2em;
+	align-items: center;
+	vertical-align: middle;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--mention);
@@ -63,9 +89,13 @@ const avatarUrl = computed(() => defaultStore.state.disableShowingAnimatedImages
 	width: 1.5em;
 	height: 1.5em;
 	object-fit: cover;
-	margin: 0 0.2em 0 0;
-	vertical-align: bottom;
 	border-radius: 100%;
+}
+
+.acct {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .host {
