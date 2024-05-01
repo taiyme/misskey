@@ -4952,10 +4952,6 @@ export interface Locale extends ILocale {
      * フォローの際常に確認する
      */
     readonly "alwaysConfirmFollow": string;
-    /**
-     * お問い合わせ
-     */
-    readonly "inquiry": string;
     readonly "_bubbleGame": {
         /**
          * 遊び方
