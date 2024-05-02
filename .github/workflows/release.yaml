@@ -25,18 +25,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Get latest tag
         id: latest_tag
         run: |
-          git fetch --prune --depth=1
+          git fetch --prune
           echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
       - name: Get base version
         id: base_version
         run: |
           echo "PREV_BASE_VERSION=$(echo ${{ github.env.LATEST_TAG }} | cut -d- -f1)" >> $GITHUB_ENV
-          echo "NEXT_BASE_VERSION=$(jq -r package.json '.version' | cut -d '-' -f 1)" >> $GITHUB_ENV
+          echo "NEXT_BASE_VERSION=$(jq -r ${{ github.workspace }}/package.json '.version' | cut -d '-' -f 1)" >> $GITHUB_ENV
 
       - name: Reset revision
         if: github.env.PREV_BASE_VERSION != github.env.NEXT_BASE_VERSION
