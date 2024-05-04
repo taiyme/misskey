@@ -10014,7 +10014,7 @@ export interface Locale extends ILocale {
             readonly "description": string;
             readonly "_tickerPosition": {
                 /**
-                 * インスタンス情報の表示位置
+                 * ノートのサーバー情報の表示位置
                  */
                 readonly "label": string;
                 /**

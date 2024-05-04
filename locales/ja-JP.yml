@@ -2669,7 +2669,7 @@ _tms:
     title: "taiyme拡張機能"
     description: "これらの機能はtaiymeで独自実装したものです。"
     _tickerPosition:
-      label: "インスタンス情報の表示位置"
+      label: "ノートのサーバー情報の表示位置"
       default: "デフォルト"
       leftVerticalBar: "縦 (左端)"
       rightVerticalBar: "縦 (右端)"
