@@ -196,7 +196,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, shallowRef, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -516,6 +516,12 @@ function loadReplies() {
 		replies.value = res;
 	});
 }
+
+watch(tab, () => {
+	if (tab.value === 'replies' && !repliesLoaded.value) {
+		loadReplies();
+	}
+}, { immediate: true });
 
 const conversationLoaded = ref(false);
 
