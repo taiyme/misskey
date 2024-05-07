@@ -80,6 +80,9 @@ import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import XCommon from './_common_/common.vue';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
+
+provideUi('visitor');
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 

@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #caption><button class="_textButton" type="button" @click="isBackupCode = !isBackupCode">{{ isBackupCode ? i18n.ts.useTotp : i18n.ts.useBackupCode }}</button></template>
 				</MkInput>
 
-				<MkButton :disabled="(password ?? '') == '' || ($i.twoFactorEnabled && (token ?? '') == '')" type="submit" primary rounded style="margin: 0 auto;"><i class="ti ti-lock-open"></i> {{ i18n.ts.continue }}</MkButton>
+				<MkButton :disabled="(password ?? '') === '' || ($i.twoFactorEnabled && (token ?? '') === '')" type="submit" primary rounded style="margin: 0 auto;"><i class="ti ti-lock-open"></i> {{ i18n.ts.continue }}</MkButton>
 			</div>
 		</form>
 	</MkSpacer>

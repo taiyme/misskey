@@ -52,6 +52,7 @@ const collapsed = ref(isLong);
 
 	&.collapsed {
 		position: relative;
+		min-height: 64px; // .fade
 		max-height: 9em;
 		overflow: hidden; // fallback (overflow: clip)
 		overflow: clip;
@@ -62,7 +63,7 @@ const collapsed = ref(isLong);
 			bottom: 0;
 			left: 0;
 			width: 100%;
-			height: 64px;
+			height: 64px; // .collapsed
 			background: linear-gradient(0deg, var(--panel), var(--X15));
 
 			> .fadeLabel {

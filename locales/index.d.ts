@@ -6593,6 +6593,26 @@ export interface Locale extends ILocale {
              */
             readonly "isRemote": string;
             /**
+             * 猫ユーザー
+             */
+            readonly "isCat": string;
+            /**
+             * botユーザー
+             */
+            readonly "isBot": string;
+            /**
+             * サスペンド済みユーザー
+             */
+            readonly "isSuspended": string;
+            /**
+             * 鍵アカウントユーザー
+             */
+            readonly "isLocked": string;
+            /**
+             * 「アカウントを見つけやすくする」が有効なユーザー
+             */
+            readonly "isExplorable": string;
+            /**
              * アカウント作成から～以内
              */
             readonly "createdLessThan": string;
@@ -9926,6 +9946,26 @@ export interface Locale extends ILocale {
          */
         readonly "displayingSensitiveFiles": string;
         /**
+         * ホームリノート
+         */
+        readonly "homeRenote": string;
+        /**
+         * フォロワーリノート
+         */
+        readonly "followersRenote": string;
+        /**
+         * リノート (連合なし)
+         */
+        readonly "disableFederationRenote": string;
+        /**
+         * ホームリノート (連合なし)
+         */
+        readonly "disableFederationHomeRenote": string;
+        /**
+         * フォロワーリノート (連合なし)
+         */
+        readonly "disableFederationFollowersRenote": string;
+        /**
          * パクる
          */
         readonly "pakuru": string;
@@ -9972,6 +10012,32 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            readonly "_tickerPosition": {
+                /**
+                 * ノートのサーバー情報の表示位置
+                 */
+                readonly "label": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * 縦 (左端)
+                 */
+                readonly "leftVerticalBar": string;
+                /**
+                 * 縦 (右端)
+                 */
+                readonly "rightVerticalBar": string;
+                /**
+                 * 透かし (左下)
+                 */
+                readonly "leftWatermark": string;
+                /**
+                 * 透かし (右下)
+                 */
+                readonly "rightWatermark": string;
+            };
             readonly "_superMenuDisplayMode": {
                 /**
                  * 設定メニューの表示モード
@@ -9993,6 +10059,38 @@ export interface Locale extends ILocale {
                  * リスト強制
                  */
                 readonly "forceList": string;
+            };
+            readonly "_pullToRefreshSensitivity": {
+                /**
+                 * 「引っ張ってリロード」の感度
+                 */
+                readonly "label": string;
+                /**
+                 * 離してリロードするまでの所要スクロールを変更します。
+                 */
+                readonly "caption": string;
+                /**
+                 * 低感度
+                 */
+                readonly "low": string;
+                /**
+                 * 中感度 (規定)
+                 */
+                readonly "middle": string;
+                /**
+                 * 高感度
+                 */
+                readonly "high": string;
+            };
+            readonly "_pullToRefreshAllReload": {
+                /**
+                 * 「引っ張ってリロード」でページ全体を再読み込みする
+                 */
+                readonly "label": string;
+                /**
+                 * 構成しているページ全体を再読み込みする動作に置き換えます。
+                 */
+                readonly "caption": string;
             };
             readonly "_pakuru": {
                 /**

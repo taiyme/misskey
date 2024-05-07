@@ -6,10 +6,11 @@
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
 import { toASCII } from 'punycode';
-import { $i, getAccounts } from '@/account.js';
+import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { unique } from '@/scripts/array.js';
 import { deepClone } from '@/scripts/clone.js';
+import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { TmsError } from '@/scripts/tms/error.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
@@ -83,12 +84,19 @@ const toMeEntity = async (fromId?: string | null): Promise<MeEntity> => {
 		throw new TmsError(errors.meIdIsRequired);
 	}
 
-	const token = (await getAccounts()).find(({ id }) => id === meId)?.token ?? null;
+	const token = await getAccountToken(meId);
 	if (token == null) {
 		throw new TmsError(errors.tokenIsRequired);
 	}
 
 	return { meId, token } as const satisfies MeEntity;
+};
+
+const getAccountToken = async (meId: MeEntity['meId']): Promise<MeEntity['token'] | null> => {
+	if ($i?.id === meId && $i.token != null) {
+		return $i.token;
+	}
+	return getAccountFromId(meId).then(x => x?.token ?? null);
 };
 
 const toNoteEntity = async (noteEntityOrId: NoteEntityOrId, { token }: MeEntity): Promise<NoteEntity> => {

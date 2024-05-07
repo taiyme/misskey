@@ -57,8 +57,11 @@ import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
+
+provideUi('classic');
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 

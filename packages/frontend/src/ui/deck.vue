@@ -118,6 +118,7 @@ import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 import { mainRouter } from '@/router/main.js';
 import { MenuItem } from '@/types/menu.js';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
@@ -133,6 +134,8 @@ const columnComponents = {
 	direct: XDirectColumn,
 	roleTimeline: XRoleTimelineColumn,
 };
+
+provideUi('deck');
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;

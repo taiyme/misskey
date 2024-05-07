@@ -549,7 +549,7 @@ export class MiMeta {
 	public preservedUsernames: string[];
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public enableFanoutTimeline: boolean;
 

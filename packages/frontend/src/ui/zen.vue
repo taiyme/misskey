@@ -28,6 +28,9 @@ import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '
 import { instanceName, ui } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router/main.js';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
+
+provideUi('zen');
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 

@@ -31,7 +31,7 @@ import { defineAsyncComponent, readonly, ref, watch } from 'vue';
 import { commitHash, lang, version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { confirm, inputText, popup, waiting } from '@/os.js';
+import { confirm, popup, waiting } from '@/os.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -47,22 +47,15 @@ const confirmDialog = async (): Promise<boolean> => {
 };
 
 const forceFetchLocale = async (): Promise<void> => {
-	const defaultValue = commitHash ?? Date.now().toString();
-	const { canceled, result } = await inputText({
-		type: 'text',
-		text: 'Revision?',
-		placeholder: defaultValue,
-		default: defaultValue,
-	});
-	if (canceled) return;
 	if (!(await confirmDialog())) return;
 	waiting();
-	const revision = result || defaultValue;
-	const res = await window.fetch(`/assets/locales/${lang}.${version}.json?rev=${revision}`);
+	const revision = commitHash ?? 'unknown';
+	const newLocaleVersion = `${version}+REV:${revision}`;
+	const res = await window.fetch(`/assets/locales/${lang}.${version}.json?date=${Date.now().toString()}`);
 	if (res.status === 200) {
 		const newLocale = await res.text();
 		miLocalStorage.setItem('locale', newLocale);
-		miLocalStorage.setItem('localeVersion', version);
+		miLocalStorage.setItem('localeVersion', newLocaleVersion);
 	}
 	location.reload();
 };
