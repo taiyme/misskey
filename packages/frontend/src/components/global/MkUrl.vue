@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:[attr]="self ? props.url.substring(local.length) : props.url"
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
-	:behavior="props.behavior"
+	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
-	behavior?: MkABehavior;
+	navigationBehavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
 });
