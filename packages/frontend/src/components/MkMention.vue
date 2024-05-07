@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.isMe]: isMeRef }]"
 	:to="userPageUrlRef"
 	:style="{ background: bgColorRef }"
-	:behavior="behavior"
+	:behavior="navigationBehavior"
 >
 	<img :class="$style.icon" :src="avatarUrlRef" alt="">
 	<span :class="$style.acct">
@@ -32,7 +32,7 @@ import { type MkABehavior } from '@/components/global/MkA.vue';
 const props = defineProps<{
 	username: string;
 	host: string;
-	behavior?: MkABehavior;
+	navigationBehavior?: MkABehavior;
 }>();
 
 const canonicalRef = computed(() => {
