@@ -385,4 +385,42 @@ describe('ActivityPub', () => {
 			assert.strictEqual(driveFile, null);
 		});
 	});
+
+	describe('JSON-LD', () =>{
+		test('Compaction', async () => {
+			const jsonLd = jsonLdService.use();
+
+			const object = {
+				'@context': [
+					'https://www.w3.org/ns/activitystreams',
+					{
+						_misskey_quote: 'https://misskey-hub.net/ns#_misskey_quote',
+						unknown: 'https://example.org/ns#unknown',
+						undefined: null,
+					},
+				],
+				id: 'https://example.com/notes/42',
+				type: 'Note',
+				attributedTo: 'https://example.com/users/1',
+				to: ['https://www.w3.org/ns/activitystreams#Public'],
+				content: 'test test foo',
+				_misskey_quote: 'https://example.com/notes/1',
+				unknown: 'test test bar',
+				undefined: 'test test baz',
+			};
+			const compacted = await jsonLd.compact(object);
+
+			assert.deepStrictEqual(compacted, {
+				'@context': CONTEXT,
+				id: 'https://example.com/notes/42',
+				type: 'Note',
+				attributedTo: 'https://example.com/users/1',
+				to: 'as:Public',
+				content: 'test test foo',
+				_misskey_quote: 'https://example.com/notes/1',
+				'https://example.org/ns#unknown': 'test test bar',
+				// undefined: 'test test baz',
+			});
+		});
+	});
 });

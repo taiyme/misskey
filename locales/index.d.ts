@@ -10014,7 +10014,7 @@ export interface Locale extends ILocale {
             readonly "description": string;
             readonly "_tickerPosition": {
                 /**
-                 * インスタンス情報の表示位置
+                 * ノートのサーバー情報の表示位置
                  */
                 readonly "label": string;
                 /**
@@ -10062,7 +10062,7 @@ export interface Locale extends ILocale {
             };
             readonly "_pullToRefreshSensitivity": {
                 /**
-                 * Pull-to-Refreshの感度
+                 * 「引っ張ってリロード」の感度
                  */
                 readonly "label": string;
                 /**
@@ -10084,11 +10084,11 @@ export interface Locale extends ILocale {
             };
             readonly "_pullToRefreshAllReload": {
                 /**
-                 * Pull-to-Refreshでページ全体をリロードする
+                 * 「引っ張ってリロード」でページ全体を再読み込みする
                  */
                 readonly "label": string;
                 /**
-                 * タイムラインだけではなく、構成しているページ全体を再読み込みします。
+                 * 構成しているページ全体を再読み込みする動作に置き換えます。
                  */
                 readonly "caption": string;
             };

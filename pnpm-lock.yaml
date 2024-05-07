@@ -710,11 +710,11 @@ importers:
         specifier: 0.18.0
         version: 0.18.0
       '@tabler/icons-webfont':
-        specifier: 2.44.0
-        version: 2.44.0
+        specifier: 3.3.0
+        version: 3.3.0
       '@twemoji/parser':
-        specifier: 15.0.0
-        version: 15.0.0
+        specifier: 15.1.1
+        version: 15.1.1
       '@vitejs/plugin-vue':
         specifier: 5.0.4
         version: 5.0.4(vite@5.2.11)(vue@3.4.26)
@@ -7715,14 +7715,14 @@ packages:
     dependencies:
       defer-to-connect: 2.0.1
 
-  /@tabler/icons-webfont@2.44.0:
-    resolution: {integrity: sha512-E5+CYnZXKTUGFhpb0KGiRR4s+Tylbsq6/CA88QKn44xaBfU3ui/zVwKc1vaTKBL9kxZIxNz7qLkne+lUd/Hvzw==}
+  /@tabler/icons-webfont@3.3.0:
+    resolution: {integrity: sha512-vMsxtwTXdC4QH4uDajZjBYThILEI0dP+Mn1s4XZkVtnJ793IF31i3596nYetWhAJnrED0UJ0HQWSbmqVxVQbxA==}
     dependencies:
-      '@tabler/icons': 2.44.0
+      '@tabler/icons': 3.3.0
     dev: false
 
-  /@tabler/icons@2.44.0:
-    resolution: {integrity: sha512-WPPtihDcAwEm1QZM9MXQw6+r/R2/qx7KMU1eegsi9DsqBLAb0W2kbt6e/syvd6j9c+6XNpRVBW1ziGqSWQAWOg==}
+  /@tabler/icons@3.3.0:
+    resolution: {integrity: sha512-PLVe9d7b59sKytbx00KgeGhQG3N176Ezv8YMmsnSz4s0ifDzMWlp/h2wEfQZ0ZNe8e377GY2OW6kovUe3Rnd0g==}
     dev: false
 
   /@tensorflow/tfjs-backend-cpu@4.4.0(@tensorflow/tfjs-core@4.4.0):

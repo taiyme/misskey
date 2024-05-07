@@ -44,7 +44,7 @@ type MfmProps = {
 	parsedNodes?: mfm.MfmNode[] | null;
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
-	linkBehavior?: MkABehavior;
+	linkNavigationBehavior?: MkABehavior;
 };
 
 type MfmEvents = {
@@ -346,7 +346,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-					behavior: props.linkBehavior,
 				})];
 			}
 
@@ -355,7 +354,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
-					behavior: props.linkBehavior,
 				}, genEl(token.children, scale, true))];
 			}
 
@@ -364,7 +362,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
 					username: token.props.username,
-					behavior: props.linkBehavior,
 				})];
 			}
 
@@ -373,7 +370,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					key: Math.random(),
 					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
 					style: 'color:var(--hashtag);',
-					behavior: props.linkBehavior,
 				}, `#${token.props.hashtag}`)];
 			}
 
