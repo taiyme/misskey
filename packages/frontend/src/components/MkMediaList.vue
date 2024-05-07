@@ -4,8 +4,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
+<div :class="$style.cq">
+	<template v-for="media in mediaList.filter(media => !previewable(media))">
+		<XAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :key="`audio:${media.id}`" :audio="media" :class="$style.banner"/>
+		<XBanner v-else :key="`banner:${media.id}`" :media="media" :class="$style.banner"/>
+	</template>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
 			ref="gallery"
@@ -28,17 +31,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
+import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { claimZIndex } from '@/os.js';
+import { defaultStore } from '@/store.js';
+import XAudio from '@/components/MkMediaAudio.vue';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { defaultStore } from '@/store.js';
+
+const EXPANDED_MIN_HEIGHT = 80 as const;
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
@@ -46,7 +52,7 @@ const props = defineProps<{
 }>();
 
 const gallery = shallowRef<HTMLDivElement>();
-const pswpZIndex = os.claimZIndex('middle');
+const pswpZIndex = claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 let lightbox: PhotoSwipeLightbox | null;
@@ -87,6 +93,10 @@ async function calcAspectRatio() {
 			break;
 	}
 }
+
+watch(defaultStore.reactiveState.mediaListWithOneImageAppearance, () => {
+	calcAspectRatio();
+});
 
 onMounted(() => {
 	calcAspectRatio();
@@ -202,7 +212,13 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 </script>
 
 <style lang="scss" module>
+.cq {
+	container: mediaList / inline-size;
+	--mediaList-radius: 8px;
+}
+
 .container {
+	box-sizing: border-box;
 	position: relative;
 	width: 100%;
 	margin-top: 4px;
@@ -210,8 +226,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 
 .medias {
 	display: grid;
-	grid-gap: 8px;
-
+	gap: 8px;
 	height: 100%;
 	width: 100%;
 
@@ -219,41 +234,41 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 		grid-template-rows: 1fr;
 
 		// default but fallback (expand)
-		min-height: 64px;
+		min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
 		max-height: clamp(
-			64px,
+			v-bind("`${EXPANDED_MIN_HEIGHT}px`"),
 			50cqh,
 			min(360px, 50vh)
 		);
 
 		&.n116_9 {
-			min-height: initial;
-			max-height: initial;
+			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
+			max-height: unset;
 			aspect-ratio: 16 / 9; // fallback
 		}
 
 		&.n11_1{
-			min-height: initial;
-			max-height: initial;
+			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
+			max-height: unset;
 			aspect-ratio: 1 / 1; // fallback
 		}
 
 		&.n12_3 {
-			min-height: initial;
-			max-height: initial;
+			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
+			max-height: unset;
 			aspect-ratio: 2 / 3; // fallback
 		}
 	}
 
 	&.n2 {
-		aspect-ratio: 16/9;
+		aspect-ratio: 16 / 9;
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr;
 	}
 
 	&.n3 {
-		aspect-ratio: 16/9;
-		grid-template-columns: 1fr 0.5fr;
+		aspect-ratio: 16 / 9;
+		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 
 		> .media:nth-child(1) {
@@ -267,7 +282,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	}
 
 	&.n4 {
-		aspect-ratio: 16/9;
+		aspect-ratio: 16 / 9;
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 	}
@@ -276,14 +291,32 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 		grid-template-columns: 1fr 1fr;
 
 		> .media {
-			aspect-ratio: 16/9;
+			aspect-ratio: 16 / 9;
 		}
 	}
 }
 
+.banner {
+	overflow: hidden; // clipにするとバグる
+	margin-top: 4px;
+}
+
 .media {
 	overflow: hidden; // clipにするとバグる
-	border-radius: 8px;
+}
+
+@container mediaList (max-width: 210px) {
+	.medias:not(.n1) {
+		aspect-ratio: unset !important;
+		grid-template-columns: 1fr !important;
+		grid-template-rows: unset !important;
+
+		> .media {
+			aspect-ratio: 16 / 9 !important;
+			grid-column: unset !important;
+			grid-row: unset !important;
+		}
+	}
 }
 
 :global(.pswp) {

@@ -4,127 +4,223 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div
-	ref="playerEl"
-	v-hotkey="keymap"
-	tabindex="0"
-	:class="[
-		$style.videoContainer,
-		controlsShowing && $style.active,
-		(video.isSensitive && defaultStore.state.highlightSensitiveMedia) && $style.sensitive,
-	]"
-	@mouseover="onMouseOver"
-	@mouseleave="onMouseLeave"
-	@contextmenu.stop
-	@keydown.stop
->
-	<button v-if="hide" :class="$style.hidden" @click="hide = false">
-		<div :class="$style.hiddenTextWrapper">
-			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ defaultStore.state.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
-		</div>
-	</button>
-
-	<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.videoRoot">
-		<video
-			ref="videoEl"
-			:class="$style.video"
-			:poster="video.thumbnailUrl ?? undefined"
-			:title="video.comment ?? undefined"
-			:alt="video.comment"
-			preload="metadata"
-			controls
-			@keydown.prevent
-		>
-			<source :src="video.url">
-		</video>
-		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
-		<div :class="$style.indicators">
-			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
-		</div>
-	</div>
-
-	<div v-else :class="$style.videoRoot">
-		<video
-			ref="videoEl"
-			:class="$style.video"
-			:poster="video.thumbnailUrl ?? undefined"
-			:title="video.comment ?? undefined"
-			:alt="video.comment"
-			preload="metadata"
-			playsinline
-			@keydown.prevent
-			@click.self="togglePlayPause"
-		>
-			<source :src="video.url">
-		</video>
-		<button v-if="isReady && !isPlaying" class="_button" :class="$style.videoOverlayPlayButton" @click="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
-		<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
-			<MkLoading/>
-		</div>
-		<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>
-		<div :class="$style.indicators">
-			<div v-if="video.comment" :class="$style.indicator">ALT</div>
-			<div v-if="video.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
-		</div>
-		<div :class="$style.videoControls" @click.self="togglePlayPause">
-			<div :class="[$style.controlsChild, $style.controlsLeft]">
-				<button class="_button" :class="$style.controlButton" @click="togglePlayPause">
-					<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
-					<i v-else class="ti ti-player-play-filled"></i>
-				</button>
+<div :class="$style.cq">
+	<div
+		ref="playerEl"
+		v-hotkey="keymap"
+		:class="{
+			[$style.root]: true,
+			[$style.active]: controlsShowing,
+			[$style.rootVisible]: !hideRef,
+			[$style.rootSensitive]: sensitiveRef,
+		}"
+		tabindex="0"
+		@click="showVideo"
+		@mouseover="onMouseOver"
+		@mouseleave="onMouseLeave"
+		@contextmenu.stop="() => {}"
+		@keydown.stop="() => {}"
+	>
+		<template v-if="hideRef">
+			<div :class="['_noSelect', $style.hideInfo]">
+				<div :class="$style.hideInfoItem">
+					<div v-if="videoRef.isSensitive" :class="$style.hideInfoTitle">
+						<i class="ti ti-eye-exclamation"></i> {{ i18n.ts._tms.sensitiveVideo }}
+					</div>
+					<div v-else :class="$style.hideInfoTitle">
+						<i class="ti ti-movie"></i> {{ i18n.ts.video }}
+					</div>
+				</div>
+				<div v-if="defaultStore.state.dataSaver.media && videoRef.size" :class="$style.hideInfoItem">
+					<div :class="$style.hideInfoText">
+						<i class="ti ti-cloud-download"></i> {{ bytes(videoRef.size) }}
+					</div>
+				</div>
+				<div :class="$style.hideInfoItem">
+					<div :class="$style.hideInfoText">
+						{{ i18n.ts.clickToShow }}
+					</div>
+				</div>
 			</div>
-			<div :class="[$style.controlsChild, $style.controlsRight]">
-				<button class="_button" :class="$style.controlButton" @click="showMenu">
-					<i class="ti ti-settings"></i>
-				</button>
-				<button class="_button" :class="$style.controlButton" @click="toggleFullscreen">
-					<i v-if="isFullscreen" class="ti ti-arrows-minimize"></i>
-					<i v-else class="ti ti-arrows-maximize"></i>
-				</button>
+		</template>
+
+		<div v-else-if="defaultStore.reactiveState.useNativeUIForVideoAudioPlayer.value" :class="$style.videoRoot">
+			<video
+				ref="videoEl"
+				:class="$style.video"
+				:poster="videoRef.thumbnailUrl ?? undefined"
+				:title="videoRef.comment ?? undefined"
+				:alt="videoRef.comment"
+				preload="metadata"
+				controls
+				@keydown.prevent="() => {}"
+			>
+				<source :src="videoRef.url">
+			</video>
+			<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hideRef = true"></i>
+			<div :class="$style.indicators">
+				<div v-if="videoRef.comment" :class="$style.indicator">ALT</div>
+				<div v-if="videoRef.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 			</div>
-			<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
-			<div :class="[$style.controlsChild, $style.controlsVolume]">
-				<button class="_button" :class="$style.controlButton" @click="toggleMute">
-					<i v-if="volume === 0" class="ti ti-volume-3"></i>
-					<i v-else class="ti ti-volume"></i>
-				</button>
+		</div>
+
+		<div v-else :class="$style.videoRoot">
+			<video
+				ref="videoEl"
+				:class="$style.video"
+				:poster="videoRef.thumbnailUrl ?? undefined"
+				:title="videoRef.comment ?? undefined"
+				:alt="videoRef.comment"
+				preload="metadata"
+				playsinline
+				@keydown.prevent="() => {}"
+				@click.stop.self="togglePlayPause"
+			>
+				<source :src="videoRef.url">
+			</video>
+			<button v-if="isReady && !isPlaying" class="_button" :class="$style.videoOverlayPlayButton" @click.stop="togglePlayPause"><i class="ti ti-player-play-filled"></i></button>
+			<div v-else-if="!isActuallyPlaying" :class="$style.videoLoading">
+				<MkLoading/>
+			</div>
+			<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hideRef = true"></i>
+			<div :class="$style.indicators">
+				<div v-if="videoRef.comment" :class="$style.indicator">ALT</div>
+				<div v-if="videoRef.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
+			</div>
+			<div :class="$style.videoControls" @click.stop.self="togglePlayPause">
+				<div :class="[$style.controlsChild, $style.controlsLeft]">
+					<button class="_button" :class="$style.controlButton" @click.stop="togglePlayPause">
+						<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
+						<i v-else class="ti ti-player-play-filled"></i>
+					</button>
+				</div>
+				<div :class="[$style.controlsChild, $style.controlsRight]">
+					<button class="_button" :class="$style.controlButton" @click.stop="showVideoMenu">
+						<i class="ti ti-settings"></i>
+					</button>
+					<button class="_button" :class="$style.controlButton" @click.stop="toggleFullscreen">
+						<i v-if="isFullscreen" class="ti ti-arrows-minimize"></i>
+						<i v-else class="ti ti-arrows-maximize"></i>
+					</button>
+				</div>
+				<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
+				<div :class="[$style.controlsChild, $style.controlsVolume]">
+					<button class="_button" :class="$style.controlButton" @click.stop="toggleMute">
+						<i v-if="volume === 0" class="ti ti-volume-3"></i>
+						<i v-else class="ti ti-volume"></i>
+					</button>
+					<MkMediaRange
+						v-model="volume"
+						:sliderBgWhite="true"
+						:class="$style.volumeSeekbar"
+					/>
+				</div>
 				<MkMediaRange
-					v-model="volume"
+					v-model="rangePercent"
 					:sliderBgWhite="true"
-					:class="$style.volumeSeekbar"
+					:class="$style.seekbarRoot"
+					:buffer="bufferedDataRatio"
 				/>
 			</div>
-			<MkMediaRange
-				v-model="rangePercent"
-				:sliderBgWhite="true"
-				:class="$style.seekbarRoot"
-				:buffer="bufferedDataRatio"
-			/>
 		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, computed, watch, onDeactivated, onActivated, onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
-import type { MenuItem } from '@/types/menu.js';
-import bytes from '@/filters/bytes.js';
-import { hms } from '@/filters/hms.js';
-import { defaultStore } from '@/store.js';
+import { computed, inject, onActivated, onDeactivated, onMounted, ref, shallowRef, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
+import { popupMenu } from '@/os.js';
+import { defaultStore } from '@/store.js';
 import { isFullscreenNotSupported } from '@/scripts/device-kind.js';
 import hasAudio from '@/scripts/media-has-audio.js';
+import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
+import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
+import bytes from '@/filters/bytes.js';
+import { hms } from '@/filters/hms.js';
+import type { MenuItem } from '@/types/menu.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
-import { $i, iAmModerator } from '@/account.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
 }>();
+
+const mock = inject<boolean>('mock', false);
+
+const {
+	reactiveDriveFile: videoRef,
+	reactiveHide: hideRef,
+	reactiveSensitive: sensitiveRef,
+	reactiveIAmOwner: iAmOwnerRef,
+} = useReactiveDriveFile(() => props.video);
+
+const reactiveColor = computed(() => {
+	if (defaultStore.reactiveState.darkMode.value) {
+		return 'rgba(255, 255, 255, 0.02)';
+	}
+	return 'rgba(0, 0, 0, 0.02)';
+});
+
+const showVideo = () => {
+	if (!hideRef.value) return;
+	hideRef.value = false;
+};
+
+// Menu
+const menuShowing = ref(false);
+
+const showVideoMenu = (ev: MouseEvent) => {
+	const additionalMenu: MenuItem[] = [];
+
+	// TODO: 再生キューに追加
+
+	additionalMenu.push({
+		type: 'switch',
+		text: i18n.ts._mediaControls.loop,
+		icon: 'ti ti-repeat',
+		ref: loop,
+	});
+
+	additionalMenu.push({
+		type: 'radio',
+		text: i18n.ts._mediaControls.playbackRate,
+		icon: 'ti ti-clock-play',
+		ref: speed,
+		options: {
+			'0.25x': 0.25,
+			'0.5x': 0.5,
+			'0.75x': 0.75,
+			'1.0x': 1,
+			'1.25x': 1.25,
+			'1.5x': 1.5,
+			'2.0x': 2,
+		},
+	});
+
+	if (document.pictureInPictureEnabled) {
+		additionalMenu.push({
+			text: i18n.ts._mediaControls.pip,
+			icon: 'ti ti-picture-in-picture',
+			action: togglePictureInPicture,
+		});
+	}
+
+	menuShowing.value = true;
+	popupMenu(getMediaMenu({
+		reactiveDriveFile: videoRef,
+		reactiveHide: hideRef,
+		reactiveSensitive: sensitiveRef,
+		reactiveIAmOwner: iAmOwnerRef,
+		mock,
+		additionalMenu,
+	}), ev.currentTarget ?? ev.target, {
+		align: 'right',
+		onClosing: () => {
+			menuShowing.value = false;
+		},
+	});
+};
 
 const keymap = {
 	'up': () => {
@@ -160,91 +256,6 @@ function hasFocus() {
 	return playerEl.value === document.activeElement || playerEl.value.contains(document.activeElement);
 }
 
-// eslint-disable-next-line vue/no-setup-props-destructure
-const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore'));
-
-// Menu
-const menuShowing = ref(false);
-
-function showMenu(ev: MouseEvent) {
-	let menu: MenuItem[] = [];
-
-	menu = [
-		// TODO: 再生キューに追加
-		{
-			type: 'switch',
-			text: i18n.ts._mediaControls.loop,
-			icon: 'ti ti-repeat',
-			ref: loop,
-		},
-		{
-			type: 'radio',
-			text: i18n.ts._mediaControls.playbackRate,
-			icon: 'ti ti-clock-play',
-			ref: speed,
-			options: {
-				'0.25x': 0.25,
-				'0.5x': 0.5,
-				'0.75x': 0.75,
-				'1.0x': 1,
-				'1.25x': 1.25,
-				'1.5x': 1.5,
-				'2.0x': 2,
-			},
-		},
-		...(document.pictureInPictureEnabled ? [{
-			text: i18n.ts._mediaControls.pip,
-			icon: 'ti ti-picture-in-picture',
-			action: togglePictureInPicture,
-		}] : []),
-		{
-			type: 'divider',
-		},
-		{
-			text: i18n.ts.hide,
-			icon: 'ti ti-eye-off',
-			action: () => {
-				hide.value = true;
-			},
-		},
-	];
-
-	if (iAmModerator) {
-		menu.push({
-			text: props.video.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: props.video.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => toggleSensitive(props.video),
-		});
-	}
-
-	if ($i?.id === props.video.userId) {
-		menu.push({
-			type: 'divider',
-		}, {
-			type: 'link' as const,
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-			to: `/my/drive/file/${props.video.id}`,
-		});
-	}
-
-	menuShowing.value = true;
-	os.popupMenu(menu, ev.currentTarget ?? ev.target, {
-		align: 'right',
-		onClosing: () => {
-			menuShowing.value = false;
-		},
-	});
-}
-
-function toggleSensitive(file: Misskey.entities.DriveFile) {
-	os.apiWithDialog('drive/files/update', {
-		fileId: file.id,
-		isSensitive: !file.isSensitive,
-	});
-}
-
 // MediaControl: Video State
 const videoEl = shallowRef<HTMLVideoElement>();
 const playerEl = shallowRef<HTMLDivElement>();
@@ -274,7 +285,7 @@ const rangePercent = computed({
 		videoEl.value.currentTime = to * durationMs.value / 1000;
 	},
 });
-const volume = ref(.25);
+const volume = ref(0.25);
 const speed = ref(1);
 const loop = ref(false); // TODO: ドライブファイルのフラグに置き換える
 const bufferedEnd = ref(0);
@@ -346,7 +357,7 @@ function togglePictureInPicture() {
 
 function toggleMute() {
 	if (volume.value === 0) {
-		volume.value = .25;
+		volume.value = 0.25;
 	} else {
 		volume.value = 0;
 	}
@@ -430,7 +441,7 @@ watch(loop, (to) => {
 	if (videoEl.value) videoEl.value.loop = to;
 });
 
-watch(hide, (to) => {
+watch(hideRef, (to) => {
 	if (to && isFullscreen.value) {
 		document.exitFullscreen();
 		isFullscreen.value = false;
@@ -452,7 +463,6 @@ onDeactivated(() => {
 	elapsedTimeMs.value = 0;
 	durationMs.value = 0;
 	bufferedEnd.value = 0;
-	hide.value = (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) ? true : (props.video.isSensitive && defaultStore.state.nsfw !== 'ignore');
 	stopVideoElWatch();
 	onceInit = false;
 	if (mediaTickFrameId) {
@@ -463,17 +473,41 @@ onDeactivated(() => {
 </script>
 
 <style lang="scss" module>
-.videoContainer {
-	container-type: inline-size;
+.cq {
+	container: mediaVideo / inline-size;
+}
+
+.root {
+	--mediaVideo-scale: 1;
+	box-sizing: border-box;
 	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
+	border-radius: var(--mediaList-radius, 8px);
 
 	&:focus {
 		outline: none;
 	}
 }
 
-.sensitive {
+.rootVisible {
+	background-color: var(--bg);
+	background-image: linear-gradient(
+		45deg,
+		v-bind(reactiveColor) 16.67%,
+		var(--bg) 16.67%,
+		var(--bg) 50%,
+		v-bind(reactiveColor) 50%,
+		v-bind(reactiveColor) 66.67%,
+		var(--bg) 66.67%,
+		var(--bg) 100%
+	);
+	background-size: 16px 16px;
+}
+
+.rootSensitive {
 	position: relative;
 
 	&::after {
@@ -489,13 +523,46 @@ onDeactivated(() => {
 	}
 }
 
+.hideInfo {
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: #777;
+	cursor: pointer;
+
+	> .hideInfoItem {
+		max-width: 100%;
+	}
+}
+
+%HideInfoText {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-size: clamp(6px, calc(12px * var(--mediaVideo-scale)), 12px);
+	color: #fff;
+}
+
+.hideInfoTitle {
+	@extend %HideInfoText;
+	font-weight: 700;
+}
+
+.hideInfoText {
+	@extend %HideInfoText;
+}
+
 .indicators {
 	display: inline-flex;
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	pointer-events: none;
-	opacity: .5;
+	opacity: 0.5;
 	gap: 6px;
 }
 
@@ -517,33 +584,12 @@ onDeactivated(() => {
 	background-color: var(--fg);
 	color: var(--accentLighten);
 	font-size: 12px;
-	opacity: .5;
+	opacity: 0.5;
 	padding: 5px 8px;
 	text-align: center;
 	cursor: pointer;
 	top: 12px;
 	right: 12px;
-}
-
-.hidden {
-	width: 100%;
-	height: 100%;
-	background: #000;
-	border: none;
-	outline: none;
-	font: inherit;
-	color: inherit;
-	cursor: pointer;
-	padding: 60px 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.hiddenTextWrapper {
-	text-align: center;
-	font-size: 0.8em;
-	color: #fff;
 }
 
 .videoRoot {
@@ -564,10 +610,10 @@ onDeactivated(() => {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%,-50%);
+	transform: translate(-50%, -50%);
 
 	opacity: 0;
-	transition: opacity .4s ease-in-out;
+	transition: opacity 0.4s ease-in-out;
 
 	background: var(--accent);
 	color: #fff;
@@ -598,7 +644,7 @@ onDeactivated(() => {
 	gap: 4px 8px;
 
 	padding: 35px 10px 10px 10px;
-	background: linear-gradient(rgba(0, 0, 0, 0),rgba(0, 0, 0, .75));
+	background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75));
 
 	position: absolute;
 	left: 0;
@@ -608,7 +654,7 @@ onDeactivated(() => {
 	transform: translateY(100%);
 	pointer-events: none;
 	opacity: 0;
-	transition: opacity .4s ease-in-out, transform .4s ease-in-out;
+	transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
 }
 
 .active {
@@ -631,8 +677,8 @@ onDeactivated(() => {
 
 	.controlButton {
 		padding: 6px;
-		border-radius: calc(var(--radius) / 2);
-		transition: background-color .2s ease-in-out;
+		border-radius: calc(var(--mediaList-radius, 8px) / 2);
+		transition: background-color 0.2s ease-in-out;
 		font-size: 1.05rem;
 
 		&:hover {
@@ -651,7 +697,7 @@ onDeactivated(() => {
 
 .controlsTime {
 	grid-area: time;
-	font-size: .9rem;
+	font-size: 0.9rem;
 }
 
 .controlsVolume {
@@ -669,7 +715,7 @@ onDeactivated(() => {
 	padding: 10px;
 }
 
-@container (min-width: 500px) {
+@container mediaVideo (min-width: 500px) {
 	.videoControls {
 		grid-template-areas: "left seekbar time volume right";
 		grid-template-columns: auto 1fr auto auto auto;
@@ -681,6 +727,48 @@ onDeactivated(() => {
 			display: block;
 			flex-grow: 1;
 		}
+	}
+}
+
+@container mediaVideo (max-width: 250px) {
+	.root {
+		--mediaVideo-scale: 0.90;
+	}
+}
+
+@container mediaVideo (max-width: 200px) {
+	.root {
+		--mediaVideo-scale: 0.85;
+	}
+}
+
+@container mediaVideo (max-width: 150px) {
+	.root {
+		--mediaVideo-scale: 0.80;
+	}
+}
+
+@container mediaVideo (max-width: 130px) {
+	.root {
+		--mediaVideo-scale: 0.75;
+	}
+}
+
+@container mediaVideo (max-width: 120px) {
+	.root {
+		--mediaVideo-scale: 0.70;
+	}
+}
+
+@container mediaVideo (max-width: 110px) {
+	.root {
+		--mediaVideo-scale: 0.65;
+	}
+}
+
+@container mediaVideo (max-width: 100px) {
+	.root {
+		--mediaVideo-scale: 0.60;
 	}
 }
 </style>

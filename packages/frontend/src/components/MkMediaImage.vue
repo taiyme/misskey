@@ -4,91 +4,106 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.cqRoot">
+<div :class="$style.cq">
 	<div
 		:class="{
 			[$style.root]: true,
-			[$style.visible]: !hide,
-			[$style.sensitive]: sensitive,
+			[$style.rootVisible]: !hideRef,
+			[$style.rootSensitive]: sensitiveRef,
 		}"
-		@click="onClick"
+		tabindex="0"
+		@click="showImage"
 		@contextmenu.stop="() => {}"
 	>
 		<component
-			:is="disableImageLink ? 'div' : 'a'"
-			v-bind="disableImageLink ? {
-				title: reactiveImage.name,
+			:is="props.disableImageLink ? 'div' : 'a'"
+			v-bind="props.disableImageLink ? {
+				title: imageRef.name,
 				class: $style.imageContainer,
 			} : {
-				title: reactiveImage.name,
+				title: imageRef.name,
 				class: $style.imageContainer,
-				href: reactiveImage.url,
+				href: imageRef.url,
 				style: 'cursor: zoom-in;'
 			}"
 		>
 			<MkImgWithBlurhash
-				:hash="reactiveImage.blurhash"
-				:src="(defaultStore.state.dataSaver.media && hide) ? null : url"
-				:forceBlurhash="hide"
-				:cover="hide || cover"
-				:alt="reactiveImage.comment || reactiveImage.name"
-				:title="reactiveImage.comment || reactiveImage.name"
-				:width="reactiveImage.properties.width"
-				:height="reactiveImage.properties.height"
-				:style="hide ? 'filter: brightness(0.7);' : undefined"
+				:hash="imageRef.blurhash"
+				:src="(defaultStore.state.dataSaver.media && hideRef) ? null : imageUrlRef"
+				:forceBlurhash="hideRef"
+				:cover="hideRef || props.cover"
+				:alt="imageRef.comment || imageRef.name"
+				:title="imageRef.comment || imageRef.name"
+				:width="imageRef.properties.width"
+				:height="imageRef.properties.height"
+				:style="hideRef ? 'filter: brightness(0.7);' : undefined"
 			/>
 		</component>
-		<template v-if="hide">
-			<div :class="['_noSelect', $style.hiddenText]">
-				<div :class="$style.hiddenTextWrapper">
-					<b v-if="reactiveImage.isSensitive" style="display: block;">
-						<i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.dataSaver.media ? ` (${i18n.ts.image}${reactiveImage.size ? ` ${bytes(reactiveImage.size)}` : ''})` : '' }}
-					</b>
-					<b v-else style="display: block;">
-						<i class="ti ti-photo"></i> {{ defaultStore.state.dataSaver.media && reactiveImage.size ? bytes(reactiveImage.size) : i18n.ts.image }}
-					</b>
-					<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+
+		<template v-if="hideRef">
+			<div :class="['_noSelect', $style.hideInfo]">
+				<div :class="$style.hideInfoItem">
+					<div v-if="imageRef.isSensitive" :class="$style.hideInfoTitle">
+						<i class="ti ti-eye-exclamation"></i> {{ i18n.ts._tms.sensitiveImage }}
+					</div>
+					<div v-else :class="$style.hideInfoTitle">
+						<i class="ti ti-photo"></i> {{ i18n.ts.image }}
+					</div>
+				</div>
+				<div v-if="defaultStore.state.dataSaver.media && imageRef.size" :class="$style.hideInfoItem">
+					<div :class="$style.hideInfoText">
+						<i class="ti ti-cloud-download"></i> {{ bytes(imageRef.size) }}
+					</div>
+				</div>
+				<div v-if="props.controls" :class="$style.hideInfoItem">
+					<div :class="$style.hideInfoText">
+						{{ i18n.ts.clickToShow }}
+					</div>
 				</div>
 			</div>
 		</template>
-		<template v-else-if="controls">
+
+		<template v-else-if="props.controls">
 			<div :class="$style.controlsUpperRight">
 				<button
 					:class="['_button', $style.controlItem]"
 					v-tooltip="i18n.ts.hide"
-					@click.stop="hide = true"
+					@click.stop="hideRef = true"
 				>
 					<div :class="$style.controlButton"><i class="ti ti-eye-off"></i></div>
 				</button>
 			</div>
+
 			<div :class="$style.controlsLowerRight">
 				<button
 					:class="['_button', $style.controlItem]"
 					v-tooltip="i18n.ts.menu"
-					@click.stop="showMenu"
+					@click.stop="showImageMenu"
 				>
 					<div :class="$style.controlButton"><i class="ti ti-dots"></i></div>
 				</button>
 			</div>
+
 			<div :class="$style.controlsLowerLeft">
+				<button
+					v-if="imageRef.comment"
+					v-tooltip:dialog="imageRef.comment"
+					:class="['_button', $style.controlItem]"
+				>
+					<div :class="$style.controlButton"><span>ALT</span></div>
+				</button>
 			</div>
+
 			<div :class="$style.controlsUpperLeft">
 				<button
-					v-if="['image/gif', 'image/apng'].includes(reactiveImage.type)"
+					v-if="['image/gif', 'image/apng'].includes(imageRef.type)"
 					v-tooltip:dialog="i18n.ts._tms.displayingGifFiles"
 					:class="['_button', $style.controlItem]"
 				>
 					<div :class="$style.controlButton"><span>GIF</span></div>
 				</button>
 				<button
-					v-if="reactiveImage.comment"
-					v-tooltip:dialog="reactiveImage.comment"
-					:class="['_button', $style.controlItem]"
-				>
-					<div :class="$style.controlButton"><span>ALT</span></div>
-				</button>
-				<button
-					v-if="reactiveImage.isSensitive"
+					v-if="imageRef.isSensitive"
 					v-tooltip:dialog="i18n.ts._tms.displayingSensitiveFiles"
 					:class="['_button', $style.controlItem]"
 				>
@@ -101,16 +116,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
-import { $i, iAmModerator } from '@/account.js';
+import { computed, inject } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
+import { popupMenu } from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { deepClone } from '@/scripts/clone.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
+import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
 import bytes from '@/filters/bytes.js';
-import { MenuItem } from '@/types/menu.js';
 import MkImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = withDefaults(defineProps<{
@@ -127,145 +141,65 @@ const props = withDefaults(defineProps<{
 
 const mock = inject<boolean>('mock', false);
 
-const reactiveImage = ref(deepClone(props.image));
+const {
+	reactiveDriveFile: imageRef,
+	reactiveHide: hideRef,
+	reactiveSensitive: sensitiveRef,
+	reactiveIAmOwner: iAmOwnerRef,
+} = useReactiveDriveFile(() => props.image);
 
-const hide = ref(true);
-const sensitive = ref(false);
-
-const iAmOwner = computed(() => {
-	if ($i == null) return false;
-	if (reactiveImage.value.userId == null) return false;
-	return $i.id === reactiveImage.value.userId;
-});
-
-const url = computed(() => {
-	return (
-		(props.raw || defaultStore.state.loadRawImages)
-			? reactiveImage.value.url
-			: defaultStore.state.disableShowingAnimatedImages
-				? getStaticImageUrl(reactiveImage.value.url)
-				: reactiveImage.value.thumbnailUrl
-	);
-});
-
-watch(() => props.image, () => {
-	reactiveImage.value = deepClone(props.image);
-}, {
-	deep: true,
-});
-
-watch(reactiveImage, () => {
-	if (defaultStore.state.nsfw === 'force' || defaultStore.state.dataSaver.media) {
-		hide.value = true;
-	} else if (defaultStore.state.nsfw === 'ignore') {
-		hide.value = false;
-	} else {
-		hide.value = reactiveImage.value.isSensitive;
+const imageUrlRef = computed(() => {
+	if (props.raw || defaultStore.state.loadRawImages) {
+		return imageRef.value.url;
 	}
-	if (defaultStore.state.highlightSensitiveMedia) {
-		sensitive.value = reactiveImage.value.isSensitive;
-	} else {
-		sensitive.value = false;
+	if (defaultStore.state.disableShowingAnimatedImages) {
+		return getStaticImageUrl(imageRef.value.url);
 	}
-}, {
-	deep: true,
-	immediate: true,
+	return imageRef.value.thumbnailUrl;
 });
 
 const reactiveColor = computed(() => {
-	return (
-		defaultStore.reactiveState.darkMode.value
-			? 'rgba(255, 255, 255, 0.02)'
-			: 'rgba(0, 0, 0, 0.02)'
-	);
+	if (defaultStore.reactiveState.darkMode.value) {
+		return 'rgba(255, 255, 255, 0.02)';
+	}
+	return 'rgba(0, 0, 0, 0.02)';
 });
 
-const onClick = (): void => {
-	if (!props.controls || !hide.value) return;
-	hide.value = false;
+const showImage = () => {
+	if (!props.controls || !hideRef.value) return;
+	hideRef.value = false;
 };
 
-const showMenu = (ev: MouseEvent): void => {
-	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
-};
-
-const getMenu = (): MenuItem[] => {
-	const menu: MenuItem[] = [];
-	menu.push({
-		text: i18n.ts.hide,
-		icon: 'ti ti-eye-off',
-		action: () => {
-			hide.value = true;
-		},
-	});
-	if (!mock && iAmOwner.value) {
-		menu.push({ type: 'divider' });
-		menu.push({
-			type: 'link',
-			to: `/my/drive/file/${reactiveImage.value.id}`,
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-		});
-	}
-	if (!mock && iAmModerator) {
-		menu.push({ type: 'divider' });
-		menu.push({
-			type: 'label',
-			text: i18n.ts.moderation,
-		});
-		menu.push({
-			type: 'link',
-			to: `/admin/file/${reactiveImage.value.id}`,
-			text: i18n.ts._fileViewer.title,
-			icon: 'ti ti-info-circle',
-		});
-		menu.push({
-			text: reactiveImage.value.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-			icon: reactiveImage.value.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
-			danger: true,
-			action: () => {
-				os.apiWithDialog('drive/files/update', {
-					fileId: reactiveImage.value.id,
-					isSensitive: !reactiveImage.value.isSensitive,
-				}).then(({ isSensitive }) => {
-					reactiveImage.value.isSensitive = isSensitive;
-				});
-			},
-		});
-	}
-	return menu;
+const showImageMenu = (ev: MouseEvent) => {
+	popupMenu(getMediaMenu({
+		reactiveDriveFile: imageRef,
+		reactiveHide: hideRef,
+		reactiveSensitive: sensitiveRef,
+		reactiveIAmOwner: iAmOwnerRef,
+		mock,
+		additionalMenu: [],
+	}), ev.currentTarget ?? ev.target);
 };
 </script>
 
 <style lang="scss" module>
-.cqRoot {
-	container: mkmediaimage / inline-size;
+.cq {
+	container: mediaImage / inline-size;
 }
 
 .root {
-	--scale: 1;
+	--mediaImage-scale: 1;
+	box-sizing: border-box;
 	position: relative;
 	width: 100%;
 	height: 100%;
-	min-height: calc(80px * var(--scale));
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+	border-radius: var(--mediaList-radius, 8px);
 }
 
-.sensitive {
-	&::after {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
-	}
-}
-
-.visible {
-	background: var(--bg);
+.rootVisible {
+	background-color: var(--bg);
 	background-image: linear-gradient(
 		45deg,
 		v-bind(reactiveColor) 16.67%,
@@ -279,14 +213,21 @@ const getMenu = (): MenuItem[] => {
 	background-size: 16px 16px;
 }
 
-.hiddenTextWrapper {
-	display: table-cell;
-	text-align: center;
-	font-size: 0.8em;
-	color: #fff;
+.rootSensitive {
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		border-radius: inherit;
+		box-shadow: inset 0 0 0 4px var(--warn);
+	}
 }
 
-.hiddenText {
+.hideInfo {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -294,9 +235,31 @@ const getMenu = (): MenuItem[] => {
 	height: 100%;
 	z-index: 1;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+
+	> .hideInfoItem {
+		max-width: 100%;
+	}
+}
+
+%HideInfoText {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-size: clamp(6px, calc(12px * var(--mediaImage-scale)), 12px);
+	color: #fff;
+}
+
+.hideInfoTitle {
+	@extend %HideInfoText;
+	font-weight: 700;
+}
+
+.hideInfoText {
+	@extend %HideInfoText;
 }
 
 .imageContainer {
@@ -321,17 +284,17 @@ const getMenu = (): MenuItem[] => {
 
 %ControlItem {
 	text-align: center;
-	font-size: clamp(6px, calc(12px * var(--scale)), 12px);
+	font-size: clamp(6px, calc(12px * var(--mediaImage-scale)), 12px);
 	padding:
-		clamp(3px, calc(6px * var(--scale)), 6px)
-		clamp(2px, calc(4px * var(--scale)), 4px);
+		clamp(3px, calc(6px * var(--mediaImage-scale)), 6px)
+		clamp(2px, calc(4px * var(--mediaImage-scale)), 4px);
 
 	&:first-child {
-		padding-left: clamp(4px, calc(8px * var(--scale)), 8px);
+		padding-left: clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
 	}
 
 	&:last-child {
-		padding-right: clamp(4px, calc(8px * var(--scale)), 8px);
+		padding-right: clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
 	}
 }
 
@@ -397,10 +360,10 @@ const getMenu = (): MenuItem[] => {
 
 .controlButton {
 	display: block;
-	border-radius: clamp(3px, calc(6px * var(--scale)), 6px);
+	border-radius: clamp(3px, calc(6px * var(--mediaImage-scale)), 6px);
 	padding:
-		clamp(3px, calc(6px * var(--scale)), 6px)
-		clamp(4px, calc(8px * var(--scale)), 8px);
+		clamp(3px, calc(6px * var(--mediaImage-scale)), 6px)
+		clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
 	background-color: rgba(0, 0, 0, 0.5);
 	color: #fff;
 	transition: background-color 0.1s ease;
@@ -410,15 +373,45 @@ const getMenu = (): MenuItem[] => {
 	}
 }
 
-@container mkmediaimage (max-width: 300px) {
+@container mediaImage (max-width: 250px) {
 	.root {
-		--scale: 0.85;
+		--mediaImage-scale: 0.90;
 	}
 }
 
-@container mkmediaimage (max-width: 250px) {
+@container mediaImage (max-width: 200px) {
 	.root {
-		--scale: 0.80;
+		--mediaImage-scale: 0.85;
+	}
+}
+
+@container mediaImage (max-width: 150px) {
+	.root {
+		--mediaImage-scale: 0.80;
+	}
+}
+
+@container mediaImage (max-width: 130px) {
+	.root {
+		--mediaImage-scale: 0.75;
+	}
+}
+
+@container mediaImage (max-width: 120px) {
+	.root {
+		--mediaImage-scale: 0.70;
+	}
+}
+
+@container mediaImage (max-width: 110px) {
+	.root {
+		--mediaImage-scale: 0.65;
+	}
+}
+
+@container mediaImage (max-width: 100px) {
+	.root {
+		--mediaImage-scale: 0.60;
 	}
 
 	.controlsLowerLeft {
@@ -426,23 +419,6 @@ const getMenu = (): MenuItem[] => {
 	}
 
 	.controlsUpperLeft {
-		display: none;
-	}
-}
-
-@container mkmediaimage (max-width: 200px) {
-	.root {
-		--scale: 0.75;
-	}
-}
-
-@container mkmediaimage (max-width: 150px) {
-	.root {
-		--scale: 0.70;
-		min-height: auto;
-	}
-
-	.controlsUpperRight {
 		display: none;
 	}
 }

@@ -5,16 +5,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- Media系専用のinput range -->
 <template>
-<div :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--scrollbarHandle);'">
+<div :style="props.sliderBgWhite ? '--sliderBg: rgba(255, 255, 255, 0.25);' : '--sliderBg: var(--scrollbarHandle);'">
 	<div :class="$style.controlsSeekbar">
-		<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">{{ Math.round(buffer * 100) }}% buffered</progress>
-		<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any" @change="emit('dragEnded', modelValue)"/>
+		<progress
+			:class="$style.buffer"
+			:value="bufferRef"
+			min="0"
+			max="1"
+		>
+			{{ Math.round(bufferRef * 100) }}% buffered
+		</progress>
+		<input
+			v-model="rangeModel"
+			:class="$style.seek"
+			:style="{
+				'--value': `${rangeRef * 100}%`,
+			}"
+			type="range"
+			min="0"
+			max="1"
+			step="any"
+			@change="emit('dragEnded', rangeRef)"
+		/>
 	</div>
 </div>
 </template>
 
-<script setup lang="ts">
-import { computed, ModelRef } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 
 const props = withDefaults(defineProps<{
 	buffer?: number;
@@ -25,14 +43,22 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'dragEnded', value: number): void;
+	dragEnded: [value: number];
 }>();
 
-// eslint-disable-next-line no-undef
-const model = defineModel({ required: true }) as ModelRef<string | number>;
-const modelValue = computed({
-	get: () => typeof model.value === 'number' ? model.value : parseFloat(model.value),
-	set: v => { model.value = v; },
+const bufferRef = computed(() => props.buffer || 0);
+
+const rangeModel = defineModel<string | number>({ required: true });
+const rangeRef = computed({
+	get: () => {
+		if (typeof rangeModel.value !== 'number') {
+			return parseFloat(rangeModel.value) || 0;
+		}
+		return rangeModel.value || 0;
+	},
+	set: v => {
+		rangeModel.value = v;
+	},
 });
 </script>
 
@@ -54,16 +80,16 @@ const modelValue = computed({
 	margin: 0;
 	min-width: 0;
 	padding: 0;
-	transition: box-shadow .3s ease;
+	transition: box-shadow 0.3s ease;
 	width: 100%;
 
 	&::-webkit-slider-runnable-track {
 		background-color: var(--sliderBg);
-		background-image: linear-gradient(to right,currentColor var(--value,0),transparent var(--value,0));
+		background-image: linear-gradient(to right, currentColor var(--value, 0), transparent var(--value, 0));
 		border: 0;
 		border-radius: 99rem;
 		height: 5px;
-		transition: box-shadow .3s ease;
+		transition: box-shadow 0.3s ease;
 		user-select: none;
 	}
 
@@ -72,7 +98,7 @@ const modelValue = computed({
 		border: 0;
 		border-radius: 99rem;
 		height: 5px;
-		transition: box-shadow .3s ease;
+		transition: box-shadow 0.3s ease;
 		user-select: none;
 		background-color: var(--sliderBg);
 	}
@@ -83,15 +109,15 @@ const modelValue = computed({
 		background: #fff;
 		border: 0;
 		border-radius: 100%;
-		box-shadow: 0 1px 1px rgba(35, 40, 47, .15),0 0 0 1px rgba(35, 40, 47, .2);
+		box-shadow: 0 1px 1px rgba(35, 40, 47, 0.15), 0 0 0 1px rgba(35, 40, 47, 0.2);
 		height: 13px;
 		margin-top: -4px;
 		position: relative;
-		transition: all .2s ease;
+		transition: all 0.2s ease;
 		width: 13px;
 
 		&:active {
-			box-shadow: 0 1px 1px rgba(35, 40, 47, .15), 0 0 0 1px rgba(35, 40, 47, .15), 0 0 0 3px rgba(255, 255, 255, .5);
+			box-shadow: 0 1px 1px rgba(35, 40, 47, 0.15), 0 0 0 1px rgba(35, 40, 47, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.5);
 		}
 	}
 
@@ -99,14 +125,14 @@ const modelValue = computed({
 		background: #fff;
 		border: 0;
 		border-radius: 100%;
-		box-shadow: 0 1px 1px rgba(35, 40, 47, .15),0 0 0 1px rgba(35, 40, 47, .2);
+		box-shadow: 0 1px 1px rgba(35, 40, 47, 0.15), 0 0 0 1px rgba(35, 40, 47, 0.2);
 		height: 13px;
 		position: relative;
-		transition: all .2s ease;
+		transition: all 0.2s ease;
 		width: 13px;
 
 		&:active {
-			box-shadow: 0 1px 1px rgba(35, 40, 47, .15), 0 0 0 1px rgba(35, 40, 47, .15), 0 0 0 3px rgba(255, 255, 255, .5);
+			box-shadow: 0 1px 1px rgba(35, 40, 47, 0.15), 0 0 0 1px rgba(35, 40, 47, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.5);
 		}
 	}
 
@@ -139,14 +165,14 @@ const modelValue = computed({
 		background: currentColor;
 		border-radius: 100px;
 		min-width: 5px;
-		transition: width .2s ease;
+		transition: width 0.2s ease;
 	}
 
 	&::-moz-progress-bar {
 		background: currentColor;
 		border-radius: 100px;
 		min-width: 5px;
-		transition: width .2s ease;
+		transition: width 0.2s ease;
 	}
 }
 </style>

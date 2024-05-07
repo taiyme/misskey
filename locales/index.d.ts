@@ -9938,6 +9938,22 @@ export interface Locale extends ILocale {
          */
         readonly "reportIssuesToGithub": string;
         /**
+         * センシティブな画像
+         */
+        readonly "sensitiveImage": string;
+        /**
+         * センシティブな動画
+         */
+        readonly "sensitiveVideo": string;
+        /**
+         * センシティブな音声
+         */
+        readonly "sensitiveAudio": string;
+        /**
+         * センシティブなファイル
+         */
+        readonly "sensitiveFile": string;
+        /**
          * GIFファイルを表示しています。
          */
         readonly "displayingGifFiles": string;
