@@ -12,17 +12,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:[attr]="self ? props.url.substring(local.length) : props.url"
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
+	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
 >
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
 		<span :class="$style.hostname">{{ hostname }}</span>
-		<span v-if="port != ''">:{{ port }}</span>
+		<span v-if="port !== ''">:{{ port }}</span>
 	</template>
 	<template v-if="pathname === '/' && self">
 		<span :class="$style.self">{{ hostname }}</span>
 	</template>
-	<span v-if="pathname != ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
+	<span v-if="pathname !== ''" :class="$style.pathname">{{ self ? pathname.substring(1) : pathname }}</span>
 	<span :class="$style.query">{{ query }}</span>
 	<span :class="$style.hash">{{ hash }}</span>
 	<i v-if="target === '_blank'" :class="$style.icon" class="ti ti-external-link"></i>
@@ -33,16 +34,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, shallowRef } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
 import { url as local } from '@/config.js';
-import * as os from '@/os.js';
+import { popup } from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import MkA from '@/components/global/MkA.vue';
+import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: string;
 	showUrlPreview?: boolean;
+	navigationBehavior?: MkABehavior;
 }>(), {
 	showUrlPreview: true,
 });
@@ -58,15 +60,15 @@ const anchorElement = computed(() => {
 	return rootEl.value.getAnchorElement();
 });
 
-if (props.showUrlPreview && isEnabledUrlPreview.value) {
-	useTooltip(anchorElement, (showing) => {
-		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+useTooltip(anchorElement, (showing) => {
+	if (props.showUrlPreview && isEnabledUrlPreview.value && anchorElement.value != null) {
+		popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
 			source: anchorElement.value,
 		}, {}, 'closed');
-	});
-}
+	}
+});
 
 const schema = url.protocol;
 const hostname = decodePunycode(url.hostname);

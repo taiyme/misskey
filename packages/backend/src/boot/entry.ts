@@ -18,7 +18,7 @@ import { workerMain } from './worker.js';
 
 import 'reflect-metadata';
 
-process.title = `Misskey (${cluster.isPrimary ? 'master' : 'worker'})`;
+process.title = `taiyme (${cluster.isPrimary ? 'master' : 'worker'})`;
 
 Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;

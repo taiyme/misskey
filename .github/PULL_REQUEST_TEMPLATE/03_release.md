@@ -1,11 +1,7 @@
 ## Summary
 This is a release PR.
 
-For more information on the release instructions, please see:
-https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md#release
-
 ## For reviewers
-- CHANGELOGに抜け漏れは無いか
 - バージョンの上げ方は適切か
 - 他にこのリリースに含めなければならない変更は無いか
 - 全体的な変更内容を俯瞰し問題は無いか
@@ -16,5 +12,4 @@ https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md#release
 
 ## Checklist
 - [ ] package.jsonのバージョンが正しく更新されている
-- [ ] CHANGELOGが過不足無く更新されている
 - [ ] CIが全て通っている

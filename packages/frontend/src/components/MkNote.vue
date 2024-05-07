@@ -17,7 +17,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenoted" :class="$style.renote">
-		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
@@ -48,19 +47,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
-		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
+			<TmsInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" :channel="appearNote.channel" :position="tmsStore.state.tickerPosition"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+					<Mfm v-if="appearNote.cw !== ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5;">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm
 							v-if="appearNote.text"
@@ -175,7 +173,7 @@ import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
-import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import TmsInstanceTicker from '@/components/TmsInstanceTicker.vue';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
@@ -265,7 +263,7 @@ const muted = ref(checkMute(appearNote.value, $i?.mutedWords));
 const hardMuted = ref(props.withHardMute && checkMute(appearNote.value, $i?.hardMutedWords, true));
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance);
+const showTicker = computed(() => (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance != null) || (appearNote.value.channel != null));
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
 const canPakuru = computed(() => tmsStore.reactiveState.enablePakuru.value || tmsStore.reactiveState.enableNumberquote.value);
 const renoteCollapsed = ref(
@@ -369,7 +367,7 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
@@ -681,10 +679,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 	& + .article {
 		padding-top: 8px;
 	}
-
-	> .colorBar {
-		height: calc(100% - 6px);
-	}
 }
 
 .renoteAvatar {
@@ -760,16 +754,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 	padding: 28px 32px;
 }
 
-.colorBar {
-	position: absolute;
-	top: 8px;
-	left: 8px;
-	width: 5px;
-	height: calc(100% - 16px);
-	border-radius: 999px;
-	pointer-events: none;
-}
-
 .avatar {
 	flex-shrink: 0;
 	display: block !important;
@@ -812,6 +796,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 .contentCollapsed {
 	position: relative;
+	min-height: 64px; // .collapsed
 	max-height: 9em;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
@@ -824,7 +809,7 @@ function emitUpdReaction(emoji: string, delta: number) {
 	left: 0;
 	z-index: 2;
 	width: 100%;
-	height: 64px;
+	height: 64px; // .contentCollapsed
 	background: linear-gradient(0deg, var(--panel), var(--X15));
 
 	&:hover > .collapsedLabel {
@@ -998,13 +983,6 @@ function emitUpdReaction(emoji: string, delta: number) {
 				margin-right: 12px;
 			}
 		}
-	}
-
-	.colorBar {
-		top: 6px;
-		left: 6px;
-		width: 4px;
-		height: calc(100% - 12px);
 	}
 }
 

@@ -38,15 +38,15 @@ function greet() {
 		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' taiyme is an OSS forked from Misskey.');
+		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please donate to support development. https://www.patreon.com/taiy'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info('Welcome to taiyme!');
+	bootLogger.info(`taiyme v${meta.version}`, null, true);
 }
 
 /**
@@ -69,7 +69,7 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	bootLogger.succ('Misskey initialized');
+	bootLogger.succ('taiyme initialized');
 
 	if (envOption.disableClustering) {
 		if (envOption.onlyServer) {

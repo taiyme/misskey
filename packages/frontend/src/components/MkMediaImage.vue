@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
@@ -124,6 +124,8 @@ const props = withDefaults(defineProps<{
 	disableImageLink: false,
 	controls: true,
 });
+
+const mock = inject<boolean>('mock', false);
 
 const reactiveImage = ref(deepClone(props.image));
 
@@ -196,7 +198,7 @@ const getMenu = (): MenuItem[] => {
 			hide.value = true;
 		},
 	});
-	if (iAmOwner.value) {
+	if (!mock && iAmOwner.value) {
 		menu.push({ type: 'divider' });
 		menu.push({
 			type: 'link',
@@ -205,7 +207,7 @@ const getMenu = (): MenuItem[] => {
 			icon: 'ti ti-info-circle',
 		});
 	}
-	if (iAmModerator) {
+	if (!mock && iAmModerator) {
 		menu.push({ type: 'divider' });
 		menu.push({
 			type: 'label',

@@ -207,6 +207,7 @@ onUnmounted(() => {
 
 	&.omitted {
 		position: relative;
+		min-height: 64px; // .fade
 		max-height: var(--maxHeight);
 		overflow: hidden;
 
@@ -217,7 +218,7 @@ onUnmounted(() => {
 			bottom: 0;
 			left: 0;
 			width: 100%;
-			height: 64px;
+			height: 64px; // .omitted
 			background: linear-gradient(0deg, var(--panel), var(--X15));
 
 			> .fadeLabel {
