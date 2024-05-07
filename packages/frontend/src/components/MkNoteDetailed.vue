@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="$style.root"
 >
 	<div v-if="appearNote.reply && appearNote.reply.replyId">
-		<div v-if="!conversationLoaded" style="padding: 16px">
+		<div v-if="!conversationLoaded" style="padding: 16px;">
 			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ i18n.ts.loadConversation }}</MkButton>
 		</div>
 		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
@@ -41,6 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
 	<article :class="$style.note" @contextmenu.stop="onContextmenu">
@@ -68,11 +69,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</header>
 		<div :class="$style.noteContent">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<Mfm v-if="appearNote.cw !== ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 				<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll"/>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
-				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+				<span v-if="appearNote.isHidden" style="opacity: 0.5;">({{ i18n.ts.private }})</span>
 				<MkA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 				<Mfm
 					v-if="appearNote.text"
@@ -148,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div>
 		<div v-if="tab === 'replies'">
-			<div v-if="!repliesLoaded" style="padding: 16px">
+			<div v-if="!repliesLoaded" style="padding: 16px;">
 				<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
 			</div>
 			<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
@@ -195,7 +196,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, shallowRef } from 'vue';
+import { computed, inject, onMounted, provide, ref, shallowRef, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -377,7 +378,7 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
@@ -515,6 +516,12 @@ function loadReplies() {
 		replies.value = res;
 	});
 }
+
+watch(tab, () => {
+	if (tab.value === 'replies' && !repliesLoaded.value) {
+		loadReplies();
+	}
+}, { immediate: true });
 
 const conversationLoaded = ref(false);
 

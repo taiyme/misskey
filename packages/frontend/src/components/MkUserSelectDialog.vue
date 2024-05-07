@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 			</FormSplit>
 		</div>
-		<div v-if="username != '' || host != ''" :class="[$style.result, { [$style.hit]: users.length > 0 }]">
+		<div v-if="username !== '' || host !== ''" :class="[$style.result, { [$style.hit]: users.length > 0 }]">
 			<div v-if="users.length > 0" :class="$style.users">
 				<div v-for="user in users" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span>{{ i18n.ts.noUsers }}</span>
 			</div>
 		</div>
-		<div v-if="username == '' && host == ''" :class="$style.recent">
+		<div v-if="username === '' && host === ''" :class="$style.recent">
 			<div :class="$style.users">
 				<div v-for="user in recentUsers" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>

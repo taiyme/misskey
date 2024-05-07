@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.formContainer">
 		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
 			<div :class="$style.title">
-				<div>Welcome to Misskey!</div>
+				<div>Welcome to taiyme!</div>
 				<div :class="$style.version">v{{ version }}</div>
 			</div>
 			<div class="_gaps_m" style="padding: 32px;">
@@ -74,8 +74,8 @@ function submit() {
 	min-height: 100svh;
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
-display: grid;
-place-content: center;
+	display: grid;
+	place-content: center;
 }
 
 .form {

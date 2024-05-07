@@ -53,12 +53,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<TmsInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" :channel="appearNote.channel" :position="tmsStore.state.tickerPosition"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+					<Mfm v-if="appearNote.cw !== ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="appearNote.text" :renote="appearNote.renote" :files="appearNote.files" :poll="appearNote.poll" style="margin: 4px 0;"/>
 				</p>
 				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
-						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
+						<span v-if="appearNote.isHidden" style="opacity: 0.5;">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 						<Mfm
 							v-if="appearNote.text"
@@ -367,7 +367,7 @@ function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
+	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});

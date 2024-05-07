@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
 				<p v-if="note.cw != null" :class="$style.cw">
-					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
+					<Mfm v-if="note.cw !== ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="note.text" :renote="note.renote" :files="note.files" :poll="note.poll"/>
 				</p>
 				<div v-show="note.cw == null || showContent">
@@ -106,9 +106,9 @@ if (props.detail) {
 .avatar {
 	flex-shrink: 0;
 	display: block;
-	margin: 0 8px 0 0;
-	width: 38px;
-	height: 38px;
+	margin: 0 10px 0 0;
+	width: 48px;
+	height: 48px;
 	border-radius: 8px;
 }
 
@@ -143,13 +143,53 @@ if (props.detail) {
 	padding: 10px 0 0 16px;
 }
 
-@container (max-width: 450px) {
+@container (max-width: 580px) {
+	.root {
+		padding: 16px 26px;
+
+		&.children {
+			padding: 10px 0 0 14px;
+		}
+	}
+
+	.avatar {
+		width: 40px;
+		height: 40px;
+	}
+}
+
+@container (max-width: 500px) {
+	.root {
+		padding: 16px 22px;
+
+		&.children {
+			padding: 10px 0 0 12px;
+		}
+	}
+}
+
+@container (max-width: 480px) {
 	.root {
 		padding: 14px 16px;
 
 		&.children {
-			padding: 10px 0 0 8px;
+			padding: 8px 0 0 8px;
 		}
+	}
+}
+
+@container (max-width: 450px) {
+	.avatar {
+		margin: 0 8px 0 0;
+		width: 36px;
+		height: 36px;
+	}
+}
+
+@container (max-width: 300px) {
+	.avatar {
+		width: 34px;
+		height: 34px;
 	}
 }
 

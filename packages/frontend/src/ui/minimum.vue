@@ -19,6 +19,9 @@ import XCommon from './_common_/common.vue';
 import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { instanceName } from '@/config.js';
 import { mainRouter } from '@/router/main.js';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
+
+provideUi('minimum');
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
