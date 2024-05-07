@@ -211,7 +211,7 @@ export class ApNoteService {
 		const files: MiDriveFile[] = [];
 
 		for (const attach of toArray(note.attachment)) {
-			attach.sensitive ??= note.sensitive;
+			attach.sensitive ||= note.sensitive;	// Noteがsensitiveなら添付もsensitiveにする
 			const file = await this.apImageService.resolveImage(actor, attach);
 			if (file) files.push(file);
 		}

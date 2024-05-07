@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
 	:title="url"
-	:behavior="navigationBehavior"
+	:behavior="behavior"
 >
 	<slot></slot>
 	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
@@ -31,7 +31,7 @@ import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
-	navigationBehavior?: MkABehavior;
+	behavior?: MkABehavior;
 }>(), {
 });
 

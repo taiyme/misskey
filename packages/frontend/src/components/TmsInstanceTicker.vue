@@ -28,8 +28,7 @@ import { type tmsStore } from '@/tms/store.js';
 export type TickerProps = {
 	readonly instance?: {
 		readonly name?: string | null;
-		// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
-		// readonly iconUrl?: string | null;
+		readonly iconUrl?: string | null;
 		readonly faviconUrl?: string | null;
 		readonly themeColor?: string | null;
 	} | null;

@@ -38,8 +38,7 @@
 - Enhance: フォローするかどうかの確認ダイアログを出せるように
 - Enhance: Playを手動でリロードできるように
 - Enhance: 通報のコメント内のリンクをクリックした際、ウィンドウで開くように
-- Enhance: `Ui:C:postForm` および `Ui:C:postFormButton` に `localOnly` と `visibility` を設定できるように
-- Enhance: AiScriptを0.18.0にバージョンアップ
+- Chore: AiScriptを0.18.0にバージョンアップ
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: 周年の実績が閏年を考慮しない問題を修正
 - Fix: ローカルURLのプレビューポップアップが左上に表示される
@@ -58,7 +57,6 @@
 - Fix: ページのOGP URLが間違っているのを修正
 - Fix: リバーシの対局を正しく共有できないことがある問題を修正
 - Fix: 通知をグループ化している際に、人数が正常に表示されないことがある問題を修正
-- Fix: 連合なしの状態の読み書きができない問題を修正
 
 ### Server
 - Enhance: エンドポイント`antennas/update`の必須項目を`antennaId`のみに
