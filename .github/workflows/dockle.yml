@@ -4,8 +4,7 @@ name: Dockle
 on:
   push:
     branches:
-      - master
-      - develop
+      - taiyme
   pull_request:
 
 jobs:

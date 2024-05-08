@@ -9,6 +9,9 @@
 		},
 		"ghcr.io/devcontainers/features/node:1": {
 			"version": "20.12.2"
+		},
+		"docker-from-docker": {
+			"version": "latest"
 		}
 	},
 	"forwardPorts": [3000],
@@ -21,7 +24,8 @@
 				"Vue.volar",
 				"Orta.vscode-jest",
 				"dbaeumer.vscode-eslint",
-				"mrmlnc.vscode-json5"
+				"mrmlnc.vscode-json5",
+				"github.vscode-github-actions"
 			]
 		}
 	}

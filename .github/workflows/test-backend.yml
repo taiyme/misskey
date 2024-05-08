@@ -3,8 +3,7 @@ name: Test (backend)
 on:
   push:
     branches:
-      - master
-      - develop
+      - taiyme
     paths:
       - packages/backend/**
       # for permissions
@@ -21,7 +20,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.12.2]
+        node-version:
+          - 20.12.2
 
     services:
       postgres:
@@ -73,7 +73,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.12.2]
+        node-version:
+          - 20.12.2
 
     services:
       postgres:

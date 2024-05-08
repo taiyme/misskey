@@ -3,6 +3,7 @@ version: "3"
 services:
   web:
     build: .
+    image: ghcr.io/taiyme/misskey:dummy
     restart: always
     links:
       - db
