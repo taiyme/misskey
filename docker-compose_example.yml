@@ -2,8 +2,8 @@ version: "3"
 
 services:
   web:
-    # build: .
-    image: ghcr.io/taiyme/misskey:12.119.2-taiyme-v1.2.0
+    build: .
+    image: ghcr.io/taiyme/misskey:dummy
     restart: always
     links:
       - db
