@@ -3,7 +3,6 @@ name: Test (backend)
 on:
   push:
     branches:
-      - master
       - taiyme
     paths:
       - packages/backend/**

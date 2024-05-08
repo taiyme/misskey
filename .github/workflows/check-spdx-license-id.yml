@@ -3,7 +3,6 @@ name: Check SPDX-License-Identifier
 on:
   push:
     branches:
-      - master
       - taiyme
   pull_request:
 

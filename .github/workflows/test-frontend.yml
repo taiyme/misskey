@@ -3,7 +3,6 @@ name: Test (frontend)
 on:
   push:
     branches:
-      - master
       - taiyme
     paths:
       - packages/frontend/**
