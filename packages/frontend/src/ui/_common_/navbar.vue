@@ -7,10 +7,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
 	<div :class="$style.body">
 		<div :class="$style.top">
-			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
-			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
-			</button>
+			<div :class="$style.serverLogo">
+				<TmsServerLogo :iconOnly="iconOnly"/>
+			</div>
 		</div>
 		<div :class="$style.middle">
 			<MkA v-tooltip.noDelay.right="i18n.ts.timeline" :class="$style.item" :activeClass="$style.active" to="/" exact>
@@ -61,13 +60,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import TmsServerLogo from '@/components/TmsServerLogo.vue';
 
 const iconOnly = ref(false);
 
@@ -143,35 +141,13 @@ function more(ev: MouseEvent) {
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		padding: 20px 0;
 		background: var(--X14);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
 
-	.banner {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-size: cover;
-		background-position: center center;
-		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-	}
-
-	.instance {
-		position: relative;
-		display: block;
-		text-align: center;
-		width: 100%;
-	}
-
-	.instanceIcon {
-		display: inline-block;
-		width: 38px;
-		aspect-ratio: 1;
+	.serverLogo {
+		--tmsServerLogo-padding: 20px 17px;
 	}
 
 	.bottom {
@@ -343,22 +319,13 @@ function more(ev: MouseEvent) {
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		padding: 20px 0;
 		background: var(--X14);
 		-webkit-backdrop-filter: var(--blur, blur(8px));
 		backdrop-filter: var(--blur, blur(8px));
 	}
 
-	.instance {
-		display: block;
-		text-align: center;
-		width: 100%;
-	}
-
-	.instanceIcon {
-		display: inline-block;
-		width: 30px;
-		aspect-ratio: 1;
+	.serverLogo {
+		--tmsServerLogo-padding: 20px 0px;
 	}
 
 	.bottom {

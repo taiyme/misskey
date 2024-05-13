@@ -9,11 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkHorizontalSwipe v-model:tab="tab" :tabs="headerTabs">
 		<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 			<div class="_gaps_m">
-				<TmsServerBanner
-					:serverName="instance.name ?? host"
-					:iconUrl="instance.iconUrl ?? (instance as any).faviconUrl ?? '/favicon.ico'"
-					:bannerUrl="instance.bannerUrl"
-				/>
+				<TmsServerBanner/>
 
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.description }}</template>
