@@ -38,7 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:title="mediaRef.name"
 				:download="mediaRef.name"
 			>
-				<div :class="$style.downloadIcon"><i class="ti ti-download"></i></div>
+				<div
+					:class="{
+						[$style.downloadIcon]: true,
+						[$style.hasSize]: mediaRef.size,
+					}"
+				>
+					<i class="ti ti-download" style="font-size: 1.6em;"></i>
+					<span v-if="mediaRef.size" style="font-size: 0.7em;">{{ bytes(mediaRef.size) }}</span>
+				</div>
 				<div :class="$style.downloadText">{{ mediaRef.name }}</div>
 			</a>
 			<button :class="['_button', $style.downloadMenu]" @click.stop="showMediaMenu">
@@ -54,6 +62,7 @@ import { inject } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { popupMenu } from '@/os.js';
+import bytes from '@/filters/bytes.js';
 import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
 import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
 
@@ -170,6 +179,8 @@ const showMediaMenu = (ev: MouseEvent) => {
 	align-items: center;
 	gap: 8px;
 	padding: 10px;
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
 
 	&:hover {
 		text-decoration: none;
@@ -179,7 +190,13 @@ const showMediaMenu = (ev: MouseEvent) => {
 }
 
 .downloadIcon {
-	font-size: 1.6em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	&.hasSize {
+		margin: -5px 0;
+	}
 }
 
 .downloadText {
