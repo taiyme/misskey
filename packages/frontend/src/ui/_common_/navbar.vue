@@ -50,9 +50,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="os.post">
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
-			<button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
-				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
-			</button>
+			<div :class="$style.accountButton">
+				<TmsAccountButton :iconOnly="iconOnly"/>
+			</div>
 		</div>
 	</div>
 </div>
@@ -62,9 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import TmsAccountButton from '@/components/TmsAccountButton.vue';
 import TmsServerLogo from '@/components/TmsServerLogo.vue';
 
 const iconOnly = ref(false);
@@ -89,12 +90,6 @@ window.addEventListener('resize', calcViewState);
 watch(defaultStore.reactiveState.menuDisplay, () => {
 	calcViewState();
 });
-
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
-		withExtraOperation: true,
-	}, ev);
-}
 
 function more(ev: MouseEvent) {
 	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
@@ -201,31 +196,8 @@ function more(ev: MouseEvent) {
 		position: relative;
 	}
 
-	.account {
-		position: relative;
-		display: flex;
-		align-items: center;
-		padding: 20px 0 20px 30px;
-		width: 100%;
-		text-align: left;
-		box-sizing: border-box;
-		overflow: hidden; // fallback (overflow: clip)
-		overflow: clip;
-	}
-
-	.avatar {
-		display: block;
-		flex-shrink: 0;
-		position: relative;
-		width: 32px;
-		aspect-ratio: 1;
-		margin-right: 8px;
-	}
-
-	.acct {
-		display: block;
-		flex-shrink: 1;
-		padding-right: 8px;
+	.accountButton {
+		--tmsAccountButton-padding: 20px 17px;
 	}
 
 	.middle {
@@ -375,23 +347,8 @@ function more(ev: MouseEvent) {
 		display: none;
 	}
 
-	.account {
-		display: block;
-		text-align: center;
-		padding: 20px 0;
-		width: 100%;
-		overflow: hidden; // fallback (overflow: clip)
-		overflow: clip;
-	}
-
-	.avatar {
-		display: inline-block;
-		width: 38px;
-		aspect-ratio: 1;
-	}
-
-	.acct {
-		display: none;
+	.accountButton {
+		--tmsAccountButton-padding: 20px 0px;
 	}
 
 	.middle {

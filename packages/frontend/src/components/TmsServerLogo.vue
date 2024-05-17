@@ -12,13 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<img
 		v-if="props.iconOnly"
-		:class="$style.iconOnly"
+		:class="['_ghost', $style.iconOnly]"
 		:src="serverRef.iconUrl"
 		:alt="serverRef.name"
 	/>
 	<div
 		v-else
-		:class="[$style.banner, { [$style.onOverlay]: serverRef.bannerUrl != null }]"
+		:class="['_ghost', $style.banner, { [$style.onOverlay]: serverRef.bannerUrl != null }]"
 		:style="{ backgroundImage: serverRef.bannerUrl != null ? `url(${ serverRef.bannerUrl })` : undefined }"
 	>
 		<div :class="$style.bannerInner">
@@ -119,7 +119,7 @@ const serverRef = computed(() => {
 }
 
 .mark {
-	display: block;
+	display: flex;
 	margin: 0 6px 0 auto;
 	color: var(--fg);
 }
