@@ -10,7 +10,7 @@ import {
 	generateRegistrationOptions, verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
-import { AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
+import { AttestationFormat, isoCBOR } from '@simplewebauthn/server/helpers';
 import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeysRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -49,7 +49,7 @@ export class WebAuthnService {
 		const instance = await this.metaService.fetch();
 		return {
 			origin: this.config.url,
-			rpId: this.config.hostname,
+			rpId: this.config.host,
 			rpName: instance.name ?? this.config.host,
 			rpIcon: instance.iconUrl ?? undefined,
 		};
@@ -65,12 +65,13 @@ export class WebAuthnService {
 		const registrationOptions = await generateRegistrationOptions({
 			rpName: relyingParty.rpName,
 			rpID: relyingParty.rpId,
-			userID: isoUint8Array.fromUTF8String(userId),
+			userID: userId,
 			userName: userName,
 			userDisplayName: userDisplayName,
 			attestationType: 'indirect',
-			excludeCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
-				id: key.id,
+			excludeCredentials: keys.map(key => (<PublicKeyCredentialDescriptorFuture>{
+				id: Buffer.from(key.id, 'base64url'),
+				type: 'public-key',
 				transports: key.transports ?? undefined,
 			})),
 			authenticatorSelection: {
@@ -86,7 +87,7 @@ export class WebAuthnService {
 
 	@bindThis
 	public async verifyRegistration(userId: MiUser['id'], response: RegistrationResponseJSON): Promise<{
-		credentialID: string;
+		credentialID: Uint8Array;
 		credentialPublicKey: Uint8Array;
 		attestationObject: Uint8Array;
 		fmt: AttestationFormat;
@@ -143,7 +144,6 @@ export class WebAuthnService {
 
 	@bindThis
 	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
-		const relyingParty = await this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -153,9 +153,9 @@ export class WebAuthnService {
 		}
 
 		const authenticationOptions = await generateAuthenticationOptions({
-			rpID: relyingParty.rpId,
-			allowCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
-				id: key.id,
+			allowCredentials: keys.map(key => (<PublicKeyCredentialDescriptorFuture>{
+				id: Buffer.from(key.id, 'base64url'),
+				type: 'public-key',
 				transports: key.transports ?? undefined,
 			})),
 			userVerification: 'preferred',
@@ -219,7 +219,7 @@ export class WebAuthnService {
 				expectedOrigin: relyingParty.origin,
 				expectedRPID: relyingParty.rpId,
 				authenticator: {
-					credentialID: key.id,
+					credentialID: Buffer.from(key.id, 'base64url'),
 					credentialPublicKey: Buffer.from(key.publicKey, 'base64url'),
 					counter: key.counter,
 					transports: key.transports ? key.transports as AuthenticatorTransportFuture[] : undefined,

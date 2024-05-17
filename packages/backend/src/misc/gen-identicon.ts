@@ -8,8 +8,9 @@
  * https://en.wikipedia.org/wiki/Identicon
  */
 
-import { createCanvas } from '@napi-rs/canvas';
+import * as p from 'pureimage';
 import gen from 'random-seed';
+import type { WriteStream } from 'node:fs';
 
 const size = 128; // px
 const n = 5; // resolution
@@ -44,9 +45,9 @@ const sideN = Math.floor(n / 2);
 /**
  * Generate buffer of an identicon by seed
  */
-export async function genIdenticon(seed: string): Promise<Buffer> {
+export function genIdenticon(seed: string, stream: WriteStream): Promise<void> {
 	const rand = gen.create(seed);
-	const canvas = createCanvas(size, size);
+	const canvas = p.make(size, size, undefined);
 	const ctx = canvas.getContext('2d');
 
 	const bgColors = colors[rand(colors.length)];
@@ -100,5 +101,5 @@ export async function genIdenticon(seed: string): Promise<Buffer> {
 		}
 	}
 
-	return await canvas.encode('png');
+	return p.encodePNGToStream(canvas, stream);
 }
