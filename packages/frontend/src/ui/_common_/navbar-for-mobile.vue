@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="$style.post" data-cy-open-post-form @click="os.post">
 			<i :class="$style.postIcon" class="ti ti-pencil ti-fw"></i><span style="position: relative;">{{ i18n.ts.note }}</span>
 		</button>
-		<button class="_button" :class="$style.account" @click="openAccountMenu">
-			<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct :class="$style.acct" class="_nowrap" :user="$i"/>
-		</button>
+		<div :class="$style.accountButton">
+			<TmsAccountButton/>
+		</div>
 	</div>
 </div>
 </template>
@@ -51,9 +51,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, toRef } from 'vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
+import TmsAccountButton from '@/components/TmsAccountButton.vue';
 import TmsServerLogo from '@/components/TmsServerLogo.vue';
 
 const menu = toRef(defaultStore.state, 'menu');
@@ -64,12 +65,6 @@ const otherMenuItemIndicated = computed(() => {
 	}
 	return false;
 });
-
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
-		withExtraOperation: true,
-	}, ev);
-}
 
 function more() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {
@@ -143,30 +138,8 @@ function more() {
 	width: 32px;
 }
 
-.account {
-	position: relative;
-	display: flex;
-	align-items: center;
-	padding-left: 30px;
-	width: 100%;
-	text-align: left;
-	box-sizing: border-box;
-	margin-top: 16px;
-}
-
-.avatar {
-	display: block;
-	flex-shrink: 0;
-	position: relative;
-	width: 32px;
-	aspect-ratio: 1;
-	margin-right: 8px;
-}
-
-.acct {
-	display: block;
-	flex-shrink: 1;
-	padding-right: 8px;
+.accountButton {
+	--tmsAccountButton-padding: 20px 12px;
 }
 
 .middle {
