@@ -22,7 +22,7 @@ export type MkABehavior = 'window' | 'browser' | null;
 <script lang="ts" setup>
 import { computed, inject, shallowRef } from 'vue';
 import * as os from '@/os.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { useRouter } from '@/router/supplier.js';
@@ -86,7 +86,7 @@ function onContextmenu(ev) {
 		icon: 'ti ti-link',
 		text: i18n.ts.copyLink,
 		action: () => {
-			copyToClipboard(`${url}${props.to}`);
+			copyText(`${url}${props.to}`);
 		},
 	}], ev);
 }

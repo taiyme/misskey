@@ -210,7 +210,7 @@ import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -847,7 +847,7 @@ function exportLog() {
 		d: new Date().toISOString(),
 		l: DropAndFusionGame.serializeLogs(logs),
 	});
-	copyToClipboard(data);
+	copyText(data);
 	os.success();
 }
 

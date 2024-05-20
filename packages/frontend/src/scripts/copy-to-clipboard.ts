@@ -5,6 +5,7 @@
 
 /**
  * Clipboardに値をコピー(TODO: 文字列以外も対応)
+ * @deprecated
  */
 export default val => {
 	// 空div 生成

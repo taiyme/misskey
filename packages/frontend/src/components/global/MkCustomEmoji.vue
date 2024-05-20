@@ -31,7 +31,7 @@ import { defaultStore } from '@/store.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import * as os from '@/os.js';
 import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import * as sound from '@/scripts/sound.js';
 import { i18n } from '@/i18n.js';
 import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
@@ -92,7 +92,7 @@ function onClick(ev: MouseEvent) {
 			text: i18n.ts.copy,
 			icon: 'ti ti-copy',
 			action: () => {
-				copyToClipboard(`:${props.name}:`);
+				copyText(`:${props.name}:`);
 				os.success();
 			},
 		}, ...(props.menuReaction && react ? [{

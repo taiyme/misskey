@@ -43,7 +43,7 @@ import { url } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
 import { clipsCache } from '@/cache.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 const props = defineProps<{
 	clipId: string;
@@ -130,7 +130,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-link',
 	text: i18n.ts.copyUrl,
 	handler: async (): Promise<void> => {
-		copyToClipboard(`${url}/clips/${clip.value.id}`);
+		copyText(`${url}/clips/${clip.value.id}`);
 		os.success();
 	},
 }] : []), ...(clip.value.isPublic && isSupportShare() ? [{
