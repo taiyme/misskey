@@ -355,6 +355,7 @@ export class NoteEntityService implements OnModuleInit {
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
 			url: note.url ?? undefined,
+			poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
@@ -372,8 +373,6 @@ export class NoteEntityService implements OnModuleInit {
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
 				}) : undefined,
-
-				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
 				...(meId && Object.keys(note.reactions).length > 0 ? {
 					myReaction: this.populateMyReaction(note, meId, options?._hint_),
