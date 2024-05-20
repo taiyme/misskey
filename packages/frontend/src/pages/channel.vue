@@ -92,7 +92,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
 import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -202,7 +202,7 @@ const headerActions = computed(() => {
 					console.warn('failed to copy channel URL. channel.value is null.');
 					return;
 				}
-				copyToClipboard(`${url}/channels/${channel.value.id}`);
+				copyText(`${url}/channels/${channel.value.id}`);
 				os.success();
 			},
 		});

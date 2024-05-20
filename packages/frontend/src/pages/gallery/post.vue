@@ -77,7 +77,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { useRouter } from '@/router/supplier.js';
 
 const router = useRouter();
@@ -108,7 +108,7 @@ function fetchPost() {
 }
 
 function copyLink() {
-	copyToClipboard(`${url}/gallery/${post.value.id}`);
+	copyText(`${url}/gallery/${post.value.id}`);
 	os.success();
 }
 

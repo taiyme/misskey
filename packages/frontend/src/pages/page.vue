@@ -125,7 +125,7 @@ import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { instance } from '@/instance.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 const props = defineProps<{
 	pageName: string;
@@ -184,7 +184,7 @@ function share(ev: MouseEvent) {
 function copyLink() {
 	if (!page.value) return;
 
-	copyToClipboard(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
+	copyText(`${url}/@${page.value.user.username}/pages/${page.value.name}`);
 	os.success();
 }
 

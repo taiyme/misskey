@@ -78,7 +78,7 @@ import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 const props = defineProps<{
 	id: string;
@@ -118,7 +118,7 @@ function share(ev: MouseEvent) {
 function copyLink() {
 	if (!flash.value) return;
 
-	copyToClipboard(`${url}/play/${flash.value.id}`);
+	copyText(`${url}/play/${flash.value.id}`);
 	os.success();
 }
 

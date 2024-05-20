@@ -22,7 +22,7 @@ import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 
 export const openingWindowsCount = ref(0);
@@ -54,7 +54,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints = keyof Misskey
 				}],
 			});
 			if (result === 'copy') {
-				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
+				copyText(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
 				success();
 			}
 			return;

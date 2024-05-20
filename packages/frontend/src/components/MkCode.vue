@@ -30,7 +30,7 @@ import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 const props = defineProps<{
 	code: string;
@@ -42,7 +42,7 @@ const show = ref(!defaultStore.state.dataSaver.code);
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
 function copy() {
-	copyToClipboard(props.code);
+	copyText(props.code);
 	os.success();
 }
 </script>

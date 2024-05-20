@@ -6,7 +6,7 @@
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { MenuItem } from '@/types/menu.js';
@@ -54,7 +54,7 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 }
 
 function copyUrl(file: Misskey.entities.DriveFile) {
-	copyToClipboard(file.url);
+	copyText(file.url);
 	os.success();
 }
 
@@ -131,7 +131,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 			icon: 'ti ti-id',
 			text: i18n.ts.copyFileId,
 			action: () => {
-				copyToClipboard(file.id);
+				copyText(file.id);
 			},
 		}]);
 	}
