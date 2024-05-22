@@ -522,6 +522,7 @@ export function getRenoteMenu(props: {
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
+	const normalExternalChannelRenoteItems: MenuItem[] = [];
 	const pakuruItems: MenuItem[] = [];
 
 	if (canRenote && appearNote.channel != null) {
@@ -596,6 +597,32 @@ export function getRenoteMenu(props: {
 				},
 			});
 		}
+
+		if (!props.mock) {
+			normalExternalChannelRenoteItems.push({
+				type: 'parent',
+				text: appearNote.channel == null ? i18n.ts.renoteToChannel : i18n.ts.renoteToOtherChannel,
+				icon: 'ti ti-repeat',
+				children: async () => {
+					const channels = await misskeyApi('channels/my-favorites', {
+						limit: 30,
+					});
+					return channels.flatMap(channel => {
+						if (channel.id === appearNote.channel?.id) return [];
+						return [{
+							text: channel.name,
+							action: () => {
+								rippleEffect();
+								misskeyApi('notes/create', {
+									renoteId: appearNote.id,
+									channelId: channel.id,
+								}).then(() => tooltipEffect(i18n.tsx.renotedToX({ name: channel.name }))).catch(errorDialog);
+							},
+						}];
+					});
+				},
+			});
+		}
 	}
 
 	if (tmsStore.state.enablePakuru) {
@@ -627,6 +654,10 @@ export function getRenoteMenu(props: {
 	if (channelRenoteItems.length > 0) {
 		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
 		renoteItems.push(...channelRenoteItems);
+	}
+	if (normalExternalChannelRenoteItems.length > 0) {
+		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
+		renoteItems.push(...normalExternalChannelRenoteItems);
 	}
 	if (pakuruItems.length > 0) {
 		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });

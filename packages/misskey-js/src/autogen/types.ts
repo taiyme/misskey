@@ -21025,6 +21025,8 @@ export type operations = {
           limit?: number;
           /** @default 0 */
           offset?: number;
+          /** @default false */
+          excludeChannels?: boolean;
         };
       };
     };
