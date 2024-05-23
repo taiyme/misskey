@@ -94,7 +94,7 @@ function more() {
 .bottom {
 	position: sticky;
 	bottom: 0;
-	padding: 20px 0;
+	padding-top: 20px;
 	background: var(--X14);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(8px));
