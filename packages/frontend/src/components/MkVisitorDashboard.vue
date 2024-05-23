@@ -92,10 +92,10 @@ function showMenu(ev) {
 			os.pageWindow('/about');
 		},
 	}, {
-		text: i18n.ts.aboutMisskey,
+		text: i18n.ts._tms.aboutTaiyme,
 		icon: 'ti ti-info-circle',
 		action: () => {
-			os.pageWindow('/about-misskey');
+			os.pageWindow('/tms/about');
 		},
 	}, { type: 'divider' }, (instance.impressumUrl) ? {
 		text: i18n.ts.impressum,
