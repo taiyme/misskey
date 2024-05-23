@@ -16,7 +16,7 @@ import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { clipsCache } from '@/cache.js';
+import { channelFavoritesCache, clipsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
@@ -487,7 +487,7 @@ export function getNoteMenu(props: {
 	};
 }
 
-export function getRenoteMenu(props: {
+export async function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
@@ -495,6 +495,9 @@ export function getRenoteMenu(props: {
 }) {
 	const appearNote = getAppearNote(props.note);
 	const canRenote = props.canRenote ?? true;
+	const channelFavorites = (await channelFavoritesCache.fetch()).filter(channel => {
+		return appearNote.channel == null || channel.id !== appearNote.channel.id;
+	});
 
 	const rippleEffect = (): void => {
 		const el = props.renoteButton.value;
@@ -598,29 +601,21 @@ export function getRenoteMenu(props: {
 			});
 		}
 
-		if (!props.mock) {
+		if (!props.mock && channelFavorites.length > 0) {
 			normalExternalChannelRenoteItems.push({
 				type: 'parent',
 				text: appearNote.channel == null ? i18n.ts.renoteToChannel : i18n.ts.renoteToOtherChannel,
 				icon: 'ti ti-repeat',
-				children: async () => {
-					const channels = await misskeyApi('channels/my-favorites', {
-						limit: 30,
-					});
-					return channels.flatMap(channel => {
-						if (channel.id === appearNote.channel?.id) return [];
-						return [{
-							text: channel.name,
-							action: () => {
-								rippleEffect();
-								misskeyApi('notes/create', {
-									renoteId: appearNote.id,
-									channelId: channel.id,
-								}).then(() => tooltipEffect(i18n.tsx.renotedToX({ name: channel.name }))).catch(errorDialog);
-							},
-						}];
-					});
-				},
+				children: channelFavorites.map(channel => ({
+					text: channel.name,
+					action: () => {
+						rippleEffect();
+						misskeyApi('notes/create', {
+							renoteId: appearNote.id,
+							channelId: channel.id,
+						}).then(() => tooltipEffect(i18n.tsx.renotedToX({ name: channel.name }))).catch(errorDialog);
+					},
+				})),
 			});
 		}
 	}

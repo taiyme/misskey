@@ -95,6 +95,7 @@ import { isSupportShare } from '@/scripts/navigator.js';
 import { copyText } from '@/scripts/tms/clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
+import { channelFavoritesCache } from '@/cache.js';
 
 const router = useRouter();
 
@@ -153,6 +154,7 @@ function favorite() {
 		channelId: channel.value.id,
 	}).then(() => {
 		favorited.value = true;
+		channelFavoritesCache.delete();
 	});
 }
 
@@ -168,6 +170,7 @@ async function unfavorite() {
 		channelId: channel.value.id,
 	}).then(() => {
 		favorited.value = false;
+		channelFavoritesCache.delete();
 	});
 }
 

@@ -363,11 +363,11 @@ if (!props.mock) {
 	}
 }
 
-function renote(viaKeyboard = false) {
+async function renote(viaKeyboard = false) {
 	pleaseLogin();
 	showMovedDialog();
 
-	const { menu } = getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
+	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value, {
 		viaKeyboard,
 	});
