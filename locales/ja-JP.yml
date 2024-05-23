@@ -2666,6 +2666,8 @@ _tms:
   numberquote: "数字引用する"
   didPakuru: "パクりました"
   didNumberquote: "数字引用しました"
+  resolvedBy: "{user}によって解決済み"
+  forwardedReport: "リモートサーバーに転送済み"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"

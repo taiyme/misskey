@@ -10009,6 +10009,14 @@ export interface Locale extends ILocale {
          * 数字引用しました
          */
         readonly "didNumberquote": string;
+        /**
+         * {user}によって解決済み
+         */
+        readonly "resolvedBy": ParameterizedString<"user">;
+        /**
+         * リモートサーバーに転送済み
+         */
+        readonly "forwardedReport": string;
         readonly "_about": {
             /**
              * taiymeについて

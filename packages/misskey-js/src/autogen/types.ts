@@ -5080,6 +5080,7 @@ export type operations = {
               reporter: components['schemas']['UserDetailedNotMe'];
               targetUser: components['schemas']['UserDetailedNotMe'];
               assignee?: components['schemas']['UserDetailedNotMe'] | null;
+              forwarded: boolean;
             })[];
         };
       };
