@@ -2713,5 +2713,8 @@ _tms:
     warning: "これらの設定を有効にすると、ページの表示や挙動に深刻な影響を及ぼし、{name}が正常に利用できなくなる可能性があります。"
     forceFetchX: "{x}を強制取得"
     openX: "{x}を開く"
+    _preventLongPressContextMenu:
+      label: "長押しによるコンテキストメニューイベントの発行を防ぐ"
+      caption: "長押しを含む操作が中断される問題を解消します。"
   _admin:
     repositoryUrlDescription: "ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。"

@@ -6,6 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps_m">
 	<FormSection>
+		<div class="_gaps">
+			<MkSwitch v-model="preventLongPressContextMenu">
+				<template #label>{{ i18n.ts._tms._flags._preventLongPressContextMenu.label }}</template>
+				<template #caption>{{ i18n.ts._tms._flags._preventLongPressContextMenu.caption }}</template>
+			</MkSwitch>
+		</div>
+	</FormSection>
+	<FormSection>
 		<template #label>For developer</template>
 		<div class="_gaps_s">
 			<MkFolder defaultOpen>
@@ -27,14 +35,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, readonly, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, readonly, ref, watch } from 'vue';
 import { commitHash, lang, version } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { confirm, popup, waiting } from '@/os.js';
+import { tmsFlaskStore } from '@/tms/flask-store.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+
+//#region 即時変更
+const preventLongPressContextMenu = computed(tmsFlaskStore.makeGetterSetter('preventLongPressContextMenu'));
+//#endregion
 
 const confirmDialog = async (): Promise<boolean> => {
 	const { canceled } = await confirm({
