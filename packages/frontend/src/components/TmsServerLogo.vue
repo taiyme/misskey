@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <button
 	v-tooltip.noDelay.right="serverRef.name"
 	:class="['_button', $style.root]"
-	@click.prevent.stop="openInstanceMenu"
+	@mousedown.prevent.stop="openInstanceMenu"
 	@contextmenu.prevent.stop="openInstanceMenu"
 >
 	<img
@@ -57,6 +57,16 @@ const serverRef = computed(() => {
 	display: block;
 	width: 100%;
 	padding: var(--tmsServerLogo-padding, 0);
+
+	&:focus-visible {
+		outline: none;
+
+		> .iconOnly,
+		> .banner {
+			outline: var(--focus) solid 2px;
+			outline-offset: 2px;
+		}
+	}
 }
 
 .iconOnly {

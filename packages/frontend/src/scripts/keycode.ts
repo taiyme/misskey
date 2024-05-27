@@ -12,13 +12,14 @@ export default (input: string): string[] => {
 	}
 };
 
+// https://developer.mozilla.org/ja/docs/Web/API/UI_Events/Keyboard_event_key_values
 export const aliases = {
 	'esc': 'Escape',
-	'enter': ['Enter', 'NumpadEnter'],
-	'space': [' ', 'Spacebar'],
+	'enter': 'Enter',
+	'space': ' ',
 	'up': 'ArrowUp',
 	'down': 'ArrowDown',
 	'left': 'ArrowLeft',
 	'right': 'ArrowRight',
-	'plus': ['NumpadAdd', 'Semicolon'],
+	'plus': ['+', ';'],
 };

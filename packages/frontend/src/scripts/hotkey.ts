@@ -78,6 +78,7 @@ export const makeHotkey = (keymap: Keymap) => {
 			if (ignoreElements.some(el => document.activeElement!.matches(el))) return;
 			if (document.activeElement.attributes['contenteditable']) return;
 		}
+		if ('pswp' in window && window.pswp != null) return;
 
 		for (const action of actions) {
 			const matched = match(ev, action.patterns);

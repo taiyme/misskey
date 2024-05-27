@@ -61,19 +61,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<source :src="audioRef.url">
 			</audio>
 			<div :class="[$style.controlsChild, $style.controlsLeft]">
-				<button class="_button" :class="$style.controlButton" @click.stop="togglePlayPause">
+				<button
+					:class="['_button', $style.controlButton]"
+					tabindex="-1"
+					@click.stop="togglePlayPause"
+				>
 					<i v-if="isPlaying" class="ti ti-player-pause-filled"></i>
 					<i v-else class="ti ti-player-play-filled"></i>
 				</button>
 			</div>
 			<div :class="[$style.controlsChild, $style.controlsRight]">
-				<button class="_button" :class="$style.controlButton" @click.stop="showAudioMenu">
+				<button
+					:class="['_button', $style.controlButton]"
+					tabindex="-1"
+					@click.stop="() => {}"
+					@mousedown.prevent.stop="showAudioMenu"
+				>
 					<i class="ti ti-settings"></i>
 				</button>
 			</div>
 			<div :class="[$style.controlsChild, $style.controlsTime]">{{ hms(elapsedTimeMs) }}</div>
 			<div :class="[$style.controlsChild, $style.controlsVolume]">
-				<button class="_button" :class="$style.controlButton" @click.stop="toggleMute">
+				<button
+					:class="['_button', $style.controlButton]"
+					tabindex="-1"
+					@click.stop="toggleMute"
+				>
 					<i v-if="volume === 0" class="ti ti-volume-3"></i>
 					<i v-else class="ti ti-volume"></i>
 				</button>
@@ -366,7 +379,7 @@ onDeactivated(() => {
 	border: 0.5px solid var(--divider);
 	border-radius: var(--mediaList-radius, 8px);
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 }
@@ -444,6 +457,10 @@ onDeactivated(() => {
 		&:hover {
 			color: var(--accent);
 			background-color: var(--accentedBg);
+		}
+
+		&:focus-visible {
+			outline: none;
 		}
 	}
 }
