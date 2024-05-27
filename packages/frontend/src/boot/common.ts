@@ -25,6 +25,7 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { setupRouter } from '@/router/definition.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
+import { preventLongPressContextMenu } from '@/scripts/tms/prevent-longpress-contextmenu.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`taiyme v${version}`);
@@ -122,6 +123,10 @@ export async function common(createVue: () => App<Element>) {
 	await deckStore.ready;
 	await tmsStore.ready;
 	await tmsFlaskStore.ready;
+
+	if (tmsFlaskStore.state.preventLongPressContextMenu) {
+		preventLongPressContextMenu();
+	}
 
 	const fetchInstanceMetaPromise = fetchInstance();
 

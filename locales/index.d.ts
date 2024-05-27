@@ -10178,6 +10178,16 @@ export interface Locale extends ILocale {
              * {x}を開く
              */
             readonly "openX": ParameterizedString<"x">;
+            readonly "_preventLongPressContextMenu": {
+                /**
+                 * 長押しによるコンテキストメニューイベントの発行を防ぐ
+                 */
+                readonly "label": string;
+                /**
+                 * 長押しを含む操作が中断される問題を解消します。
+                 */
+                readonly "caption": string;
+            };
         };
         readonly "_admin": {
             /**
