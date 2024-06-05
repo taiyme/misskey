@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" tabindex="0" :class="['_button', $style.item]" :disabled="unref(item.disabled)" @click.prevent="switchItem(item)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" tabindex="0" :aria-checked="unref(item.ref)" :class="['_button', $style.item]" :disabled="unref(item.disabled)" @click.prevent="switchItem(item)" @keydown="filterKeyboardEnterOrSpace(() => switchItem(item))($event)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkSwitchButton v-else :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				<div :class="$style.item_content">
@@ -59,14 +59,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitchButton v-if="item.icon" :class="[$style.switchButton, $style.caret]" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)"/>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'radio'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" :disabled="unref(item.disabled)" @mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)" @click.prevent="!preferClick ? null : showRadioOptions(item, $event)">
+			<button v-else-if="item.type === 'radio'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" :disabled="unref(item.disabled)" @mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)" @click.prevent="!preferClick ? null : showRadioOptions(item, $event)" @keydown="filterKeyboardEnterOrSpace(ev => showRadioOptions(item, ev))($event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
 					<span :class="$style.caret" style="pointer-events: none;"><i class="ti ti-chevron-right ti-fw"></i></span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'radioOption'" role="menuitemradio" tabindex="0" :class="['_button', $style.item, $style.radio, { [$style.active]: unref(item.active) }]" @click.prevent="unref(item.active) ? null : clicked(item.action, $event, false)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<button v-else-if="item.type === 'radioOption'" role="menuitemradio" tabindex="0" :aria-checked="unref(item.active)" :class="['_button', $style.item, $style.radio, { [$style.active]: unref(item.active) }]" @click.prevent="unref(item.active) ? null : clicked(item.action, $event, false)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
 				<div :class="$style.icon">
 					<span :class="[$style.radioIcon, { [$style.radioChecked]: unref(item.active) }]"></span>
 				</div>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.item_content_text">{{ item.text }}</span>
 				</div>
 			</button>
-			<button v-else-if="item.type === 'parent'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" @mouseenter.prevent="preferClick ? null : showChildren(item, $event)" @click.prevent="!preferClick ? null : showChildren(item, $event)">
+			<button v-else-if="item.type === 'parent'" role="menuitem" tabindex="0" :class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]" @mouseenter.prevent="preferClick ? null : showChildren(item, $event)" @click.prevent="!preferClick ? null : showChildren(item, $event)" @keydown="filterKeyboardEnterOrSpace(ev => showChildren(item, ev))($event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]" style="pointer-events: none;"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text" style="pointer-events: none;">{{ item.text }}</span>
@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</button>
 		</template>
-		<span v-if="items2 == null || items2.length === 0" tabindex="-1" :class="[$style.none, $style.item]">
+		<span v-if="items2 == null || items2.length === 0" role="menuitem" tabindex="-1" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
@@ -109,6 +109,7 @@ import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { focusParent, isFocusable } from '@/scripts/tms/focus.js';
 import { getNodeOrNull } from '@/scripts/tms/get-or-null.js';
+import { filterKeyboardEnterOrSpace } from '@/scripts/tms/filter-keyboard.js';
 import { type Keymap } from '@/scripts/tms/hotkey.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
@@ -202,7 +203,7 @@ function onItemMouseLeave() {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
+async function showRadioOptions(item: MenuRadio, ev: Event) {
 	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
 		const value = item.options[key];
 		return {
@@ -227,7 +228,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent) {
 	}
 }
 
-async function showChildren(item: MenuParent, ev: MouseEvent) {
+async function showChildren(item: MenuParent, ev: Event) {
 	const children: MenuItem[] = await (async () => {
 		if (childrenCache.has(item)) {
 			return childrenCache.get(item)!;

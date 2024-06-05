@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q !== '' }" :placeholder="i18n.ts.search" type="search" autocapitalize="off" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
+	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q !== '' }" :placeholder="i18n.ts.search" type="search" autocapitalize="off" @input="input()" @paste.stop="paste" @keydown="onKeydown">
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
@@ -124,6 +124,7 @@ import { defaultStore } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/account.js';
 import { checkReactionPermissions } from '@/scripts/check-reaction-permissions.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const props = withDefaults(defineProps<{
 	showPinned?: boolean;
@@ -431,10 +432,13 @@ function paste(event: ClipboardEvent): void {
 	}
 }
 
-function onEnter(ev: KeyboardEvent) {
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-	done();
-}
+const onKeydown = filterKeyboardNonComposing(ev => {
+	if (ev.key === 'Enter') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		done();
+	}
+});
 
 function done(query?: string): boolean | void {
 	if (query == null) query = q.value;

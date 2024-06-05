@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@focus="focused = true"
 		@blur="focused = false"
 		@mousedown.prevent="show"
-		@keydown.space.enter="show"
+		@keydown="onKeydown"
 	>
 		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
@@ -47,6 +47,7 @@ import * as os from '@/os.js';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { MenuItem } from '@/types/menu.js';
+import { filterKeyboardEnterOrSpace } from '@/scripts/tms/filter-keyboard.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -88,6 +89,7 @@ const focus = () => container.value?.focus();
 const onInput = (ev) => {
 	changed.value = true;
 };
+const onKeydown = filterKeyboardEnterOrSpace(() => show());
 
 const updated = () => {
 	changed.value = false;

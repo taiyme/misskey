@@ -129,6 +129,7 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const $i = signinRequired();
 
@@ -581,10 +582,10 @@ function clear() {
 	quoteId.value = null;
 }
 
-function onKeydown(ev: KeyboardEvent) {
+const onKeydown = filterKeyboardNonComposing(ev => {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
 	if (ev.key === 'Escape') emit('esc');
-}
+});
 
 function onCompositionUpdate(ev: CompositionEvent) {
 	imeText.value = ev.data;
