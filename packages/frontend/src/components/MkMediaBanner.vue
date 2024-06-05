@@ -49,7 +49,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				<div :class="$style.downloadText">{{ mediaRef.name }}</div>
 			</a>
-			<button :class="['_button', $style.downloadMenu]" @click.stop="showMediaMenu">
+			<button
+				:class="['_button', $style.downloadMenu]"
+				tabindex="-1"
+				@click.stop="() => {}"
+				@mousedown.prevent.stop="showMediaMenu"
+			>
 				<i class="ti ti-settings"></i>
 			</button>
 		</div>
@@ -112,7 +117,7 @@ const showMediaMenu = (ev: MouseEvent) => {
 	border: 0.5px solid var(--divider);
 	border-radius: var(--mediaList-radius, 8px);
 
-	&:focus {
+	&:focus-visible {
 		outline: none;
 	}
 }
@@ -214,6 +219,10 @@ const showMediaMenu = (ev: MouseEvent) => {
 	&:hover {
 		color: var(--accent);
 		background-color: var(--accentedBg);
+	}
+
+	&:focus-visible {
+		outline: none;
 	}
 }
 

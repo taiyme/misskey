@@ -24,8 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				title: imageRef.name,
 				class: $style.imageContainer,
 				href: imageRef.url,
-				style: 'cursor: zoom-in;'
+				style: 'cursor: zoom-in;',
 			}"
+			tabindex="-1"
 		>
 			<MkImgWithBlurhash
 				:hash="imageRef.blurhash"
@@ -66,8 +67,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-else-if="props.controls">
 			<div :class="$style.controlsUpperRight">
 				<button
-					:class="['_button', $style.controlItem]"
 					v-tooltip="i18n.ts.hide"
+					:class="['_button', $style.controlItem]"
+					tabindex="-1"
 					@click.stop="hideRef = true"
 				>
 					<div :class="$style.controlButton"><i class="ti ti-eye-off"></i></div>
@@ -77,8 +79,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.controlsLowerRight">
 				<button
 					:class="['_button', $style.controlItem]"
-					v-tooltip="i18n.ts.menu"
-					@click.stop="showImageMenu"
+					tabindex="-1"
+					@click.stop="() => {}"
+					@mousedown.prevent.stop="showImageMenu"
 				>
 					<div :class="$style.controlButton"><i class="ti ti-dots"></i></div>
 				</button>
@@ -89,6 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="imageRef.comment"
 					v-tooltip:dialog="imageRef.comment"
 					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+					@click.stop="() => {}"
 				>
 					<div :class="$style.controlButton"><span>ALT</span></div>
 				</button>
@@ -99,6 +104,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="['image/gif', 'image/apng'].includes(imageRef.type)"
 					v-tooltip:dialog="i18n.ts._tms.displayingGifFiles"
 					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+					@click.stop="() => {}"
 				>
 					<div :class="$style.controlButton"><span>GIF</span></div>
 				</button>
@@ -106,6 +113,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-if="imageRef.isSensitive"
 					v-tooltip:dialog="i18n.ts._tms.displayingSensitiveFiles"
 					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+					@click.stop="() => {}"
 				>
 					<div :class="$style.controlButton"><span>NSFW</span></div>
 				</button>
@@ -196,6 +205,10 @@ const showImageMenu = (ev: MouseEvent) => {
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 	border-radius: var(--mediaList-radius, 8px);
+
+	&:focus-visible {
+		outline: none;
+	}
 }
 
 .rootVisible {
@@ -295,6 +308,10 @@ const showImageMenu = (ev: MouseEvent) => {
 
 	&:last-child {
 		padding-right: clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
+	}
+
+	&:focus-visible {
+		outline: none;
 	}
 }
 

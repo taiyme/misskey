@@ -114,7 +114,7 @@ const props = defineProps<{
 			text-decoration: none;
 		}
 
-		&.active, &:hover, &:focus {
+		&.active, &:hover {
 			color: var(--accent);
 			background-color: var(--accentedBg);
 		}
@@ -163,7 +163,7 @@ const props = defineProps<{
 		text-align: center;
 		padding: 0;
 
-		&.active, &:hover, &:focus {
+		&.active, &:hover {
 			background-color: transparent;
 			color: var(--accent);
 			transition: none;

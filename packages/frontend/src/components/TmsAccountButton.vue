@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-if="$i != null"
 	v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`"
 	:class="['_button', $style.root]"
-	@click.prevent.stop="openAccountMenu"
+	@mousedown.prevent.stop="openAccountMenu"
 	@contextmenu.prevent.stop="openAccountMenu"
 >
 	<MkAvatar
@@ -49,6 +49,16 @@ const openAccountMenu = (ev: MouseEvent) => {
 	display: block;
 	width: 100%;
 	padding: var(--tmsAccountButton-padding, 0);
+
+	&:focus-visible {
+		outline: none;
+
+		> .iconOnly,
+		> .account {
+			outline: var(--focus) solid 2px;
+			outline-offset: 2px;
+		}
+	}
 }
 
 .iconOnly {
@@ -60,6 +70,7 @@ const openAccountMenu = (ev: MouseEvent) => {
 
 .account {
 	overflow: clip;
+	border-radius: 6px;
 	display: flex;
 	align-items: center;
 }
