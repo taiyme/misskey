@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <button
-	v-tooltip.noDelay.right="serverRef.name"
+	v-tooltip.noDelay.right="tooltipRef"
 	:class="['_button', $style.root]"
 	@mousedown.prevent.stop="openInstanceMenu"
 	@contextmenu.prevent.stop="openInstanceMenu"
@@ -38,6 +38,7 @@ import { openInstanceMenu } from '@/ui/_common_/common.js';
 
 const props = defineProps<{
 	iconOnly?: boolean;
+	tooltip?: boolean;
 }>();
 
 const serverRef = computed(() => {
@@ -47,6 +48,11 @@ const serverRef = computed(() => {
 		iconUrl: instance.iconUrl || '/favicon.ico',
 		bannerUrl: instance.bannerUrl || null,
 	} as const;
+});
+
+const tooltipRef = computed(() => {
+	if (!props.tooltip) return null;
+	return serverRef.value.name;
 });
 </script>
 

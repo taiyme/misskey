@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <button
 	v-if="$i != null"
-	v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`"
+	v-tooltip.noDelay.right="tooltipRef"
 	:class="['_button', $style.root]"
 	@mousedown.prevent.stop="openAccountMenu"
 	@contextmenu.prevent.stop="openAccountMenu"
@@ -28,12 +28,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	iconOnly?: boolean;
+	tooltip?: boolean;
 }>();
+
+const tooltipRef = computed(() => {
+	if (!props.tooltip) return;
+	if ($i == null) return i18n.ts.account;
+	return `${i18n.ts.account}: @${$i.username}`;
+});
 
 const openAccountMenu = (ev: MouseEvent) => {
 	openAccountMenu_({

@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.body">
 		<div :class="$style.top">
 			<div :class="$style.serverLogo">
-				<TmsServerLogo :iconOnly="iconOnly"/>
+				<TmsServerLogo :iconOnly="iconOnly" tooltip/>
 			</div>
 		</div>
 		<div :class="$style.middle">
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
 			<div :class="$style.accountButton">
-				<TmsAccountButton :iconOnly="iconOnly"/>
+				<TmsAccountButton :iconOnly="iconOnly" tooltip/>
 			</div>
 		</div>
 	</div>
