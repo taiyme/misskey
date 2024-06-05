@@ -12,6 +12,6 @@ import { Storage } from '@/pizzax.js';
 export const tmsFlaskStore = markRaw(new Storage('tmsFlask', {
 	preventLongPressContextMenu: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 }));
