@@ -600,7 +600,7 @@ export function setupRouter(app: App) {
 
 	window.addEventListener('popstate', (event) => {
 		mainRouter.replace(location.pathname + location.search + location.hash, event.state?.key);
-	});
+	}, { passive: true });
 
 	mainRouter.addListener('push', ctx => {
 		window.history.pushState({ key: ctx.key }, '', ctx.path);

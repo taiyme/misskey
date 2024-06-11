@@ -46,5 +46,5 @@ export function swInject() {
 			default:
 				return;
 		}
-	});
+	}, { passive: true });
 }

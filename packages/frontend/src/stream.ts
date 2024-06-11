@@ -33,7 +33,7 @@ export function useStream(): Misskey.Stream {
 			|| Date.now() - lastHeartbeatCall < HEART_BEAT_INTERVAL
 		) return;
 		heartbeat();
-	});
+	}, { passive: true });
 
 	return stream;
 }

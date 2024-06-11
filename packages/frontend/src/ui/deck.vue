@@ -150,7 +150,7 @@ mainRouter.navHook = (path, flag): boolean => {
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
-});
+}, { passive: true });
 
 const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
 const drawerMenuShowing = ref(false);

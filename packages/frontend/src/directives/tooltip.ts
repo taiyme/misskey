@@ -41,8 +41,7 @@ export default {
 					type: 'info',
 					text: binding.value,
 				});
-				return false;
-			});
+			}, { passive: false });
 		}
 
 		self.show = () => {
@@ -66,9 +65,9 @@ export default {
 
 		el.addEventListener('selectstart', ev => {
 			ev.preventDefault();
-		});
+		}, { passive: false });
 
-		el.addEventListener(start, (ev) => {
+		el.addEventListener(start, () => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			if (delay === 0) {
@@ -91,7 +90,7 @@ export default {
 		el.addEventListener('click', () => {
 			window.clearTimeout(self.showTimer);
 			self.close();
-		});
+		}, { passive: true });
 	},
 
 	updated(el, binding) {

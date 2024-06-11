@@ -42,7 +42,7 @@ export function useLeaveGuard(enabled: Ref<boolean>) {
 		}
 	}
 
-	window.addEventListener('beforeunload', onBeforeLeave);
+	window.addEventListener('beforeunload', onBeforeLeave, { passive: false });
 	onUnmounted(() => {
 		window.removeEventListener('beforeunload', onBeforeLeave);
 	});

@@ -64,11 +64,11 @@ const minHeight = 50;
 const minWidth = 250;
 
 function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('touchmove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-	window.addEventListener('touchend', dragClear.bind(null, fn));
+	window.addEventListener('mousemove', fn, { passive: true });
+	window.addEventListener('touchmove', fn, { passive: true });
+	window.addEventListener('mouseleave', dragClear.bind(null, fn), { passive: true });
+	window.addEventListener('mouseup', dragClear.bind(null, fn), { passive: true });
+	window.addEventListener('touchend', dragClear.bind(null, fn), { passive: true });
 }
 
 function dragClear(fn) {

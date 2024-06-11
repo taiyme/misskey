@@ -58,7 +58,7 @@ export class Autocomplete {
 	 * このインスタンスにあるテキストエリアの入力のキャプチャを開始します。
 	 */
 	public attach() {
-		this.textarea.addEventListener('input', this.onInput);
+		this.textarea.addEventListener('input', this.onInput, { passive: true });
 	}
 
 	/**

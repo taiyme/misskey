@@ -49,7 +49,7 @@ export async function common(createVue: () => App<Element>) {
 				text: event.message
 			});
 			*/
-		});
+		}, { passive: true });
 
 		window.addEventListener('unhandledrejection', event => {
 			console.error(event);
@@ -60,7 +60,7 @@ export async function common(createVue: () => App<Element>) {
 				text: event.reason
 			});
 			*/
-		});
+		}, { passive: true });
 	}
 
 	let isClientUpdated = false;
@@ -184,7 +184,7 @@ export async function common(createVue: () => App<Element>) {
 		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 			defaultStore.set('darkMode', mql.matches);
 		}
-	});
+	}, { passive: true });
 	//#endregion
 
 	fetchInstanceMetaPromise.then(() => {
@@ -218,7 +218,7 @@ export async function common(createVue: () => App<Element>) {
 		if (document.visibilityState === 'visible') {
 			navigator.wakeLock.request('screen');
 		}
-	});
+	}, { passive: true });
 	if (defaultStore.state.keepScreenOn && 'wakeLock' in navigator) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
@@ -228,7 +228,7 @@ export async function common(createVue: () => App<Element>) {
 				document.addEventListener(
 					'click',
 					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
-					{ once: true },
+					{ passive: true, once: true },
 				);
 			});
 	}

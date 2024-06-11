@@ -54,9 +54,9 @@ const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
 function dragListen(fn) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
+	window.addEventListener('mousemove', fn, { passive: true });
+	window.addEventListener('mouseleave', dragClear.bind(null, fn), { passive: true });
+	window.addEventListener('mouseup', dragClear.bind(null, fn), { passive: true });
 }
 
 function dragClear(fn) {

@@ -300,25 +300,25 @@ function init() {
 
 			audioEl.value.addEventListener('play', () => {
 				isActuallyPlaying.value = true;
-			});
+			}, { passive: true });
 
 			audioEl.value.addEventListener('pause', () => {
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
-			});
+			}, { passive: true });
 
 			audioEl.value.addEventListener('ended', () => {
 				oncePlayed.value = false;
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
-			});
+			}, { passive: true });
 
 			durationMs.value = audioEl.value.duration * 1000;
 			audioEl.value.addEventListener('durationchange', () => {
 				if (audioEl.value) {
 					durationMs.value = audioEl.value.duration * 1000;
 				}
-			});
+			}, { passive: true });
 
 			audioEl.value.volume = volume.value;
 		}

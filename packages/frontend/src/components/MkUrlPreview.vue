@@ -194,7 +194,7 @@ const openPlayer = (): void => {
 	});
 };
 
-(window as any).addEventListener('message', adjustTweetHeight);
+(window as any).addEventListener('message', adjustTweetHeight, { passive: true });
 
 onUnmounted(() => {
 	(window as any).removeEventListener('message', adjustTweetHeight);

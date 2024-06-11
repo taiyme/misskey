@@ -177,7 +177,7 @@ function onInputKeydown(evt: KeyboardEvent) {
 }
 
 onMounted(() => {
-	document.addEventListener('keydown', onKeydown);
+	document.addEventListener('keydown', onKeydown, { passive: true });
 });
 
 onBeforeUnmount(() => {

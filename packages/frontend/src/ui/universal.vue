@@ -131,7 +131,7 @@ const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
-});
+}, { passive: true });
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);

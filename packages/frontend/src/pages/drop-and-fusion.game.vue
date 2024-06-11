@@ -869,7 +869,7 @@ function loadImage(url: string) {
 		img.src = url;
 		img.addEventListener('load', () => {
 			res(img);
-		});
+		}, { passive: true });
 	});
 }
 

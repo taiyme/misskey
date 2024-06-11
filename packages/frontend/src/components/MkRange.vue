@@ -148,10 +148,10 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 		}
 	};
 
-	window.addEventListener('mousemove', onDrag);
-	window.addEventListener('touchmove', onDrag);
-	window.addEventListener('mouseup', onMouseup, { once: true });
-	window.addEventListener('touchend', onMouseup, { once: true });
+	window.addEventListener('mousemove', onDrag, { passive: false });
+	window.addEventListener('touchmove', onDrag, { passive: false });
+	window.addEventListener('mouseup', onMouseup, { passive: true, once: true });
+	window.addEventListener('touchend', onMouseup, { passive: true, once: true });
 };
 </script>
 

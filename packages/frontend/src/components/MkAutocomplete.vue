@@ -353,9 +353,9 @@ onUpdated(() => {
 onMounted(() => {
 	setPosition();
 
-	props.textarea.addEventListener('keydown', onKeydown);
+	props.textarea.addEventListener('keydown', onKeydown, { passive: false });
 
-	document.body.addEventListener('mousedown', onMousedown);
+	document.body.addEventListener('mousedown', onMousedown, { passive: true });
 
 	nextTick(() => {
 		exec();

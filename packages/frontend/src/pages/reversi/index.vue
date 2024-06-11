@@ -250,7 +250,7 @@ onMounted(() => {
 		invitations.value = _invitations;
 	});
 
-	window.addEventListener('beforeunload', cancelMatching);
+	window.addEventListener('beforeunload', cancelMatching, { passive: true });
 });
 
 onDeactivated(() => {

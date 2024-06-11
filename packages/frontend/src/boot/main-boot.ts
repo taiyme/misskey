@@ -308,7 +308,7 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	document.addEventListener('keydown', makeHotkey(hotkeys), { passive: false });
 
 	initializeSw();
 }

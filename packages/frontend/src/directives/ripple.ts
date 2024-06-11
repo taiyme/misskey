@@ -18,6 +18,6 @@ export default {
 			const y = rect.top + (el.offsetHeight / 2);
 
 			popup(MkRippleEffect, { x, y }, {}, 'end');
-		});
+		}, { passive: true });
 	},
 };
