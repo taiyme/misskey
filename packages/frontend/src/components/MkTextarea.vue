@@ -88,7 +88,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	emit('keydown', ev);
 
-	if (ev.code === 'Enter') {
+	if (ev.key === 'Enter') {
 		emit('enter');
 	}
 
