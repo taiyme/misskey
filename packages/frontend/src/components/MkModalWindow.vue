@@ -58,8 +58,8 @@ const onBgClick = () => {
 	emit('click');
 };
 
-const onKeydown = (evt) => {
-	if (evt.which === 27) { // Esc
+const onKeydown = (evt: KeyboardEvent) => {
+	if (evt.key === 'Escape') {
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();

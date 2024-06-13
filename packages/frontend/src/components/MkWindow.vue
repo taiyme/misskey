@@ -121,8 +121,8 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
-	if (evt.which === 27) { // Esc
+function onKeydown(evt: KeyboardEvent) {
+	if (evt.key === 'Escape') {
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();

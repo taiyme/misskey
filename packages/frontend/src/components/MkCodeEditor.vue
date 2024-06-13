@@ -76,7 +76,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 
 	emit('keydown', ev);
 
-	if (ev.code === 'Enter') {
+	if (ev.key === 'Enter') {
 		const pos = inputEl.value?.selectionStart ?? 0;
 		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
 		if (pos === posEnd) {
