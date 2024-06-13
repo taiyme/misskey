@@ -53,16 +53,13 @@ const pointsReply = ref<string>();
 const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
-function dragListen(fn) {
-	window.addEventListener('mousemove', fn, { passive: true });
-	window.addEventListener('mouseleave', dragClear.bind(null, fn), { passive: true });
-	window.addEventListener('mouseup', dragClear.bind(null, fn), { passive: true });
-}
+function dragListen(fn: (ev: MouseEvent) => void) {
+	const controller = new AbortController();
+	const { signal } = controller;
 
-function dragClear(fn) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
+	window.addEventListener('mousemove', fn, { passive: true, signal });
+	window.addEventListener('mouseleave', () => controller.abort(), { passive: true, signal });
+	window.addEventListener('mouseup', () => controller.abort(), { passive: true, signal });
 }
 
 function onMousedown(ev) {

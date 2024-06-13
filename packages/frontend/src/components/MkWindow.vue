@@ -64,19 +64,14 @@ const minHeight = 50;
 const minWidth = 250;
 
 function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn, { passive: true });
-	window.addEventListener('touchmove', fn, { passive: true });
-	window.addEventListener('mouseleave', dragClear.bind(null, fn), { passive: true });
-	window.addEventListener('mouseup', dragClear.bind(null, fn), { passive: true });
-	window.addEventListener('touchend', dragClear.bind(null, fn), { passive: true });
-}
+	const controller = new AbortController();
+	const { signal } = controller;
 
-function dragClear(fn) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+	window.addEventListener('mousemove', fn, { passive: true, signal });
+	window.addEventListener('touchmove', fn, { passive: true, signal });
+	window.addEventListener('mouseleave', () => controller.abort(), { passive: true, signal });
+	window.addEventListener('mouseup', () => controller.abort(), { passive: true, signal });
+	window.addEventListener('touchend', () => controller.abort(), { passive: true, signal });
 }
 
 const props = withDefaults(defineProps<{
