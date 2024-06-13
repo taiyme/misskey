@@ -85,7 +85,7 @@ const calcViewState = () => {
 
 calcViewState();
 
-window.addEventListener('resize', calcViewState);
+window.addEventListener('resize', calcViewState, { passive: true });
 
 watch(defaultStore.reactiveState.menuDisplay, () => {
 	calcViewState();

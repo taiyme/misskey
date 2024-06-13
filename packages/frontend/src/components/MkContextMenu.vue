@@ -69,7 +69,7 @@ onMounted(() => {
 		rootEl.value.style.left = `${left}px`;
 	}
 
-	document.body.addEventListener('mousedown', onMousedown);
+	document.body.addEventListener('mousedown', onMousedown, { passive: true });
 });
 
 onBeforeUnmount(() => {

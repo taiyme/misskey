@@ -52,7 +52,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 			if (_DEV_) console.log('WebGL2 in worker is not supported...');
 		}
 		testWorker.terminate();
-	});
+	}, { passive: true });
 });
 </script>
 

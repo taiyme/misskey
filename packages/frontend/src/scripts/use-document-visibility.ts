@@ -13,7 +13,7 @@ export function useDocumentVisibility(): Ref<DocumentVisibilityState> {
 	};
 
 	onMounted(() => {
-		document.addEventListener('visibilitychange', onChange);
+		document.addEventListener('visibilitychange', onChange, { passive: true });
 	});
 
 	onUnmounted(() => {

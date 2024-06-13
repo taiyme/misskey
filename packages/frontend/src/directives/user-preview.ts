@@ -90,9 +90,9 @@ export class UserPreview {
 	}
 
 	public attach() {
-		this.el.addEventListener('mouseover', this.onMouseover);
-		this.el.addEventListener('mouseleave', this.onMouseleave);
-		this.el.addEventListener('click', this.onClick);
+		this.el.addEventListener('mouseover', this.onMouseover, { passive: true });
+		this.el.addEventListener('mouseleave', this.onMouseleave, { passive: true });
+		this.el.addEventListener('click', this.onClick, { passive: true });
 	}
 
 	public detach() {

@@ -86,7 +86,7 @@ if (loaded || props.provider === 'mcaptcha') {
 		id: scriptId.value,
 		src: src.value,
 	})))
-		.addEventListener('load', () => available.value = true);
+		.addEventListener('load', () => available.value = true, { passive: true });
 }
 
 function reset() {
@@ -130,7 +130,7 @@ function onReceivedMessage(message: MessageEvent) {
 
 onMounted(() => {
 	if (available.value) {
-		window.addEventListener('message', onReceivedMessage);
+		window.addEventListener('message', onReceivedMessage, { passive: true });
 		requestRender();
 	} else {
 		watch(available, requestRender);

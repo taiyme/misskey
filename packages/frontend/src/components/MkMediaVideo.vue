@@ -420,25 +420,25 @@ function init() {
 
 			videoEl.value.addEventListener('play', () => {
 				isActuallyPlaying.value = true;
-			});
+			}, { passive: true });
 
 			videoEl.value.addEventListener('pause', () => {
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
-			});
+			}, { passive: true });
 
 			videoEl.value.addEventListener('ended', () => {
 				oncePlayed.value = false;
 				isActuallyPlaying.value = false;
 				isPlaying.value = false;
-			});
+			}, { passive: true });
 
 			durationMs.value = videoEl.value.duration * 1000;
 			videoEl.value.addEventListener('durationchange', () => {
 				if (videoEl.value) {
 					durationMs.value = videoEl.value.duration * 1000;
 				}
-			});
+			}, { passive: true });
 
 			videoEl.value.volume = volume.value;
 			hasAudio(videoEl.value).then(had => {

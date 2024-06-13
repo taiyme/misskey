@@ -204,7 +204,7 @@ onMounted(() => {
 		}
 	});
 
-	window.addEventListener('popstate', popstateHandler);
+	window.addEventListener('popstate', popstateHandler, { passive: true });
 
 	lightbox.init();
 });
