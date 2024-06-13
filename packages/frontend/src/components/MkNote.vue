@@ -199,6 +199,7 @@ import { shouldCollapsed } from '@/scripts/collapsed.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { focusPrev, focusNext } from '@/scripts/tms/focus.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
@@ -326,10 +327,19 @@ const keymap = {
 			collapsed.value = !collapsed.value;
 		}
 	},
-	'esc': () => blur(),
-	'up|k|shift+tab': () => focusBefore(),
-	'down|j|tab': () => focusAfter(),
-};
+	'esc': {
+		allowRepeat: true,
+		callback: () => blur(),
+	},
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusBefore(),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusAfter(),
+	},
+} as const satisfies Keymap;
 
 provide('react', (reaction: string) => {
 	misskeyApi('notes/reactions/create', {

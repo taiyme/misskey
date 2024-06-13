@@ -109,6 +109,7 @@ import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
 import { focusParent, isFocusable } from '@/scripts/tms/focus.js';
 import { getNodeOrNull } from '@/scripts/tms/get-or-null.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -139,10 +140,19 @@ const items2 = ref<InnerMenuItem[]>();
 const child = shallowRef<InstanceType<typeof XChild>>();
 
 const keymap = {
-	'up|k|shift+tab': () => focusUp(),
-	'down|j|tab': () => focusDown(),
-	'esc': () => close(false),
-};
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusUp(),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusDown(),
+	},
+	'esc': {
+		allowRepeat: true,
+		callback: () => close(false),
+	},
+} as const satisfies Keymap;
 
 const childShowingItem = ref<MenuItem | null>();
 
