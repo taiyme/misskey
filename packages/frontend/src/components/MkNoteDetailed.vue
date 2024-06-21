@@ -236,6 +236,7 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
@@ -308,8 +309,11 @@ const keymap = {
 			showContent.value = !showContent.value;
 		}
 	},
-	'esc': () => blur(),
-};
+	'esc': {
+		allowRepeat: true,
+		callback: () => blur(),
+	},
+} as const satisfies Keymap;
 
 provide('react', (reaction: string) => {
 	misskeyApi('notes/reactions/create', {

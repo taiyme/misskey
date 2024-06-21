@@ -160,6 +160,7 @@ import { defaultStore } from '@/store.js';
 import { isFullscreenNotSupported } from '@/scripts/device-kind.js';
 import hasAudio from '@/scripts/media-has-audio.js';
 import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
+import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
@@ -247,32 +248,44 @@ const showVideoMenu = (ev: MouseEvent) => {
 };
 
 const keymap = {
-	'up': () => {
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.min(volume.value + 0.1, 1);
-		}
+	'up': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.min(volume.value + 0.1, 1);
+			}
+		},
 	},
-	'down': () => {
-		if (hasFocus() && videoEl.value) {
-			volume.value = Math.max(volume.value - 0.1, 0);
-		}
+	'down': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				volume.value = Math.max(volume.value - 0.1, 0);
+			}
+		},
 	},
-	'left': () => {
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
-		}
+	'left': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.max(videoEl.value.currentTime - 5, 0);
+			}
+		},
 	},
-	'right': () => {
-		if (hasFocus() && videoEl.value) {
-			videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
-		}
+	'right': {
+		allowRepeat: true,
+		callback: () => {
+			if (hasFocus() && videoEl.value) {
+				videoEl.value.currentTime = Math.min(videoEl.value.currentTime + 5, videoEl.value.duration);
+			}
+		},
 	},
 	'space': () => {
 		if (hasFocus()) {
 			togglePlayPause();
 		}
 	},
-};
+} as const satisfies Keymap;
 
 // PlayerElもしくはその子要素にフォーカスがあるかどうか
 function hasFocus() {
