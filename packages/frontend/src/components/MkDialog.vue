@@ -64,6 +64,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import TmsMockNoteSimple from '@/components/TmsMockNoteSimple.vue';
 import { i18n } from '@/i18n.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 type Input = {
 	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
@@ -164,17 +165,17 @@ function onBgClick() {
 	if (props.cancelableByBgClick) cancel();
 }
 */
-function onKeydown(evt: KeyboardEvent) {
+const onKeydown = filterKeyboardNonComposing(evt => {
 	if (evt.key === 'Escape') cancel();
-}
+});
 
-function onInputKeydown(evt: KeyboardEvent) {
+const onInputKeydown = filterKeyboardNonComposing(evt => {
 	if (evt.key === 'Enter' && okButtonDisabledReason.value === null) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		ok();
 	}
-}
+});
 
 onMounted(() => {
 	document.addEventListener('keydown', onKeydown, { passive: true });

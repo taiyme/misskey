@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 import { getHTMLElementOrNull } from '@/scripts/tms/get-or-null.js';
 
 //#region types
@@ -49,7 +50,7 @@ const IGNORE_ELEMENTS = ['input', 'textarea'];
 //#region impl
 export const makeHotkey = (keymap: Keymap) => {
 	const actions = parseKeymap(keymap);
-	return (ev: KeyboardEvent) => {
+	return filterKeyboardNonComposing(ev => {
 		if ('pswp' in window && window.pswp != null) return;
 		if (document.activeElement != null) {
 			if (IGNORE_ELEMENTS.includes(document.activeElement.tagName.toLowerCase())) return;
@@ -62,7 +63,7 @@ export const makeHotkey = (keymap: Keymap) => {
 				callback(ev);
 			}
 		}
-	};
+	});
 };
 
 const parseKeymap = (keymap: Keymap) => {

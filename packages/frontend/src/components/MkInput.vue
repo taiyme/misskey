@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:max="max"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown($event)"
+			@keydown="onKeydown"
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
@@ -50,6 +50,7 @@ import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const props = defineProps<{
 	modelValue: string | number | null;
@@ -105,15 +106,13 @@ const onInput = (event: Event) => {
 	changed.value = true;
 	emit('change', ev);
 };
-const onKeydown = (ev: KeyboardEvent) => {
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-
+const onKeydown = filterKeyboardNonComposing(ev => {
 	emit('keydown', ev);
 
 	if (ev.key === 'Enter') {
 		emit('enter');
 	}
-};
+});
 
 const updated = () => {
 	changed.value = false;

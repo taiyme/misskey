@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef, ref } from 'vue';
 import MkModal from './MkModal.vue';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const props = withDefaults(defineProps<{
 	withOkButton: boolean;
@@ -58,13 +59,13 @@ const onBgClick = () => {
 	emit('click');
 };
 
-const onKeydown = (evt: KeyboardEvent) => {
+const onKeydown = filterKeyboardNonComposing(evt => {
 	if (evt.key === 'Escape') {
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();
 	}
-};
+});
 
 const ro = new ResizeObserver((entries, observer) => {
 	if (rootEl.value == null || headerEl.value == null) return;
