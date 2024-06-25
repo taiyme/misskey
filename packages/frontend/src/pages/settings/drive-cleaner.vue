@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkStickyContainer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import * as os from '@/os.js';

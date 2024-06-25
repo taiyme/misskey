@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkButton>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue';
 import { $i, getAccounts } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';

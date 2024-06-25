@@ -1281,6 +1281,10 @@ export interface Locale extends ILocale {
      */
     readonly "selectFolders": string;
     /**
+     * ファイルが選択されていません
+     */
+    readonly "fileNotSelected": string;
+    /**
      * ファイル名を変更
      */
     readonly "renameFile": string;
@@ -1900,6 +1904,10 @@ export interface Locale extends ILocale {
      * 引用として添付しますか？
      */
     readonly "quoteQuestion": string;
+    /**
+     * クリップボードのテキストが長いです。テキストファイルとして添付しますか？
+     */
+    readonly "attachAsFileQuestion": string;
     /**
      * まだチャットはありません
      */
@@ -3357,6 +3365,10 @@ export interface Locale extends ILocale {
      */
     readonly "noMaintainerInformationWarning": string;
     /**
+     * 問い合わせ先URLが設定されていません。
+     */
+    readonly "noInquiryUrlWarning": string;
+    /**
      * Botプロテクションが設定されていません。
      */
     readonly "noBotProtectionWarning": string;
@@ -4109,9 +4121,13 @@ export interface Locale extends ILocale {
      */
     readonly "thisPostMayBeAnnoyingIgnore": string;
     /**
-     * 見たことのあるリノートを省略して表示
+     * リノートのスマート省略
      */
     readonly "collapseRenotes": string;
+    /**
+     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     */
+    readonly "collapseRenotesDescription": string;
     /**
      * サーバー内部エラー
      */
@@ -4964,6 +4980,38 @@ export interface Locale extends ILocale {
      * フォローの際常に確認する
      */
     readonly "alwaysConfirmFollow": string;
+    readonly "_delivery": {
+        /**
+         * 配信状態
+         */
+        readonly "status": string;
+        /**
+         * 配信停止
+         */
+        readonly "stop": string;
+        /**
+         * 配信再開
+         */
+        readonly "resume": string;
+        readonly "_type": {
+            /**
+             * 配信中
+             */
+            readonly "none": string;
+            /**
+             * 手動停止中
+             */
+            readonly "manuallySuspended": string;
+            /**
+             * サーバー削除のため停止中
+             */
+            readonly "goneSuspended": string;
+            /**
+             * サーバー応答なしのため停止中
+             */
+            readonly "autoSuspendedForNotResponding": string;
+        };
+    };
     readonly "_bubbleGame": {
         /**
          * 遊び方
@@ -5423,6 +5471,14 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         readonly "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 問い合わせ先URL
+         */
+        readonly "inquiryUrl": string;
+        /**
+         * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
+         */
+        readonly "inquiryUrlDescription": string;
     };
     readonly "_accountMigration": {
         /**
@@ -7896,10 +7952,6 @@ export interface Locale extends ILocale {
          */
         readonly "read:admin:show-user": string;
         /**
-         * ユーザーのプライベートな情報を見る
-         */
-        readonly "read:admin:show-users": string;
-        /**
          * ユーザーを凍結する
          */
         readonly "write:admin:suspend-user": string;
@@ -9104,6 +9156,10 @@ export interface Locale extends ILocale {
          */
         readonly "addColumn": string;
         /**
+         * 新着ノート通知の設定
+         */
+        readonly "newNoteNotificationSettings": string;
+        /**
          * カラムの設定
          */
         readonly "configureColumn": string;
@@ -9246,6 +9302,10 @@ export interface Locale extends ILocale {
          */
         readonly "createWebhook": string;
         /**
+         * Webhookを編集
+         */
+        readonly "modifyWebhook": string;
+        /**
          * 名前
          */
         readonly "name": string;
@@ -9290,6 +9350,72 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             readonly "mention": string;
+        };
+        readonly "_systemEvents": {
+            /**
+             * ユーザーから通報があったとき
+             */
+            readonly "abuseReport": string;
+            /**
+             * ユーザーからの通報を処理したとき
+             */
+            readonly "abuseReportResolved": string;
+        };
+        /**
+         * Webhookを削除しますか？
+         */
+        readonly "deleteConfirm": string;
+    };
+    readonly "_abuseReport": {
+        readonly "_notificationRecipient": {
+            /**
+             * 通報の通知先を追加
+             */
+            readonly "createRecipient": string;
+            /**
+             * 通報の通知先を編集
+             */
+            readonly "modifyRecipient": string;
+            /**
+             * 通知先の種類
+             */
+            readonly "recipientType": string;
+            readonly "_recipientType": {
+                /**
+                 * メール
+                 */
+                readonly "mail": string;
+                /**
+                 * Webhook
+                 */
+                readonly "webhook": string;
+                readonly "_captions": {
+                    /**
+                     * モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)
+                     */
+                    readonly "mail": string;
+                    /**
+                     * 指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)
+                     */
+                    readonly "webhook": string;
+                };
+            };
+            /**
+             * キーワード
+             */
+            readonly "keywords": string;
+            /**
+             * 通知先ユーザー
+             */
+            readonly "notifiedUser": string;
+            /**
+             * 使用するWebhook
+             */
+            readonly "notifiedWebhook": string;
+            /**
+             * 通知先を削除しますか？
+             */
+            readonly "deleteConfirm": string;
         };
     };
     readonly "_moderationLogTypes": {
@@ -9437,6 +9563,30 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         readonly "unsetUserBanner": string;
+        /**
+         * SystemWebhookを作成
+         */
+        readonly "createSystemWebhook": string;
+        /**
+         * SystemWebhookを更新
+         */
+        readonly "updateSystemWebhook": string;
+        /**
+         * SystemWebhookを削除
+         */
+        readonly "deleteSystemWebhook": string;
+        /**
+         * 通報の通知先を作成
+         */
+        readonly "createAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を更新
+         */
+        readonly "updateAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を削除
+         */
+        readonly "deleteAbuseReportNotificationRecipient": string;
     };
     readonly "_fileViewer": {
         /**
@@ -9607,7 +9757,7 @@ export interface Locale extends ILocale {
     readonly "_dataSaver": {
         readonly "_media": {
             /**
-             * メディアの読み込み
+             * メディアの読み込みを無効化
              */
             readonly "title": string;
             /**
@@ -9617,7 +9767,7 @@ export interface Locale extends ILocale {
         };
         readonly "_avatar": {
             /**
-             * アイコン画像
+             * アイコン画像のアニメーションを無効化
              */
             readonly "title": string;
             /**
@@ -9627,7 +9777,7 @@ export interface Locale extends ILocale {
         };
         readonly "_urlPreview": {
             /**
-             * URLプレビューのサムネイル
+             * URLプレビューのサムネイルを非表示
              */
             readonly "title": string;
             /**
@@ -9637,7 +9787,7 @@ export interface Locale extends ILocale {
         };
         readonly "_code": {
             /**
-             * コードハイライト
+             * コードハイライトを非表示
              */
             readonly "title": string;
             /**

@@ -36,7 +36,7 @@ const observer = new ResizeObserver((entries) => {
 });
 </script>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, watch } from 'vue';
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,7 +63,7 @@ watch(content, (value, oldValue) => {
 });
 </script>
 
-<style module lang="scss">
+<style lang="scss" module>
 .container {
 	display: inline-block;
 	max-width: 100%;

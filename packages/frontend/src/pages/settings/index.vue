@@ -10,8 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
 			<div v-if="showNav" :class="$style.navRoot">
 				<MkSpacer :contentMax="700" :marginMin="16">
-					<div>
-						<MkInfo v-if="emailNotConfigured" warn :class="$style.navInfo">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+					<div class="_gaps_m">
+						<div :class="[$style.navInfoList, '_gaps_s']">
+							<MkInfo v-if="emailNotConfigured" warn>{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						</div>
+
 						<MkSuperMenu :def="menuDef" :wideMode="isWide"></MkSuperMenu>
 					</div>
 				</MkSpacer>
@@ -326,7 +329,9 @@ const menuDef = computed<SuperMenuDef>(() => [{
 	}
 }
 
-.navInfo {
-	margin: 16px 0;
+.navInfoList {
+	&:empty {
+		display: none;
+	}
 }
 </style>

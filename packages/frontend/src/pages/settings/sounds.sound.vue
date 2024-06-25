@@ -156,7 +156,7 @@ function save() {
 }
 </script>
 
-<style module>
+<style lang="scss" module>
 .fileSelectorRoot {
 	display: flex;
 	align-items: center;

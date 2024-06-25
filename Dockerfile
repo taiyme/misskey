@@ -55,7 +55,7 @@ COPY --link ./packages/misskey-js/src/ ./packages/misskey-js/src/
 COPY --link ./packages/backend/.swcrc ./packages/backend/
 COPY --link ./packages/backend/src/ ./packages/backend/src/
 COPY --link ./locales/ ./locales/
-COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/
+COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/tsconfig.json ./packages/frontend/
 COPY --link ./packages/frontend/assets/ ./packages/frontend/assets/
 COPY --link ./packages/frontend/lib/ ./packages/frontend/lib/
 COPY --link ./packages/frontend/src/ ./packages/frontend/src/
@@ -140,6 +140,8 @@ COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-rev
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules/ ./packages/misskey-js/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules/ ./packages/backend/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules/ ./node_modules/
+
+RUN corepack install
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production

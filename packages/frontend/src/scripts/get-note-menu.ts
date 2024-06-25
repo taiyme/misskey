@@ -16,7 +16,7 @@ import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { channelFavoritesCache, clipsCache } from '@/cache.js';
+import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
@@ -495,7 +495,7 @@ export async function getRenoteMenu(props: {
 }) {
 	const appearNote = getAppearNote(props.note);
 	const canRenote = props.canRenote ?? true;
-	const channelFavorites = (await channelFavoritesCache.fetch()).filter(channel => {
+	const favoritedChannels = (await favoritedChannelsCache.fetch()).filter(channel => {
 		return appearNote.channel == null || channel.id !== appearNote.channel.id;
 	});
 
@@ -601,12 +601,12 @@ export async function getRenoteMenu(props: {
 			});
 		}
 
-		if (!props.mock && channelFavorites.length > 0) {
+		if (!props.mock && favoritedChannels.length > 0) {
 			normalExternalChannelRenoteItems.push({
 				type: 'parent',
 				text: appearNote.channel == null ? i18n.ts.renoteToChannel : i18n.ts.renoteToOtherChannel,
 				icon: 'ti ti-repeat',
-				children: channelFavorites.map(channel => ({
+				children: favoritedChannels.map(channel => ({
 					text: channel.name,
 					action: () => {
 						rippleEffect();
