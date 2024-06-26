@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						</div>
 
-						<MkSuperMenu :def="menuDef" :wideMode="isWide"></MkSuperMenu>
+						<TmsSuperMenu :def="menuDef" :wideMode="isWide"></TmsSuperMenu>
 					</div>
 				</MkSpacer>
 			</div>
@@ -48,9 +48,9 @@ import { lookup } from '@/scripts/lookup.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
-import { SuperMenuDef } from '@/types/tms/super-menu.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import TmsSuperMenu from '@/components/TmsSuperMenu.vue';
+import { type ISuperMenuDefinitions } from '@/components/TmsSuperMenu.impl.js';
 
 const ROOT_PAGE_PATH = '/admin' as const;
 const INITIAL_PAGE_PATH = '/admin/overview' as const;
@@ -168,7 +168,7 @@ provideReactiveMetadata(pageMetadata);
 definePageMetadata(() => pageMetadata.value);
 
 //#region menuDef
-const menuDef = computed<SuperMenuDef>(() => [{
+const menuDef = computed<ISuperMenuDefinitions>(() => [{
 	title: i18n.ts.quickAction,
 	items: [{
 		type: 'button' as const,

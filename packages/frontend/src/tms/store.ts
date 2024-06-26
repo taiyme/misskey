@@ -16,7 +16,7 @@ export const tmsStore = markRaw(new Storage('tmsMain', {
 	},
 	superMenuDisplayMode: {
 		where: 'deviceAccount',
-		default: 'default' as 'default' | 'classic' | 'forceList',
+		default: 'default' as import('@/components/TmsSuperMenu.impl.js').SuperMenuDisplayMode,
 	},
 	pullToRefreshSensitivity: {
 		where: 'device',

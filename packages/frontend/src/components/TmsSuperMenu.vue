@@ -72,12 +72,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { tmsStore } from '@/tms/store.js';
-import { SuperMenuDef } from '@/types/tms/super-menu.js';
+import { type TmsSuperMenuProps } from '@/components/TmsSuperMenu.impl.js';
 
-const props = defineProps<{
-	def: SuperMenuDef;
-	wideMode?: boolean;
-}>();
+const props = defineProps<TmsSuperMenuProps>();
 </script>
 
 <style lang="scss" module>
