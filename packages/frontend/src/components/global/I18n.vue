@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <render/>
 </template>
 
-<script setup lang="ts" generic="T extends string | ParameterizedString">
+<script lang="ts" setup generic="T extends string | ParameterizedString">
 import { computed, h } from 'vue';
 import type { ParameterizedString } from '../../../../../locales/index.js';
 

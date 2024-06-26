@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkWindow>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
