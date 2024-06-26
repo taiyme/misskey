@@ -55,7 +55,7 @@ COPY --link ./packages/misskey-js/src/ ./packages/misskey-js/src/
 COPY --link ./packages/backend/.swcrc ./packages/backend/
 COPY --link ./packages/backend/src/ ./packages/backend/src/
 COPY --link ./locales/ ./locales/
-COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/
+COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/tsconfig.json ./packages/frontend/
 COPY --link ./packages/frontend/assets/ ./packages/frontend/assets/
 COPY --link ./packages/frontend/lib/ ./packages/frontend/lib/
 COPY --link ./packages/frontend/src/ ./packages/frontend/src/
