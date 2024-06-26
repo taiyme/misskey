@@ -141,6 +141,8 @@ COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules/ ./packages/backend/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules/ ./node_modules/
 
+RUN corepack install
+
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
 

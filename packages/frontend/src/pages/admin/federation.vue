@@ -56,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import * as Misskey from 'misskey-js';
 import { computed, ref } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -87,8 +88,17 @@ const pagination = {
 	})),
 };
 
-function getStatus(instance) {
-	if (instance.isSuspended) return 'Suspended';
+function getStatus(instance: Misskey.entities.FederationInstance) {
+	switch (instance.suspensionState) {
+		case 'manuallySuspended':
+			return 'Manually Suspended';
+		case 'goneSuspended':
+			return 'Automatically Suspended (Gone)';
+		case 'autoSuspendedForNotResponding':
+			return 'Automatically Suspended (Not Responding)';
+		case 'none':
+			break;
+	}
 	if (instance.isBlocked) return 'Blocked';
 	if (instance.isSilenced) return 'Silenced';
 	if (instance.isNotResponding) return 'Error';
