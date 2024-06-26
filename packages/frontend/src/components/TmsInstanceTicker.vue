@@ -22,25 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getTickerColors, getTickerInfo, getTickerState } from '@/scripts/tms/instance-ticker.js';
-import { type tmsStore } from '@/tms/store.js';
+import {
+	type TmsInstanceTickerProps,
+	getTickerColors,
+	getTickerInfo,
+	getTickerState,
+} from '@/components/TmsInstanceTicker.impl.js';
 
-export type TickerProps = {
-	readonly instance?: {
-		readonly name?: string | null;
-		// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
-		// readonly iconUrl?: string | null;
-		readonly faviconUrl?: string | null;
-		readonly themeColor?: string | null;
-	} | null;
-	readonly channel?: {
-		readonly name: string;
-		readonly color: string;
-	} | null;
-	readonly position: typeof tmsStore.state.tickerPosition;
-};
-
-const props = defineProps<TickerProps>();
+const props = defineProps<TmsInstanceTickerProps>();
 
 const tickerInfoRef = computed(() => getTickerInfo(props));
 const tickerColorsRef = computed(() => getTickerColors(tickerInfoRef.value));
