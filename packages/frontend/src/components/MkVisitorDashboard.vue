@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
-				<MkButton :class="$style.mainAction" full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
+				<MkButton :class="$style.mainAction" full rounded link to="https://misskey-hub.net/servers/">{{ i18n.ts.exploreOtherServers }}</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 			</div>
 		</div>
@@ -65,6 +65,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
+import type { MenuItem } from '@/types/menu.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
@@ -84,48 +85,66 @@ function signup() {
 	}, {}, 'closed');
 }
 
-function showMenu(ev) {
-	os.popupMenu([{
+function showMenu(ev: MouseEvent) {
+	const menu: MenuItem[] = [];
+	menu.push({
+		type: 'link',
 		text: i18n.ts.instanceInfo,
 		icon: 'ti ti-info-circle',
-		action: () => {
-			os.pageWindow('/about');
-		},
-	}, {
+		to: '/about',
+	});
+	menu.push({
+		type: 'link',
 		text: i18n.ts._tms.aboutTaiyme,
 		icon: 'ti ti-info-circle',
-		action: () => {
-			os.pageWindow('/tms/about');
-		},
-	}, { type: 'divider' }, (instance.impressumUrl) ? {
-		text: i18n.ts.impressum,
-		icon: 'ti ti-file-invoice',
-		action: () => {
-			window.open(instance.impressumUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (instance.tosUrl) ? {
-		text: i18n.ts.termsOfService,
-		icon: 'ti ti-notebook',
-		action: () => {
-			window.open(instance.tosUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (instance.privacyPolicyUrl) ? {
-		text: i18n.ts.privacyPolicy,
-		icon: 'ti ti-shield-lock',
-		action: () => {
-			window.open(instance.privacyPolicyUrl!, '_blank', 'noopener');
-		},
-	} : undefined, (!instance.impressumUrl && !instance.tosUrl && !instance.privacyPolicyUrl) ? undefined : { type: 'divider' }, {
-		text: i18n.ts.help,
+		to: '/tms/about',
+	});
+	menu.push({ type: 'divider' });
+	menu.push({
+		type: 'link',
+		text: i18n.ts.inquiry,
 		icon: 'ti ti-help-circle',
-		action: () => {
-			window.open('https://misskey-hub.net/docs/for-users/', '_blank', 'noopener');
-		},
-	}], ev.currentTarget ?? ev.target);
-}
+		to: '/contact',
+	});
+	if (instance.impressumUrl) {
+		menu.push({
+			type: 'a',
+			text: i18n.ts.impressum,
+			icon: 'ti ti-file-invoice',
+			href: instance.impressumUrl,
+			target: '_blank',
+		});
+	}
+	if (instance.tosUrl) {
+		menu.push({
+			type: 'a',
+			text: i18n.ts.termsOfService,
+			icon: 'ti ti-notebook',
+			href: instance.tosUrl,
+			target: '_blank',
+		});
+	}
+	if (instance.privacyPolicyUrl) {
+		menu.push({
+			type: 'a',
+			text: i18n.ts.privacyPolicy,
+			icon: 'ti ti-shield-lock',
+			href: instance.privacyPolicyUrl,
+			target: '_blank',
+		});
+	}
+	if (instance.impressumUrl || instance.tosUrl || instance.privacyPolicyUrl) {
+		menu.push({ type: 'divider' });
+	}
+	menu.push({
+		type: 'a',
+		text: i18n.ts.document,
+		icon: 'ti ti-bulb',
+		href: 'https://misskey-hub.net/docs/for-users/',
+		target: '_blank',
+	});
 
-function exploreOtherServers() {
-	window.open('https://misskey-hub.net/servers/', '_blank', 'noopener');
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 </script>
 

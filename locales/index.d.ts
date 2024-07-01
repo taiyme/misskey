@@ -4980,6 +4980,10 @@ export interface Locale extends ILocale {
      * フォローの際常に確認する
      */
     readonly "alwaysConfirmFollow": string;
+    /**
+     * お問い合わせ
+     */
+    readonly "inquiry": string;
     readonly "_delivery": {
         /**
          * 配信状態
@@ -10167,6 +10171,10 @@ export interface Locale extends ILocale {
          * リモートサーバーに転送済み
          */
         readonly "forwardedReport": string;
+        /**
+         * まだ提供されていません
+         */
+        readonly "notYetProvided": string;
         readonly "_about": {
             /**
              * taiymeについて
