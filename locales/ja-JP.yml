@@ -2712,6 +2712,7 @@ _tms:
   didNumberquote: "数字引用しました"
   resolvedBy: "{user}によって解決済み"
   forwardedReport: "リモートサーバーに転送済み"
+  notYetProvided: "まだ提供されていません"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"

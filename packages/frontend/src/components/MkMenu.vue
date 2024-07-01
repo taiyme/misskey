@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
-			<a v-else-if="item.type === 'a'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :href="item.href" :target="item.target" :download="item.download" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<a v-else-if="item.type === 'a'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :href="item.href" :target="item.target" rel="nofollow noopener" :download="item.download" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>

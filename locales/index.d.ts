@@ -10171,6 +10171,10 @@ export interface Locale extends ILocale {
          * リモートサーバーに転送済み
          */
         readonly "forwardedReport": string;
+        /**
+         * まだ提供されていません
+         */
+        readonly "notYetProvided": string;
         readonly "_about": {
             /**
              * taiymeについて
