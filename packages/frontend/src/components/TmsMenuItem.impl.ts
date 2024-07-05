@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { toValue } from 'vue';
 import type * as Misskey from 'misskey-js';
 
 export type TmsMenuItemProps = {
@@ -38,6 +39,8 @@ type UnwrapLazy<T> = (
 			: T
 );
 
+type MaybeGetter<T> = T | (() => T);
+
 export type IMenuItem = IMenuItemResolved | IMenuItemPending;
 
 export type IMenuItemResolved = (
@@ -71,7 +74,7 @@ export type IMenuLink = {
 	text: string;
 	icon?: string;
 	to: string;
-	indicate?: boolean;
+	indicate?: MaybeGetter<boolean>;
 	avatar?: Misskey.entities.User;
 };
 
@@ -81,25 +84,24 @@ export type IMenuA = {
 	icon?: string;
 	download?: string;
 	href: string;
-	indicate?: boolean;
+	indicate?: MaybeGetter<boolean>;
 	target?: string;
 };
 
 export type IMenuUser = {
 	type: 'user';
 	action: ExprPrivateMenuAction;
-	active?: boolean;
-	indicate?: boolean;
+	active?: MaybeGetter<boolean>;
+	indicate?: MaybeGetter<boolean>;
 	user: Misskey.entities.User;
 };
 
 // TODO: ref直接参照からgetter/setter関数に変更
-// disabledなどもgetterを許容するべきかも
 export type IMenuSwitch = {
 	type: 'switch';
 	text: string;
 	icon?: string;
-	disabled?: boolean;
+	disabled?: MaybeGetter<boolean>;
 	getter: () => boolean;
 	setter: (v: boolean) => void;
 };
@@ -110,19 +112,18 @@ export type IMenuButton = {
 	text: string;
 	icon?: string;
 	action: ExprPrivateMenuAction;
-	active?: boolean;
+	active?: MaybeGetter<boolean>;
 	avatar?: Misskey.entities.User;
-	danger?: boolean;
-	indicate?: boolean;
+	danger?: MaybeGetter<boolean>;
+	indicate?: MaybeGetter<boolean>;
 };
 
 // TODO: ref直接参照からgetter/setter関数に変更 (リアクティブ性を維持できる)
-// disabledなどもgetterを許容するべきかも
 export type IMenuRadio<T = string | number> = {
 	type: 'radio';
 	text: string;
 	icon?: string;
-	disabled?: boolean;
+	disabled?: MaybeGetter<boolean>;
 	options: Record<string, T>;
 	getter: () => T;
 	setter: (v: T) => void;
@@ -133,7 +134,7 @@ export type IMenuRadioOption = {
 	type: 'radioOption';
 	text: string;
 	action: ExprPrivateMenuAction;
-	active?: boolean;
+	active?: MaybeGetter<boolean>;
 };
 
 export type IMenuParent = {
@@ -143,12 +144,21 @@ export type IMenuParent = {
 	children: MaybeLazy<IMenuItem[]>;
 };
 
-// TODO: XMenuItemSuspense側で対応するので不要
-// export type IPrivateMenuPending = {
-// 	type: 'pending';
-// };
+export const exprClickedAction = (item: IMenuItemResolved, event: MouseEvent, doClose = true) => {
+	if (item.type == null || item.type === 'button' || item.type === 'user' || item.type === 'radioOption') {
+		if (toValue(item.active)) {
+			// TODO: まだ実装していない
+			// if (doClose) close(false);
+		} else {
+			item.action(event);
+			// TODO: まだ実装していない
+			// if (doClose) close(true);
+		}
+	}
+};
 
-export const exprMenuSwitchToggle = (item: IMenuItemResolved) => {
-	if (item.type !== 'switch') return;
-	item.setter(!item.getter());
+export const exprToggleSwitch = (item: IMenuItemResolved) => {
+	if (item.type === 'switch') {
+		item.setter(!item.getter());
+	}
 };
