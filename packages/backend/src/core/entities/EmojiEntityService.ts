@@ -72,4 +72,3 @@ export class EmojiEntityService {
 		return Promise.all(emojis.map(x => this.packDetailed(x)));
 	}
 }
-

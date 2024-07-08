@@ -26,7 +26,6 @@ suite('checkNewRelease', () => {
 		expect(result.success).toBe(true)
 	})
 
-
 	test('リリースの数が同じ', () => {
 		const base = [new Release('2024.12.0')]
 		const head = [new Release('2024.12.0')]

@@ -39,4 +39,3 @@ definePageMetadata(() => ({
 	icon: 'ti ti-user-search',
 }));
 </script>
-

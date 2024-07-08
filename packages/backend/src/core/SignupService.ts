@@ -153,4 +153,3 @@ export class SignupService {
 		return { account, secret };
 	}
 }
-

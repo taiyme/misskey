@@ -43,4 +43,3 @@ export class FlashLikeEntityService {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}
 }
-

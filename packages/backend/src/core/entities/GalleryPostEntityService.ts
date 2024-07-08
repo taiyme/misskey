@@ -71,4 +71,3 @@ export class GalleryPostEntityService {
 		return Promise.all(posts.map(post => this.pack(post, me, { packedUser: _userMap.get(post.userId) })));
 	}
 }
-

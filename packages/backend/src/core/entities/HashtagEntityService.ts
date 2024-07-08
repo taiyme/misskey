@@ -37,4 +37,3 @@ export class HashtagEntityService {
 		return Promise.all(hashtags.map(x => this.pack(x)));
 	}
 }
-

@@ -37,4 +37,3 @@ services:
 #      - .config/meilisearch.env
 #    volumes:
 #      - ./meili_data:/meili_data
-

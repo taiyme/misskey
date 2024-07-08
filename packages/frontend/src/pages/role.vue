@@ -116,4 +116,3 @@ definePageMetadata(() => ({
 	border-radius: 16px;
 }
 </style>
-

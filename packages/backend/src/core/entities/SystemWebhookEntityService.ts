@@ -71,4 +71,3 @@ export class SystemWebhookEntityService {
 			.then(it => it.sort((a, b) => a.id.localeCompare(b.id)));
 	}
 }
-

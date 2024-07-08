@@ -122,4 +122,3 @@ export class PageEntityService {
 		return Promise.all(pages.map(page => this.pack(page, me, { packedUser: _userMap.get(page.userId) })));
 	}
 }
-

@@ -27,4 +27,3 @@ Thank you for your PR! Before creating a PR, please check the following:
 - Run `npm run api` to update the API report and commit it if there are any diffs.
 
 Thanks for your cooperation 🤗
-

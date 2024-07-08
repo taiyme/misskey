@@ -81,4 +81,3 @@ export class GetterService {
 		return user;
 	}
 }
-

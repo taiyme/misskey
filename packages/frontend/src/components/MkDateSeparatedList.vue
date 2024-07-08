@@ -248,4 +248,3 @@ export default defineComponent({
 	margin-left: 8px;
 }
 </style>
-

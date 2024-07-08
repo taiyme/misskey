@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 export class NoteReactionAndUserPairCache1697673894459 {
     name = 'NoteReactionAndUserPairCache1697673894459'
 
