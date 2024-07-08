@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { toASCII } from 'punycode';
 import * as Misskey from 'misskey-js';
 import * as mfm from 'mfm-js';
-import { toASCII } from 'punycode';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { unique } from '@/scripts/array.js';
@@ -93,7 +93,7 @@ const toMeEntity = async (fromId?: string | null): Promise<MeEntity> => {
 };
 
 const getAccountToken = async (meId: MeEntity['meId']): Promise<MeEntity['token'] | null> => {
-	if ($i?.id === meId && $i.token != null) {
+	if ($i?.token != null && $i.id === meId) {
 		return $i.token;
 	}
 	return getAccountFromId(meId).then(x => x?.token ?? null);

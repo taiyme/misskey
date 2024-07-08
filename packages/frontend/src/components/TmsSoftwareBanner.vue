@@ -41,8 +41,9 @@ const easterEggEngine = ref<{ stop: () => void; } | null>(null);
 const containerEl = shallowRef<HTMLElement>();
 
 const iconLoaded = (): void => {
+	if (containerEl.value == null) return;
 	const emojis = defaultStore.state.reactions;
-	const containerWidth = containerEl.value!.offsetWidth;
+	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({
 			id: i.toString(),
@@ -59,8 +60,9 @@ const iconLoaded = (): void => {
 
 const gravity = (): void => {
 	if (!easterEggReady) return;
+	if (containerEl.value == null) return;
 	easterEggReady = false;
-	easterEggEngine.value = physics(containerEl.value!);
+	easterEggEngine.value = physics(containerEl.value);
 };
 
 const getTreasure = (): void => {

@@ -16,12 +16,14 @@ const DEFAULT_RGB = { r: 255, g: 0, b: 0 } as const satisfies RGB;
 
 export const hexToRgb = (hex: string): RGB => {
 	if (hex.startsWith('#')) {
+		// eslint-disable-next-line no-param-reassign
 		hex = hex.slice(1);
 	}
 	if (hex.length === 3) {
 		if (!validHex(hex)) {
 			return DEFAULT_RGB;
 		}
+		// eslint-disable-next-line no-param-reassign
 		hex = [...hex].map(char => char.repeat(2)).join('');
 	}
 	if (!(hex.length === 6 && validHex(hex))) {

@@ -27,6 +27,7 @@ import { instance } from '@/instance.js';
 import FormLink from '@/components/form/link.vue';
 import MkInfo from '@/components/MkInfo.vue';
 
+// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const repositoryUrl = computed(() => instance.repositoryUrl || null);
 const tarballUrl = computed(() => instance.providesTarball ? `/tarball/misskey-${version}.tar.gz` : null);
 const notProvided = computed(() => repositoryUrl.value == null && tarballUrl.value == null);

@@ -5,6 +5,7 @@
 
 import { Directive } from 'vue';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	beforeMount(src, binding, vn) {
 		src.style.opacity = '0';

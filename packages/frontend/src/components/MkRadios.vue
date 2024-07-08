@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { VNode, defineComponent, h, ref, watch } from 'vue';
 import MkRadio from './MkRadio.vue';
 
+// eslint-disable-next-line import/no-default-export
 export default defineComponent({
 	props: {
 		modelValue: {

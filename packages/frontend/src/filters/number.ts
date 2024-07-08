@@ -5,4 +5,5 @@
 
 import { numberFormat } from '@/scripts/intl-const.js';
 
+// eslint-disable-next-line import/no-default-export
 export default n => n == null ? 'N/A' : numberFormat.format(n);

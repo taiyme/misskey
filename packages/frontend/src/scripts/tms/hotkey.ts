@@ -98,7 +98,7 @@ const parseOptions = (rawCallback: Keymap[keyof Keymap]) => {
 		allowRepeat: false,
 	} as const satisfies Action['options'];
 	if (typeof rawCallback === 'object') {
-		const { callback, ...rawOptions } = rawCallback;
+		const { callback: _, ...rawOptions } = rawCallback;
 		const options = { ...defaultOptions, ...rawOptions };
 		return { ...options } as const satisfies Action['options'];
 	}
@@ -126,8 +126,8 @@ const parseKeyCode = (input?: string | null) => {
 };
 
 const getValueByKey = <
-	T extends Record<keyof any, unknown>,
-	K extends keyof T | keyof any,
+	T extends Record<string, unknown>,
+	K extends keyof T | string,
 	R extends K extends keyof T ? T[K] : T[keyof T] | undefined,
 >(obj: T, key: K) => {
 	return obj[key] as R;

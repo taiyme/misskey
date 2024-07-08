@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { defineComponent, h, resolveDirective, withDirectives } from 'vue';
 
+// eslint-disable-next-line import/no-default-export
 export default defineComponent({
 	props: {
 		modelValue: {

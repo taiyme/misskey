@@ -23,8 +23,11 @@ import { instance } from '@/instance.js';
 
 const serverRef = computed(() => {
 	return {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: instance.name || host,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		iconUrl: instance.iconUrl || '/favicon.ico',
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		bannerUrl: instance.bannerUrl || null,
 	} as const;
 });

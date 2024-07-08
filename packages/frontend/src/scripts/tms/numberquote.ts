@@ -20,11 +20,11 @@ const incrText = (text: NoteParameters['text']): NoteParameters['text'] => {
 	return `${token.str}${(BigInt(token.num) + 1n).toString(10)}`;
 };
 
-const decrText = (text: NoteParameters['text']): NoteParameters['text'] => {
-	const token = extractNqTokens(text);
-	if (token.num === '') return `${token.str}0`;
-	return `${token.str}${(BigInt(token.num) - 1n).toString(10)}`;
-};
+// const decrText = (text: NoteParameters['text']): NoteParameters['text'] => {
+// 	const token = extractNqTokens(text);
+// 	if (token.num === '') return `${token.str}0`;
+// 	return `${token.str}${(BigInt(token.num) - 1n).toString(10)}`;
+// };
 
 const extractNqTokens = (text: NoteParameters['text']): {
 	readonly str: string;

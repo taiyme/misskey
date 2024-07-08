@@ -5,10 +5,10 @@
 
 import { type ComputedRef, Ref } from 'vue';
 import type * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
-import { iAmModerator } from '@/account.js';
-import { apiWithDialog } from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
+import { iAmModerator } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { apiWithDialog } from '@/os.js';
 
 export const getMediaMenu = (props: {
 	readonly reactiveDriveFile: Ref<Misskey.entities.DriveFile>; // reactive

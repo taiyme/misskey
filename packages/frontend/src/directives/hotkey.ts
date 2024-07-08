@@ -6,6 +6,7 @@
 import { Directive } from 'vue';
 import { makeHotkey } from '@/scripts/tms/hotkey.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el, binding) {
 		el._hotkey_global = binding.modifiers.global === true;

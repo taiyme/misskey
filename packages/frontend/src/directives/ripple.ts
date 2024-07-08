@@ -6,6 +6,7 @@
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { popup } from '@/os.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el, binding, vn) {
 		// 明示的に false であればバインドしない

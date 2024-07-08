@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// eslint-disable-next-line import/no-default-export
 export default async function hasAudio(media: HTMLMediaElement) {
 	const cloned = media.cloneNode() as HTMLMediaElement;
 	cloned.muted = (cloned as typeof cloned & Partial<HTMLVideoElement>).playsInline = true;

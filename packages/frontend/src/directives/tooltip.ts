@@ -13,6 +13,7 @@ import { popup, alert } from '@/os.js';
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;

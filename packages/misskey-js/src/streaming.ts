@@ -25,6 +25,7 @@ type StreamEvents = {
 /**
  * Misskey stream connection
  */
+// eslint-disable-next-line import/no-default-export
 export default class Stream extends EventEmitter<StreamEvents> {
 	private stream: _ReconnectingWebsocket.default;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';

@@ -17,6 +17,7 @@ import panel from './panel.js';
 import adaptiveBorder from './adaptive-border.js';
 import adaptiveBg from './adaptive-bg.js';
 
+// eslint-disable-next-line import/no-default-export
 export default function(app: App) {
 	for (const [key, value] of Object.entries(directives)) {
 		app.directive(key, value);

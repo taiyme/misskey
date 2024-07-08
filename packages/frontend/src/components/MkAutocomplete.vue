@@ -116,6 +116,7 @@ const emojiDb = computed(() => {
 	return markRaw([...customEmojiDB, ...unicodeEmojiDB]);
 });
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	emojiDb,
 	emojilist,

@@ -15,32 +15,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { apiWithDialog } from '@/os.js';
-import XMemoInput from './TmsUserMemo.input.vue';
+
+const XMemoInput = defineAsyncComponent(() => import('@/components/TmsUserMemo.input.vue'));
 
 const props = defineProps<{
 	user: Misskey.entities.UserDetailed;
 }>();
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const moderationNote = ref(props.user.moderationNote ?? '');
 
 const updateModerationNote = () => {
 	apiWithDialog('admin/update-user-note', {
 		userId: props.user.id,
-		text: moderationNote.value ?? '',
+		text: moderationNote.value || '',
 	});
 };
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const userMemo = ref(props.user.memo ?? '');
 
 const updateUserMemo = () => {
 	apiWithDialog('users/update-memo', {
 		userId: props.user.id,
-		memo: userMemo.value ?? '',
+		memo: userMemo.value || '',
 	});
 };
 </script>

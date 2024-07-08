@@ -5,6 +5,7 @@ import pluginVue from 'eslint-plugin-vue';
 import pluginMisskey from '@misskey-dev/eslint-plugin';
 import sharedConfig from '../shared/eslint.config.js';
 
+// eslint-disable-next-line import/no-default-export
 export default [
 	...sharedConfig,
 	{
@@ -48,6 +49,13 @@ export default [
 			'@typescript-eslint/no-empty-interface': ['error', {
 				allowSingleExtends: true,
 			}],
+			'@typescript-eslint/no-unused-vars': ['warn', {
+				argsIgnorePattern: '^_',
+				caughtErrorsIgnorePattern: '^_',
+				destructuredArrayIgnorePattern: '^_',
+				varsIgnorePattern: '^_',
+				ignoreRestSiblings: false,
+			}],
 			// window の禁止理由: グローバルスコープと衝突し、予期せぬ結果を招くため
 			// e の禁止理由: error や event など、複数のキーワードの頭文字であり分かりにくいため
 			'id-denylist': ['error', 'window', 'e'],
@@ -76,7 +84,7 @@ export default [
 				endTag: 'never',
 				selfClosingTag: 'never',
 			}],
-			'vue/multi-word-component-names': 'warn',
+			'vue/multi-word-component-names': 'off',
 			'vue/require-v-for-key': 'warn',
 			'vue/no-unused-components': 'warn',
 			'vue/no-unused-vars': 'warn',

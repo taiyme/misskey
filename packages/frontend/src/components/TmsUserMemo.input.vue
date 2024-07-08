@@ -36,6 +36,7 @@ const emit = defineEmits<{
 
 const inputEl = shallowRef<HTMLTextAreaElement>();
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const modelValue = ref(props.modelValue);
 
 const beforeValue = ref(modelValue.value);

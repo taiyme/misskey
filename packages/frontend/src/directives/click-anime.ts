@@ -6,6 +6,7 @@
 import { Directive } from 'vue';
 import { defaultStore } from '@/store.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		if (!defaultStore.state.animation) return;

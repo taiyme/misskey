@@ -12,6 +12,7 @@ import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { MisskeyEntity } from '@/types/date-separated-list.js';
 
+// eslint-disable-next-line import/no-default-export
 export default defineComponent({
 	props: {
 		items: {

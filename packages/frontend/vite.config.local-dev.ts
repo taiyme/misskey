@@ -90,4 +90,3 @@ const devConfig: UserConfig = {
 };
 
 export default defineConfig(({ command, mode }) => devConfig);
-

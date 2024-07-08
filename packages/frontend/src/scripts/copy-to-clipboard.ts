@@ -7,6 +7,7 @@
  * Clipboardに値をコピー(TODO: 文字列以外も対応)
  * @deprecated
  */
+// eslint-disable-next-line import/no-default-export
 export default val => {
 	// 空div 生成
 	const tmp = document.createElement('div');

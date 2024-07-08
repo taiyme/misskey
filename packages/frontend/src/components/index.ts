@@ -28,6 +28,7 @@ import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
 import TmsNoCache from './global/TmsNoCache.vue';
 
+// eslint-disable-next-line import/no-default-export
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {
 		app.component(key, value);

@@ -103,6 +103,7 @@ export class UserPreview {
 	}
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		if (binding.value == null) return;
