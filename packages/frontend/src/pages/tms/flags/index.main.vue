@@ -76,12 +76,16 @@ const forceFetchLocale = async (): Promise<void> => {
 
 const openMkUpdated = async (): Promise<void> => {
 	if (!(await confirmDialog())) return;
-	popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+		closed: () => dispose(),
+	});
 };
 
 const openMkDonation = async (): Promise<void> => {
 	if (!(await confirmDialog())) return;
-	popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
+		closed: () => dispose(),
+	});
 };
 
 const edited = ref(false);

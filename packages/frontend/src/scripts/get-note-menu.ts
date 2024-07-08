@@ -136,10 +136,12 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 			let noteInfo = '';
 			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
 			noteInfo += `Local Note: ${localUrl}\n`;
-			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
 				initialComment: `${noteInfo}-----\n`,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 		},
 	};
 }
@@ -505,7 +507,9 @@ export async function getRenoteMenu(props: {
 		const rect = el.getBoundingClientRect();
 		const x = rect.left + (el.offsetWidth / 2);
 		const y = rect.top + (el.offsetHeight / 2);
-		os.popup(MkRippleEffect, { x, y }, {}, 'end');
+		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+			end: () => dispose(),
+		});
 	};
 
 	const tooltipEffect = (text: string): void => {

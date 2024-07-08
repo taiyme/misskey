@@ -12,9 +12,10 @@ export const tooltipFromElement = (props: Omit<TooltipProps, 'showing'>) => {
 	window.setTimeout(() => {
 		showing.value = false;
 	}, 3000);
-	popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 		...props,
-		// @ts-expect-error
 		showing,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 };

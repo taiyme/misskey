@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
 import { globSync } from 'glob';
 import { execa } from 'execa';
-import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -41,7 +36,7 @@ async function buildSrc() {
 	console.log(`[${_package.name}] start building...`);
 
 	await build(options)
-		.then(it => {
+		.then(() => {
 			console.log(`[${_package.name}] build succeeded.`);
 		})
 		.catch((err) => {
@@ -70,7 +65,7 @@ function buildDts() {
 		{
 			stdout: process.stdout,
 			stderr: process.stderr,
-		}
+		},
 	);
 }
 
@@ -91,7 +86,7 @@ async function watchSrc() {
 		},
 	}];
 
-	console.log(`[${_package.name}] start watching...`)
+	console.log(`[${_package.name}] start watching...`);
 
 	const context = await esbuild.context({ ...options, plugins });
 	await context.watch();
