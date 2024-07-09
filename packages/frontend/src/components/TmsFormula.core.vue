@@ -3,11 +3,12 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<!-- eslint-disable vue/no-v-html -->
 <template>
 <div v-if="props.displayMode" :class="$style.mathBlockRoot">
+	<!-- eslint-disable-next-line vue/no-v-html -->
 	<div :class="$style.mathBlockInner" v-html="rawHtml"></div>
 </div>
+<!-- eslint-disable-next-line vue/no-v-html -->
 <span v-else v-html="rawHtml"></span>
 </template>
 

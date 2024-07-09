@@ -9,12 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkKeyValue>
 		<template #key>{{ i18n.ts.description }}</template>
-		<template #value><div v-html="instance.description || i18n.ts.headlineMisskey"></div></template>
+		<template #value>
+			<!-- eslint-disable-next-line vue/no-v-html -->
+			<div v-html="instance.description || i18n.ts.headlineMisskey"></div>
+		</template>
 	</MkKeyValue>
 
 	<FormSection>
 		<div class="_gaps_m">
 			<TmsSoftwareVersions/>
+			<!-- eslint-disable-next-line vue/no-v-html -->
 			<div v-html="i18n.tsx._tms.poweredByTaiyme({ name: instance.name ?? host })"></div>
 			<div class="_gaps_s">
 				<FormLink to="/tms/about">
@@ -61,6 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.serverRules }}</template>
 					<ol class="_gaps_s" :class="$style.rules">
 						<li v-for="item in instance.serverRules" :key="item" :class="$style.rule">
+							<!-- eslint-disable-next-line vue/no-v-html -->
 							<div :class="$style.ruleText" v-html="item"></div>
 						</li>
 					</ol>

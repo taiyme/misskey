@@ -32,7 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
+		<template #caption>
+			<!-- eslint-disable-next-line vue/no-v-html -->
+			<div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div>
+		</template>
 		<option value="normal">{{ i18n.ts.normalUser }}</option>
 		<option value="moderator">{{ i18n.ts.moderator }}</option>
 		<option value="administrator">{{ i18n.ts.administrator }}</option>
@@ -40,7 +43,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkSelect v-model="role.target" :readonly="readonly">
 		<template #label><i class="ti ti-users"></i> {{ i18n.ts._role.assignTarget }}</template>
-		<template #caption><div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div></template>
+		<template #caption>
+			<!-- eslint-disable-next-line vue/no-v-html -->
+			<div v-html="i18n.ts._role.descriptionOfAssignTarget.replaceAll('\n', '<br>')"></div>
+		</template>
 		<option value="manual">{{ i18n.ts._role.manual }}</option>
 		<option value="conditional">{{ i18n.ts._role.conditional }}</option>
 	</MkSelect>

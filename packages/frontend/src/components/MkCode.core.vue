@@ -3,8 +3,8 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<!-- eslint-disable vue/no-v-html -->
 <template>
+<!-- eslint-disable-next-line vue/no-v-html -->
 <div :class="[$style.codeBlockRoot, { [$style.codeEditor]: codeEditor }, (darkMode ? $style.dark : $style.light)]" v-html="html"></div>
 </template>
 
