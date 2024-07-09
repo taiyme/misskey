@@ -67,8 +67,9 @@ const otherMenuItemIndicated = computed(() => {
 });
 
 function more() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {
-	}, 'closed');
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {
+		closed: () => dispose(),
+	});
 }
 </script>
 

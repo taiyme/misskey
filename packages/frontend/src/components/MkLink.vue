@@ -48,11 +48,13 @@ const anchorElement = computed(() => {
 
 useTooltip(anchorElement, (showing) => {
 	if (isEnabledUrlPreview.value && anchorElement.value != null) {
-		popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
 			source: anchorElement.value,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 });
 </script>

@@ -105,13 +105,15 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 	ev.preventDefault();
 
 	const tooltipShowing = ref(true);
-	os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 		showing: tooltipShowing,
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
 		targetElement: thumbEl,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 
 	const style = document.createElement('style');
 	style.appendChild(document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));

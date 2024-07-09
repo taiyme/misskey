@@ -4,7 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true">
+<MkWindow
+	:initialWidth="640"
+	:initialHeight="402"
+	:canResize="true"
+	:closeButton="true"
+	@closed="emit('closed')"
+>
 	<template #header>
 		<i class="icon ti ti-brand-youtube" style="margin-right: 0.5em;"></i>
 		<span>{{ title ?? 'YouTube' }}</span>
@@ -31,6 +37,10 @@ import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	url: string;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const requestUrl = new URL(props.url);

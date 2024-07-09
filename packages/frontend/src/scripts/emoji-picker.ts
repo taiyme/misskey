@@ -25,7 +25,7 @@ class EmojiPicker {
 
 	public async init() {
 		const emojisRef = defaultStore.reactiveState.pinnedEmojis;
-		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
 			pinnedEmojis: emojisRef,
 			asReactionPicker: false,
@@ -41,6 +41,7 @@ class EmojiPicker {
 			closed: () => {
 				this.src.value = null;
 				if (this.onClosed) this.onClosed();
+				dispose();
 			},
 		});
 	}

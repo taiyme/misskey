@@ -31,11 +31,13 @@ const rootEl = shallowRef<HTMLAnchorElement | null>(null);
 
 useTooltip(rootEl, (showing) => {
 	if (isEnabledUrlPreview.value && rootEl.value != null) {
-		popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
 			showing,
 			url: props.url,
 			source: rootEl.value,
-		}, {}, 'closed');
+		}, {
+			closed: () => dispose(),
+		});
 	}
 });
 </script>

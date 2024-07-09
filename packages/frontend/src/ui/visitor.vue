@@ -121,15 +121,19 @@ mainRouter.on('change', () => {
 });
 
 function signin() {
-	os.popup(XSigninDialog, {
+	const { dispose } = os.popup(XSigninDialog, {
 		autoSet: true,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 function signup() {
-	os.popup(XSignupDialog, {
+	const { dispose } = os.popup(XSignupDialog, {
 		autoSet: true,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 </script>
 
