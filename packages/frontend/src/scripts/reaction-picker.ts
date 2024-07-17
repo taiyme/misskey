@@ -21,7 +21,8 @@ class ReactionPicker {
 
 	public async init() {
 		const reactionsRef = defaultStore.reactiveState.reactions;
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+		// NOTE: 再利用するのでdisposeしないこと
+		popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
 			src: this.src,
 			pinnedEmojis: reactionsRef,
 			asReactionPicker: true,
@@ -37,7 +38,6 @@ class ReactionPicker {
 			closed: () => {
 				this.src.value = null;
 				if (this.onClosed) this.onClosed();
-				dispose();
 			},
 		});
 	}
