@@ -2741,6 +2741,8 @@ _tms:
   resolvedBy: "{user}によって解決済み"
   forwardedReport: "リモートサーバーに転送済み"
   notYetProvided: "まだ提供されていません"
+  moderationNoteIsSharedAmongModerators: "モデレーションノートはモデレーター間で共有されます。"
+  memoIsNotShared: "あなたのメモは他のユーザーと共有されません。"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"

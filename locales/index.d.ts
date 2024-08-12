@@ -10281,6 +10281,14 @@ export interface Locale extends ILocale {
          * まだ提供されていません
          */
         readonly "notYetProvided": string;
+        /**
+         * モデレーションノートはモデレーター間で共有されます。
+         */
+        readonly "moderationNoteIsSharedAmongModerators": string;
+        /**
+         * あなたのメモは他のユーザーと共有されません。
+         */
+        readonly "memoIsNotShared": string;
         readonly "_about": {
             /**
              * taiymeについて

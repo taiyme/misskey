@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_s">
+<div>
 	<div :class="$style.textarea" @click="focus">
 		<div :class="$style.heading"><slot name="heading"></slot></div>
 		<textarea
@@ -15,8 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="adjustInputEl"
 		/>
 	</div>
-	<div v-if="changed" class="_buttons">
-		<MkButton small primary @click="update"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<div v-if="changed" :class="$style.footer">
+		<div :class="$style.caption"><slot name="caption"></slot></div>
+		<MkButton small primary :class="$style.save" @click="update"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
@@ -99,5 +100,27 @@ defineExpose({
 	overflow: hidden;
 	background: transparent;
 	font-family: inherit;
+}
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 6px 0 0 0;
+}
+
+.caption {
+	font-size: 0.85em;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.save {
+	margin-left: auto;
 }
 </style>
