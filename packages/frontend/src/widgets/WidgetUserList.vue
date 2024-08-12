@@ -121,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 		> .users {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(30px, 40px));
-			grid-gap: 12px;
+			gap: 12px;
 			place-content: center;
 			padding: 16px;
 

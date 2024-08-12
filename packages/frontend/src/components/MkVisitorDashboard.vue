@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -65,7 +66,6 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import MkNumber from '@/components/MkNumber.vue';
 import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
-import type { MenuItem } from '@/types/menu.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 
@@ -137,6 +137,7 @@ function showMenu(ev: MouseEvent) {
 			target: '_blank',
 		});
 	}
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	if (instance.impressumUrl || instance.tosUrl || instance.privacyPolicyUrl) {
 		menu.push({ type: 'divider' });
 	}
@@ -226,7 +227,7 @@ function showMenu(ev: MouseEvent) {
 .stats {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-gap: 16px;
+	gap: 16px;
 }
 
 .statsItem {

@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</Transition>
 </div>
 </template>
+
 <script lang="ts" setup>
 import { ref, shallowRef, computed, nextTick, watch } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
@@ -33,7 +34,6 @@ import { isHorizontalSwipeSwiping as isSwiping } from '@/scripts/touch.js';
 
 const rootEl = shallowRef<HTMLDivElement>();
 
-// eslint-disable-next-line no-undef
 const tabModel = defineModel<string>('tab');
 
 const props = defineProps<{

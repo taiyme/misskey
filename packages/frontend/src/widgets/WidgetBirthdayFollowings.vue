@@ -117,6 +117,7 @@ defineExpose<WidgetComponentExpose>({
 	overflow: hidden;
 	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--margin) * 2));
 }
+
 .bdayFGrid {
 	display: grid;
 	grid-template-columns: repeat(6, 42px);

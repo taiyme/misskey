@@ -89,7 +89,7 @@ const props = defineProps<{
 	&.grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-		grid-gap: 12px;
+		gap: 12px;
 
 		> .file {
 			position: relative;

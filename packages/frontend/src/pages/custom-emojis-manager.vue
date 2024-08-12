@@ -322,7 +322,7 @@ definePageMetadata(() => ({
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-			grid-gap: 12px;
+			gap: 12px;
 			margin: var(--margin) 0;
 
 			> .emoji {
@@ -373,7 +373,7 @@ definePageMetadata(() => ({
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-			grid-gap: 12px;
+			gap: 12px;
 			margin: var(--margin) 0;
 
 			> .emoji {

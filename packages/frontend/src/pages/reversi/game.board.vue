@@ -562,7 +562,7 @@ $gap: 4px;
 .boardCells {
 	flex: 1;
 	display: grid;
-	grid-gap: $gap;
+	gap: $gap;
 }
 
 .boardCell {

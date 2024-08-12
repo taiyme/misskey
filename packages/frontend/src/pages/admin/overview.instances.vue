@@ -46,7 +46,7 @@ useInterval(fetch, 1000 * 60, {
 .instances {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-	grid-gap: 12px;
+	gap: 12px;
 }
 
 .instance:hover {

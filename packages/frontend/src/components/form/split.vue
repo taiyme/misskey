@@ -27,6 +27,6 @@ const minWidth = props.minWidth + 'px';
 .root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(v-bind('minWidth'), 1fr));
-	grid-gap: 12px;
+	gap: 12px;
 }
 </style>

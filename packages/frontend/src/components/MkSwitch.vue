@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<{
 	helpText?: string;
 }>(), {
 	disabled: false,
+	helpText: undefined,
 });
 
 const emit = defineEmits<{

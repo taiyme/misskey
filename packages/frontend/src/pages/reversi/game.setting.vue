@@ -110,9 +110,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
+import { computed, watch, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { signinRequired } from '@/account.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -121,7 +122,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router/supplier.js';
 
 const $i = signinRequired();
@@ -261,6 +261,7 @@ onUnmounted(() => {
 .disallow {
 	cursor: not-allowed;
 }
+
 .disallowInner {
 	pointer-events: none;
 	user-select: none;
@@ -269,7 +270,7 @@ onUnmounted(() => {
 
 .board {
 	display: grid;
-	grid-gap: 4px;
+	gap: 4px;
 	width: 300px;
 	height: 300px;
 	margin: 0 auto;
@@ -285,6 +286,7 @@ onUnmounted(() => {
 	overflow: clip;
 	cursor: pointer;
 }
+
 .boardCellNone {
 	border-color: transparent;
 }

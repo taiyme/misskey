@@ -32,14 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import type * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
+import type * as Misskey from 'misskey-js';
 import 'photoswipe/style.css';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { claimZIndex } from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { focusParent } from '@/scripts/tms/focus.js';
+import { focusParent } from '@/scripts/focus.js';
 import XAudio from '@/components/MkMediaAudio.vue';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
@@ -148,15 +148,13 @@ onMounted(() => {
 		pswpModule: PhotoSwipe,
 	});
 
-	lightbox.on('itemData', (ev) => {
-		const { itemData } = ev;
-
+	lightbox.addFilter('itemData', (itemData) => {
 		// element is children
 		const { element } = itemData;
 
 		const id = element?.dataset.id;
 		const file = props.mediaList.find(media => media.id === id);
-		if (!file) return;
+		if (!file) return itemData;
 
 		itemData.src = file.url;
 		itemData.w = Number(file.properties.width);
@@ -168,6 +166,8 @@ onMounted(() => {
 		itemData.alt = file.comment ?? file.name;
 		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
+
+		return itemData;
 	});
 
 	lightbox.on('uiRegister', () => {

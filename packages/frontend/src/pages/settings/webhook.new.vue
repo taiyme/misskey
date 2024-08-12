@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 
 			<FormSection>
-				<template #label>{{ i18n.ts._webhookSettings.events }}</template>
+				<template #label>{{ i18n.ts._webhookSettings.trigger }}</template>
 
 				<div class="_gaps_s">
 					<MkSwitch v-model="event_follow">{{ i18n.ts._webhookSettings._events.follow }}</MkSwitch>
@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
+import type * as Misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -66,7 +67,7 @@ const event_reaction = ref(true);
 const event_mention = ref(true);
 
 async function create(): Promise<void> {
-	const events = [];
+	const events: Misskey.entities.IWebhooksCreateRequest['on'] = [];
 	if (event_follow.value) events.push('follow');
 	if (event_followed.value) events.push('followed');
 	if (event_note.value) events.push('note');

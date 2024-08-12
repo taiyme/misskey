@@ -106,6 +106,7 @@ definePageMetadata(() => ({
 	icon: 'ti ti-list',
 }));
 </script>
+
 <style lang="scss" module>
 .main {
 	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
@@ -124,6 +125,7 @@ definePageMetadata(() => ({
 		text-decoration: none;
 	}
 }
+
 .member_text {
 	margin: 5px;
 }

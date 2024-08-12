@@ -4,23 +4,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="onModalClosed">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :returnFocusElement="returnFocusElement" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
+<MkModal
+	ref="modal"
+	v-slot="{ type, maxHeight }"
+	:manualShowing="manualShowing"
+	:zPriority="'high'"
+	:src="props.src"
+	:transparentBg="true"
+	:returnFocusTo="props.returnFocusTo"
+	@click="click"
+	@close="onModalClose"
+	@closed="onModalClosed"
+>
+	<MkMenu
+		:items="props.items"
+		:align="props.align"
+		:width="props.width"
+		:max-height="maxHeight"
+		:asDrawer="type === 'drawer'"
+		:class="{ [$style.drawer]: type === 'drawer' }"
+		@close="onMenuClose"
+		@hide="hide"
+	/>
 </MkModal>
 </template>
 
 <script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
-import MkModal from './MkModal.vue';
-import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
+import MkModal from '@/components/MkModal.vue';
+import MkMenu from '@/components/MkMenu.vue';
 
 const props = defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
 	src?: any;
-	returnFocusElement?: HTMLElement | null;
+	returnFocusTo?: HTMLElement | null;
 }>();
 
 const emit = defineEmits<{

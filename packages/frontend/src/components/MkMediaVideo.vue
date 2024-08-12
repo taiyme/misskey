@@ -154,17 +154,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onActivated, onDeactivated, onMounted, ref, shallowRef, watch } from 'vue';
 import type * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
-import { popupMenu } from '@/os.js';
+import { confirm, popupMenu } from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { isFullscreenNotSupported } from '@/scripts/device-kind.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 import hasAudio from '@/scripts/media-has-audio.js';
 import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
 import bytes from '@/filters/bytes.js';
 import { hms } from '@/filters/hms.js';
-import type { MenuItem } from '@/types/menu.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 
 const props = defineProps<{
@@ -187,8 +187,15 @@ const reactiveColor = computed(() => {
 	return 'rgba(0, 0, 0, 0.02)';
 });
 
-const showVideo = () => {
+const showVideo = async () => {
 	if (!hideRef.value) return;
+	if (sensitiveRef.value && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
 	hideRef.value = false;
 };
 

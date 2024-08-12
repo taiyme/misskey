@@ -91,11 +91,13 @@ export default {
 		animation-play-state: paused;
 	}
 }
+
 .content {
 	display: inline-block;
 	white-space: nowrap;
 	animation-play-state: inherit;
 }
+
 .text {
 	display: inline-block;
 	animation-name: marquee;
@@ -104,9 +106,11 @@ export default {
 	animation-duration: inherit;
 	animation-play-state: inherit;
 }
+
 .paused .text {
 	animation-play-state: paused;
 }
+
 @keyframes marquee {
 	0% { transform:translateX(0); }
 	100% { transform:translateX(-100%); }

@@ -158,7 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 			<MkPagination :pagination="renotesPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
-					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px;">
 						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
 							<MkUserCardMini :user="item.user" :withChart="false"/>
 						</MkA>
@@ -175,7 +175,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkPagination v-if="reactionTabType" :key="reactionTabType" :pagination="reactionsPagination" :disableAutoLoad="true">
 				<template #default="{ items }">
-					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 12px;">
+					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px;">
 						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
 							<MkUserCardMini :user="item.user" :withChart="false"/>
 						</MkA>
@@ -197,7 +197,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, provide, ref, shallowRef, watch } from 'vue';
+import { type ComputedRef, computed, inject, onMounted, provide, ref, shallowRef, watch } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -210,7 +210,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import TmsInstanceTicker from '@/components/TmsInstanceTicker.vue';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import { notePage } from '@/filters/note.js';
@@ -223,6 +223,7 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
+import { host } from '@/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
@@ -235,8 +236,8 @@ import MkPagination, { type Paging } from '@/components/MkPagination.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
 import { isEnabledUrlPreview } from '@/instance.js';
+import { type Keymap } from '@/scripts/hotkey.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
@@ -247,7 +248,7 @@ const props = withDefaults(defineProps<{
 	initialTab: 'replies',
 });
 
-const inChannel = inject('inChannel', null);
+const inChannel = inject<ComputedRef<boolean> | null>('inChannel', null);
 
 const note = ref(deepClone(props.note));
 
@@ -293,6 +294,11 @@ const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i?.id);
 const canPakuru = computed(() => tmsStore.reactiveState.enablePakuru.value || tmsStore.reactiveState.enableNumberquote.value);
+
+const pleaseLoginContext = computed(() => ({
+	type: 'lookup',
+	url: `https://${host}/notes/${appearNote.value.id}`,
+} as const satisfies OpenOnRemoteOptions));
 
 const keymap = {
 	'r': () => reply(),
@@ -394,15 +400,15 @@ if (appearNote.value.reactionAcceptance === 'likeOnly') {
 }
 
 async function renote() {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 
 	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value);
 }
 
-function reply(): void {
-	pleaseLogin();
+function reply() {
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 	os.post({
 		reply: appearNote.value,
@@ -412,8 +418,8 @@ function reply(): void {
 	});
 }
 
-function react(): void {
-	pleaseLogin();
+function react() {
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -449,7 +455,7 @@ function react(): void {
 	}
 }
 
-function undoReact(targetNote: Misskey.entities.Note): void {
+function undoReact(targetNote: Misskey.entities.Note) {
 	const oldReaction = targetNote.myReaction;
 	if (!oldReaction) return;
 	misskeyApi('notes/reactions/delete', {
@@ -465,7 +471,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: MouseEvent) {
 	const isLink = (el: HTMLElement): boolean => {
 		if (el.tagName === 'A') return true;
 		if (el.parentElement) {
@@ -486,7 +492,7 @@ function onContextmenu(ev: MouseEvent): void {
 	}
 }
 
-function showMenu(): void {
+function showMenu() {
 	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted });
 	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
 }
@@ -495,9 +501,9 @@ async function clip(): Promise<void> {
 	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted }), clipButton.value).then(focus);
 }
 
-function showRenoteMenu(): void {
+function showRenoteMenu() {
 	if (!isMyRenote) return;
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',

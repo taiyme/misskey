@@ -82,6 +82,8 @@ const tooltipRef = computed(() => {
 .iconOnly {
 	display: block;
 	margin: 0 auto;
+	overflow: clip;
+	border-radius: 2px;
 	width: 30px;
 	height: 30px;
 }

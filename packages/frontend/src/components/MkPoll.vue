@@ -29,11 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { sum } from '@/scripts/array.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { host } from '@/config.js';
 import { useInterval } from '@/scripts/use-interval.js';
 
 const props = defineProps<{
@@ -60,6 +62,11 @@ const timer = computed(() => i18n.tsx._poll[
 
 const showResult = ref(props.readOnly || isVoted.value);
 
+const pleaseLoginContext = computed(() => ({
+	type: 'lookup',
+	url: `https://${host}/notes/${props.noteId}`,
+} as const satisfies OpenOnRemoteOptions));
+
 // 期限付きアンケート
 if (props.poll.expiresAt) {
 	const tick = () => {
@@ -76,7 +83,7 @@ if (props.poll.expiresAt) {
 }
 
 const vote = async (id) => {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 
 	if (props.readOnly || closed.value || isVoted.value) return;
 
