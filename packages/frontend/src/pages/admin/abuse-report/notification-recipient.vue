@@ -43,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
 import XRecipient from './notification-recipient.item.vue';
+import type * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -104,11 +104,10 @@ async function onDeleteButtonClicked(id: string) {
 }
 
 async function showEditor(mode: 'create' | 'edit', id?: string) {
-	const { dispose, needLoad } = await new Promise<{
-		dispose: () => void;
+	const { needLoad } = await new Promise<{
 		needLoad: boolean;
 	}>(async resolve => {
-		const { dispose: disposeEditor } = os.popup(
+		const { dispose } = os.popup(
 			defineAsyncComponent(() => import('./notification-recipient.editor.vue')),
 			{
 				mode,
@@ -116,16 +115,17 @@ async function showEditor(mode: 'create' | 'edit', id?: string) {
 			},
 			{
 				submitted: () => {
-					resolve({ dispose: disposeEditor, needLoad: true });
+					resolve({ needLoad: true });
+				},
+				canceled: () => {
+					resolve({ needLoad: false });
 				},
 				closed: () => {
-					resolve({ dispose: disposeEditor, needLoad: false });
+					dispose();
 				},
 			},
 		);
 	});
-
-	dispose();
 
 	if (needLoad) {
 		await fetchRecipients();

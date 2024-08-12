@@ -128,7 +128,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, inject } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { popupMenu } from '@/os.js';
+import { confirm, popupMenu } from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { getStaticImageUrl } from '@/scripts/media-proxy.js';
 import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
@@ -174,8 +174,15 @@ const reactiveColor = computed(() => {
 	return 'rgba(0, 0, 0, 0.02)';
 });
 
-const showImage = () => {
+const showImage = async () => {
 	if (!props.controls || !hideRef.value) return;
+	if (sensitiveRef.value && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
 	hideRef.value = false;
 };
 

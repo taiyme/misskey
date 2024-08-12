@@ -41,16 +41,19 @@ const zIndex = os.claimZIndex('high');
 	pointer-events: none;
 	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 	border-radius: 8px;
+
+	&:empty {
+		display: none;
+	}
 }
-.mk-uploader:empty {
-	display: none;
-}
+
 .mk-uploader > ol {
 	display: block;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
+
 .mk-uploader > ol > li {
 	display: grid;
 	margin: 8px 0 0 0;
@@ -62,12 +65,14 @@ const zIndex = os.claimZIndex('high');
 	grid-template-rows: 1fr 8px;
 	column-gap: 8px;
 	box-sizing: content-box;
+
+	&:first-child {
+		margin: 0;
+		box-shadow: none;
+		border-top: none;
+	}
 }
-.mk-uploader > ol > li:first-child {
-	margin: 0;
-	box-shadow: none;
-	border-top: none;
-}
+
 .mk-uploader > ol > li > .img {
 	display: block;
 	background-size: cover;
@@ -75,11 +80,13 @@ const zIndex = os.claimZIndex('high');
 	grid-column: 1/2;
 	grid-row: 1/3;
 }
+
 .mk-uploader > ol > li > .top {
 	display: flex;
 	grid-column: 2/3;
 	grid-row: 1/2;
 }
+
 .mk-uploader > ol > li > .top > .name {
 	display: block;
 	padding: 0 8px 0 0;
@@ -89,10 +96,12 @@ const zIndex = os.claimZIndex('high');
 	text-overflow: ellipsis;
 	overflow: hidden;
 	flex-shrink: 1;
+
+	> i {
+		margin-right: 4px;
+	}
 }
-.mk-uploader > ol > li > .top > .name > i {
-	margin-right: 4px;
-}
+
 .mk-uploader > ol > li > .top > .status {
 	display: block;
 	margin: 0 0 0 auto;
@@ -100,18 +109,23 @@ const zIndex = os.claimZIndex('high');
 	font-size: 0.8em;
 	flex-shrink: 0;
 }
+
 .mk-uploader > ol > li > .top > .status > .initing {
 }
+
 .mk-uploader > ol > li > .top > .status > .kb {
 }
+
 .mk-uploader > ol > li > .top > .status > .percentage {
 	display: inline-block;
 	width: 48px;
 	text-align: right;
+
+	&::after {
+		content: '%';
+	}
 }
-.mk-uploader > ol > li > .top > .status > .percentage:after {
-	content: '%';
-}
+
 .mk-uploader > ol > li > progress {
 	display: block;
 	background: transparent;
@@ -123,12 +137,13 @@ const zIndex = os.claimZIndex('high');
 	z-index: 2;
 	width: 100%;
 	height: 8px;
-}
-.mk-uploader > ol > li > progress::-webkit-progress-value {
-	background: var(--accent);
-}
-.mk-uploader > ol > li > progress::-webkit-progress-bar {
-	// background: var(--accentAlpha01);
-	background: transparent;
+
+	&::-webkit-progress-value {
+		background: var(--accent);
+	}
+	&::-webkit-progress-bar {
+		// background: var(--accentAlpha01);
+		background: transparent;
+	}
 }
 </style>

@@ -14,8 +14,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, ref } from 'vue';
+
 const editMode = ref(false);
 </script>
+
 <script lang="ts" setup>
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';

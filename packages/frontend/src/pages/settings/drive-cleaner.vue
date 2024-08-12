@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { type StyleValue, computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -107,10 +107,10 @@ function fetchDriveInfo(): void {
 	});
 }
 
-function genUsageBar(fsize: number): object {
+function genUsageBar(fsize: number): StyleValue {
 	return {
 		width: `${fsize / usage.value * 100}%`,
-		background: tinycolor({ h: 180 - (fsize / usage.value * 180), s: 0.7, l: 0.5 }),
+		background: tinycolor({ h: 180 - (fsize / usage.value * 180), s: 0.7, l: 0.5 }).toHslString(),
 	};
 }
 

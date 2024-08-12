@@ -11,7 +11,7 @@ import locales from '../../locales/index.js';
 import meta from '../../package.json' with { type: 'json' };
 const watch = process.argv[2]?.includes('watch');
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 console.log('Starting SW building...');
 

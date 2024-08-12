@@ -8,5 +8,6 @@ export type PageHeaderItem = {
 	icon: string;
 	highlighted?: boolean;
 	asFullButton?: boolean;
+	disabled?: boolean;
 	handler: (ev: MouseEvent) => void;
 };

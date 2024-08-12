@@ -7,8 +7,8 @@
  * Clipboardに値をコピー(TODO: 文字列以外も対応)
  * @deprecated
  */
-// eslint-disable-next-line import/no-default-export
-export default val => {
+// eslint-disable-next-line import/no-default-export, @typescript-eslint/no-explicit-any
+export default (val: any) => {
 	// 空div 生成
 	const tmp = document.createElement('div');
 	// 選択用のタグ生成
@@ -28,7 +28,7 @@ export default val => {
 	// body に追加
 	document.body.appendChild(tmp);
 	// 要素を選択
-	document.getSelection().selectAllChildren(tmp);
+	document.getSelection()?.selectAllChildren(tmp);
 
 	// クリップボードにコピー
 	const result = document.execCommand('copy');

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import { IRouter, Resolved, RouteDef } from '@/nirax.js';
+import { IRouter, Resolved } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
@@ -29,13 +29,13 @@ const props = defineProps<{
 	router?: IRouter;
 }>();
 
-const router = props.router ?? inject('router');
+const router = props.router ?? inject<IRouter | null>('router', null);
 
 if (router == null) {
 	throw new Error('no router provided');
 }
 
-const currentDepth = inject('routerCurrentDepth', 0);
+const currentDepth = inject<number>('routerCurrentDepth', 0);
 provide('routerCurrentDepth', currentDepth + 1);
 
 function resolveNested(current: Resolved, d = 0): Resolved | null {
@@ -53,14 +53,14 @@ function resolveNested(current: Resolved, d = 0): Resolved | null {
 const current = resolveNested(router.current)!;
 const currentPageComponent = shallowRef('component' in current.route ? current.route.component : MkLoadingPage);
 const currentPageProps = ref(current.props);
-const key = ref(current.route.path + JSON.stringify(Object.fromEntries(current.props)));
+const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
 
 function onChange({ resolved, key: newKey }) {
 	const current = resolveNested(resolved);
 	if (current == null || 'redirect' in current.route) return;
 	currentPageComponent.value = current.route.component;
 	currentPageProps.value = current.props;
-	key.value = current.route.path + JSON.stringify(Object.fromEntries(current.props));
+	key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化

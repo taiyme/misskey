@@ -266,6 +266,7 @@ definePageMetadata(() => ({
 		margin-bottom: var(--margin);
 	}
 }
+
 .input {
 	margin-bottom: 32px;
 }

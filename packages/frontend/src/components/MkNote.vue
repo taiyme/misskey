@@ -160,9 +160,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, watch, provide } from 'vue';
+import { type ComputedRef, type Ref, computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
+import type { MenuItem } from '@/types/menu.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -174,7 +175,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import TmsInstanceTicker from '@/components/TmsInstanceTicker.vue';
-import { pleaseLogin } from '@/scripts/please-login.js';
+import { pleaseLogin, type OpenOnRemoteOptions } from '@/scripts/please-login.js';
 import { checkWordMute } from '@/scripts/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
@@ -192,14 +193,14 @@ import { deepClone } from '@/scripts/clone.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { getNoteSummary } from '@/scripts/get-note-summary.js';
-import { MenuItem } from '@/types/menu.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
 import { shouldCollapsed } from '@/scripts/collapsed.js';
+import { host } from '@/config.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { focusPrev, focusNext } from '@/scripts/tms/focus.js';
+import { type Keymap } from '@/scripts/hotkey.js';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
 import { isQuote, isRenote } from '@/scripts/tms/is-renote.js';
 import { tmsStore } from '@/tms/store.js';
 
@@ -220,7 +221,7 @@ const emit = defineEmits<{
 }>();
 
 const inTimeline = inject<boolean>('inTimeline', false);
-const inChannel = inject('inChannel', null);
+const inChannel = inject<ComputedRef<boolean> | null>('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 const note = ref(deepClone(props.note));
@@ -274,6 +275,11 @@ const renoteCollapsed = ref(
 		(appearNote.value.myReaction != null)
 	),
 );
+
+const pleaseLoginContext = computed(() => ({
+	type: 'lookup',
+	url: `https://${host}/notes/${appearNote.value.id}`,
+} as const satisfies OpenOnRemoteOptions));
 
 /* Overload FunctionにLintが対応していないのでコメントアウト
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
@@ -408,15 +414,15 @@ if (!props.mock) {
 }
 
 async function renote() {
-	pleaseLogin();
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 
 	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
 	os.popupMenu(menu, renoteButton.value);
 }
 
-function reply(): void {
-	pleaseLogin();
+function reply() {
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	if (props.mock) {
 		return;
 	}
@@ -428,8 +434,8 @@ function reply(): void {
 	});
 }
 
-function react(): void {
-	pleaseLogin();
+function react() {
+	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 	if (appearNote.value.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -474,7 +480,7 @@ function react(): void {
 	}
 }
 
-function undoReact(targetNote: Misskey.entities.Note): void {
+function undoReact(targetNote: Misskey.entities.Note) {
 	const oldReaction = targetNote.myReaction;
 	if (!oldReaction) return;
 
@@ -496,7 +502,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: MouseEvent) {
 	if (props.mock) {
 		return;
 	}
@@ -523,7 +529,7 @@ function onContextmenu(ev: MouseEvent): void {
 	}
 }
 
-function showMenu(): void {
+function showMenu() {
 	if (props.mock) {
 		return;
 	}
@@ -540,7 +546,7 @@ async function clip(): Promise<void> {
 	os.popupMenu(await getNoteClipMenu({ note: note.value, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
-function showRenoteMenu(): void {
+function showRenoteMenu() {
 	if (props.mock) {
 		return;
 	}
@@ -560,7 +566,7 @@ function showRenoteMenu(): void {
 	}
 
 	if (isMyRenote) {
-		pleaseLogin();
+		pleaseLogin(undefined, pleaseLoginContext.value);
 		os.popupMenu([
 			getCopyNoteLinkMenu(note.value, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },

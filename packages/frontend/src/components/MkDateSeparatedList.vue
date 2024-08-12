@@ -202,6 +202,7 @@ export default defineComponent({
 	}
 	}
 }
+
 .direction-down {
 	&:global {
 	> .list-enter-from,

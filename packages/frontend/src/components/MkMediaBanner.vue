@@ -66,10 +66,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { inject } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { popupMenu } from '@/os.js';
-import bytes from '@/filters/bytes.js';
+import { confirm, popupMenu } from '@/os.js';
+import { defaultStore } from '@/store.js';
 import { getMediaMenu } from '@/scripts/tms/get-media-menu.js';
 import { useReactiveDriveFile } from '@/scripts/tms/use-reactive-drive-file.js';
+import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
 	media: Misskey.entities.DriveFile;
@@ -84,8 +85,15 @@ const {
 	reactiveIAmOwner: iAmOwnerRef,
 } = useReactiveDriveFile(() => props.media);
 
-const showMedia = () => {
+const showMedia = async () => {
 	if (!hideRef.value) return;
+	if (sensitiveRef.value && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
 	hideRef.value = false;
 };
 

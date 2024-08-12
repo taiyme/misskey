@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 		:style="{
 			width: (width && !asDrawer) ? `${width}px` : '',
-			maxHeight: maxHeight ? `${maxHeight}px` : '',
+			maxHeight: maxHeight ? `min(${maxHeight}px, calc(100dvh - 32px))` : 'calc(100dvh - 32px)',
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 				</div>
 			</MkA>
-			<a v-else-if="item.type === 'a'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :href="item.href" :target="item.target" rel="nofollow noopener" :download="item.download" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
+			<a v-else-if="item.type === 'a'" role="menuitem" tabindex="0" :class="['_button', $style.item]" :href="item.href" :target="item.target" :rel="item.target === '_blank' ? 'noopener noreferrer' : undefined" :download="item.download" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter" @mouseleave.passive="onItemMouseLeave">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<div :class="$style.item_content">
 					<span :class="$style.item_content_text">{{ item.text }}</span>
@@ -107,10 +107,10 @@ import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { isTouchUsing } from '@/scripts/touch.js';
-import { focusParent, isFocusable } from '@/scripts/tms/focus.js';
-import { getNodeOrNull } from '@/scripts/tms/get-or-null.js';
+import { type Keymap } from '@/scripts/hotkey.js';
+import { isFocusable } from '@/scripts/focus.js';
+import { getNodeOrNull } from '@/scripts/get-dom-node-or-null.js';
 import { filterKeyboardEnterOrSpace } from '@/scripts/tms/filter-keyboard.js';
-import { type Keymap } from '@/scripts/tms/hotkey.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
@@ -124,7 +124,6 @@ const props = defineProps<{
 	align?: 'center' | string;
 	width?: number;
 	maxHeight?: number;
-	returnFocusElement?: HTMLElement | null;
 }>();
 
 const emit = defineEmits<{
@@ -268,7 +267,6 @@ function close(actioned = false) {
 	nextTick(() => {
 		closeChild();
 		emit('close', actioned);
-		focusParent(props.returnFocusElement, true, false);
 	});
 }
 

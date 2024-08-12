@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="`fullButton:${action.text}:${action.icon}`"
 					:class="$style.fullButton"
 					primary
+					:disabled="action.disabled"
 					@click.stop="action.handler"
 					@touchstart.stop="() => {}"
 				>
@@ -46,6 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="`button:${action.text}:${action.icon}`"
 					v-tooltip.noDelay="action.text"
 					:class="['_button', $style.button, { [$style.highlighted]: action.highlighted }]"
+					:disabled="action.disabled"
 					@click.stop="action.handler"
 					@touchstart.stop="() => {}"
 				>
@@ -78,7 +80,9 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tabs: () => [],
+	tab: undefined,
+	actions: null,
 });
 
 const emit = defineEmits<{
@@ -87,8 +91,8 @@ const emit = defineEmits<{
 
 const pageMetadata = injectReactiveMetadata();
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
-const thin_ = props.thin || inject('shouldHeaderThin', false);
+const hideTitle = inject<boolean>('shouldOmitHeaderTitle', false);
+const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
 
 const el = shallowRef<HTMLElement | undefined>(undefined);
 const bg = ref<string | undefined>(undefined);
@@ -130,7 +134,7 @@ onMounted(() => {
 
 	if (el.value && el.value.parentElement) {
 		narrow.value = el.value.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
+		ro = new ResizeObserver(() => {
 			if (el.value && el.value.parentElement && document.body.contains(el.value as HTMLElement)) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
 			}

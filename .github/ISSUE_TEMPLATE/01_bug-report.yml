@@ -8,7 +8,7 @@ body:
       value: |
         報告ありがとうございます！
         まず、報告の重複を避けるために、発見した問題がすでに報告されているかどうかを検索してください。
-        また、サーバーの所有者/管理者ではない場合は、サーバー固有の問題をここに報告しないでください。 (例: XXX が taiyme.example で機能しません) 一度他のサーバーで試して、それでも特定のサーバーでのみ再現する場合は、まずサーバーの所有者/管理者にお問い合わせください。
+        また、サーバーの所有者/管理者ではない場合は、サーバー固有の問題をここに報告しないでください。 (例: XXX が taiyme.example.com で機能しません) 一度他のサーバーで試して、それでも特定のサーバーでのみ再現する場合は、まずサーバーの所有者/管理者にお問い合わせください。
 
   - type: textarea
     attributes:
@@ -53,8 +53,8 @@ body:
         例:
           - Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
           - Browser: Chrome 113.0.5672.126
-          - Server URL: misskey.io
-          - Misskey: 13.x.x
+          - Server URL: taiyme.example.com
+          - Misskey: 2024.x.x
       value: |
         - Model and OS of the device(s):
         - Browser:
@@ -73,11 +73,11 @@ body:
 
         例:
           - Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
-          - Misskey: 13.x.x
+          - Misskey: 2024.x.x
           - Node: 20.x.x
           - PostgreSQL: 15.x.x
           - Redis: 7.x.x
-          - OS and Architecture: Ubuntu 22.04.2 LTS aarch64
+          - OS and Architecture: Ubuntu 24.04.2 LTS aarch64
       value: |
         - Installation Method or Hosting Service:
         - Misskey:

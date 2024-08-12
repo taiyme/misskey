@@ -4,7 +4,7 @@
  */
 
 import { Directive } from 'vue';
-import { makeHotkey } from '@/scripts/tms/hotkey.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
 
 // eslint-disable-next-line import/no-default-export
 export default {

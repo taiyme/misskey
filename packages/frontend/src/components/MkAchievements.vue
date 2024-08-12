@@ -96,7 +96,7 @@ onMounted(() => {
 .root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, min(380px, 100%));
-	grid-gap: 12px;
+	gap: 12px;
 	place-content: center;
 }
 
@@ -133,6 +133,7 @@ onMounted(() => {
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
+
 .iconFrame_bronze {
 	background: linear-gradient(0deg, #703827, #d37566);
 
@@ -140,6 +141,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #d37566, #703827);
 	}
 }
+
 .iconFrame_silver {
 	background: linear-gradient(0deg, #7c7c7c, #e1e1e1);
 
@@ -147,6 +149,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
 	}
 }
+
 .iconFrame_gold {
 	background: linear-gradient(0deg, rgba(255,182,85,1) 0%, rgba(233,133,0,1) 49%, rgba(255,243,93,1) 51%, rgba(255,187,25,1) 100%);
 
@@ -154,7 +157,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #ffee20, #eb7018);
 	}
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		position: absolute;
@@ -167,6 +170,7 @@ onMounted(() => {
 		animation: shine 2s infinite;
 	}
 }
+
 .iconFrame_platinum {
 	background: linear-gradient(0deg, rgba(154,154,154,1) 0%, rgba(226,226,226,1) 49%, rgba(255,255,255,1) 51%, rgba(195,195,195,1) 100%);
 
@@ -174,7 +178,7 @@ onMounted(() => {
 		background: linear-gradient(0deg, #e1e1e1, #7c7c7c);
 	}
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		position: absolute;

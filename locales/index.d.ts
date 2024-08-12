@@ -257,6 +257,10 @@ export interface Locale extends ILocale {
      */
     readonly "searchUser": string;
     /**
+     * ユーザーのノートを検索
+     */
+    readonly "searchThisUsersNotes": string;
+    /**
      * 返信
      */
     readonly "reply": string;
@@ -633,6 +637,10 @@ export interface Locale extends ILocale {
      */
     readonly "editAntenna": string;
     /**
+     * アンテナを作成
+     */
+    readonly "createAntenna": string;
+    /**
      * ウィジェットを選択
      */
     readonly "selectWidget": string;
@@ -737,6 +745,22 @@ export interface Locale extends ILocale {
      */
     readonly "showOnRemote": string;
     /**
+     * リモートで続行
+     */
+    readonly "continueOnRemote": string;
+    /**
+     * Misskey Hubからサーバーを選択
+     */
+    readonly "chooseServerOnMisskeyHub": string;
+    /**
+     * サーバーのドメインを直接指定
+     */
+    readonly "specifyServerHost": string;
+    /**
+     * ドメインを入力してください
+     */
+    readonly "inputHostName": string;
+    /**
      * 全般
      */
     readonly "general": string;
@@ -776,6 +800,10 @@ export interface Locale extends ILocale {
      * ホスト
      */
     readonly "host": string;
+    /**
+     * 自分を選択
+     */
+    readonly "selectSelf": string;
     /**
      * ユーザーを選択
      */
@@ -836,6 +864,10 @@ export interface Locale extends ILocale {
      * サーバーをサイレンス
      */
     readonly "silenceThisInstance": string;
+    /**
+     * サーバーをメディアサイレンス
+     */
+    readonly "mediaSilenceThisInstance": string;
     /**
      * 操作
      */
@@ -920,6 +952,14 @@ export interface Locale extends ILocale {
      * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになります。ブロックしたインスタンスには影響しません。
      */
     readonly "silencedInstancesDescription": string;
+    /**
+     * メディアサイレンスしたサーバー
+     */
+    readonly "mediaSilencedInstances": string;
+    /**
+     * メディアサイレンスしたいサーバーのホストを改行で区切って設定します。メディアサイレンスされたサーバーに所属するアカウントによるファイルはすべてセンシティブとして扱われ、カスタム絵文字が使用できないようになります。ブロックしたインスタンスには影響しません。
+     */
+    readonly "mediaSilencedInstancesDescription": string;
     /**
      * ミュートとブロック
      */
@@ -1921,9 +1961,13 @@ export interface Locale extends ILocale {
      */
     readonly "onlyOneFileCanBeAttached": string;
     /**
-     * 続行する前に、サインアップまたはサインインが必要です
+     * 続行する前に、登録またはログインが必要です
      */
     readonly "signinRequired": string;
+    /**
+     * 続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります
+     */
+    readonly "signinOrContinueOnRemote": string;
     /**
      * 招待
      */
@@ -4421,6 +4465,14 @@ export interface Locale extends ILocale {
      */
     readonly "archive": string;
     /**
+     * アーカイブ済み
+     */
+    readonly "archived": string;
+    /**
+     * アーカイブ解除
+     */
+    readonly "unarchive": string;
+    /**
      * {name}をアーカイブしますか？
      */
     readonly "channelArchiveConfirmTitle": ParameterizedString<"name">;
@@ -4460,6 +4512,18 @@ export interface Locale extends ILocale {
      * ユーザー指定
      */
     readonly "specifyUser": string;
+    /**
+     * 照会しますか？
+     */
+    readonly "lookupConfirm": string;
+    /**
+     * ハッシュタグのページを開きますか？
+     */
+    readonly "openTagPageConfirm": string;
+    /**
+     * ホスト指定
+     */
+    readonly "specifyHost": string;
     /**
      * プレビューできません
      */
@@ -4984,6 +5048,26 @@ export interface Locale extends ILocale {
      * お問い合わせ
      */
     readonly "inquiry": string;
+    /**
+     * もう一度お試しください。
+     */
+    readonly "tryAgain": string;
+    /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    readonly "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    readonly "sensitiveMediaRevealConfirm": string;
+    /**
+     * 作成したリスト
+     */
+    readonly "createdLists": string;
+    /**
+     * 作成したアンテナ
+     */
+    readonly "createdAntennas": string;
     readonly "_delivery": {
         /**
          * 配信状態
@@ -6595,6 +6679,10 @@ export interface Locale extends ILocale {
              */
             readonly "alwaysMarkNsfw": string;
             /**
+             * アイコンとバナーの更新を許可
+             */
+            readonly "canUpdateBioMedia": string;
+            /**
              * ノートのピン留めの最大数
              */
             readonly "pinMax": string;
@@ -7516,14 +7604,6 @@ export interface Locale extends ILocale {
          */
         readonly "notification": string;
         /**
-         * アンテナ受信
-         */
-        readonly "antenna": string;
-        /**
-         * チャンネル通知
-         */
-        readonly "channel": string;
-        /**
          * リアクション選択時
          */
         readonly "reaction": string;
@@ -7553,6 +7633,10 @@ export interface Locale extends ILocale {
          * 長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？
          */
         readonly "driveFileDurationWarnDescription": string;
+        /**
+         * 音声が読み込めませんでした。設定を変更してください
+         */
+        readonly "driveFileError": string;
     };
     readonly "_ago": {
         /**
@@ -9318,9 +9402,9 @@ export interface Locale extends ILocale {
          */
         readonly "secret": string;
         /**
-         * Webhookを実行するタイミング
+         * トリガー
          */
-        readonly "events": string;
+        readonly "trigger": string;
         /**
          * 有効
          */
@@ -9364,6 +9448,10 @@ export interface Locale extends ILocale {
              * ユーザーからの通報を処理したとき
              */
             readonly "abuseReportResolved": string;
+            /**
+             * ユーザーが作成されたとき
+             */
+            readonly "userCreated": string;
         };
         /**
          * Webhookを削除しますか？
@@ -10065,6 +10153,24 @@ export interface Locale extends ILocale {
          * ループ再生
          */
         readonly "loop": string;
+    };
+    readonly "_contextMenu": {
+        /**
+         * コンテキストメニュー
+         */
+        readonly "title": string;
+        /**
+         * アプリケーション
+         */
+        readonly "app": string;
+        /**
+         * Shiftキーでアプリケーション
+         */
+        readonly "appWithShift": string;
+        /**
+         * ブラウザのUI
+         */
+        readonly "native": string;
     };
     readonly "_tms": {
         /**
