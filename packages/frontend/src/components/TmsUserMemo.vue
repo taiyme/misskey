@@ -7,16 +7,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="$i != null" class="_gaps_s">
 	<XMemoInput v-if="iAmModerator" v-model="moderationNote" @update:modelValue="updateModerationNote">
 		<template #heading>{{ i18n.ts.moderationNote }}</template>
+		<template #caption>{{ i18n.ts._tms.moderationNoteIsSharedAmongModerators }}</template>
 	</XMemoInput>
 	<XMemoInput v-model="userMemo" @update:modelValue="updateUserMemo">
 		<template #heading>{{ i18n.ts.memo }}</template>
+		<template #caption>{{ i18n.ts._tms.memoIsNotShared }}</template>
 	</XMemoInput>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { $i, iAmModerator } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { apiWithDialog } from '@/os.js';
