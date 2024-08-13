@@ -44,12 +44,12 @@
 port: 3000 # A port that your Misskey server should listen.
 
 # To use option 2, uncomment below lines.
-#port: 443
+# port: 443
 
-#https:
-#  # path for certification
-#  key: /etc/letsencrypt/live/example.tld/privkey.pem
-#  cert: /etc/letsencrypt/live/example.tld/fullchain.pem
+# https:
+#   # path for certification
+#   key: /etc/letsencrypt/live/example.tld/privkey.pem
+#   cert: /etc/letsencrypt/live/example.tld/fullchain.pem
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
@@ -66,28 +66,28 @@ db:
   pass: example-misskey-pass
 
   # Whether disable Caching queries
-  #disableCache: true
+  # disableCache: true
 
   # Extra Connection options
-  #extra:
-  #  ssl: true
+  # extra:
+  #   ssl: true
 
 dbReplications: false
 
 # You can configure any number of replicas here
-#dbSlaves:
-#  -
-#    host:
-#    port:
-#    db:
-#    user:
-#    pass:
-#  -
-#    host:
-#    port:
-#    db:
-#    user:
-#    pass:
+# dbSlaves:
+#   -
+#     host:
+#     port:
+#     db:
+#     user:
+#     pass:
+#   -
+#     host:
+#     port:
+#     db:
+#     user:
+#     pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -95,44 +95,44 @@ dbReplications: false
 redis:
   host: localhost
   port: 6379
-  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
-  #pass: example-pass
-  #prefix: example-prefix
-  #db: 1
+  # family: 0 # 0=Both, 4=IPv4, 6=IPv6
+  # pass: example-pass
+  # prefix: example-prefix
+  # db: 1
 
-#redisForPubsub:
-#  host: localhost
-#  port: 6379
-#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
-#  #pass: example-pass
-#  #prefix: example-prefix
-#  #db: 1
+# redisForPubsub:
+#   host: localhost
+#   port: 6379
+#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
+#   # pass: example-pass
+#   # prefix: example-prefix
+#   # db: 1
 
-#redisForJobQueue:
-#  host: localhost
-#  port: 6379
-#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
-#  #pass: example-pass
-#  #prefix: example-prefix
-#  #db: 1
+# redisForJobQueue:
+#   host: localhost
+#   port: 6379
+#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
+#   # pass: example-pass
+#   # prefix: example-prefix
+#   # db: 1
 
-#redisForTimelines:
-#  host: redis
-#  port: 6379
-#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
-#  #pass: example-pass
-#  #prefix: example-prefix
-#  #db: 1
+# redisForTimelines:
+#   host: redis
+#   port: 6379
+#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
+#   # pass: example-pass
+#   # prefix: example-prefix
+#   # db: 1
 
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-#meilisearch:
-#  host: localhost
-#  port: 7700
-#  apiKey: ''
-#  ssl: true
-#  index: ''
+# meilisearch:
+#   host: localhost
+#   port: 7700
+#   apiKey: ''
+#   ssl: true
+#   index: ''
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -159,23 +159,23 @@ id: "aidx"
 # Sentry is available for error tracking.
 # See the Sentry documentation for more details on options.
 
-#sentryForBackend:
-#  enableNodeProfiling: true
-#  options:
-#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+# sentryForBackend:
+#   enableNodeProfiling: true
+#   options:
+#     dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
-#sentryForFrontend:
-#  options:
-#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+# sentryForFrontend:
+#   options:
+#     dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 
 # Whether disable HSTS
-#disableHsts: true
+# disableHsts: true
 
 # Number of worker processes
-#clusterLimit: 1
+# clusterLimit: 1
 
 # Job concurrency per worker
 # deliverJobConcurrency: 128
@@ -190,30 +190,30 @@ id: "aidx"
 # inboxJobMaxAttempts: 8
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
-#outgoingAddressFamily: ipv4
+# outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
-#proxy: http://127.0.0.1:3128
+# proxy: http://127.0.0.1:3128
 
-#proxyBypassHosts: [
-#  'example.com',
-#  '192.0.2.8'
-#]
+# proxyBypassHosts: [
+#   'example.com',
+#   '192.0.2.8'
+# ]
 
 # Proxy for SMTP/SMTPS
-#proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
-#proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
-#proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
+# proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
+# proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
+# proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
-#mediaProxy: https://example.com/proxy
+# mediaProxy: https://example.com/proxy
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
 
-#allowedPrivateNetworks: [
-#  '127.0.0.1/32'
-#]
+# allowedPrivateNetworks: [
+#   '127.0.0.1/32'
+# ]
 
 # Upload or download file size limits (bytes)
-#maxFileSize: 262144000
+# maxFileSize: 262144000
