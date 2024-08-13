@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* global window, document, localStorage, navigator, console, LANGS, CLIENT_ENTRY */
+
 /**
  * BOOT LOADER
  * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
@@ -34,7 +36,7 @@
 	}
 
 	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
+	if (!localStorage.getItem('locale')) {
 		const supportedLangs = LANGS;
 		let lang = localStorage.getItem('lang');
 		if (lang == null || !supportedLangs.includes(lang)) {
@@ -320,6 +322,6 @@
 			#errorInfo {
 				width: 50%;
 			}
-		}`)
+		}`);
 	}
 })();
