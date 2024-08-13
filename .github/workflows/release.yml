@@ -33,7 +33,7 @@ jobs:
       version: ${{ steps.new_version.outputs.NEW_VERSION }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -67,13 +67,13 @@ jobs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update package.json
         run: jq '.version = "${{ needs.get_new_version.outputs.version }}"' '${{ github.workspace }}/package.json' --tab > tmp && mv tmp '${{ github.workspace }}/package.json'
 
       - name: Upload package.json
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
           path: ${{ github.workspace }}/package.json
@@ -85,13 +85,13 @@ jobs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update package.json (misskey-js)
         run: jq '.version = "${{ needs.get_new_version.outputs.version }}"' '${{ github.workspace }}/packages/misskey-js/package.json' --tab > tmp && mv tmp '${{ github.workspace }}/packages/misskey-js/package.json'
 
       - name: Upload package.json (misskey-js)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
           path: ${{ github.workspace }}/packages/misskey-js/package.json
@@ -103,13 +103,13 @@ jobs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update compose.yml
         run: yq eval '.services.web.image = "ghcr.io/${{ github.repository }}:${{ needs.get_new_version.outputs.version }}"' -i '${{ github.workspace }}/compose_example.yml'
 
       - name: Upload compose.yml
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
           path: ${{ github.workspace }}/compose_example.yml
@@ -124,12 +124,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
       - name: Download files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: version_files
 
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Merge PR
         env:
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout release branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.base_ref }}
 
