@@ -1,11 +1,21 @@
-import define from '../../define.js';
-import { genId } from '@/misc/gen-id.js';
-import { Clips } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { MiClip } from '@/models/_.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { ApiError } from '@/server/api/error.js';
+import { ClipService } from '@/core/ClipService.js';
 
 export const meta = {
 	tags: ['clips'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -13,6 +23,14 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		ref: 'Clip',
+	},
+
+	errors: {
+		tooManyClips: {
+			message: 'You cannot create clip any more.',
+			code: 'TOO_MANY_CLIPS',
+			id: '920f7c2d-6208-4b76-8082-e632020f5883',
+		},
 	},
 } as const;
 
@@ -26,16 +44,23 @@ export const paramDef = {
 	required: ['name'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.insert({
-		id: genId(),
-		createdAt: new Date(),
-		userId: user.id,
-		name: ps.name,
-		isPublic: ps.isPublic,
-		description: ps.description,
-	}).then(x => Clips.findOneByOrFail(x.identifiers[0]));
-
-	return await Clips.pack(clip);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private clipEntityService: ClipEntityService,
+		private clipService: ClipService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			let clip: MiClip;
+			try {
+				clip = await this.clipService.create(me, ps.name, ps.isPublic, ps.description ?? null);
+			} catch (e) {
+				if (e instanceof ClipService.TooManyClipsError) {
+					throw new ApiError(meta.errors.tooManyClips);
+				}
+				throw e;
+			}
+			return await this.clipEntityService.pack(clip, me);
+		});
+	}
+}

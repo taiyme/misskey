@@ -1,11 +1,20 @@
-import { Pages, PageLikes } from '@/models/index.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { PagesRepository, PageLikesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:page-likes',
 
@@ -32,24 +41,34 @@ export const paramDef = {
 	required: ['pageId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOneBy({ id: ps.pageId });
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.pagesRepository)
+		private pagesRepository: PagesRepository,
+
+		@Inject(DI.pageLikesRepository)
+		private pageLikesRepository: PageLikesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+
+			const exist = await this.pageLikesRepository.findOneBy({
+				pageId: page.id,
+				userId: me.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notLiked);
+			}
+
+			// Delete like
+			await this.pageLikesRepository.delete(exist.id);
+
+			this.pagesRepository.decrement({ id: page.id }, 'likedCount', 1);
+		});
 	}
-
-	const exist = await PageLikes.findOneBy({
-		pageId: page.id,
-		userId: user.id,
-	});
-
-	if (exist == null) {
-		throw new ApiError(meta.errors.notLiked);
-	}
-
-	// Delete like
-	await PageLikes.delete(exist.id);
-
-	Pages.decrement({ id: page.id }, 'likedCount', 1);
-});
+}

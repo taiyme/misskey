@@ -1,5 +1,14 @@
-import define from '../../../define.js';
-import { FollowRequests } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import type { FollowRequestsRepository } from '@/models/_.js';
+import { FollowRequestEntityService } from '@/core/entities/FollowRequestEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['following', 'account'],
@@ -37,15 +46,32 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+	},
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const reqs = await FollowRequests.findBy({
-		followeeId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.followRequestsRepository)
+		private followRequestsRepository: FollowRequestsRepository,
 
-	return await Promise.all(reqs.map(req => FollowRequests.pack(req)));
-});
+		private followRequestEntityService: FollowRequestEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.followRequestsRepository.createQueryBuilder('request'), ps.sinceId, ps.untilId)
+				.andWhere('request.followeeId = :meId', { meId: me.id });
+
+			const requests = await query
+				.limit(ps.limit)
+				.getMany();
+
+			return await this.followRequestEntityService.packMany(requests, me);
+		});
+	}
+}

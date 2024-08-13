@@ -1,10 +1,22 @@
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'read:account',
 
-	secure: true,
+	res: {
+		type: 'object',
+		additionalProperties: {
+			type: 'string',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -13,32 +25,34 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
-	required: [],
+	required: ['scope'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private registryApiService: RegistryApiService,
+	) {
+		super(meta, paramDef, async (ps, me, accessToken) => {
+			const items = await this.registryApiService.getAllItemsOfScope(me.id, accessToken != null ? accessToken.id : (ps.domain ?? null), ps.scope);
 
-	const items = await query.getMany();
+			const res = {} as Record<string, string>;
 
-	const res = {} as Record<string, string>;
+			for (const item of items) {
+				const type = typeof item.value;
+				res[item.key] =
+					item.value === null ? 'null' :
+					Array.isArray(item.value) ? 'array' :
+					type === 'number' ? 'number' :
+					type === 'string' ? 'string' :
+					type === 'boolean' ? 'boolean' :
+					type === 'object' ? 'object' :
+					null as never;
+			}
 
-	for (const item of items) {
-		const type = typeof item.value;
-		res[item.key] =
-			item.value === null ? 'null' :
-			Array.isArray(item.value) ? 'array' :
-			type === 'number' ? 'number' :
-			type === 'string' ? 'string' :
-			type === 'boolean' ? 'boolean' :
-			type === 'object' ? 'object' :
-			null as never;
+			return res;
+		});
 	}
-
-	return res;
-});
+}

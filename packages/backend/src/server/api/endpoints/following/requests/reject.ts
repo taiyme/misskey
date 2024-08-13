@@ -1,7 +1,13 @@
-import { rejectFollowRequest } from '@/services/following/reject.js';
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['following', 'account'],
@@ -27,15 +33,22 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch follower
-	const follower = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch follower
+			const follower = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
 
-	await rejectFollowRequest(user, follower);
+			await this.userFollowingService.rejectFollowRequest(me, follower);
 
-	return;
-});
+			return;
+		});
+	}
+}

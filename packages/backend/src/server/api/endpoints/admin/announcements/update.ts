@@ -1,5 +1,13 @@
-import define from '../../../define.js';
-import { Announcements } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AnnouncementsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -7,6 +15,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:announcements',
 
 	errors: {
 		noSuchAnnouncement: {
@@ -23,21 +32,43 @@ export const paramDef = {
 		id: { type: 'string', format: 'misskey:id' },
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
-		imageUrl: { type: 'string', nullable: true, minLength: 1 },
+		imageUrl: { type: 'string', nullable: true, minLength: 0 },
+		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
+		forExistingUsers: { type: 'boolean' },
+		silence: { type: 'boolean' },
+		needConfirmationToRead: { type: 'boolean' },
+		isActive: { type: 'boolean' },
 	},
-	required: ['id', 'title', 'text', 'imageUrl'],
+	required: ['id'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const announcement = await Announcements.findOneBy({ id: ps.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
 
-	if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
+		private announcementService: AnnouncementService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
-	await Announcements.update(announcement.id, {
-		updatedAt: new Date(),
-		title: ps.title,
-		text: ps.text,
-		imageUrl: ps.imageUrl,
-	});
-});
+			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
+
+			await this.announcementService.update(announcement, {
+				updatedAt: new Date(),
+				title: ps.title,
+				text: ps.text,
+				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+				imageUrl: ps.imageUrl || null,
+				display: ps.display,
+				icon: ps.icon,
+				forExistingUsers: ps.forExistingUsers,
+				silence: ps.silence,
+				needConfirmationToRead: ps.needConfirmationToRead,
+				isActive: ps.isActive,
+			}, me);
+		});
+	}
+}

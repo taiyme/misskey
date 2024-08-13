@@ -1,6 +1,15 @@
-import { DriveFile } from '@/models/entities/drive-file.js';
-import { DriveFiles, Users } from '@/models/index.js';
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -35,51 +44,55 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
 	anyOf: [
-		{
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
+		{ required: ['fileId'] },
+		{ required: ['url'] },
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	let file: DriveFile | null = null;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	if (ps.fileId) {
-		file = await DriveFiles.findOneBy({ id: ps.fileId });
-	} else if (ps.url) {
-		file = await DriveFiles.findOne({
-			where: [{
-				url: ps.url,
-			}, {
-				webpublicUrl: ps.url,
-			}, {
-				thumbnailUrl: ps.url,
-			}],
+		private driveFileEntityService: DriveFileEntityService,
+		private roleService: RoleService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			let file: MiDriveFile | null = null;
+
+			if (ps.fileId) {
+				file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			} else if (ps.url) {
+				file = await this.driveFilesRepository.findOne({
+					where: [{
+						url: ps.url,
+					}, {
+						webpublicUrl: ps.url,
+					}, {
+						thumbnailUrl: ps.url,
+					}],
+				});
+			}
+
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
+			}
+
+			if (!await this.roleService.isModerator(me) && (file.userId !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			return await this.driveFileEntityService.pack(file, {
+				detail: true,
+				withUser: true,
+				self: true,
+			});
 		});
 	}
-
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
-	}
-
-	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
-	return await DriveFiles.pack(file, {
-		detail: true,
-		withUser: true,
-		self: true,
-	});
-});
+}

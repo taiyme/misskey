@@ -1,7 +1,15 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { Hashtags } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { HashtagsRepository } from '@/models/_.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -31,12 +39,21 @@ export const paramDef = {
 	required: ['tag'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const hashtag = await Hashtags.findOneBy({ name: normalizeForSearch(ps.tag) });
-	if (hashtag == null) {
-		throw new ApiError(meta.errors.noSuchHashtag);
-	}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.hashtagsRepository)
+		private hashtagsRepository: HashtagsRepository,
 
-	return await Hashtags.pack(hashtag);
-});
+		private hashtagEntityService: HashtagEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const hashtag = await this.hashtagsRepository.findOneBy({ name: normalizeForSearch(ps.tag) });
+			if (hashtag == null) {
+				throw new ApiError(meta.errors.noSuchHashtag);
+			}
+
+			return await this.hashtagEntityService.pack(hashtag);
+		});
+	}
+}

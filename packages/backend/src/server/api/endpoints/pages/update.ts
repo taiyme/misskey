@@ -1,13 +1,22 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Not } from 'typeorm';
-import { Pages, DriveFiles } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:pages',
 
@@ -61,56 +70,61 @@ export const paramDef = {
 		alignCenter: { type: 'boolean' },
 		hideTitleWhenPinned: { type: 'boolean' },
 	},
-	required: ['pageId', 'title', 'name', 'content', 'variables', 'script'],
+	required: ['pageId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const page = await Pages.findOneBy({ id: ps.pageId });
-	if (page == null) {
-		throw new ApiError(meta.errors.noSuchPage);
-	}
-	if (page.userId !== user.id) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.pagesRepository)
+		private pagesRepository: PagesRepository,
 
-	let eyeCatchingImage = null;
-	if (ps.eyeCatchingImageId != null) {
-		eyeCatchingImage = await DriveFiles.findOneBy({
-			id: ps.eyeCatchingImageId,
-			userId: user.id,
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
+			if (page == null) {
+				throw new ApiError(meta.errors.noSuchPage);
+			}
+			if (page.userId !== me.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			if (ps.eyeCatchingImageId != null) {
+				const eyeCatchingImage = await this.driveFilesRepository.findOneBy({
+					id: ps.eyeCatchingImageId,
+					userId: me.id,
+				});
+
+				if (eyeCatchingImage == null) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			}
+
+			await this.pagesRepository.findBy({
+				id: Not(ps.pageId),
+				userId: me.id,
+				name: ps.name,
+			}).then(result => {
+				if (result.length > 0) {
+					throw new ApiError(meta.errors.nameAlreadyExists);
+				}
+			});
+
+			await this.pagesRepository.update(page.id, {
+				updatedAt: new Date(),
+				title: ps.title,
+				name: ps.name,
+				summary: ps.summary === undefined ? page.summary : ps.summary,
+				content: ps.content,
+				variables: ps.variables,
+				script: ps.script,
+				alignCenter: ps.alignCenter,
+				hideTitleWhenPinned: ps.hideTitleWhenPinned,
+				font: ps.font,
+				eyeCatchingImageId: ps.eyeCatchingImageId,
+			});
 		});
-
-		if (eyeCatchingImage == null) {
-			throw new ApiError(meta.errors.noSuchFile);
-		}
 	}
-
-	await Pages.findBy({
-		id: Not(ps.pageId),
-		userId: user.id,
-		name: ps.name,
-	}).then(result => {
-		if (result.length > 0) {
-			throw new ApiError(meta.errors.nameAlreadyExists);
-		}
-	});
-
-	await Pages.update(page.id, {
-		updatedAt: new Date(),
-		title: ps.title,
-		name: ps.name === undefined ? page.name : ps.name,
-		summary: ps.name === undefined ? page.summary : ps.summary,
-		content: ps.content,
-		variables: ps.variables,
-		script: ps.script,
-		alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
-		hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
-		font: ps.font === undefined ? page.font : ps.font,
-		eyeCatchingImageId: ps.eyeCatchingImageId === null
-			? null
-			: ps.eyeCatchingImageId === undefined
-				? page.eyeCatchingImageId
-				: eyeCatchingImage!.id,
-	});
-});
+}

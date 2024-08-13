@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
@@ -5,15 +10,14 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
-import semver from 'semver';
-
-import Logger from '@/services/logger.js';
-import loadConfig from '@/config/load.js';
-import { Config } from '@/config/types.js';
-import { lessThan } from '@/prelude/array.js';
-import { envOption } from '../env.js';
+import * as Sentry from '@sentry/node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import Logger from '@/logger.js';
+import { loadConfig } from '@/config.js';
+import type { Config } from '@/config.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
-import { db, initDb } from '../db/postgre.js';
+import { envOption } from '@/env.js';
+import { jobQueue, server } from './common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -21,7 +25,7 @@ const _dirname = dirname(_filename);
 const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
@@ -33,18 +37,18 @@ function greet() {
 		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
 		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
 		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substr(v.length)));
+		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' taiyme is an OSS forked from Misskey.');
+		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please donate to support development. https://www.patreon.com/taiy'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info('Welcome to taiyme!');
+	bootLogger.info(`taiyme v${meta.version}`, null, true);
 }
 
 /**
@@ -60,24 +64,58 @@ export async function masterMain() {
 		await showMachineInfo(bootLogger);
 		showNodejsVersion();
 		config = loadConfigBoot();
-		await connectDb();
+		//await connectDb();
+		if (config.pidFile) fs.writeFileSync(config.pidFile, process.pid.toString());
 	} catch (e) {
 		bootLogger.error('Fatal error occurred during initialization', null, true);
 		process.exit(1);
 	}
 
-	bootLogger.succ('Misskey initialized');
+	bootLogger.succ('taiyme initialized');
 
-	if (!envOption.disableClustering) {
+	if (config.sentryForBackend) {
+		Sentry.init({
+			integrations: [
+				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
+			],
+
+			// Performance Monitoring
+			tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+			// Set sampling rate for profiling - this is relative to tracesSampleRate
+			profilesSampleRate: 1.0,
+
+			maxBreadcrumbs: 0,
+
+			...config.sentryForBackend.options,
+		});
+	}
+
+	if (envOption.disableClustering) {
+		if (envOption.onlyServer) {
+			await server();
+		} else if (envOption.onlyQueue) {
+			await jobQueue();
+		} else {
+			await server();
+			await jobQueue();
+		}
+	} else {
+		if (envOption.onlyServer) {
+			// nop
+		} else if (envOption.onlyQueue) {
+			// nop
+		} else {
+			await server();
+		}
+
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
-
-	if (!envOption.noDaemons) {
-		import('../daemons/server-stats.js').then(x => x.default());
-		import('../daemons/queue-stats.js').then(x => x.default());
-		import('../daemons/janitor.js').then(x => x.default());
+	if (envOption.onlyQueue) {
+		bootLogger.succ('Queue started', null, true);
+	} else {
+		bootLogger.succ(config.socket ? `Now listening on socket ${config.socket} on ${config.url}` : `Now listening on port ${config.port} on ${config.url}`, null, true);
 	}
 }
 
@@ -96,12 +134,6 @@ function showNodejsVersion(): void {
 	const nodejsLogger = bootLogger.createSubLogger('nodejs');
 
 	nodejsLogger.info(`Version ${process.version} detected.`);
-
-	const minVersion = fs.readFileSync(`${_dirname}/../../../../.node-version`, 'utf-8').trim();
-	if (semver.lt(process.version, minVersion)) {
-		nodejsLogger.error(`At least Node.js ${minVersion} required!`);
-		process.exit(1);
-	}
 }
 
 function loadConfigBoot(): Config {
@@ -114,8 +146,7 @@ function loadConfigBoot(): Config {
 		if (typeof exception === 'string') {
 			configLogger.error(exception);
 			process.exit(1);
-		}
-		if (exception.code === 'ENOENT') {
+		} else if ((exception as any).code === 'ENOENT') {
 			configLogger.error('Configuration file not found', null, true);
 			process.exit(1);
 		}
@@ -127,6 +158,7 @@ function loadConfigBoot(): Config {
 	return config;
 }
 
+/*
 async function connectDb(): Promise<void> {
 	const dbLogger = bootLogger.createSubLogger('db');
 
@@ -136,14 +168,15 @@ async function connectDb(): Promise<void> {
 		await initDb();
 		const v = await db.query('SHOW server_version').then(x => x[0].server_version);
 		dbLogger.succ(`Connected: v${v}`);
-	} catch (e) {
+	} catch (err) {
 		dbLogger.error('Cannot connect', null, true);
-		dbLogger.error(e);
+		dbLogger.error(err);
 		process.exit(1);
 	}
 }
+*/
 
-async function spawnWorkers(limit: number = 1) {
+async function spawnWorkers(limit = 1) {
 	const workers = Math.min(limit, os.cpus().length);
 	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
 	await Promise.all([...Array(workers)].map(spawnWorker));
@@ -155,7 +188,7 @@ function spawnWorker(): Promise<void> {
 		const worker = cluster.fork();
 		worker.on('message', message => {
 			if (message === 'listenFailed') {
-				bootLogger.error(`The server Listen failed due to the previous error.`);
+				bootLogger.error('The server Listen failed due to the previous error.');
 				process.exit(1);
 			}
 			if (message !== 'ready') return;

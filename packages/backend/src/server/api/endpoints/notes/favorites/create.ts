@@ -1,15 +1,30 @@
-import { NoteFavorites } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import ms from 'ms';
+import type { NoteFavoritesRepository } from '@/models/_.js';
+import { IdService } from '@/core/IdService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
+import { AchievementService } from '@/core/AchievementService.js';
 import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
 
 export const meta = {
 	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
+	prohibitMoved: true,
 
 	kind: 'write:favorites',
+
+	limit: {
+		duration: ms('1hour'),
+		max: 20,
+	},
 
 	errors: {
 		noSuchNote: {
@@ -34,29 +49,45 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Get favoritee
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.noteFavoritesRepository)
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
-	// if already favorited
-	const exist = await NoteFavorites.findOneBy({
-		noteId: note.id,
-		userId: user.id,
-	});
+		private idService: IdService,
+		private getterService: GetterService,
+		private achievementService: AchievementService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Get favoritee
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
 
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyFavorited);
+			// if already favorited
+			const exist = await this.noteFavoritesRepository.exists({
+				where: {
+					noteId: note.id,
+					userId: me.id,
+				},
+			});
+
+			if (exist) {
+				throw new ApiError(meta.errors.alreadyFavorited);
+			}
+
+			// Create favorite
+			await this.noteFavoritesRepository.insert({
+				id: this.idService.gen(),
+				noteId: note.id,
+				userId: me.id,
+			});
+
+			if (note.userHost == null && note.userId !== me.id) {
+				this.achievementService.create(note.userId, 'myNoteFavorited1');
+			}
+		});
 	}
-
-	// Create favorite
-	await NoteFavorites.insert({
-		id: genId(),
-		createdAt: new Date(),
-		noteId: note.id,
-		userId: user.id,
-	});
-});
+}

@@ -1,4 +1,9 @@
-import { Packed } from './schema.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { Packed } from './json-schema.js';
 
 /**
  * 投稿を表す文字列を取得します。
@@ -6,11 +11,11 @@ import { Packed } from './schema.js';
  */
 export const getNoteSummary = (note: Packed<'Note'>): string => {
 	if (note.deletedAt) {
-		return `(❌⛔)`;
+		return '(❌⛔)';
 	}
 
 	if (note.isHidden) {
-		return `(⛔)`;
+		return '(⛔)';
 	}
 
 	let summary = '';
@@ -23,13 +28,13 @@ export const getNoteSummary = (note: Packed<'Note'>): string => {
 	}
 
 	// ファイルが添付されているとき
-	if ((note.files || []).length !== 0) {
+	if ((note.files ?? []).length !== 0) {
 		summary += ` (📎${note.files!.length})`;
 	}
 
 	// 投票が添付されているとき
 	if (note.poll) {
-		summary += ` (📊)`;
+		summary += ' (📊)';
 	}
 
 	// 返信のとき

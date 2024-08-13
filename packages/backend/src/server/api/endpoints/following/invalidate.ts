@@ -1,9 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
-import deleteFollowing from '@/services/following/delete.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { DI } from '@/di-symbols.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
-import { Followings, Users } from '@/models/index.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -21,7 +29,7 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8',
+			id: 'b77e6ae6-a3e5-40da-9cc8-c240115479cc',
 		},
 
 		followerIsYourself: {
@@ -33,7 +41,7 @@ export const meta = {
 		notFollowing: {
 			message: 'The other use is not following you.',
 			code: 'NOT_FOLLOWING',
-			id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
+			id: '918faac3-074f-41ae-9c43-ed5d2946770d',
 		},
 	},
 
@@ -52,32 +60,43 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const followee = user;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
-	// Check if the follower is yourself
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.followerIsYourself);
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const followee = me;
+
+			// Check if the follower is yourself
+			if (me.id === ps.userId) {
+				throw new ApiError(meta.errors.followerIsYourself);
+			}
+
+			// Get follower
+			const follower = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
+
+			// Check not following
+			const exist = await this.followingsRepository.findOneBy({
+				followerId: follower.id,
+				followeeId: followee.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notFollowing);
+			}
+
+			await this.userFollowingService.unfollow(follower, followee);
+
+			return await this.userEntityService.pack(followee.id, me);
+		});
 	}
-
-	// Get follower
-	const follower = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check not following
-	const exist = await Followings.findOneBy({
-		followerId: follower.id,
-		followeeId: followee.id,
-	});
-
-	if (exist == null) {
-		throw new ApiError(meta.errors.notFollowing);
-	}
-
-	await deleteFollowing(follower, followee);
-
-	return await Users.pack(followee.id, user);
-});
+}

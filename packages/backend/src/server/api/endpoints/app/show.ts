@@ -1,6 +1,14 @@
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AppsRepository } from '@/models/_.js';
+import { AppEntityService } from '@/core/entities/AppEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Apps } from '@/models/index.js';
 
 export const meta = {
 	tags: ['app'],
@@ -28,19 +36,28 @@ export const paramDef = {
 	required: ['appId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user, token) => {
-	const isSecure = user != null && token == null;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.appsRepository)
+		private appsRepository: AppsRepository,
 
-	// Lookup app
-	const ap = await Apps.findOneBy({ id: ps.appId });
+		private appEntityService: AppEntityService,
+	) {
+		super(meta, paramDef, async (ps, user, token) => {
+			const isSecure = user != null && token == null;
 
-	if (ap == null) {
-		throw new ApiError(meta.errors.noSuchApp);
+			// Lookup app
+			const ap = await this.appsRepository.findOneBy({ id: ps.appId });
+
+			if (ap == null) {
+				throw new ApiError(meta.errors.noSuchApp);
+			}
+
+			return await this.appEntityService.pack(ap, user, {
+				detail: true,
+				includeSecret: isSecure && (ap.userId === user!.id),
+			});
+		});
 	}
-
-	return await Apps.pack(ap, user, {
-		detail: true,
-		includeSecret: isSecure && (ap.userId === user!.id),
-	});
-});
+}

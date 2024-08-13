@@ -1,6 +1,13 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
-import { NoteUnreads } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { NoteUnreadsRepository } from '@/models/_.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
@@ -16,14 +23,23 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Remove documents
-	await NoteUnreads.delete({
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.noteUnreadsRepository)
+		private noteUnreadsRepository: NoteUnreadsRepository,
 
-	// 全て既読になったイベントを発行
-	publishMainStream(user.id, 'readAllUnreadMentions');
-	publishMainStream(user.id, 'readAllUnreadSpecifiedNotes');
-});
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Remove documents
+			await this.noteUnreadsRepository.delete({
+				userId: me.id,
+			});
+
+			// 全て既読になったイベントを発行
+			this.globalEventService.publishMainStream(me.id, 'readAllUnreadMentions');
+			this.globalEventService.publishMainStream(me.id, 'readAllUnreadSpecifiedNotes');
+		});
+	}
+}

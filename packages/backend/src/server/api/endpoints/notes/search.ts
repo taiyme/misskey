@@ -1,12 +1,14 @@
-import { In } from 'typeorm';
-import { Notes } from '@/models/index.js';
-import config from '@/config/index.js';
-import es from '../../../../db/elasticsearch.js';
-import define from '../../define.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { SearchService } from '@/core/SearchService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -24,6 +26,11 @@ export const meta = {
 	},
 
 	errors: {
+		unavailable: {
+			message: 'Search of notes unavailable.',
+			code: 'UNAVAILABLE',
+			id: '0b44998d-77aa-4427-80d0-d2c9b8523011',
+		},
 	},
 } as const;
 
@@ -37,8 +44,7 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 		host: {
 			type: 'string',
-			nullable: true,
-			description: 'The local host is represented with `null`.',
+			description: 'The local host is represented with `.`.',
 		},
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
@@ -46,97 +52,32 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	if (es == null) {
-		const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+// TODO: ロジックをサービスに切り出す
 
-		if (ps.userId) {
-			query.andWhere('note.userId = :userId', { userId: ps.userId });
-		} else if (ps.channelId) {
-			query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
-		}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private noteEntityService: NoteEntityService,
+		private searchService: SearchService,
+		private roleService: RoleService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
+			if (!policies.canSearchNotes) {
+				throw new ApiError(meta.errors.unavailable);
+			}
 
-		query
-			.andWhere('note.text ILIKE :q', { q: `%${ps.query}%` })
-			.innerJoinAndSelect('note.user', 'user')
-			.leftJoinAndSelect('user.avatar', 'avatar')
-			.leftJoinAndSelect('user.banner', 'banner')
-			.leftJoinAndSelect('note.reply', 'reply')
-			.leftJoinAndSelect('note.renote', 'renote')
-			.leftJoinAndSelect('reply.user', 'replyUser')
-			.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-			.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-			.leftJoinAndSelect('renote.user', 'renoteUser')
-			.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-			.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
-
-		generateVisibilityQuery(query, me);
-		if (me) generateMutedUserQuery(query, me);
-		if (me) generateBlockedUserQuery(query, me);
-
-		const notes = await query.take(ps.limit).getMany();
-
-		return await Notes.packMany(notes, me);
-	} else {
-		const userQuery = ps.userId != null ? [{
-			term: {
+			const notes = await this.searchService.searchNote(ps.query, me, {
 				userId: ps.userId,
-			},
-		}] : [];
+				channelId: ps.channelId,
+				host: ps.host,
+			}, {
+				untilId: ps.untilId,
+				sinceId: ps.sinceId,
+				limit: ps.limit,
+			});
 
-		const hostQuery = ps.userId == null ?
-			ps.host === null ? [{
-				bool: {
-					must_not: {
-						exists: {
-							field: 'userHost',
-						},
-					},
-				},
-			}] : ps.host !== undefined ? [{
-				term: {
-					userHost: ps.host,
-				},
-			}] : []
-			: [];
-
-		const result = await es.search({
-			index: config.elasticsearch.index || 'misskey_note',
-			body: {
-				size: ps.limit,
-				from: ps.offset,
-				query: {
-					bool: {
-						must: [{
-							simple_query_string: {
-								fields: ['text'],
-								query: ps.query.toLowerCase(),
-								default_operator: 'and',
-							},
-						}, ...hostQuery, ...userQuery],
-					},
-				},
-				sort: [{
-					_doc: 'desc',
-				}],
-			},
+			return await this.noteEntityService.packMany(notes, me);
 		});
-
-		const hits = result.body.hits.hits.map((hit: any) => hit._id);
-
-		if (hits.length === 0) return [];
-
-		// Fetch found notes
-		const notes = await Notes.find({
-			where: {
-				id: In(hits),
-			},
-			order: {
-				id: -1,
-			},
-		});
-
-		return await Notes.packMany(notes, me);
 	}
-});
+}

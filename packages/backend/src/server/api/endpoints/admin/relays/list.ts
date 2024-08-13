@@ -1,11 +1,18 @@
-import define from '../../../define.js';
-import { listRelay } from '@/services/relay.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RelayService } from '@/core/RelayService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:relays',
 
 	res: {
 		type: 'array',
@@ -45,7 +52,13 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	return await listRelay();
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private relayService: RelayService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.relayService.listRelay();
+		});
+	}
+}

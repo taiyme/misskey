@@ -1,21 +1,30 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
-import define from '../../../define.js';
-import { DriveFiles, GalleryPosts } from '@/models/index.js';
-import { genId } from '../../../../../misc/gen-id.js';
-import { GalleryPost } from '@/models/entities/gallery-post.js';
-import { ApiError } from '../../../error.js';
-import { DriveFile } from '@/models/entities/drive-file.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
+import { MiGalleryPost } from '@/models/GalleryPost.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import { IdService } from '@/core/IdService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	kind: 'write:gallery',
 
 	limit: {
 		duration: ms('1hour'),
-		max: 300,
+		max: 20,
 	},
 
 	res: {
@@ -42,29 +51,41 @@ export const paramDef = {
 	required: ['title', 'fileIds'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const files = (await Promise.all(ps.fileIds.map(fileId =>
-		DriveFiles.findOneBy({
-			id: fileId,
-			userId: user.id,
-		})
-	))).filter((file): file is DriveFile => file != null);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
 
-	if (files.length === 0) {
-		throw new Error();
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
+		private galleryPostEntityService: GalleryPostEntityService,
+		private idService: IdService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const files = (await Promise.all(ps.fileIds.map(fileId =>
+				this.driveFilesRepository.findOneBy({
+					id: fileId,
+					userId: me.id,
+				}),
+			))).filter(x => x != null);
+
+			if (files.length === 0) {
+				throw new Error();
+			}
+
+			const post = await this.galleryPostsRepository.insertOne(new MiGalleryPost({
+				id: this.idService.gen(),
+				updatedAt: new Date(),
+				title: ps.title,
+				description: ps.description,
+				userId: me.id,
+				isSensitive: ps.isSensitive,
+				fileIds: files.map(file => file.id),
+			}));
+
+			return await this.galleryPostEntityService.pack(post, me);
+		});
 	}
-
-	const post = await GalleryPosts.insert(new GalleryPost({
-		id: genId(),
-		createdAt: new Date(),
-		updatedAt: new Date(),
-		title: ps.title,
-		description: ps.description,
-		userId: user.id,
-		isSensitive: ps.isSensitive,
-		fileIds: files.map(file => file.id),
-	})).then(x => GalleryPosts.findOneByOrFail(x.identifiers[0]));
-
-	return await GalleryPosts.pack(post, user);
-});
+}

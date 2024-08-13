@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class fixRemoteFileProxy1626509500668 {
     constructor() {
@@ -19,4 +22,3 @@ export class fixRemoteFileProxy1626509500668 {
         await queryRunner.query(`ALTER TABLE "user" ADD "avatarUrl" character varying(512)`);
     }
 }
-

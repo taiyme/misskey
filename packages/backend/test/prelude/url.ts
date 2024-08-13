@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as assert from 'assert';
-import { query } from '../../src/prelude/url.js';
+import { query } from '../../src/misc/prelude/url.js';
 
 describe('url', () => {
-	it('query', () => {
+	test('query', () => {
 		const s = query({
 			foo: 'ふぅ',
 			bar: 'b a r',

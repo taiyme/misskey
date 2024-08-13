@@ -1,4 +1,10 @@
-import define from '../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	requireCredential: false,
@@ -23,9 +29,14 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async () => {
-	return {
-		pong: Date.now(),
-	};
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+	) {
+		super(meta, paramDef, async () => {
+			return {
+				pong: Date.now(),
+			};
+		});
+	}
+}

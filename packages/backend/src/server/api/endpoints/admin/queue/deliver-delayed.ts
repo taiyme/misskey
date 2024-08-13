@@ -1,12 +1,19 @@
-import { deliverQueue } from '@/queue/queues.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DeliverQueue } from '@/core/QueueModule.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'read:admin:queue',
 
 	res: {
 		type: 'array',
@@ -38,22 +45,28 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const jobs = await deliverQueue.getJobs(['delayed']);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const jobs = await this.deliverQueue.getJobs(['delayed']);
 
-	const res = [] as [string, number][];
+			const res = [] as [string, number][];
 
-	for (const job of jobs) {
-		const host = new URL(job.data.to).host;
-		if (res.find(x => x[0] === host)) {
-			res.find(x => x[0] === host)![1]++;
-		} else {
-			res.push([host, 1]);
-		}
+			for (const job of jobs) {
+				const host = new URL(job.data.to).host;
+				if (res.find(x => x[0] === host)) {
+					res.find(x => x[0] === host)![1]++;
+				} else {
+					res.push([host, 1]);
+				}
+			}
+
+			res.sort((a, b) => b[1] - a[1]);
+
+			return res;
+		});
 	}
-
-	res.sort((a, b) => b[1] - a[1]);
-
-	return res;
-});
+}

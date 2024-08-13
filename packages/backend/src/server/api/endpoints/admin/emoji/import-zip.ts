@@ -1,11 +1,16 @@
-import define from '../../../define.js';
-import { createImportCustomEmojisJob } from '@/queue/index.js';
-import ms from 'ms';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	secure: true,
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
 } as const;
 
 export const paramDef = {
@@ -16,7 +21,13 @@ export const paramDef = {
 	required: ['fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	createImportCustomEmojisJob(user, ps.fileId);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private queueService: QueueService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			this.queueService.createImportCustomEmojisJob(me, ps.fileId);
+		});
+	}
+}

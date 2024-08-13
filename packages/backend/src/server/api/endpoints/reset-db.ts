@@ -1,6 +1,14 @@
-import { resetDb } from '@/db/postgre.js';
-import define from '../define.js';
-import { ApiError } from '../error.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import * as Redis from 'ioredis';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
+import { resetDb } from '@/misc/reset-db.js';
 
 export const meta = {
 	tags: ['non-productive'],
@@ -20,11 +28,22 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
 
-	await resetDb();
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
 
-	await new Promise(resolve => setTimeout(resolve, 1000));
-});
+			await redisClient.flushdb();
+			await resetDb(this.db);
+
+			await new Promise(resolve => setTimeout(resolve, 1000));
+		});
+	}
+}

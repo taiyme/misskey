@@ -1,0 +1,24 @@
+name: ✨ 機能のリクエスト
+description: 機能のアイデアを提案します。
+labels: ["✨Feature"]
+
+body:
+  - type: textarea
+    attributes:
+      label: 💡 概要
+      description: アイデアを教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 目的
+      description: この機能で解決できる具体的な問題やニーズ、および誰に役立つのかを説明してください。
+    validations:
+      required: true
+
+  - type: checkboxes
+    attributes:
+      label: この機能は自分で実装したいですか？
+      options:
+        - label: はい、自分で実装してプルリクエストを作成します

@@ -1,12 +1,20 @@
-import createReaction from '@/services/note/reaction/create.js';
-import define from '../../../define.js';
-import { getNote } from '../../../common/getters.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { ReactionService } from '@/core/ReactionService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['reactions', 'notes'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:reactions',
 
@@ -28,6 +36,12 @@ export const meta = {
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: '20ef5475-9f38-4e4c-bd33-de6d979498ec',
 		},
+
+		cannotReactToRenote: {
+			message: 'You cannot react to Renote.',
+			code: 'CANNOT_REACT_TO_RENOTE',
+			id: 'eaccdc08-ddef-43fe-908f-d108faad57f5',
+		},
 	},
 } as const;
 
@@ -40,16 +54,24 @@ export const paramDef = {
 	required: ['noteId', 'reaction'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
-	await createReaction(user, note, ps.reaction).catch(e => {
-		if (e.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') throw new ApiError(meta.errors.alreadyReacted);
-		if (e.id === 'e70412a4-7197-4726-8e74-f3e0deb92aa7') throw new ApiError(meta.errors.youHaveBeenBlocked);
-		throw e;
-	});
-	return;
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private getterService: GetterService,
+		private reactionService: ReactionService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
+			await this.reactionService.create(me, note, ps.reaction).catch(err => {
+				if (err.id === '51c42bb4-931a-456b-bff7-e5a8a70dd298') throw new ApiError(meta.errors.alreadyReacted);
+				if (err.id === 'e70412a4-7197-4726-8e74-f3e0deb92aa7') throw new ApiError(meta.errors.youHaveBeenBlocked);
+				if (err.id === '12c35529-3c79-4327-b1cc-e2cf63a71925') throw new ApiError(meta.errors.cannotReactToRenote);
+				throw err;
+			});
+			return;
+		});
+	}
+}

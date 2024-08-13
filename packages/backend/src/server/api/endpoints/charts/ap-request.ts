@@ -1,11 +1,18 @@
-import { getJsonSchema } from '@/services/chart/core.js';
-import { apRequestChart } from '@/services/chart/index.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { getJsonSchema } from '@/core/chart/core.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import ApRequestChart from '@/core/chart/charts/ap-request.js';
+import { schema } from '@/core/chart/charts/entities/ap-request.js';
 
 export const meta = {
 	tags: ['charts'],
 
-	res: getJsonSchema(apRequestChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -21,7 +28,13 @@ export const paramDef = {
 	required: ['span'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await apRequestChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private apRequestChart: ApRequestChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.apRequestChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
+		});
+	}
+}

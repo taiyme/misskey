@@ -39,10 +39,8 @@ remove: "Kkes"
 connectService: "Qqen"
 userList: "Tibdarin"
 securityKey: "Tasarutt n tɣellist"
-securityKeyName: "Isem n tsarutt"
 signinRequired: "Ttxil jerred"
 signinWith: "Tuqqna s {x}"
-tapSecurityKey: "Sekcem tasarutt-ik·im n tɣellist"
 uiLanguage: "Tutlayt n wegrudem"
 accountSettings: "Iɣewwaṛen n umiḍan"
 plugins: "Izegrar"
@@ -58,13 +56,10 @@ accounts: "Imiḍan"
 searchByGoogle: "Nadi"
 file: "Ifuyla"
 account: "Imiḍan"
+replies: "Err"
 _email:
   _follow:
     title: "Yeṭṭafaṛ-ik·em-id"
-_mfm:
-  mention: "Bder"
-  search: "Nadi"
-  font: "Tasefsit"
 _theme:
   keys:
     mention: "Bder"
@@ -73,7 +68,10 @@ _sfx:
 _permissions:
   "write:account": "Ẓreg talɣut n umiḍan-ik·im"
 _widgets:
+  profile: "Amaɣnu"
   notifications: "Ilɣuyen"
+  _userList:
+    chooseList: "Fren tabdart"
 _cw:
   show: "Wali ugar"
 _visibility:
@@ -95,24 +93,6 @@ _pages:
   contentBlocks: "Agbur"
   inputBlocks: "Anekcum"
   specialBlocks: "Uzzig"
-  script:
-    categories:
-      list: "Tibdarin"
-    blocks:
-      _join:
-        arg1: "Tibdarin"
-      _randomPick:
-        arg1: "Tibdarin"
-      _dailyRandomPick:
-        arg1: "Tibdarin"
-      _seedRandomPick:
-        arg2: "Tibdarin"
-      _pick:
-        arg1: "Tibdarin"
-      _listLen:
-        arg1: "Tibdarin"
-    types:
-      array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
   _types:
@@ -124,3 +104,7 @@ _deck:
   _columns:
     notifications: "Ilɣuyen"
     list: "Tibdarin"
+_abuseReport:
+  _notificationRecipient:
+    _recipientType:
+      mail: "Imayl"

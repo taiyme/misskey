@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 declare module 'probe-image-size' {
-	import { ReadStream } from 'node:fs';
+	import type { ReadStream } from 'node:fs';
 
 	type ProbeOptions = {
 		retries: 1;

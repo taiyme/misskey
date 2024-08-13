@@ -1,12 +1,15 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
-
-	secure: true,
+	kind: 'write:account',
 } as const;
 
 export const paramDef = {
@@ -17,42 +20,18 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
-	required: ['key', 'value'],
+	required: ['key', 'value', 'scope'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.key = :key', { key: ps.key })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
-
-	const existingItem = await query.getOne();
-
-	if (existingItem) {
-		await RegistryItems.update(existingItem.id, {
-			updatedAt: new Date(),
-			value: ps.value,
-		});
-	} else {
-		await RegistryItems.insert({
-			id: genId(),
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			userId: user.id,
-			domain: null,
-			scope: ps.scope,
-			key: ps.key,
-			value: ps.value,
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private registryApiService: RegistryApiService,
+	) {
+		super(meta, paramDef, async (ps, me, accessToken) => {
+			await this.registryApiService.set(me.id, accessToken ? accessToken.id : (ps.domain ?? null), ps.scope, ps.key, ps.value);
 		});
 	}
-
-	// TODO: サードパーティアプリが傍受出来てしまうのでどうにかする
-	publishMainStream(user.id, 'registryUpdated', {
-		scope: ps.scope,
-		key: ps.key,
-		value: ps.value,
-	});
-});
+}

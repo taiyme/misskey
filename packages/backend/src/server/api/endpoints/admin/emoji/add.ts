@@ -1,66 +1,96 @@
-import define from '../../../define.js';
-import { Emojis, DriveFiles } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { insertModerationLog } from '@/services/insert-moderation-log.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
-import rndstr from 'rndstr';
-import { publishBroadcastStream } from '@/services/stream.js';
-import { db } from '@/db/postgre.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',
-			code: 'MO_SUCH_FILE',
+			code: 'NO_SUCH_FILE',
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
+		duplicateName: {
+			message: 'Duplicate name.',
+			code: 'DUPLICATE_NAME',
+			id: 'f7a3462c-4e6e-4069-8421-b9bd4f4c3975',
+		},
+	},
+
+	res: {
+		type: 'object',
+		ref: 'EmojiDetailed',
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
+		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
 		fileId: { type: 'string', format: 'misskey:id' },
+		category: {
+			type: 'string',
+			nullable: true,
+			description: 'Use `null` to reset the category.',
+		},
+		aliases: { type: 'array', items: {
+			type: 'string',
+		} },
+		license: { type: 'string', nullable: true },
+		isSensitive: { type: 'boolean' },
+		localOnly: { type: 'boolean' },
+		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+			type: 'string',
+		} },
 	},
-	required: ['fileId'],
+	required: ['name', 'fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+// TODO: ロジックをサービスに切り出す
 
-	if (file == null) throw new ApiError(meta.errors.noSuchFile);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	const name = file.name.split('.')[0].match(/^[a-z0-9_]+$/) ? file.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
+		private customEmojiService: CustomEmojiService,
 
-	const emoji = await Emojis.insert({
-		id: genId(),
-		updatedAt: new Date(),
-		name: name,
-		category: null,
-		host: null,
-		aliases: [],
-		originalUrl: file.url,
-		publicUrl: file.webpublicUrl ?? file.url,
-		type: file.webpublicType ?? file.type,
-	}).then(x => Emojis.findOneByOrFail(x.identifiers[0]));
+		private emojiEntityService: EmojiEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+			const isDuplicate = await this.customEmojiService.checkDuplicate(ps.name);
+			if (isDuplicate) throw new ApiError(meta.errors.duplicateName);
 
-	await db.queryResultCache!.remove(['meta_emojis']);
+			const emoji = await this.customEmojiService.add({
+				driveFile,
+				name: ps.name,
+				category: ps.category ?? null,
+				aliases: ps.aliases ?? [],
+				host: null,
+				license: ps.license ?? null,
+				isSensitive: ps.isSensitive ?? false,
+				localOnly: ps.localOnly ?? false,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+			}, me);
 
-	publishBroadcastStream('emojiAdded', {
-		emoji: await Emojis.pack(emoji.id),
-	});
-
-	insertModerationLog(me, 'addEmoji', {
-		emojiId: emoji.id,
-	});
-
-	return {
-		id: emoji.id,
-	};
-});
+			return this.emojiEntityService.packDetailed(emoji);
+		});
+	}
+}

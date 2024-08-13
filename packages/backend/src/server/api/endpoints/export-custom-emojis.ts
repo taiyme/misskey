@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
-import { createExportCustomEmojisJob } from '@/queue/index.js';
-import define from '../define.js';
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	secure: true,
@@ -17,7 +23,13 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	createExportCustomEmojisJob(user);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private queueService: QueueService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			this.queueService.createExportCustomEmojisJob(me);
+		});
+	}
+}

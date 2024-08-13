@@ -1,7 +1,14 @@
-import { publishDriveStream } from '@/services/stream.js';
-import { DriveFiles, DriveFolders, Users } from '@/models/index.js';
-import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/misc/hard-limits.js';
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { DriveFilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -37,8 +44,13 @@ export const meta = {
 			code: 'NO_SUCH_FOLDER',
 			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73',
 		},
-	},
 
+		restrictedByRole: {
+			message: 'This feature is restricted by your role.',
+			code: 'RESTRICTED_BY_ROLE',
+			id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
+		},
+	},
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -58,55 +70,47 @@ export const paramDef = {
 	required: ['fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const file = await DriveFiles.findOneBy({ id: ps.fileId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
-	if (file == null) {
-		throw new ApiError(meta.errors.noSuchFile);
-	}
-
-	if ((!user.isAdmin && !user.isModerator) && (file.userId !== user.id)) {
-		throw new ApiError(meta.errors.accessDenied);
-	}
-
-	if (ps.name) file.name = ps.name;
-	if (!DriveFiles.validateFileName(file.name)) {
-		throw new ApiError(meta.errors.invalidFileName);
-	}
-
-	if (ps.comment !== undefined) file.comment = ps.comment;
-
-	if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
-
-	if (ps.folderId !== undefined) {
-		if (ps.folderId === null) {
-			file.folderId = null;
-		} else {
-			const folder = await DriveFolders.findOneBy({
-				id: ps.folderId,
-				userId: user.id,
-			});
-
-			if (folder == null) {
-				throw new ApiError(meta.errors.noSuchFolder);
+		private driveService: DriveService,
+		private roleService: RoleService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+			if (file == null) {
+				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			file.folderId = folder.id;
-		}
+			if (!await this.roleService.isModerator(me) && (file.userId !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
+			let packedFile;
+
+			try {
+				packedFile = await this.driveService.updateFile(file, {
+					folderId: ps.folderId,
+					name: ps.name,
+					isSensitive: ps.isSensitive,
+					comment: ps.comment,
+				}, me);
+			} catch (e) {
+				if (e instanceof DriveService.InvalidFileNameError) {
+					throw new ApiError(meta.errors.invalidFileName);
+				} else if (e instanceof DriveService.NoSuchFolderError) {
+					throw new ApiError(meta.errors.noSuchFolder);
+				} else if (e instanceof DriveService.CannotUnmarkSensitiveError) {
+					throw new ApiError(meta.errors.restrictedByRole);
+				} else {
+					throw e;
+				}
+			}
+
+			return packedFile;
+		});
 	}
-
-	await DriveFiles.update(file.id, {
-		name: file.name,
-		comment: file.comment,
-		folderId: file.folderId,
-		isSensitive: file.isSensitive,
-	});
-
-	const fileObj = await DriveFiles.pack(file, { self: true });
-
-	// Publish fileUpdated event
-	publishDriveStream(user.id, 'fileUpdated', fileObj);
-
-	return fileObj;
-});
+}

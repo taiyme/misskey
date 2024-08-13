@@ -1,6 +1,14 @@
-import define from '../../../define.js';
-import { DriveFolders } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { DriveFoldersRepository } from '@/models/_.js';
+import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -29,13 +37,22 @@ export const paramDef = {
 	required: ['name'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const folders = await DriveFolders.findBy({
-		name: ps.name,
-		userId: user.id,
-		parentId: ps.parentId ?? IsNull(),
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.driveFoldersRepository)
+		private driveFoldersRepository: DriveFoldersRepository,
 
-	return await Promise.all(folders.map(folder => DriveFolders.pack(folder)));
-});
+		private driveFolderEntityService: DriveFolderEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const folders = await this.driveFoldersRepository.findBy({
+				name: ps.name,
+				userId: me.id,
+				parentId: ps.parentId ?? IsNull(),
+			});
+
+			return await Promise.all(folders.map(folder => this.driveFolderEntityService.pack(folder)));
+		});
+	}
+}

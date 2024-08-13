@@ -1,32 +1,56 @@
-import Channel from '../channel.js';
-import { Notes, UserListJoinings, UserLists } from '@/models/index.js';
-import { User } from '@/models/entities/user.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
-import { Packed } from '@/misc/schema.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export default class extends Channel {
+import { Inject, Injectable } from '@nestjs/common';
+import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
+import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import type { JsonObject } from '@/misc/json-value.js';
+import Channel, { type MiChannelService } from '../channel.js';
+
+class UserListChannel extends Channel {
 	public readonly chName = 'userList';
 	public static shouldShare = false;
-	public static requireCredential = false;
+	public static requireCredential = false as const;
 	private listId: string;
-	public listUsers: User['id'][] = [];
-	private listUsersClock: NodeJS.Timer;
+	private membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
+	private listUsersClock: NodeJS.Timeout;
+	private withFiles: boolean;
+	private withRenotes: boolean;
 
-	constructor(id: string, connection: Channel['connection']) {
+	constructor(
+		private userListsRepository: UserListsRepository,
+		private userListMembershipsRepository: UserListMembershipsRepository,
+		private noteEntityService: NoteEntityService,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
 		super(id, connection);
-		this.updateListUsers = this.updateListUsers.bind(this);
-		this.onNote = this.onNote.bind(this);
+		//this.updateListUsers = this.updateListUsers.bind(this);
+		//this.onNote = this.onNote.bind(this);
 	}
 
-	public async init(params: any) {
-		this.listId = params.listId as string;
+	@bindThis
+	public async init(params: JsonObject) {
+		if (typeof params.listId !== 'string') return;
+		this.listId = params.listId;
+		this.withFiles = !!(params.withFiles ?? false);
+		this.withRenotes = !!(params.withRenotes ?? true);
 
 		// Check existence and owner
-		const list = await UserLists.findOneBy({
-			id: this.listId,
-			userId: this.user!.id,
+		const listExist = await this.userListsRepository.exists({
+			where: {
+				id: this.listId,
+				userId: this.user!.id,
+			},
 		});
-		if (!list) return;
+		if (!listExist) return;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);
@@ -37,56 +61,103 @@ export default class extends Channel {
 		this.listUsersClock = setInterval(this.updateListUsers, 5000);
 	}
 
+	@bindThis
 	private async updateListUsers() {
-		const users = await UserListJoinings.find({
+		const memberships = await this.userListMembershipsRepository.find({
 			where: {
 				userListId: this.listId,
 			},
 			select: ['userId'],
 		});
 
-		this.listUsers = users.map(x => x.userId);
+		const membershipsMap: Record<string, Pick<MiUserListMembership, 'withReplies'> | undefined> = {};
+		for (const membership of memberships) {
+			membershipsMap[membership.userId] = {
+				withReplies: membership.withReplies,
+			};
+		}
+		this.membershipsMap = membershipsMap;
 	}
 
+	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		if (!this.listUsers.includes(note.userId)) return;
+		const isMe = this.user!.id === note.userId;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await Notes.pack(note.id, this.user, {
-				detail: true,
-			});
+		// チャンネル投稿は無視する
+		if (note.channelId) return;
 
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await Notes.pack(note.replyId, this.user, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await Notes.pack(note.renoteId, this.user, {
-					detail: true,
-				});
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+
+		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
+
+		if (note.visibility === 'followers') {
+			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
+		} else if (note.visibility === 'specified') {
+			if (!note.visibleUserIds!.includes(this.user!.id)) return;
+		}
+
+		if (note.reply) {
+			const reply = note.reply;
+			if (this.membershipsMap[note.userId]?.withReplies) {
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId)) return;
+			} else {
+				// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
+				if (reply.userId !== this.user!.id && !isMe && reply.userId !== note.userId) return;
 			}
 		}
 
-		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.muting)) return;
-		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		if (isUserRelated(note, this.blocking)) return;
+		if (isRenotePacked(note) && !isQuotePacked(note) && !this.withRenotes) return;
+
+		if (this.isNoteMutedOrBlocked(note)) return;
+
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
+		}
+
+		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}
 
+	@bindThis
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`userListStream:${this.listId}`, this.send);
 		this.subscriber.off('notesStream', this.onNote);
 
 		clearInterval(this.listUsersClock);
+	}
+}
+
+@Injectable()
+export class UserListChannelService implements MiChannelService<false> {
+	public readonly shouldShare = UserListChannel.shouldShare;
+	public readonly requireCredential = UserListChannel.requireCredential;
+	public readonly kind = UserListChannel.kind;
+
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
+
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
+
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	@bindThis
+	public create(id: string, connection: Channel['connection']): UserListChannel {
+		return new UserListChannel(
+			this.userListsRepository,
+			this.userListMembershipsRepository,
+			this.noteEntityService,
+			id,
+			connection,
+		);
 	}
 }

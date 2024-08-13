@@ -1,8 +1,15 @@
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { WebhooksRepository } from '@/models/_.js';
+import { webhookEventTypes } from '@/models/Webhook.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { Webhooks } from '@/models/index.js';
-import { publishInternalEvent } from '@/services/stream.js';
-import { webhookEventTypes } from '@/models/entities/webhook.js';
 
 export const meta = {
 	tags: ['webhooks'],
@@ -27,33 +34,48 @@ export const paramDef = {
 		webhookId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', minLength: 1, maxLength: 1024 },
+		secret: { type: 'string', nullable: true, maxLength: 1024 },
 		on: { type: 'array', items: {
 			type: 'string', enum: webhookEventTypes,
 		} },
 		active: { type: 'boolean' },
 	},
-	required: ['webhookId', 'name', 'url', 'secret', 'on', 'active'],
+	required: ['webhookId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const webhook = await Webhooks.findOneBy({
-		id: ps.webhookId,
-		userId: user.id,
-	});
+// TODO: ロジックをサービスに切り出す
 
-	if (webhook == null) {
-		throw new ApiError(meta.errors.noSuchWebhook);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.webhooksRepository)
+		private webhooksRepository: WebhooksRepository,
+
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const webhook = await this.webhooksRepository.findOneBy({
+				id: ps.webhookId,
+				userId: me.id,
+			});
+
+			if (webhook == null) {
+				throw new ApiError(meta.errors.noSuchWebhook);
+			}
+
+			await this.webhooksRepository.update(webhook.id, {
+				name: ps.name,
+				url: ps.url,
+				secret: ps.secret === null ? '' : ps.secret,
+				on: ps.on,
+				active: ps.active,
+			});
+
+			const updated = await this.webhooksRepository.findOneByOrFail({
+				id: ps.webhookId,
+			});
+
+			this.globalEventService.publishInternalEvent('webhookUpdated', updated);
+		});
 	}
-
-	await Webhooks.update(webhook.id, {
-		name: ps.name,
-		url: ps.url,
-		secret: ps.secret,
-		on: ps.on,
-		active: ps.active,
-	});
-
-	publishInternalEvent('webhookUpdated', webhook);
-});
+}

@@ -1,11 +1,18 @@
-import { getJsonSchema } from '@/services/chart/core.js';
-import { driveChart } from '@/services/chart/index.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { getJsonSchema } from '@/core/chart/core.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import DriveChart from '@/core/chart/charts/drive.js';
+import { schema } from '@/core/chart/charts/entities/drive.js';
 
 export const meta = {
 	tags: ['charts', 'drive'],
 
-	res: getJsonSchema(driveChart.schema),
+	res: getJsonSchema(schema),
 
 	allowGet: true,
 	cacheSec: 60 * 60,
@@ -21,7 +28,13 @@ export const paramDef = {
 	required: ['span'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await driveChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private driveChart: DriveChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.driveChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null);
+		});
+	}
+}

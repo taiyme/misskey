@@ -1,10 +1,17 @@
-import { Users } from '@/models/index.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'read:account',
 
 	description: 'Show the different kinds of relations between the authenticated user and the specified user(s).',
 
@@ -44,6 +51,10 @@ export const meta = {
 						optional: false, nullable: false,
 					},
 					isMuted: {
+						type: 'boolean',
+						optional: false, nullable: false,
+					},
+					isRenoteMuted: {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
@@ -88,6 +99,10 @@ export const meta = {
 							type: 'boolean',
 							optional: false, nullable: false,
 						},
+						isRenoteMuted: {
+							type: 'boolean',
+							optional: false, nullable: false,
+						},
 					},
 				},
 			},
@@ -111,11 +126,15 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const ids = Array.isArray(ps.userId) ? ps.userId : [ps.userId];
-
-	const relations = await Promise.all(ids.map(id => Users.getRelation(me.id, id)));
-
-	return Array.isArray(ps.userId) ? relations : relations[0];
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private userEntityService: UserEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return Array.isArray(ps.userId)
+				? await this.userEntityService.getRelations(me.id, ps.userId).then(it => [...it.values()])
+				: await this.userEntityService.getRelation(me.id, ps.userId).then(it => [it]);
+		});
+	}
+}

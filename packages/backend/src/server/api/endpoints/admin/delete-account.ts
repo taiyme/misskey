@@ -1,15 +1,20 @@
-import { Users } from '@/models/index.js';
-import { deleteAccount } from '@/services/delete-account.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { DeleteAccountService } from '@/core/DeleteAccountService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireAdmin: true,
-
-	res: {
-	},
+	kind: 'write:admin:delete-account',
 } as const;
 
 export const paramDef = {
@@ -20,12 +25,21 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const user = await Users.findOneByOrFail({ id: ps.userId });
-	if (user.isDeleted) {
-		return;
-	}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	await deleteAccount(user);
-});
+		private deleteAccountService: DeleteAccountService,
+	) {
+		super(meta, paramDef, async (ps) => {
+			const user = await this.usersRepository.findOneByOrFail({ id: ps.userId });
+			if (user.isDeleted) {
+				return;
+			}
+
+			await this.deleteAccountService.deleteAccount(user);
+		});
+	}
+}

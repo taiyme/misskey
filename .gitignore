@@ -9,6 +9,20 @@
 node_modules
 report.*.json
 
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+packages/frontend/.yarn/cache
+packages/backend/.yarn/cache
+packages/sw/.yarn/cache
+
+# pnpm
+.pnpm-store
+
 # Cypress
 cypress/screenshots
 cypress/videos
@@ -19,15 +33,25 @@ coverage
 # config
 /.config/*
 !/.config/example.yml
+!/.config/docker_example.yml
 !/.config/docker_example.env
+compose.yaml
+compose.yml
+docker-compose.yaml
+docker-compose.yml
+!/.devcontainer/compose.yaml
+!/.devcontainer/compose.yml
+!/.devcontainer/docker-compose.yaml
+!/.devcontainer/docker-compose.yml
 
 # misskey
 /build
 built
+built-test
 /data
 /.cache-loader
 /db
-/elasticsearch
+/meili_data
 npm-debug.log
 *.pem
 run.bat
@@ -38,6 +62,10 @@ api-docs.json
 .DS_Store
 /files
 ormconfig.json
+temp
+/packages/frontend/src/**/*.stories.ts
+tsdoc-metadata.json
+misskey-assets
 
 # blender backups
 *.blend1
@@ -45,3 +73,6 @@ ormconfig.json
 *.blend3
 *.blend4
 *.blend5
+
+# VSCode addon
+.favorites.json

@@ -1,21 +1,25 @@
-import endpoints from '../endpoints.js';
-import config from '@/config/index.js';
-import { errors as basicErrors } from './errors.js';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export function genOpenapiSpec() {
+import type { Config } from '@/config.js';
+import endpoints, { IEndpoint } from '../endpoints.js';
+import { errors as basicErrors } from './errors.js';
+import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
+
+export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 	const spec = {
-		openapi: '3.0.0',
+		openapi: '3.1.0',
 
 		info: {
-			version: 'v1',
+			version: config.version,
 			title: 'Misskey API',
-			'x-logo': { url: '/static-assets/api-doc.png' },
 		},
 
 		externalDocs: {
 			description: 'Repository',
-			url: 'https://github.com/misskey-dev/misskey',
+			url: 'https://github.com/taiyme/misskey',
 		},
 
 		servers: [{
@@ -25,19 +29,20 @@ export function genOpenapiSpec() {
 		paths: {} as any,
 
 		components: {
-			schemas: schemas,
+			schemas: getSchemas(includeSelfRef),
 
 			securitySchemes: {
-				ApiKeyAuth: {
-					type: 'apiKey',
-					in: 'body',
-					name: 'i',
+				bearerAuth: {
+					type: 'http',
+					scheme: 'bearer',
 				},
 			},
 		},
 	};
 
-	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
+	// 書き換えたりするのでディープコピーしておく。そのまま編集するとメモリ上の値が汚れて次回以降の出力に影響する
+	const copiedEndpoints = JSON.parse(JSON.stringify(endpoints)) as IEndpoint[];
+	for (const endpoint of copiedEndpoints) {
 		const errors = {} as any;
 
 		if (endpoint.meta.errors) {
@@ -50,9 +55,14 @@ export function genOpenapiSpec() {
 			}
 		}
 
-		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
+		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res, 'res', includeSelfRef) : {};
 
 		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
+
+		if (endpoint.meta.secure) {
+			desc += '**Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.\n';
+		}
+
 		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
 		if (endpoint.meta.kind) {
 			const kind = endpoint.meta.kind;
@@ -60,41 +70,53 @@ export function genOpenapiSpec() {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = endpoint.params;
+		const schema = { ...convertSchemaToOpenApiSchema(endpoint.params, 'param', false) };
 
 		if (endpoint.meta.requireFile) {
-			schema.properties.file = {
-				type: 'string',
-				format: 'binary',
-				description: 'The file contents.',
+			schema.properties = {
+				...schema.properties,
+				file: {
+					type: 'string',
+					format: 'binary',
+					description: 'The file contents.',
+				},
 			};
-			schema.required.push('file');
+			schema.required = [...schema.required ?? [], 'file'];
 		}
 
+		if (schema.required && schema.required.length <= 0) {
+			// 空配列は許可されない
+			schema.required = undefined;
+		}
+
+		const hasBody = (schema.type === 'object' && schema.properties && Object.keys(schema.properties).length >= 1);
+
 		const info = {
-			operationId: endpoint.name,
+			operationId: endpoint.name.replaceAll('/', '___'), // NOTE: スラッシュは使えない
 			summary: endpoint.name,
 			description: desc,
 			externalDocs: {
 				description: 'Source code',
-				url: `https://github.com/misskey-dev/misskey/blob/develop/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
+				url: `https://github.com/taiyme/misskey/blob/taiyme/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
 			},
 			...(endpoint.meta.tags ? {
 				tags: [endpoint.meta.tags[0]],
 			} : {}),
 			...(endpoint.meta.requireCredential ? {
 				security: [{
-					ApiKeyAuth: [],
+					bearerAuth: [],
 				}],
 			} : {}),
-			requestBody: {
-				required: true,
-				content: {
-					[requestType]: {
-						schema,
+			...(hasBody ? {
+				requestBody: {
+					required: true,
+					content: {
+						[requestType]: {
+							schema,
+						},
 					},
 				},
-			},
+			} : {}),
 			responses: {
 				...(endpoint.meta.res ? {
 					'200': {
@@ -110,6 +132,11 @@ export function genOpenapiSpec() {
 						description: 'OK (without any results)',
 					},
 				}),
+				...(endpoint.meta.res?.optional === true || endpoint.meta.res?.nullable === true ? {
+					'204': {
+						description: 'OK (without any results)',
+					},
+				} : {}),
 				'400': {
 					description: 'Client error',
 					content: {
@@ -182,6 +209,9 @@ export function genOpenapiSpec() {
 		};
 
 		spec.paths['/' + endpoint.name] = {
+			...(endpoint.meta.allowGet ? {
+				get: info,
+			} : {}),
 			post: info,
 		};
 	}

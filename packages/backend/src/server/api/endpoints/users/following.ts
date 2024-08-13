@@ -1,9 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull } from 'typeorm';
-import { Users, Followings, UserProfiles } from '@/models/index.js';
-import { toPunyNullable } from '@/misc/convert-host.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
+import { birthdaySchema } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
 
 export const meta = {
 	tags: ['users'],
@@ -34,6 +43,12 @@ export const meta = {
 			code: 'FORBIDDEN',
 			id: 'f6cdb0df-c19f-ec5c-7dbb-0ba84a1f92ba',
 		},
+
+		birthdayInvalid: {
+			message: 'Birthday date format is invalid.',
+			code: 'BIRTHDAY_DATE_FORMAT_INVALID',
+			id: 'a2b007b9-4782-4eba-abd3-93b05ed4130d',
+		},
 	},
 } as const;
 
@@ -43,65 +58,92 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+
+		userId: { type: 'string', format: 'misskey:id' },
+		username: { type: 'string' },
+		host: {
+			type: 'string',
+			nullable: true,
+			description: 'The local host is represented with `null`.',
+		},
+
+		birthday: { ...birthdaySchema, nullable: true },
 	},
 	anyOf: [
-		{
-			properties: {
-				userId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['userId'],
-		},
-		{
-			properties: {
-				username: { type: 'string' },
-				host: {
-					type: 'string',
-					nullable: true,
-					description: 'The local host is represented with `null`.',
-				},
-			},
-			required: ['username', 'host'],
-		},
+		{ required: ['userId'] },
+		{ required: ['username', 'host'] },
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const user = await Users.findOneBy(ps.userId != null
-		? { id: ps.userId }
-		: { usernameLower: ps.username!.toLowerCase(), host: toPunyNullable(ps.host) ?? IsNull() });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
-	if (user == null) {
-		throw new ApiError(meta.errors.noSuchUser);
-	}
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
-	if (profile.ffVisibility === 'private') {
-		if (me == null || (me.id !== user.id)) {
-			throw new ApiError(meta.errors.forbidden);
-		}
-	} else if (profile.ffVisibility === 'followers') {
-		if (me == null) {
-			throw new ApiError(meta.errors.forbidden);
-		} else if (me.id !== user.id) {
-			const following = await Followings.findOneBy({
-				followeeId: user.id,
-				followerId: me.id,
-			});
-			if (following == null) {
-				throw new ApiError(meta.errors.forbidden);
+		private utilityService: UtilityService,
+		private followingEntityService: FollowingEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const user = await this.usersRepository.findOneBy(ps.userId != null
+				? { id: ps.userId }
+				: { usernameLower: ps.username!.toLowerCase(), host: this.utilityService.toPunyNullable(ps.host) ?? IsNull() });
+
+			if (user == null) {
+				throw new ApiError(meta.errors.noSuchUser);
 			}
-		}
+
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			if (profile.followingVisibility === 'private') {
+				if (me == null || (me.id !== user.id)) {
+					throw new ApiError(meta.errors.forbidden);
+				}
+			} else if (profile.followingVisibility === 'followers') {
+				if (me == null) {
+					throw new ApiError(meta.errors.forbidden);
+				} else if (me.id !== user.id) {
+					const isFollowing = await this.followingsRepository.exists({
+						where: {
+							followeeId: user.id,
+							followerId: me.id,
+						},
+					});
+					if (!isFollowing) {
+						throw new ApiError(meta.errors.forbidden);
+					}
+				}
+			}
+
+			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId)
+				.andWhere('following.followerId = :userId', { userId: user.id })
+				.innerJoinAndSelect('following.followee', 'followee');
+
+			if (ps.birthday) {
+				try {
+					const birthday = ps.birthday.substring(5, 10);
+					const birthdayUserQuery = this.userProfilesRepository.createQueryBuilder('user_profile');
+					birthdayUserQuery.select('user_profile.userId')
+						.where(`SUBSTR(user_profile.birthday, 6, 5) = '${birthday}'`);
+
+					query.andWhere(`following.followeeId IN (${ birthdayUserQuery.getQuery() })`);
+				} catch (err) {
+					throw new ApiError(meta.errors.birthdayInvalid);
+				}
+			}
+
+			const followings = await query
+				.limit(ps.limit)
+				.getMany();
+
+			return await this.followingEntityService.packMany(followings, me, { populateFollowee: true });
+		});
 	}
-
-	const query = makePaginationQuery(Followings.createQueryBuilder('following'), ps.sinceId, ps.untilId)
-		.andWhere('following.followerId = :userId', { userId: user.id })
-		.innerJoinAndSelect('following.followee', 'followee');
-
-	const followings = await query
-		.take(ps.limit)
-		.getMany();
-
-	return await Followings.packMany(followings, me, { populateFollowee: true });
-});
+}

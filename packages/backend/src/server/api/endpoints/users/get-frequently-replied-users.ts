@@ -1,9 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Not, In, IsNull } from 'typeorm';
-import { maximum } from '@/prelude/array.js';
-import { Notes, Users } from '@/models/index.js';
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { maximum } from '@/misc/prelude/array.js';
+import type { NotesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
 
 export const meta = {
 	tags: ['users'],
@@ -50,65 +58,77 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Lookup user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	// Fetch recent notes
-	const recentNotes = await Notes.find({
-		where: {
-			userId: user.id,
-			replyId: Not(IsNull()),
-		},
-		order: {
-			id: -1,
-		},
-		take: 1000,
-		select: ['replyId'],
-	});
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Lookup user
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
 
-	// 投稿が少なかったら中断
-	if (recentNotes.length === 0) {
-		return [];
+			// Fetch recent notes
+			const recentNotes = await this.notesRepository.find({
+				where: {
+					userId: user.id,
+					replyId: Not(IsNull()),
+				},
+				order: {
+					id: -1,
+				},
+				take: 1000,
+				select: ['replyId'],
+			});
+
+			// 投稿が少なかったら中断
+			if (recentNotes.length === 0) {
+				return [];
+			}
+
+			// TODO ミュートを考慮
+			const replyTargetNotes = await this.notesRepository.find({
+				where: {
+					id: In(recentNotes.map(p => p.replyId)),
+				},
+				select: ['userId'],
+			});
+
+			const repliedUsers: any = {};
+
+			// Extract replies from recent notes
+			for (const userId of replyTargetNotes.map(x => x.userId.toString())) {
+				if (repliedUsers[userId]) {
+					repliedUsers[userId]++;
+				} else {
+					repliedUsers[userId] = 1;
+				}
+			}
+
+			// Calc peak
+			const peak = maximum(Object.values(repliedUsers));
+
+			// Sort replies by frequency
+			const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
+
+			// Extract top replied users
+			const topRepliedUserIds = repliedUsersSorted.slice(0, ps.limit);
+
+			// Make replies object (includes weights)
+			const _userMap = await this.userEntityService.packMany(topRepliedUserIds, me, { schema: 'UserDetailed' })
+				.then(users => new Map(users.map(u => [u.id, u])));
+			const repliesObj = await Promise.all(topRepliedUserIds.map(async (userId) => ({
+				user: _userMap.get(userId) ?? await this.userEntityService.pack(userId, me, { schema: 'UserDetailed' }),
+				weight: repliedUsers[userId] / peak,
+			})));
+
+			return repliesObj;
+		});
 	}
-
-	// TODO ミュートを考慮
-	const replyTargetNotes = await Notes.find({
-		where: {
-			id: In(recentNotes.map(p => p.replyId)),
-		},
-		select: ['userId'],
-	});
-
-	const repliedUsers: any = {};
-
-	// Extract replies from recent notes
-	for (const userId of replyTargetNotes.map(x => x.userId.toString())) {
-		if (repliedUsers[userId]) {
-			repliedUsers[userId]++;
-		} else {
-			repliedUsers[userId] = 1;
-		}
-	}
-
-	// Calc peak
-	const peak = maximum(Object.values(repliedUsers));
-
-	// Sort replies by frequency
-	const repliedUsersSorted = Object.keys(repliedUsers).sort((a, b) => repliedUsers[b] - repliedUsers[a]);
-
-	// Extract top replied users
-	const topRepliedUsers = repliedUsersSorted.slice(0, ps.limit);
-
-	// Make replies object (includes weights)
-	const repliesObj = await Promise.all(topRepliedUsers.map(async (user) => ({
-		user: await Users.pack(user, me, { detail: true }),
-		weight: repliedUsers[user] / peak,
-	})));
-
-	return repliesObj;
-});
+}

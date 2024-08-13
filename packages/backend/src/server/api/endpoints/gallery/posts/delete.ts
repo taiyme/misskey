@@ -1,6 +1,13 @@
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GalleryPostsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { GalleryPosts } from '@/models/index.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -26,16 +33,23 @@ export const paramDef = {
 	required: ['postId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const post = await GalleryPosts.findOneBy({
-		id: ps.postId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const post = await this.galleryPostsRepository.findOneBy({
+				id: ps.postId,
+				userId: me.id,
+			});
 
-	if (post == null) {
-		throw new ApiError(meta.errors.noSuchPost);
+			if (post == null) {
+				throw new ApiError(meta.errors.noSuchPost);
+			}
+
+			await this.galleryPostsRepository.delete(post.id);
+		});
 	}
-
-	await GalleryPosts.delete(post.id);
-});
+}

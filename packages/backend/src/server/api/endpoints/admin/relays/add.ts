@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
-import define from '../../../define.js';
-import { addRelay } from '@/services/relay.js';
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RelayService } from '@/core/RelayService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -8,6 +14,7 @@ export const meta = {
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:relays',
 
 	errors: {
 		invalidUrl: {
@@ -53,13 +60,19 @@ export const paramDef = {
 	required: ['inbox'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	try {
-		if (new URL(ps.inbox).protocol !== 'https:') throw 'https only';
-	} catch {
-		throw new ApiError(meta.errors.invalidUrl);
-	}
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private relayService: RelayService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			try {
+				if (new URL(ps.inbox).protocol !== 'https:') throw new Error('https only');
+			} catch {
+				throw new ApiError(meta.errors.invalidUrl);
+			}
 
-	return await addRelay(ps.inbox);
-});
+			return await this.relayService.addRelay(ps.inbox);
+		});
+	}
+}

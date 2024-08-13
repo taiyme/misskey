@@ -1,10 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
-import create from '@/services/following/create.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
-import { Followings, Users } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { FollowingsRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { DI } from '@/di-symbols.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -15,6 +23,8 @@ export const meta = {
 	},
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:following',
 
@@ -61,44 +71,47 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		withReplies: { type: 'boolean' },
 	},
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const follower = user;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
-	// 自分自身
-	if (user.id === ps.userId) {
-		throw new ApiError(meta.errors.followeeIsYourself);
+		private userEntityService: UserEntityService,
+		private getterService: GetterService,
+		private userFollowingService: UserFollowingService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const follower = me;
+
+			// 自分自身
+			if (me.id === ps.userId) {
+				throw new ApiError(meta.errors.followeeIsYourself);
+			}
+
+			// Get followee
+			const followee = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
+
+			try {
+				await this.userFollowingService.follow(follower, followee, { withReplies: ps.withReplies });
+			} catch (e) {
+				if (e instanceof IdentifiableError) {
+					if (e.id === 'ec3f65c0-a9d1-47d9-8791-b2e7b9dcdced') throw new ApiError(meta.errors.alreadyFollowing);
+					if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
+					if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
+				}
+				throw e;
+			}
+
+			return await this.userEntityService.pack(followee.id, me);
+		});
 	}
-
-	// Get followee
-	const followee = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	// Check if already following
-	const exist = await Followings.findOneBy({
-		followerId: follower.id,
-		followeeId: followee.id,
-	});
-
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyFollowing);
-	}
-
-	try {
-		await create(follower, followee);
-	} catch (e) {
-		if (e instanceof IdentifiableError) {
-			if (e.id === '710e8fb0-b8c3-4922-be49-d5d93d8e6a6e') throw new ApiError(meta.errors.blocking);
-			if (e.id === '3338392a-f764-498d-8855-db939dcf8c48') throw new ApiError(meta.errors.blocked);
-		}
-		throw e;
-	}
-
-	return await Users.pack(followee.id, user);
-});
+}

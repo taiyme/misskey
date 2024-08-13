@@ -1,6 +1,12 @@
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ClipService } from '@/core/ClipService.js';
 import { ApiError } from '../../error.js';
-import { Clips } from '@/models/index.js';
 
 export const meta = {
 	tags: ['clips'],
@@ -26,16 +32,20 @@ export const paramDef = {
 	required: ['clipId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.findOneBy({
-		id: ps.clipId,
-		userId: user.id,
-	});
-
-	if (clip == null) {
-		throw new ApiError(meta.errors.noSuchClip);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private clipService: ClipService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			try {
+				await this.clipService.delete(me, ps.clipId);
+			} catch (e) {
+				if (e instanceof ClipService.NoSuchClipError) {
+					throw new ApiError(meta.errors.noSuchClip);
+				}
+				throw e;
+			}
+		});
 	}
-
-	await Clips.delete(clip.id);
-});
+}

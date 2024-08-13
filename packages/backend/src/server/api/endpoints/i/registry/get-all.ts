@@ -1,10 +1,19 @@
-import define from '../../../define.js';
-import { RegistryItems } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RegistryApiService } from '@/core/RegistryApiService.js';
 
 export const meta = {
 	requireCredential: true,
+	kind: 'read:account',
 
-	secure: true,
+	res: {
+		type: 'object',
+	},
 } as const;
 
 export const paramDef = {
@@ -13,24 +22,26 @@ export const paramDef = {
 		scope: { type: 'array', default: [], items: {
 			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
 		} },
+		domain: { type: 'string', nullable: true },
 	},
-	required: [],
+	required: ['scope'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = RegistryItems.createQueryBuilder('item')
-		.where('item.domain IS NULL')
-		.andWhere('item.userId = :userId', { userId: user.id })
-		.andWhere('item.scope = :scope', { scope: ps.scope });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private registryApiService: RegistryApiService,
+	) {
+		super(meta, paramDef, async (ps, me, accessToken) => {
+			const items = await this.registryApiService.getAllItemsOfScope(me.id, accessToken != null ? accessToken.id : (ps.domain ?? null), ps.scope);
 
-	const items = await query.getMany();
+			const res = {} as Record<string, any>;
 
-	const res = {} as Record<string, any>;
+			for (const item of items) {
+				res[item.key] = item.value;
+			}
 
-	for (const item of items) {
-		res[item.key] = item.value;
+			return res;
+		});
 	}
-
-	return res;
-});
+}

@@ -1,6 +1,14 @@
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AntennasRepository } from '@/models/_.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Antennas } from '@/models/index.js';
 
 export const meta = {
 	tags: ['antennas', 'account'],
@@ -32,17 +40,26 @@ export const paramDef = {
 	required: ['antennaId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the antenna
-	const antenna = await Antennas.findOneBy({
-		id: ps.antennaId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.antennasRepository)
+		private antennasRepository: AntennasRepository,
 
-	if (antenna == null) {
-		throw new ApiError(meta.errors.noSuchAntenna);
+		private antennaEntityService: AntennaEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the antenna
+			const antenna = await this.antennasRepository.findOneBy({
+				id: ps.antennaId,
+				userId: me.id,
+			});
+
+			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			return await this.antennaEntityService.pack(antenna);
+		});
 	}
-
-	return await Antennas.pack(antenna);
-});
+}

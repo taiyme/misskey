@@ -1,12 +1,19 @@
-import define from '../../define.js';
-import { ClipNotes, Clips } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ClipService } from '@/core/ClipService.js';
 import { ApiError } from '../../error.js';
-import { getNote } from '../../common/getters.js';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -34,24 +41,22 @@ export const paramDef = {
 	required: ['clipId', 'noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const clip = await Clips.findOneBy({
-		id: ps.clipId,
-		userId: user.id,
-	});
-
-	if (clip == null) {
-		throw new ApiError(meta.errors.noSuchClip);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private clipService: ClipService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			try {
+				await this.clipService.removeNote(me, ps.clipId, ps.noteId);
+			} catch (e) {
+				if (e instanceof ClipService.NoSuchClipError) {
+					throw new ApiError(meta.errors.noSuchClip);
+				} else if (e instanceof ClipService.NoSuchNoteError) {
+					throw new ApiError(meta.errors.noSuchNote);
+				}
+				throw e;
+			}
+		});
 	}
-
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
-
-	await ClipNotes.delete({
-		noteId: note.id,
-		clipId: clip.id,
-	});
-});
+}

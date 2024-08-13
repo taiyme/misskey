@@ -1,14 +1,18 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { In } from 'typeorm';
-import { ApiError } from '../../../error.js';
-import { db } from '@/db/postgre.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'write:admin:emoji',
 } as const;
 
 export const paramDef = {
@@ -26,14 +30,13 @@ export const paramDef = {
 	required: ['ids'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	await Emojis.update({
-		id: In(ps.ids),
-	}, {
-		updatedAt: new Date(),
-		category: ps.category,
-	});
-
-	await db.queryResultCache!.remove(['meta_emojis']);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private customEmojiService: CustomEmojiService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.customEmojiService.setCategoryBulk(ps.ids, ps.category ?? null);
+		});
+	}
+}

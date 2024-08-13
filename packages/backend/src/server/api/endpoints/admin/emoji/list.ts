@@ -1,13 +1,23 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
-import { Emoji } from '@/models/entities/emoji.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { EmojisRepository } from '@/models/_.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+//import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
+	kind: 'read:admin:emoji',
 
 	res: {
 		type: 'array',
@@ -38,8 +48,8 @@ export const meta = {
 					optional: false, nullable: true,
 				},
 				host: {
-					type: 'null',
-					optional: false,
+					type: 'string',
+					optional: false, nullable: true,
 					description: 'The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files.',
 				},
 				url: {
@@ -62,28 +72,44 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const q = makePaginationQuery(Emojis.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
-		.andWhere(`emoji.host IS NULL`);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
 
-	let emojis: Emoji[];
+		private emojiEntityService: EmojiEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
+				.andWhere('emoji.host IS NULL');
 
-	if (ps.query) {
-		//q.andWhere('emoji.name ILIKE :q', { q: `%${ps.query}%` });
-		//const emojis = await q.take(ps.limit).getMany();
+			let emojis: MiEmoji[];
 
-		emojis = await q.getMany();
+			if (ps.query) {
+				//q.andWhere('emoji.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
+				//const emojis = await q.limit(ps.limit).getMany();
 
-		emojis = emojis.filter(emoji =>
-			emoji.name.includes(ps.query!) ||
-			emoji.aliases.some(a => a.includes(ps.query!)) ||
-			emoji.category?.includes(ps.query!));
+				emojis = await q.getMany();
+				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
 
-		emojis.splice(ps.limit + 1);
-	} else {
-		emojis = await q.take(ps.limit).getMany();
+				if (queryarry) {
+					emojis = emojis.filter(emoji =>
+						queryarry.includes(`:${emoji.name}:`),
+					);
+				} else {
+					emojis = emojis.filter(emoji =>
+						emoji.name.includes(ps.query!) ||
+						emoji.aliases.some(a => a.includes(ps.query!)) ||
+						emoji.category?.includes(ps.query!));
+				}
+				emojis.splice(ps.limit + 1);
+			} else {
+				emojis = await q.limit(ps.limit).getMany();
+			}
+
+			return this.emojiEntityService.packDetailedMany(emojis);
+		});
 	}
-
-	return Emojis.packMany(emojis);
-});
+}

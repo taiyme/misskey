@@ -1,143 +1,124 @@
-import bcrypt from 'bcryptjs';
-import { promisify } from 'node:util';
-import * as cbor from 'cbor';
-import define from '../../../define.js';
-import {
-	UserProfiles,
-	UserSecurityKeys,
-	AttestationChallenges,
-	Users,
-} from '@/models/index.js';
-import config from '@/config/index.js';
-import { procedures, hash } from '../../../2fa.js';
-import { publishMainStream } from '@/services/stream.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
-const rpIdHashReal = hash(Buffer.from(config.hostname, 'utf-8'));
+import bcrypt from 'bcryptjs';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/_.js';
+import { WebAuthnService } from '@/core/WebAuthnService.js';
+import { ApiError } from '@/server/api/error.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: '0d7ec6d2-e652-443e-a7bf-9ee9a0cd77b0',
+		},
+
+		twoFactorNotEnabled: {
+			message: '2fa not enabled.',
+			code: 'TWO_FACTOR_NOT_ENABLED',
+			id: '798d6847-b1ed-4f9c-b1f9-163c42655995',
+		},
+	},
+
+	res: {
+		type: 'object',
+		nullable: false,
+		optional: false,
+		properties: {
+			id: { type: 'string' },
+			name: { type: 'string' },
+		},
+	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
-		clientDataJSON: { type: 'string' },
-		attestationObject: { type: 'string' },
 		password: { type: 'string' },
-		challengeId: { type: 'string' },
-		name: { type: 'string' },
+		token: { type: 'string', nullable: true },
+		name: { type: 'string', minLength: 1, maxLength: 30 },
+		credential: { type: 'object' },
 	},
-	required: ['clientDataJSON', 'attestationObject', 'password', 'challengeId', 'name'],
+	required: ['password', 'name', 'credential'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const profile = await UserProfiles.findOneByOrFail({ userId: user.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
-	// Compare password
-	const same = await bcrypt.compare(ps.password, profile.password!);
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
-	if (!same) {
-		throw new Error('incorrect password');
-	}
-
-	if (!profile.twoFactorEnabled) {
-		throw new Error('2fa not enabled');
-	}
-
-	const clientData = JSON.parse(ps.clientDataJSON);
-
-	if (clientData.type !== 'webauthn.create') {
-		throw new Error('not a creation attestation');
-	}
-	if (clientData.origin !== config.scheme + '://' + config.host) {
-		throw new Error('origin mismatch');
-	}
-
-	const clientDataJSONHash = hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
-
-	const attestation = await cborDecodeFirst(ps.attestationObject);
-
-	const rpIdHash = attestation.authData.slice(0, 32);
-	if (!rpIdHashReal.equals(rpIdHash)) {
-		throw new Error('rpIdHash mismatch');
-	}
-
-	const flags = attestation.authData[32];
-
-	// eslint:disable-next-line:no-bitwise
-	if (!(flags & 1)) {
-		throw new Error('user not present');
-	}
-
-	const authData = Buffer.from(attestation.authData);
-	const credentialIdLength = authData.readUInt16BE(53);
-	const credentialId = authData.slice(55, 55 + credentialIdLength);
-	const publicKeyData = authData.slice(55 + credentialIdLength);
-	const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
-	if (publicKey.get(3) !== -7) {
-		throw new Error('alg mismatch');
-	}
-
-	if (!(procedures as any)[attestation.fmt]) {
-		throw new Error('unsupported fmt');
-	}
-
-	const verificationData = (procedures as any)[attestation.fmt].verify({
-		attStmt: attestation.attStmt,
-		authenticatorData: authData,
-		clientDataHash: clientDataJSONHash,
-		credentialId,
-		publicKey,
-		rpIdHash,
-	});
-	if (!verificationData.valid) throw new Error('signature invalid');
-
-	const attestationChallenge = await AttestationChallenges.findOneBy({
-		userId: user.id,
-		id: ps.challengeId,
-		registrationChallenge: true,
-		challenge: hash(clientData.challenge).toString('hex'),
-	});
-
-	if (!attestationChallenge) {
-		throw new Error('non-existent challenge');
-	}
-
-	await AttestationChallenges.delete({
-		userId: user.id,
-		id: ps.challengeId,
-	});
-
-	// Expired challenge (> 5min old)
-	if (
-		new Date().getTime() - attestationChallenge.createdAt.getTime() >=
-		5 * 60 * 1000
+		private webAuthnService: WebAuthnService,
+		private userAuthService: UserAuthService,
+		private userEntityService: UserEntityService,
+		private globalEventService: GlobalEventService,
 	) {
-		throw new Error('expired challenge');
+		super(meta, paramDef, async (ps, me) => {
+			const token = ps.token;
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
+
+			if (profile.twoFactorEnabled) {
+				if (token == null) {
+					throw new Error('authentication failed');
+				}
+
+				try {
+					await this.userAuthService.twoFactorAuthenticate(profile, token);
+				} catch (e) {
+					throw new Error('authentication failed');
+				}
+			}
+
+			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
+			if (!passwordMatched) {
+				throw new ApiError(meta.errors.incorrectPassword);
+			}
+
+			if (!profile.twoFactorEnabled) {
+				throw new ApiError(meta.errors.twoFactorNotEnabled);
+			}
+
+			const keyInfo = await this.webAuthnService.verifyRegistration(me.id, ps.credential);
+			const keyId = keyInfo.credentialID;
+
+			await this.userSecurityKeysRepository.insert({
+				id: keyId,
+				userId: me.id,
+				name: ps.name,
+				publicKey: Buffer.from(keyInfo.credentialPublicKey).toString('base64url'),
+				counter: keyInfo.counter,
+				credentialDeviceType: keyInfo.credentialDeviceType,
+				credentialBackedUp: keyInfo.credentialBackedUp,
+				transports: keyInfo.transports,
+			});
+
+			// Publish meUpdated event
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+				schema: 'MeDetailed',
+				includeSecrets: true,
+			}));
+
+			return {
+				id: keyId,
+				name: ps.name,
+			};
+		});
 	}
-
-	const credentialIdString = credentialId.toString('hex');
-
-	await UserSecurityKeys.insert({
-		userId: user.id,
-		id: credentialIdString,
-		lastUsed: new Date(),
-		name: ps.name,
-		publicKey: verificationData.publicKey.toString('hex'),
-	});
-
-	// Publish meUpdated event
-	publishMainStream(user.id, 'meUpdated', await Users.pack(user.id, user, {
-		detail: true,
-		includeSecrets: true,
-	}));
-
-	return {
-		id: credentialIdString,
-		name: ps.name,
-	};
-});
+}

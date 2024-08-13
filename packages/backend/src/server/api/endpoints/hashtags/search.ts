@@ -1,5 +1,13 @@
-import define from '../../define.js';
-import { Hashtags } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { HashtagsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -26,15 +34,22 @@ export const paramDef = {
 	required: ['query'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const hashtags = await Hashtags.createQueryBuilder('tag')
-		.where('tag.name like :q', { q: ps.query.toLowerCase() + '%' })
-		.orderBy('tag.count', 'DESC')
-		.groupBy('tag.id')
-		.take(ps.limit)
-		.skip(ps.offset)
-		.getMany();
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.hashtagsRepository)
+		private hashtagsRepository: HashtagsRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const hashtags = await this.hashtagsRepository.createQueryBuilder('tag')
+				.where('tag.name like :q', { q: sqlLikeEscape(ps.query.toLowerCase()) + '%' })
+				.orderBy('tag.mentionedLocalUsersCount', 'DESC')
+				.groupBy('tag.id')
+				.limit(ps.limit)
+				.offset(ps.offset)
+				.getMany();
 
-	return hashtags.map(tag => tag.name);
-});
+			return hashtags.map(tag => tag.name);
+		});
+	}
+}

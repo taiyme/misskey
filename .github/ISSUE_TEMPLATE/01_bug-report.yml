@@ -1,0 +1,95 @@
+name: 🐛 問題を報告する
+description: 改善に役立つ報告を作成します。
+labels: ["⚠️bug?"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        報告ありがとうございます！
+        まず、報告の重複を避けるために、発見した問題がすでに報告されているかどうかを検索してください。
+        また、サーバーの所有者/管理者ではない場合は、サーバー固有の問題をここに報告しないでください。 (例: XXX が taiyme.example.com で機能しません) 一度他のサーバーで試して、それでも特定のサーバーでのみ再現する場合は、まずサーバーの所有者/管理者にお問い合わせください。
+
+  - type: textarea
+    attributes:
+      label: 💡 概要
+      description: 問題の詳細を教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🥰 予想される挙動
+      description: 本来予想される挙動を教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🤬 実際の挙動
+      description: |
+        実際に発生している挙動を教えてください。
+        可能であれば、開発者コンソールやサーバーのログを含めてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 📝 再現手順
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 💻 フロントエンドの環境
+      description: |
+        問題が発生している環境を教えてください。
+        「最新版」とは書かず、具体的なバージョンをお知らせください。
+
+        例:
+          - Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          - Browser: Chrome 113.0.5672.126
+          - Server URL: taiyme.example.com
+          - Misskey: 2024.x.x
+      value: |
+        - Model and OS of the device(s):
+        - Browser:
+        - Server URL:
+        - Misskey:
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 🛰 バックエンドの環境 (サーバー管理者向け)
+      description: |
+        問題が発生している環境を教えてください。
+        「最新版」とは書かず、具体的なバージョンをお知らせください。
+        マネージドサービスを利用している場合は、それも合わせて入力します。
+
+        例:
+          - Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
+          - Misskey: 2024.x.x
+          - Node: 20.x.x
+          - PostgreSQL: 15.x.x
+          - Redis: 7.x.x
+          - OS and Architecture: Ubuntu 24.04.2 LTS aarch64
+      value: |
+        - Installation Method or Hosting Service:
+        - Misskey:
+        - Node:
+        - PostgreSQL:
+        - Redis:
+        - OS and Architecture:
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: この問題は自分で解決したいですか？
+      options:
+        - label: はい、自分でパッチを当ててプルリクエストを作成します

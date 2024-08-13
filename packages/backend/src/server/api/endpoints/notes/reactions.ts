@@ -1,8 +1,16 @@
-import { DeepPartial, FindOptionsWhere } from 'typeorm';
-import { NoteReactions } from '@/models/index.js';
-import { NoteReaction } from '@/models/entities/note-reaction.js';
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Brackets, type FindOptionsWhere } from 'typeorm';
+import type { NoteReactionsRepository } from '@/models/_.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { QueryService } from '@/core/QueryService.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -37,36 +45,38 @@ export const paramDef = {
 		noteId: { type: 'string', format: 'misskey:id' },
 		type: { type: 'string', nullable: true },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 	},
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = {
-		noteId: ps.noteId,
-	} as FindOptionsWhere<NoteReaction>;
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.noteReactionsRepository)
+		private noteReactionsRepository: NoteReactionsRepository,
 
-	if (ps.type) {
-		// ローカルリアクションはホスト名が . とされているが
-		// DB 上ではそうではないので、必要に応じて変換
-		const suffix = '@.:';
-		const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
-		query.reaction = type;
+		private noteReactionEntityService: NoteReactionEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.noteReactionsRepository.createQueryBuilder('reaction'), ps.sinceId, ps.untilId)
+				.andWhere('reaction.noteId = :noteId', { noteId: ps.noteId })
+				.leftJoinAndSelect('reaction.user', 'user')
+				.leftJoinAndSelect('reaction.note', 'note');
+
+			if (ps.type) {
+				// ローカルリアクションはホスト名が . とされているが
+				// DB 上ではそうではないので、必要に応じて変換
+				const suffix = '@.:';
+				const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+				query.andWhere('reaction.reaction = :type', { type });
+			}
+
+			const reactions = await query.limit(ps.limit).getMany();
+
+			return await this.noteReactionEntityService.packMany(reactions, me);
+		});
 	}
-
-	const reactions = await NoteReactions.find({
-		where: query,
-		take: ps.limit,
-		skip: ps.offset,
-		order: {
-			id: -1,
-		},
-		relations: ['user', 'user.avatar', 'user.banner', 'note'],
-	});
-
-	return await Promise.all(reactions.map(reaction => NoteReactions.pack(reaction, user)));
-});
+}

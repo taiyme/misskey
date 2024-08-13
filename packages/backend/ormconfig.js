@@ -1,7 +1,15 @@
-import { DataSource } from 'typeorm';
-import config from './built/config/index.js';
-import { entities } from './built/db/postgre.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
+import { DataSource } from 'typeorm';
+import { loadConfig } from './built/config.js';
+import { entities } from './built/postgres.js';
+
+const config = loadConfig();
+
+// eslint-disable-next-line import/no-default-export
 export default new DataSource({
 	type: 'postgres',
 	host: config.db.host,

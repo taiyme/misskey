@@ -1,50 +1,78 @@
 {
 	"name": "misskey",
-	"version": "12.119.1",
-	"codename": "indigo",
+	"version": "2024.7.0-taiyme.0",
+	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/taiyme/misskey.git"
 	},
+	"packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
+	"workspaces": [
+		"packages/frontend",
+		"packages/backend",
+		"packages/sw",
+		"packages/misskey-js",
+		"packages/misskey-reversi",
+		"packages/misskey-bubble-game"
+	],
 	"private": true,
 	"scripts": {
-		"postinstall": "node ./scripts/install-packages.js",
-		"build": "node ./scripts/build.js",
-		"start": "cd packages/backend && node --experimental-json-modules ./built/index.js",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node --experimental-json-modules ./built/index.js",
-		"init": "npm run migrate",
-		"migrate": "cd packages/backend && npx typeorm migration:run -d ormconfig.js",
-		"migrateandstart": "npm run migrate && npm run start",
-		"gulp": "gulp build",
-		"watch": "npm run dev",
-		"dev": "node ./scripts/dev.js",
-		"lint": "node ./scripts/lint.js",
-		"cy:open": "cypress open --browser --e2e --config-file=cypress.config.ts",
-		"cy:run": "cypress run",
-		"e2e": "start-server-and-test start:test http://localhost:61812 cy:run",
-		"mocha": "cd packages/backend && cross-env NODE_ENV=test TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=\"./test/tsconfig.json\" npx mocha",
-		"test": "npm run mocha",
-		"format": "gulp format",
+		"build-pre": "node ./scripts/build-pre.js",
+		"build-assets": "node ./scripts/build-assets.mjs",
+		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
+		"build-storybook": "pnpm --filter frontend build-storybook",
+		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
+		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
+		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
+		"init": "pnpm migrate",
+		"migrate": "cd packages/backend && pnpm migrate",
+		"revert": "cd packages/backend && pnpm revert",
+		"check:connect": "cd packages/backend && pnpm check:connect",
+		"migrateandstart": "pnpm migrate && pnpm start",
+		"watch": "pnpm dev",
+		"dev": "node scripts/dev.mjs",
+		"lint": "pnpm -r lint",
+		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:run": "pnpm cypress run",
+		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
+		"jest": "cd packages/backend && pnpm jest",
+		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
+		"test": "pnpm -r test",
+		"test-and-coverage": "pnpm -r test-and-coverage",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
-		"cleanall": "npm run clean-all"
+		"cleanall": "pnpm clean-all"
+	},
+	"resolutions": {
+		"chokidar": "3.5.3",
+		"lodash": "4.17.21"
 	},
 	"dependencies": {
-		"execa": "5.1.1",
-		"gulp": "4.0.2",
-		"gulp-cssnano": "2.1.3",
-		"gulp-rename": "2.0.0",
-		"gulp-replace": "1.1.3",
-		"gulp-terser": "2.1.0",
-		"js-yaml": "4.1.0"
+		"cssnano": "6.1.2",
+		"execa": "8.0.1",
+		"fast-glob": "3.3.2",
+		"ignore-walk": "6.0.5",
+		"js-yaml": "4.1.0",
+		"postcss": "8.4.40",
+		"tar": "6.2.1",
+		"terser": "5.31.3",
+		"typescript": "5.5.4",
+		"esbuild": "0.23.0",
+		"glob": "11.0.0"
 	},
 	"devDependencies": {
-		"@types/gulp": "4.0.9",
-		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/parser": "5.36.2",
+		"@misskey-dev/eslint-plugin": "2.0.2",
+		"@types/node": "20.14.12",
+		"@typescript-eslint/eslint-plugin": "7.17.0",
+		"@typescript-eslint/parser": "7.17.0",
 		"cross-env": "7.0.3",
-		"cypress": "10.7.0",
-		"start-server-and-test": "1.14.0",
-		"typescript": "4.8.3"
+		"cypress": "13.13.1",
+		"eslint": "9.8.0",
+		"globals": "15.8.0",
+		"ncp": "2.0.0",
+		"start-server-and-test": "2.0.4"
+	},
+	"optionalDependencies": {
+		"@tensorflow/tfjs-core": "4.4.0"
 	}
 }

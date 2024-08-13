@@ -1,6 +1,14 @@
-import { Clips } from '@/models/index.js';
-import define from '../../define.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { ClipsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['users', 'clips'],
@@ -29,15 +37,25 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const query = makePaginationQuery(Clips.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
-		.andWhere('clip.userId = :userId', { userId: ps.userId })
-		.andWhere('clip.isPublic = true');
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
-	const clips = await query
-		.take(ps.limit)
-		.getMany();
+		private clipEntityService: ClipEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.clipsRepository.createQueryBuilder('clip'), ps.sinceId, ps.untilId)
+				.andWhere('clip.userId = :userId', { userId: ps.userId })
+				.andWhere('clip.isPublic = true');
 
-	return await Clips.packMany(clips);
-});
+			const clips = await query
+				.limit(ps.limit)
+				.getMany();
+
+			return await this.clipEntityService.packMany(clips, me);
+		});
+	}
+}

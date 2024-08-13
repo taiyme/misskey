@@ -1,5 +1,13 @@
-import { UserLists } from '@/models/index.js';
-import define from '../../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserListsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -31,25 +39,35 @@ export const paramDef = {
 	properties: {
 		listId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
 	},
-	required: ['listId', 'name'],
+	required: ['listId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Fetch the list
-	const userList = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
 
-	if (userList == null) {
-		throw new ApiError(meta.errors.noSuchList);
+		private userListEntityService: UserListEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const userList = await this.userListsRepository.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
+
+			if (userList == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			await this.userListsRepository.update(userList.id, {
+				name: ps.name,
+				isPublic: ps.isPublic,
+			});
+
+			return await this.userListEntityService.pack(userList.id);
+		});
 	}
-
-	await UserLists.update(userList.id, {
-		name: ps.name,
-	});
-
-	return await UserLists.pack(userList.id);
-});
+}

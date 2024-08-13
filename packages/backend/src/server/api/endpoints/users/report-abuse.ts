@@ -1,17 +1,20 @@
-import * as sanitizeHtml from 'sanitize-html';
-import { publishAdminStream } from '@/services/stream.js';
-import { AbuseUserReports, Users } from '@/models/index.js';
-import { genId } from '@/misc/gen-id.js';
-import { sendEmail } from '@/services/send-email.js';
-import { fetchMeta } from '@/misc/fetch-meta.js';
-import { getUser } from '../../common/getters.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { ApiError } from '../../error.js';
-import define from '../../define.js';
 
 export const meta = {
 	tags: ['users'],
 
 	requireCredential: true,
+	kind: 'write:report-abuse',
 
 	description: 'File a report.',
 
@@ -45,56 +48,35 @@ export const paramDef = {
 	required: ['userId', 'comment'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Lookup user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	if (user.id === me.id) {
-		throw new ApiError(meta.errors.cannotReportYourself);
-	}
-
-	if (user.isAdmin) {
-		throw new ApiError(meta.errors.cannotReportAdmin);
-	}
-
-	const report = await AbuseUserReports.insert({
-		id: genId(),
-		createdAt: new Date(),
-		targetUserId: user.id,
-		targetUserHost: user.host,
-		reporterId: me.id,
-		reporterHost: null,
-		comment: ps.comment,
-	}).then(x => AbuseUserReports.findOneByOrFail(x.identifiers[0]));
-
-	// Publish event to moderators
-	setImmediate(async () => {
-		const moderators = await Users.find({
-			where: [{
-				isAdmin: true,
-			}, {
-				isModerator: true,
-			}],
-		});
-
-		for (const moderator of moderators) {
-			publishAdminStream(moderator.id, 'newAbuseUserReport', {
-				id: report.id,
-				targetUserId: report.targetUserId,
-				reporterId: report.reporterId,
-				comment: report.comment,
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private getterService: GetterService,
+		private roleService: RoleService,
+		private abuseReportService: AbuseReportService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Lookup user
+			const targetUser = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
 			});
-		}
 
-		const meta = await fetchMeta();
-		if (meta.email) {
-			sendEmail(meta.email, 'New abuse report',
-				sanitizeHtml(ps.comment),
-				sanitizeHtml(ps.comment));
-		}
-	});
-});
+			if (targetUser.id === me.id) {
+				throw new ApiError(meta.errors.cannotReportYourself);
+			}
+
+			if (await this.roleService.isAdministrator(targetUser)) {
+				throw new ApiError(meta.errors.cannotReportAdmin);
+			}
+
+			await this.abuseReportService.report([{
+				targetUserId: targetUser.id,
+				targetUserHost: targetUser.host,
+				reporterId: me.id,
+				reporterHost: null,
+				comment: ps.comment,
+			}]);
+		});
+	}
+}

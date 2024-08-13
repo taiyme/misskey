@@ -1,7 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { In } from 'typeorm';
-import { ClipNotes, Clips } from '@/models/index.js';
-import define from '../../define.js';
-import { getNote } from '../../common/getters.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -36,21 +44,34 @@ export const paramDef = {
 	required: ['noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.clipsRepository)
+		private clipsRepository: ClipsRepository,
 
-	const clipNotes = await ClipNotes.findBy({
-		noteId: note.id,
-	});
+		@Inject(DI.clipNotesRepository)
+		private clipNotesRepository: ClipNotesRepository,
 
-	const clips = await Clips.findBy({
-		id: In(clipNotes.map(x => x.clipId)),
-		isPublic: true,
-	});
+		private clipEntityService: ClipEntityService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
 
-	return await Promise.all(clips.map(x => Clips.pack(x)));
-});
+			const clipNotes = await this.clipNotesRepository.findBy({
+				noteId: note.id,
+			});
+
+			const clips = await this.clipsRepository.findBy({
+				id: In(clipNotes.map(x => x.clipId)),
+				isPublic: true,
+			});
+
+			return await this.clipEntityService.packMany(clips, me);
+		});
+	}
+}

@@ -1,15 +1,31 @@
-import define from '../../define.js';
-import { AbuseUserReports, Users } from '@/models/index.js';
-import { getInstanceActor } from '@/services/instance-actor.js';
-import { deliver } from '@/queue/index.js';
-import { renderActivity } from '@/remote/activitypub/renderer/index.js';
-import { renderFlag } from '@/remote/activitypub/renderer/flag.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { AbuseUserReportsRepository } from '@/models/_.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
 	requireModerator: true,
+	kind: 'write:admin:resolve-abuse-user-report',
+
+	errors: {
+		noSuchAbuseReport: {
+			message: 'No such abuse report.',
+			code: 'NO_SUCH_ABUSE_REPORT',
+			id: 'ac3794dd-2ce4-d878-e546-73c60c06b398',
+			kind: 'server',
+			httpStatusCode: 404,
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -21,24 +37,20 @@ export const paramDef = {
 	required: ['reportId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const report = await AbuseUserReports.findOneByOrFail({ id: ps.reportId });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		@Inject(DI.abuseUserReportsRepository)
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
+		private abuseReportService: AbuseReportService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const report = await this.abuseUserReportsRepository.findOneBy({ id: ps.reportId });
+			if (!report) {
+				throw new ApiError(meta.errors.noSuchAbuseReport);
+			}
 
-	if (report == null) {
-		throw new Error('report not found');
+			await this.abuseReportService.resolve([{ reportId: report.id, forward: ps.forward }], me);
+		});
 	}
-
-	if (ps.forward && report.targetUserHost != null) {
-		const actor = await getInstanceActor();
-		const targetUser = await Users.findOneByOrFail({ id: report.targetUserId });
-
-		deliver(actor, renderActivity(renderFlag(actor, [targetUser.uri!], report.comment)), targetUser.inbox);
-	}
-
-	await AbuseUserReports.update(report.id, {
-		resolved: true,
-		assigneeId: me.id,
-		forwarded: ps.forward && report.targetUserHost != null,
-	});
-});
+}

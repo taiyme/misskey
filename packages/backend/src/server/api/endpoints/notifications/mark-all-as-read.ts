@@ -1,7 +1,11 @@
-import { publishMainStream } from '@/services/stream.js';
-import { pushNotification } from '@/services/push-notification.js';
-import { Notifications } from '@/models/index.js';
-import define from '../../define.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -17,17 +21,13 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Update documents
-	await Notifications.update({
-		notifieeId: user.id,
-		isRead: false,
-	}, {
-		isRead: true,
-	});
-
-	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user.id, 'readAllNotifications');
-	pushNotification(user.id, 'readAllNotifications', undefined);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+	constructor(
+		private notificationService: NotificationService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			this.notificationService.readAllNotification(me.id, true);
+		});
+	}
+}
