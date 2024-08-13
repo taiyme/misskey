@@ -90,11 +90,14 @@ jobs:
       - name: Update package.json (misskey-js)
         run: jq '.version = "${{ needs.get_new_version.outputs.version }}"' '${{ github.workspace }}/packages/misskey-js/package.json' --tab > tmp && mv tmp '${{ github.workspace }}/packages/misskey-js/package.json'
 
+      - name: Rename package.json -> misskey-js-package.json
+        run: cp ${{ github.workspace }}/packages/misskey-js/package.json ${{ github.workspace }}/misskey-js-package.json
+
       - name: Upload package.json (misskey-js)
         uses: actions/upload-artifact@v4
         with:
           name: version_files
-          path: ${{ github.workspace }}/packages/misskey-js/package.json
+          path: ${{ github.workspace }}/misskey-js-package.json
 
   update_docker_compose_yml:
     name: Update compose.yml
@@ -132,6 +135,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: version_files
+
+      - name: Rename misskey-js-package.json -> package.json
+        run: mv ${{ github.workspace }}/misskey-js-package.json ${{ github.workspace }}/packages/misskey-js/package.json
 
       - name: Check change
         id: is_chnage
