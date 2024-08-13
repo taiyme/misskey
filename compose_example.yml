@@ -1,13 +1,13 @@
 services:
   web:
     build: .
-    image: ghcr.io/taiyme/misskey:dummy
+    image: ghcr.io/taiyme/misskey:2024.7.0-taiyme.0
     restart: always
     links:
       - db
       - redis
-#     - mcaptcha
-#     - meilisearch
+      #     - mcaptcha
+      #     - meilisearch
     depends_on:
       db:
         condition: service_healthy
@@ -23,7 +23,6 @@ services:
     volumes:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro
-
   redis:
     restart: always
     image: redis:7-alpine
@@ -35,7 +34,6 @@ services:
       test: "redis-cli ping"
       interval: 5s
       retries: 20
-
   db:
     restart: always
     image: postgres:15-alpine
@@ -49,7 +47,6 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
-
 #  mcaptcha:
 #    restart: always
 #    image: mcaptcha/mcaptcha:latest
@@ -92,7 +89,6 @@ services:
 #      - internal_network
 #    volumes:
 #      - ./meili_data:/meili_data
-
 networks:
   internal_network:
     internal: true
