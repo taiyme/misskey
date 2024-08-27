@@ -33,7 +33,7 @@ jobs:
       version: ${{ steps.new_version.outputs.NEW_VERSION }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -60,6 +60,17 @@ jobs:
         id: new_version
         run: echo 'NEW_VERSION=${{ env.NEXT_BASE_VERSION }}-taiyme.${{ env.REVISION }}' >> $GITHUB_OUTPUT
 
+  build_docker_image:
+    needs:
+      - get_new_version
+    name: Build Docker image
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      tags: |
+        type=edge
+        ${{ needs.get_new_version.outputs.version }}
+        latest
+
   update_package_json:
     name: Update package.json
     runs-on: ubuntu-latest
@@ -67,13 +78,13 @@ jobs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update package.json
         run: jq '.version = "${{ needs.get_new_version.outputs.version }}"' '${{ github.workspace }}/package.json' --tab > tmp && mv tmp '${{ github.workspace }}/package.json'
 
       - name: Upload package.json
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
           path: ${{ github.workspace }}/package.json
@@ -85,31 +96,34 @@ jobs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update package.json (misskey-js)
         run: jq '.version = "${{ needs.get_new_version.outputs.version }}"' '${{ github.workspace }}/packages/misskey-js/package.json' --tab > tmp && mv tmp '${{ github.workspace }}/packages/misskey-js/package.json'
 
+      - name: Rename package.json -> misskey-js-package.json
+        run: cp ${{ github.workspace }}/packages/misskey-js/package.json ${{ github.workspace }}/misskey-js-package.json
+
       - name: Upload package.json (misskey-js)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
-          path: ${{ github.workspace }}/packages/misskey-js/package.json
+          path: ${{ github.workspace }}/misskey-js-package.json
 
-  update_docker_compose_yml:
+  update_compose_yml:
     name: Update compose.yml
     runs-on: ubuntu-latest
     needs:
       - get_new_version
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Update compose.yml
         run: yq eval '.services.web.image = "ghcr.io/${{ github.repository }}:${{ needs.get_new_version.outputs.version }}"' -i '${{ github.workspace }}/compose_example.yml'
 
       - name: Upload compose.yml
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: version_files
           path: ${{ github.workspace }}/compose_example.yml
@@ -120,18 +134,21 @@ jobs:
       - get_new_version
       - update_package_json
       - update_package_json_misskey_js
-      - update_docker_compose_yml
+      - update_compose_yml
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
       - name: Download files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: version_files
+
+      - name: Rename misskey-js-package.json -> package.json
+        run: mv ${{ github.workspace }}/misskey-js-package.json ${{ github.workspace }}/packages/misskey-js/package.json
 
       - name: Check change
         id: is_chnage
@@ -154,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Merge PR
         env:
@@ -169,10 +186,11 @@ jobs:
     needs:
       - get_new_version
       - merge_pr
+      - build_docker_image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout release branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.base_ref }}
 
