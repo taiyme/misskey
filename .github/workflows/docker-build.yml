@@ -11,6 +11,10 @@ on:
 env:
   REGISTRY_IMAGE: taiyme/misskey
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build:
