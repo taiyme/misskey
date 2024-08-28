@@ -178,7 +178,6 @@ jobs:
     uses: ./.github/workflows/docker-build.yml
     with:
       tags: |
-        type=edge
         ${{ needs.parse_new_version.outputs.NEW_VERSION }}
         latest
 
