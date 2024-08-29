@@ -166,7 +166,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit --author=. -m "Release: ${{ needs.parse_new_version.outputs.NEW_VERSION }}"
+          git commit -m "Release: ${{ needs.parse_new_version.outputs.NEW_VERSION }}"
           git tag "${{ needs.parse_new_version.outputs.NEW_VERSION }}"
           git push origin HEAD --follow-tags
 
