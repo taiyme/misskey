@@ -17,7 +17,7 @@ env:
 jobs:
   check_context:
     name: Check context
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check actor
         if: github.actor != github.repository_owner
@@ -52,7 +52,7 @@ jobs:
 
   parse_new_version:
     name: Parse new version
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - check_context
     outputs:
@@ -81,7 +81,7 @@ jobs:
 
   create_pr:
     name: Create PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - parse_new_version
     outputs:
@@ -106,7 +106,7 @@ jobs:
 
   bump_version_update:
     name: Bump version (update)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - parse_new_version
     steps:
@@ -144,7 +144,7 @@ jobs:
 
   bump_version_upload:
     name: Bump version (upload)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - parse_new_version
       - create_pr
@@ -170,12 +170,12 @@ jobs:
           git tag "${{ needs.parse_new_version.outputs.NEW_VERSION }}"
           git push origin HEAD --follow-tags
 
-  build_docker_image:
-    name: Build Docker image
+  publish_docker_image:
+    name: Publish Docker image
     needs:
       - parse_new_version
       - bump_version_upload
-    uses: ./.github/workflows/docker-build.yml
+    uses: ./.github/workflows/docker-publish.yaml
     with:
       tags: |
         ${{ needs.parse_new_version.outputs.NEW_VERSION }}
@@ -183,11 +183,11 @@ jobs:
 
   merge_pr:
     name: Merge PR
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - parse_new_version
       - create_pr
-      - build_docker_image
+      - publish_docker_image
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
@@ -201,7 +201,7 @@ jobs:
 
   release:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - parse_new_version
       - merge_pr

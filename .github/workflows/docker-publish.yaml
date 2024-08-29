@@ -1,4 +1,4 @@
-name: Build docker image
+name: Publish Docker image
 
 on:
   workflow_call:
@@ -18,8 +18,8 @@ permissions:
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build:
-    name: build_amd64
-    runs-on: ubuntu-latest
+    name: Build
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -80,7 +80,8 @@ jobs:
           retention-days: 1
 
   merge:
-    runs-on: ubuntu-latest
+    name: Merge
+    runs-on: ubuntu-22.04
     needs:
       - build
     steps:

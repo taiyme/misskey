@@ -1,0 +1,41 @@
+name: Lint (locales)
+
+on:
+  push:
+    branches:
+      - taiyme
+    paths:
+      - .github/workflows/lint-locales.yaml
+      - locales/**/*
+  pull_request:
+    paths:
+      - .github/workflows/lint-locales.yaml
+      - locales/**/*
+  workflow_dispatch:
+
+jobs:
+  lint_locales:
+    name: Lint locales
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Check Verify
+        working-directory: locales
+        run: |
+          node verify.js

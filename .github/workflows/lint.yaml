@@ -1,0 +1,139 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - taiyme
+    paths:
+      - .github/workflows/lint.yaml
+      - packages/backend/**/*
+      - packages/frontend/**/*
+      - packages/sw/**/*
+      - packages/misskey-js/**/*
+      - packages/shared/eslint.config.js
+  pull_request:
+    paths:
+      - .github/workflows/lint.yaml
+      - packages/backend/**/*
+      - packages/frontend/**/*
+      - packages/sw/**/*
+      - packages/misskey-js/**/*
+      - packages/shared/eslint.config.js
+  workflow_dispatch:
+
+jobs:
+  run_pnpm_install:
+    name: Run pnpm install
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    needs:
+      - run_pnpm_install
+    env:
+      eslint-cache-version: v1
+    strategy:
+      matrix:
+        workspace:
+          - backend
+          - frontend
+          - sw
+          - misskey-js
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Restore eslint cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/eslint
+          key: eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
+
+      - name: Run eslint
+        run: |
+          pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location node_modules/.cache/eslint --cache-strategy content
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-22.04
+    needs:
+      - run_pnpm_install
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - misskey-js
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Build (misskey-js)
+        if: matrix.workspace == 'backend'
+        run: |
+          pnpm --filter misskey-js run build
+
+      - name: Build (misskey-reversi)
+        if: matrix.workspace == 'backend'
+        run: |
+          pnpm --filter misskey-reversi run build
+
+      - name: Run typecheck
+        run: |
+          pnpm --filter ${{ matrix.workspace }} run typecheck
