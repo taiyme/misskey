@@ -10289,6 +10289,14 @@ export interface Locale extends ILocale {
          * あなたのメモは他のユーザーと共有されません。
          */
         readonly "memoIsNotShared": string;
+        /**
+         * taiymeが更新されました！
+         */
+        readonly "taiymeUpdated": string;
+        /**
+         * {x}が更新されました！
+         */
+        readonly "updatedX": ParameterizedString<"x">;
         readonly "_about": {
             /**
              * taiymeについて
