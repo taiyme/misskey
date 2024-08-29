@@ -1,0 +1,228 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_version:
+        type: string
+        description: Enter base version. (e.g. 2024.8.0)
+        required: true
+        default: ""
+
+env:
+  repository: taiyme/misskey
+  develop_branch: taiyme
+  release_branch: release
+
+jobs:
+  check_context:
+    name: Check context
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check actor
+        if: github.actor != github.repository_owner
+        run: exit 1
+
+      - name: Check branch
+        if: github.ref_name != env.develop_branch
+        run: exit 1
+
+      - name: Check repository
+        if: github.repository != env.repository
+        run: exit 1
+
+      - name: Check base version
+        run: |
+          BASE="${{ github.event.inputs.base_version }}"
+          if [ -z "$BASE" ]; then
+            exit 1
+          fi
+          YEAR=$(echo "$BASE" | cut -d. -f1)
+          if [[ ! "$YEAR" =~ ^[0-9]+$ ]]; then
+            exit 1
+          fi
+          MONTH=$(echo "$BASE" | cut -d. -f2)
+          if [[ "$MONTH" -lt 1 && "$MONTH" -gt 12 ]]; then
+            exit 1
+          fi
+          PATCH=$(echo "$BASE" | cut -d. -f3)
+          if [[ ! "$PATCH" =~ ^[0-9]+$ ]]; then
+            exit 1
+          fi
+
+  parse_new_version:
+    name: Parse new version
+    runs-on: ubuntu-22.04
+    needs:
+      - check_context
+    outputs:
+      NEW_VERSION: ${{ steps.gen_version.outputs.NEXT_VERSION }}
+    steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 1
+
+      - name: Generate next version
+        id: gen_version
+        run: |
+          CURRENT_VERSION=$(cat package.json | jq -r '.version')
+          CURRENT_BASE_VERSION=$(echo $CURRENT_VERSION | sed 's/-.*//')
+          NEXT_BASE_VERSION="${{ github.event.inputs.base_version }}"
+          NEXT_BASE_VERSION="${NEXT_BASE_VERSION:-$CURRENT_BASE_VERSION}"
+          NEXT_TAIYME_VERSION=""
+          if [ "$CURRENT_VERSION" != "$CURRENT_BASE_VERSION" ] && [ "$CURRENT_BASE_VERSION" = "$NEXT_BASE_VERSION" ]; then
+            NEXT_TAIYME_VERSION="$(($(echo $CURRENT_VERSION | cut -d- -f2 | cut -d. -f2) + 1))"
+          fi
+          NEXT_TAIYME_VERSION="${NEXT_TAIYME_VERSION:-"0"}"
+          NEXT_VERSION="$NEXT_BASE_VERSION-taiyme.$NEXT_TAIYME_VERSION"
+          echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
+  create_pr:
+    name: Create PR
+    runs-on: ubuntu-22.04
+    needs:
+      - parse_new_version
+    outputs:
+      PR_NUMBER: ${{ steps.create_pr.outputs.CREATED_PR }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 0
+
+      - name: Create PR
+        id: create_pr
+        run: |
+          CREATED_PR=$(gh pr create --draft --base ${{ env.release_branch }} --head ${{ env.develop_branch }} --title "Release: ${{ needs.parse_new_version.outputs.NEW_VERSION }}" --body "")
+          CREATED_PR=$(echo $CREATED_PR | awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}')
+          echo "CREATED_PR=$CREATED_PR" >> $GITHUB_OUTPUT
+
+  bump_version_update:
+    name: Bump version (update)
+    runs-on: ubuntu-22.04
+    needs:
+      - parse_new_version
+    steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 1
+
+      - name: Update package.json (root)
+        run: |
+          jq --tab '.version = "${{ needs.parse_new_version.outputs.NEW_VERSION }}"' package.json > tmp
+          mv tmp package.json
+
+      - name: Update package.json (misskey-js)
+        working-directory: packages/misskey-js
+        run: |
+          jq --tab '.version = "${{ needs.parse_new_version.outputs.NEW_VERSION }}"' package.json > tmp
+          mv tmp package.json
+
+      - name: Update compose_example.yml
+        run: |
+          OLD_DOCKER_IMAGE=$(yq '.services.web.image' compose_example.yml)
+          NEW_DOCKER_IMAGE='ghcr.io/${{ env.repository }}:${{ needs.parse_new_version.outputs.NEW_VERSION }}'
+          sed -i "s|image: $OLD_DOCKER_IMAGE|image: $NEW_DOCKER_IMAGE|g" compose_example.yml
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bump_version_files
+          path: |
+            package.json
+            packages/misskey-js/package.json
+            compose_example.yml
+
+  bump_version_upload:
+    name: Bump version (upload)
+    runs-on: ubuntu-22.04
+    needs:
+      - parse_new_version
+      - create_pr
+      - bump_version_update
+    steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 1
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: bump_version_files
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Release: ${{ needs.parse_new_version.outputs.NEW_VERSION }}"
+          git tag ${{ needs.parse_new_version.outputs.NEW_VERSION }}
+          git push origin HEAD
+          git push origin ${{ needs.parse_new_version.outputs.NEW_VERSION }}
+
+  publish_docker_image:
+    name: Publish Docker image
+    needs:
+      - parse_new_version
+      - bump_version_upload
+    uses: ./.github/workflows/docker-publish.yaml
+    with:
+      tags: |
+        ${{ needs.parse_new_version.outputs.NEW_VERSION }}
+        latest
+
+  merge_pr:
+    name: Merge PR
+    runs-on: ubuntu-22.04
+    needs:
+      - parse_new_version
+      - create_pr
+      - publish_docker_image
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 1
+
+      - name: Merge PR
+        run: |
+          gh pr ready ${{ needs.create_pr.outputs.PR_NUMBER }}
+          gh pr merge ${{ needs.create_pr.outputs.PR_NUMBER }} --merge --auto
+
+  release:
+    name: Release
+    runs-on: ubuntu-22.04
+    needs:
+      - parse_new_version
+      - merge_pr
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout ${{ env.release_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.release_branch }}
+          fetch-depth: 0
+
+      - name: Release
+        run: |
+          gh release create ${{ needs.parse_new_version.outputs.NEW_VERSION }} --generate-notes

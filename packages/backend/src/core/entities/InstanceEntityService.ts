@@ -63,7 +63,8 @@ export class InstanceEntityService {
 	@bindThis
 	public packMany(
 		instances: MiInstance[],
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
-		return Promise.all(instances.map(x => this.pack(x)));
+		return Promise.all(instances.map(x => this.pack(x, me)));
 	}
 }

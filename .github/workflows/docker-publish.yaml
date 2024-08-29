@@ -1,4 +1,4 @@
-name: Build docker image
+name: Publish Docker image
 
 on:
   workflow_call:
@@ -11,11 +11,15 @@ on:
 env:
   REGISTRY_IMAGE: taiyme/misskey
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   build:
-    name: build_amd64
-    runs-on: ubuntu-latest
+    name: Build
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -59,7 +63,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=ghcr.io/${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -76,7 +80,8 @@ jobs:
           retention-days: 1
 
   merge:
-    runs-on: ubuntu-latest
+    name: Merge
+    runs-on: ubuntu-22.04
     needs:
       - build
     steps:
@@ -108,7 +113,7 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+            $(printf 'ghcr.io/${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |

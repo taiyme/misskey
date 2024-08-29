@@ -81,7 +81,7 @@ onMounted(() => {
 });
 const noMaintainerInformation = computed(() => isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail));
 const noInquiryUrl = computed(() => isEmpty(instance.inquiryUrl));
-const noBotProtection = computed(() => !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile);
+const noBotProtection = computed(() => !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile && !instance.enableMcaptcha);
 const noEmailServer = computed(() => !instance.enableEmail);
 
 const router = useRouter();

@@ -4,15 +4,28 @@ on:
   push:
     branches:
       - taiyme
+    paths:
+      - .github/workflows/check-spdx-license-id.yaml
+      - cypress/e2e/**/*
+      - packages/**/*
+      - scripts/**/*
   pull_request:
+    paths:
+      - .github/workflows/check-spdx-license-id.yaml
+      - cypress/e2e/**/*
+      - packages/**/*
+      - scripts/**/*
+  workflow_dispatch:
 
 jobs:
-  check-spdx-license-id:
-    runs-on: ubuntu-latest
+  check_spdx_license_id:
+    name: Check SPDX-License-Identifier
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
-      - name: Check
+        uses: actions/checkout@v4
+
+      - name: Check SPDX-License-Identifier
         run: |
           counter=0
 
