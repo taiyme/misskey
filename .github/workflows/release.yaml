@@ -167,8 +167,9 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Release: ${{ needs.parse_new_version.outputs.NEW_VERSION }}"
-          git tag "${{ needs.parse_new_version.outputs.NEW_VERSION }}"
-          git push origin HEAD --follow-tags
+          git tag ${{ needs.parse_new_version.outputs.NEW_VERSION }}
+          git push origin HEAD
+          git push origin ${{ needs.parse_new_version.outputs.NEW_VERSION }}
 
   publish_docker_image:
     name: Publish Docker image
@@ -194,6 +195,12 @@ jobs:
       pull-requests: write
       contents: write
     steps:
+      - name: Checkout ${{ env.develop_branch }} branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.develop_branch }}
+          fetch-depth: 1
+
       - name: Merge PR
         run: |
           gh pr ready ${{ needs.create_pr.outputs.PR_NUMBER }}
@@ -218,4 +225,4 @@ jobs:
 
       - name: Release
         run: |
-          gh release create "${{ needs.parse_new_version.outputs.NEW_VERSION }}" --generate-notes
+          gh release create ${{ needs.parse_new_version.outputs.NEW_VERSION }} --generate-notes
