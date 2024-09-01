@@ -74,9 +74,9 @@ export async function common(createVue: () => App<Element>) {
 		miLocalStorage.removeItem('theme');
 
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
-			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-				isClientUpdated = true;
-			}
+			const a = version.split('-').at(0);
+			const b = lastVersion?.split('-').at(0);
+			isClientUpdated = a != null && b != null && compareVersions(a, b) === 1;
 		} catch (err) { /* empty */ }
 	}
 	//#endregion

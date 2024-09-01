@@ -2743,6 +2743,8 @@ _tms:
   notYetProvided: "まだ提供されていません"
   moderationNoteIsSharedAmongModerators: "モデレーションノートはモデレーター間で共有されます。"
   memoIsNotShared: "あなたのメモは他のユーザーと共有されません。"
+  taiymeUpdated: "taiymeが更新されました！"
+  updatedX: "{x}が更新されました！"
   _about:
     title: "taiymeについて"
     description: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
