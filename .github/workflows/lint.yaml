@@ -51,8 +51,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - run_pnpm_install
-    env:
-      eslint-cache-version: v1
     strategy:
       matrix:
         workspace:
@@ -60,6 +58,9 @@ jobs:
           - frontend
           - sw
           - misskey-js
+    env:
+      eslint-cache-version: v1
+      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,14 +85,13 @@ jobs:
       - name: Restore eslint cache
         uses: actions/cache@v4
         with:
-          path: node_modules/.cache/eslint
-          key: eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            eslint-${{ env.eslint-cache-version }}-${{ hashFiles('/pnpm-lock.yaml') }}-
+          path: ${{ env.eslint-cache-path }}
+          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Run eslint
         run: |
-          pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location node_modules/.cache/eslint --cache-strategy content
+          pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
 
   typecheck:
     name: Typecheck
