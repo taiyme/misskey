@@ -8,9 +8,6 @@
 			"version": "20.16.0"
 		},
 		"ghcr.io/devcontainers-contrib/features/corepack:1": {},
-		"docker-from-docker": {
-			"version": "latest"
-		}
 	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "/bin/bash .devcontainer/init.sh",
