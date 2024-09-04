@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
 
 // eslint-disable-next-line import/no-default-export
 export default defineComponent({

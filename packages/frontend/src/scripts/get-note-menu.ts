@@ -243,6 +243,7 @@ export function getNoteMenu(props: {
 	}
 
 	async function unclip(): Promise<void> {
+		if (!props.currentClip) return;
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
@@ -262,8 +263,8 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.tsx.noteOf({ user: appearNote.user.name }),
-			text: appearNote.text,
+			title: i18n.tsx.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
+			text: appearNote.text ?? '',
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}

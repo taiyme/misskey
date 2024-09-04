@@ -2829,7 +2829,7 @@ export interface Locale extends ILocale {
      */
     readonly "reportAbuseOf": ParameterizedString<"name">;
     /**
-     * 通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。
+     * 通報理由の詳細を記入してください。対象のノートやページなどがある場合はそのURLも記入してください。
      */
     readonly "fillAbuseReportDescription": string;
     /**
@@ -8986,6 +8986,10 @@ export interface Locale extends ILocale {
          */
         readonly "chooseBlock": string;
         /**
+         * セクションタイトルを入力
+         */
+        readonly "enterSectionTitle": string;
+        /**
          * 種類を選択
          */
         readonly "selectType": string;
@@ -9679,6 +9683,22 @@ export interface Locale extends ILocale {
          * 通報の通知先を削除
          */
         readonly "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * アカウントを削除
+         */
+        readonly "deleteAccount": string;
+        /**
+         * ページを削除
+         */
+        readonly "deletePage": string;
+        /**
+         * Playを削除
+         */
+        readonly "deleteFlash": string;
+        /**
+         * ギャラリーの投稿を削除
+         */
+        readonly "deleteGalleryPost": string;
     };
     readonly "_fileViewer": {
         /**
