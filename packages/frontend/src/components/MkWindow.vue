@@ -505,10 +505,6 @@ defineExpose({
 .header {
 	--height: 39px;
 
-	&.mini {
-		--height: 32px;
-	}
-
 	display: flex;
 	position: relative;
 	z-index: 1;
@@ -521,6 +517,10 @@ defineExpose({
 	// border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
+
+	&.mini {
+		--height: 32px;
+	}
 }
 
 .headerButton {
