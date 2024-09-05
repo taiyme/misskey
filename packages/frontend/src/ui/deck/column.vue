@@ -325,11 +325,11 @@ function onDrop(ev) {
 
 		> .body {
 			background: transparent !important;
+			scrollbar-color: var(--scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 
@@ -339,11 +339,11 @@ function onDrop(ev) {
 		> .body {
 			background: var(--bg) !important;
 			overflow-y: scroll !important;
+			scrollbar-color: var(--scrollbarHandle) transparent;
 
 			&::-webkit-scrollbar-track {
 				background: inherit;
 			}
-			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 }
@@ -425,10 +425,10 @@ function onDrop(ev) {
 	box-sizing: border-box;
 	container-type: size;
 	background-color: var(--bg);
+	scrollbar-color: var(--scrollbarHandle) var(--panel);
 
 	&::-webkit-scrollbar-track {
 		background: var(--panel);
 	}
-	scrollbar-color: var(--scrollbarHandle) var(--panel);
 }
 </style>
