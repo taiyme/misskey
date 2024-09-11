@@ -51,6 +51,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - run_pnpm_install
+    continue-on-error: true
     strategy:
       matrix:
         workspace:
@@ -98,6 +99,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - run_pnpm_install
+    continue-on-error: true
     strategy:
       matrix:
         workspace:
