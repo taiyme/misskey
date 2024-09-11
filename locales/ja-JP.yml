@@ -2739,10 +2739,6 @@ _tms:
   disableFederationRenote: "リノート (連合なし)"
   disableFederationHomeRenote: "ホームリノート (連合なし)"
   disableFederationFollowersRenote: "フォロワーリノート (連合なし)"
-  pakuru: "パクる"
-  numberquote: "数字引用する"
-  didPakuru: "パクりました"
-  didNumberquote: "数字引用しました"
   resolvedBy: "{user}によって解決済み"
   forwardedReport: "リモートサーバーに転送済み"
   notYetProvided: "まだ提供されていません"
@@ -2781,14 +2777,6 @@ _tms:
     _pullToRefreshAllReload:
       label: "「引っ張ってリロード」でページ全体を再読み込みする"
       caption: "構成しているページ全体を再読み込みする動作に置き換えます。"
-    _pakuru:
-      label: "「パクる」機能を有効にする"
-      caption: "リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。"
-      warning: "「パクる」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。"
-    _numberquote:
-      label: "「数字引用」機能を有効にする"
-      caption: "リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。"
-      warning: "「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。"
   _flags:
     title: "taiyme実験的機能"
     description: "これらの機能はtaiymeで独自実装したものです。"

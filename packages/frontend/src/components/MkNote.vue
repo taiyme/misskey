@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
 				<button
-					v-if="canRenote || canPakuru"
+					v-if="canRenote"
 					ref="renoteButton"
 					:class="$style.footerButton"
 					class="_button"
@@ -268,7 +268,6 @@ const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = computed(() => (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance != null) || (appearNote.value.channel != null));
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || (appearNote.value.visibility === 'followers' && appearNote.value.userId === $i?.id));
-const canPakuru = computed(() => tmsStore.reactiveState.enablePakuru.value || tmsStore.reactiveState.enableNumberquote.value);
 const renoteCollapsed = ref(
 	defaultStore.state.collapseRenotes && isRenoted && (
 		($i && ($i.id === note.value.userId || $i.id === appearNote.value.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
@@ -417,7 +416,7 @@ async function renote() {
 	pleaseLogin(undefined, pleaseLoginContext.value);
 	showMovedDialog();
 
-	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, mock: props.mock, canRenote: canRenote.value });
+	const { menu } = await getRenoteMenu({ note: note.value, renoteButton, mock: props.mock });
 	os.popupMenu(menu, renoteButton.value);
 }
 

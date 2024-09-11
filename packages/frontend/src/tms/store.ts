@@ -26,12 +26,4 @@ export const tmsStore = markRaw(new Storage('tmsMain', {
 		where: 'device',
 		default: false,
 	},
-	enablePakuru: {
-		where: 'device',
-		default: false,
-	},
-	enableNumberquote: {
-		where: 'device',
-		default: false,
-	},
 }));

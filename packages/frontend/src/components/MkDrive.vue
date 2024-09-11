@@ -313,7 +313,7 @@ function urlUpload() {
 		misskeyApi('drive/files/upload-from-url', {
 			url: url,
 			folderId: folder.value ? folder.value.id : undefined,
-		}).catch(() => {});
+		});
 
 		os.alert({
 			title: i18n.ts.uploadFromUrlRequested,

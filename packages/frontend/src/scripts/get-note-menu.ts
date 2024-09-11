@@ -22,11 +22,8 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
 import { parseErrorMessage } from '@/scripts/tms/error.js';
 import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
-import { numberquote } from '@/scripts/tms/numberquote.js';
-import { pakuru } from '@/scripts/tms/pakuru.js';
 import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
 import { smallerVisibility } from '@/scripts/tms/visibility.js';
-import { tmsStore } from '@/tms/store.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
@@ -494,10 +491,8 @@ export async function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
-	canRenote?: boolean;
 }) {
 	const appearNote = getAppearNote(props.note);
-	const canRenote = props.canRenote ?? true;
 	const favoritedChannels = (await favoritedChannelsCache.fetch()).filter(channel => {
 		return appearNote.channel == null || channel.id !== appearNote.channel.id;
 	});
@@ -531,9 +526,8 @@ export async function getRenoteMenu(props: {
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
 	const normalExternalChannelRenoteItems: MenuItem[] = [];
-	const pakuruItems: MenuItem[] = [];
 
-	if (canRenote && appearNote.channel != null) {
+	if (appearNote.channel != null) {
 		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
@@ -560,10 +554,11 @@ export async function getRenoteMenu(props: {
 		}
 	}
 
-	if (canRenote && (appearNote.channel == null || appearNote.channel.allowRenoteToExternal)) {
+	if (appearNote.channel == null || appearNote.channel.allowRenoteToExternal) {
 		let renoteVisibility = appearNote.visibility;
 		const renoteLocalOnly = appearNote.localOnly ?? false;
 
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (appearNote.channel?.isSensitive || $i?.isSilenced) {
 			renoteVisibility = smallerVisibility([renoteVisibility, 'home']);
 		}
@@ -625,28 +620,6 @@ export async function getRenoteMenu(props: {
 		}
 	}
 
-	if (tmsStore.state.enablePakuru) {
-		pakuruItems.push({
-			text: i18n.ts._tms.pakuru,
-			icon: 'ti ti-swipe',
-			action: () => {
-				if (props.mock) return tooltipEffect(i18n.ts._tms.didPakuru);
-				pakuru(appearNote).then(() => tooltipEffect(i18n.ts._tms.didPakuru)).catch(errorDialog);
-			},
-		});
-	}
-
-	if (tmsStore.state.enableNumberquote) {
-		pakuruItems.push({
-			text: i18n.ts._tms.numberquote,
-			icon: 'ti ti-exposure-plus-1',
-			action: () => {
-				if (props.mock) return tooltipEffect(i18n.ts._tms.didNumberquote);
-				numberquote(appearNote).then(() => tooltipEffect(i18n.ts._tms.didNumberquote)).catch(errorDialog);
-			},
-		});
-	}
-
 	const renoteItems: MenuItem[] = [];
 	if (normalRenoteItems.length > 0) {
 		renoteItems.push(...normalRenoteItems);
@@ -658,10 +631,6 @@ export async function getRenoteMenu(props: {
 	if (normalExternalChannelRenoteItems.length > 0) {
 		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
 		renoteItems.push(...normalExternalChannelRenoteItems);
-	}
-	if (pakuruItems.length > 0) {
-		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
-		renoteItems.push(...pakuruItems);
 	}
 
 	return {
