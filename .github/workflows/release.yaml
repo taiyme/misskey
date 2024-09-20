@@ -130,11 +130,18 @@ jobs:
       contents: write
       id-token: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Checkout ${{ env.develop_branch }}
         uses: actions/checkout@v4
         with:
           ref: ${{ env.develop_branch }}
           fetch-depth: 1
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -159,11 +166,15 @@ jobs:
       - bump_version_upload
     outputs:
       PR_NUMBER: ${{ steps.create_pr.outputs.CREATED_PR }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       pull-requests: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Checkout ${{ env.develop_branch }}
         uses: actions/checkout@v4
         with:
@@ -172,6 +183,8 @@ jobs:
 
       - name: Create PR
         id: create_pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           created_pr="$(gh pr create --draft --base ${{ env.release_branch }} --head ${{ env.develop_branch }} --title "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}" --body "")"
           created_pr="$(echo $created_pr | awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}')"
@@ -198,13 +211,17 @@ jobs:
     needs:
       - create_pr
       - publish_docker_image
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
       pull-requests: write
       id-token: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Checkout ${{ env.develop_branch }}
         uses: actions/checkout@v4
         with:
@@ -212,6 +229,8 @@ jobs:
           fetch-depth: 1
 
       - name: Merge PR
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh pr ready ${{ needs.create_pr.outputs.PR_NUMBER }}
           gh pr merge ${{ needs.create_pr.outputs.PR_NUMBER }} --merge --auto
@@ -222,12 +241,16 @@ jobs:
     needs:
       - parse_version
       - merge_pr
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: write
       id-token: write
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Checkout ${{ env.release_branch }}
         uses: actions/checkout@v4
         with:
@@ -235,5 +258,7 @@ jobs:
           fetch-depth: 0
 
       - name: Create Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh release create ${{ needs.parse_version.outputs.NEW_VERSION }} --generate-notes

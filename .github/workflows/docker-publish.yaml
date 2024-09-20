@@ -33,6 +33,12 @@ jobs:
           platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_SECRET }}
+
       - name: Check out the repo
         uses: actions/checkout@v4
 
@@ -51,7 +57,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ steps.app-token.outputs.token }}
 
       - name: Build and Push to Registry
         id: build
@@ -108,7 +114,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ steps.app-token.outputs.token }}
 
       - name: Create manifest list and push
         working-directory: /tmp/digests
