@@ -152,6 +152,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
           git add .
           git commit -m "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}"
           git tag ${{ needs.parse_version.outputs.NEW_VERSION }}
