@@ -19,7 +19,6 @@ on:
       - packages/sw/**/*
       - packages/misskey-js/**/*
       - packages/shared/eslint.config.js
-  workflow_dispatch:
 
 jobs:
   run_pnpm_install:
@@ -27,7 +26,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         with:
           fetch-depth: 1
           submodules: true
@@ -37,7 +36,7 @@ jobs:
           corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -64,7 +63,7 @@ jobs:
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         with:
           fetch-depth: 1
           submodules: true
@@ -74,7 +73,7 @@ jobs:
           corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -84,7 +83,7 @@ jobs:
           pnpm i --frozen-lockfile
 
       - name: Restore eslint cache
-        uses: actions/cache@v4
+        uses: actions/cache@v4.0.2
         with:
           path: ${{ env.eslint-cache-path }}
           key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
@@ -107,7 +106,7 @@ jobs:
         - misskey-js
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         with:
           fetch-depth: 1
           submodules: true
@@ -117,7 +116,7 @@ jobs:
           corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.4
         with:
           node-version-file: .node-version
           cache: pnpm

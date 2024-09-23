@@ -9,10 +9,12 @@ on:
         required: true
         default: ""
 
-env:
-  repository: taiyme/misskey
-  develop_branch: taiyme
-  release_branch: release
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
   check_context:
@@ -24,11 +26,7 @@ jobs:
         run: exit 1
 
       - name: Check branch
-        if: github.ref_name != env.develop_branch
-        run: exit 1
-
-      - name: Check repository
-        if: github.repository != env.repository
+        if: github.ref_name != vars.DEVELOP_BRANCH
         run: exit 1
 
       - name: Check base version
@@ -62,7 +60,7 @@ jobs:
       NEW_VERSION: ${{ steps.generate.outputs.NEW_VERSION }}
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 1
@@ -89,7 +87,7 @@ jobs:
       - parse_version
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 1
@@ -108,11 +106,11 @@ jobs:
       - name: Update compose_example.yml
         run: |
           old_docker_image="$(yq '.services.web.image' compose_example.yml)"
-          new_docker_image='ghcr.io/${{ env.repository }}:${{ needs.parse_version.outputs.NEW_VERSION }}'
+          new_docker_image='${{ vars.DOCKER_IMAGE_NAME }}:${{ needs.parse_version.outputs.NEW_VERSION }}'
           sed -i "s|image: ${old_docker_image}|image: ${new_docker_image}|g" compose_example.yml
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: bump_version_files
           path: |
@@ -126,25 +124,40 @@ jobs:
     needs:
       - parse_version
       - bump_version_update
-    permissions:
-      contents: write
-      id-token: write
     steps:
-      - name: Checkout ${{ env.develop_branch }}
-        uses: actions/checkout@v4
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: app-token
         with:
-          ref: ${{ env.develop_branch }}
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          user_id="$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)"
+          echo "user-id=${user_id}" >> $GITHUB_OUTPUT
+
+      - name: Checkout ${{ vars.DEVELOP_BRANCH }}
+        uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          ref: ${{ vars.DEVELOP_BRANCH }}
           fetch-depth: 1
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: bump_version_files
 
       - name: Commit and Push
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
           git add .
           git commit -m "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}"
           git tag ${{ needs.parse_version.outputs.NEW_VERSION }}
@@ -159,59 +172,55 @@ jobs:
       - bump_version_upload
     outputs:
       PR_NUMBER: ${{ steps.create_pr.outputs.CREATED_PR }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      pull-requests: write
     steps:
-      - name: Checkout ${{ env.develop_branch }}
-        uses: actions/checkout@v4
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: app-token
         with:
-          ref: ${{ env.develop_branch }}
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - name: Checkout ${{ vars.DEVELOP_BRANCH }}
+        uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          ref: ${{ vars.DEVELOP_BRANCH }}
           fetch-depth: 0
 
       - name: Create PR
         id: create_pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          created_pr="$(gh pr create --draft --base ${{ env.release_branch }} --head ${{ env.develop_branch }} --title "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}" --body "")"
+          created_pr="$(gh pr create --draft --base ${{ vars.RELEASE_BRANCH }} --head ${{ vars.DEVELOP_BRANCH }} --title "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}" --body "")"
           created_pr="$(echo $created_pr | awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}')"
           echo "CREATED_PR=${created_pr}" >> $GITHUB_OUTPUT
-
-  publish_docker_image:
-    name: Publish Docker image
-    needs:
-      - parse_version
-      - bump_version_upload
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-    uses: ./.github/workflows/docker-publish.yaml
-    with:
-      tags: |
-        ${{ needs.parse_version.outputs.NEW_VERSION }}
-        latest
 
   merge_pr:
     name: Merge PR
     runs-on: ubuntu-22.04
     needs:
       - create_pr
-      - publish_docker_image
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
-      pull-requests: write
-      id-token: write
     steps:
-      - name: Checkout ${{ env.develop_branch }}
-        uses: actions/checkout@v4
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: app-token
         with:
-          ref: ${{ env.develop_branch }}
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - name: Checkout ${{ vars.DEVELOP_BRANCH }}
+        uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          ref: ${{ vars.DEVELOP_BRANCH }}
           fetch-depth: 1
 
       - name: Merge PR
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh pr ready ${{ needs.create_pr.outputs.PR_NUMBER }}
           gh pr merge ${{ needs.create_pr.outputs.PR_NUMBER }} --merge --auto
@@ -222,18 +231,24 @@ jobs:
     needs:
       - parse_version
       - merge_pr
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
-      id-token: write
     steps:
-      - name: Checkout ${{ env.release_branch }}
-        uses: actions/checkout@v4
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@v1.11.0
+        id: app-token
         with:
-          ref: ${{ env.release_branch }}
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - name: Checkout ${{ vars.RELEASE_BRANCH }}
+        uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          ref: ${{ vars.RELEASE_BRANCH }}
           fetch-depth: 0
 
       - name: Create Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           gh release create ${{ needs.parse_version.outputs.NEW_VERSION }} --generate-notes
