@@ -11,7 +11,6 @@ on:
     paths:
       - .github/workflows/lint-locales.yaml
       - locales/**/*
-  workflow_dispatch:
 
 jobs:
   lint_locales:

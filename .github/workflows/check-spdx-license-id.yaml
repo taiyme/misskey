@@ -15,7 +15,6 @@ on:
       - cypress/e2e/**/*
       - packages/**/*
       - scripts/**/*
-  workflow_dispatch:
 
 jobs:
   check_spdx_license_id:
