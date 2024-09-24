@@ -222,6 +222,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
+          gh pr checks ${{ needs.create_pr.outputs.PR_NUMBER }} --watch
           gh pr ready ${{ needs.create_pr.outputs.PR_NUMBER }}
           gh pr merge ${{ needs.create_pr.outputs.PR_NUMBER }} --merge --auto
 
