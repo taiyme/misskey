@@ -106,28 +106,28 @@ db:
   pass: example-misskey-pass
 
   # Whether disable Caching queries
-  # disableCache: true
+  #disableCache: true
 
   # Extra Connection options
-  # extra:
-  #   ssl: true
+  #extra:
+  #  ssl: true
 
 dbReplications: false
 
 # You can configure any number of replicas here
-# dbSlaves:
-#   -
-#     host:
-#     port:
-#     db:
-#     user:
-#     pass:
-#   -
-#     host:
-#     port:
-#     db:
-#     user:
-#     pass:
+#dbSlaves:
+#  -
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
+#  -
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -135,42 +135,42 @@ dbReplications: false
 redis:
   host: localhost
   port: 6379
-  # family: 0 # 0=Both, 4=IPv4, 6=IPv6
-  # pass: example-pass
-  # prefix: example-prefix
-  # db: 1
+  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+  #pass: example-pass
+  #prefix: example-prefix
+  #db: 1
   # You can specify more ioredis options...
-  # username: example-username
+  #username: example-username
 
-# redisForPubsub:
-#   host: localhost
-#   port: 6379
-#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
-#   # pass: example-pass
-#   # prefix: example-prefix
-#   # db: 1
-#   # You can specify more ioredis options...
-#   # username: example-username
+#redisForPubsub:
+#  host: localhost
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
-# redisForJobQueue:
-#   host: localhost
-#   port: 6379
-#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
-#   # pass: example-pass
-#   # prefix: example-prefix
-#   # db: 1
-#   # You can specify more ioredis options...
-#   # username: example-username
+#redisForJobQueue:
+#  host: localhost
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
-# redisForTimelines:
-#   host: localhost
-#   port: 6379
-#   # family: 0 # 0=Both, 4=IPv4, 6=IPv6
-#   # pass: example-pass
-#   # prefix: example-prefix
-#   # db: 1
-#   # You can specify more ioredis options...
-#   # username: example-username
+#redisForTimelines:
+#  host: localhost
+#  port: 6379
+#  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+#  #pass: example-pass
+#  #prefix: example-prefix
+#  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
@@ -178,13 +178,13 @@ redis:
 # You can set scope to local (default value) or global
 # (include notes from remote).
 
-# meilisearch:
-#   host: localhost
-#   port: 7700
-#   apiKey: ''
-#   ssl: true
-#   index: ''
-#   scope: local
+#meilisearch:
+#  host: localhost
+#  port: 7700
+#  apiKey: ''
+#  ssl: true
+#  index: ''
+#  scope: local
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -211,48 +211,48 @@ id: 'aidx'
 # Sentry is available for error tracking.
 # See the Sentry documentation for more details on options.
 
-# sentryForBackend:
-#   enableNodeProfiling: true
-#   options:
-#     dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#sentryForBackend:
+#  enableNodeProfiling: true
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
-# sentryForFrontend:
-#   options:
-#     dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
+#sentryForFrontend:
+#  options:
+#    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
 
 # Whether disable HSTS
-# disableHsts: true
+#disableHsts: true
 
 # Number of worker processes
-# clusterLimit: 1
+#clusterLimit: 1
 
 # Job concurrency per worker
-# deliverJobConcurrency: 128
-# inboxJobConcurrency: 16
-# relationshipJobConcurrency: 16
+#deliverJobConcurrency: 128
+#inboxJobConcurrency: 16
+#relationshipJobConcurrency: 16
 # What's relationshipJob?:
 #  Follow, unfollow, block and unblock(ings) while following-imports, etc. or account migrations.
 
 # Job rate limiter
-# deliverJobPerSec: 128
-# inboxJobPerSec: 32
-# relationshipJobPerSec: 64
+#deliverJobPerSec: 128
+#inboxJobPerSec: 32
+#relationshipJobPerSec: 64
 
 # Job attempts
-# deliverJobMaxAttempts: 12
-# inboxJobMaxAttempts: 8
+#deliverJobMaxAttempts: 12
+#inboxJobMaxAttempts: 8
 
 # Local address used for outgoing requests
-# outgoingAddress: 127.0.0.1
+#outgoingAddress: 127.0.0.1
 
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
-# outgoingAddressFamily: ipv4
+#outgoingAddressFamily: ipv4
 
 # Proxy for HTTP/HTTPS
-# proxy: http://127.0.0.1:3128
+#proxy: http://127.0.0.1:3128
 
 proxyBypassHosts:
   - api.deepl.com
@@ -262,15 +262,15 @@ proxyBypassHosts:
   - challenges.cloudflare.com
 
 # Proxy for SMTP/SMTPS
-# proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
-# proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
-# proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
+#proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
+#proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
+#proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
 
 # Media Proxy
 # Reference Implementation: https://github.com/misskey-dev/media-proxy
 # * Deliver a common cache between instances
 # * Perform image compression (on a different server resource than the main process)
-# mediaProxy: https://example.com/proxy
+#mediaProxy: https://example.com/proxy
 
 # Proxy remote files (default: true)
 # Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.
@@ -280,7 +280,7 @@ proxyRemoteFiles: true
 # There is no reference implementation.
 # For example, Misskey will point to the following URL:
 #   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
-# videoThumbnailGenerator: https://example.com
+#videoThumbnailGenerator: https://example.com
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
@@ -288,12 +288,12 @@ signToActivityPubGet: true
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
 # Read changelog to learn more (Improvements of 12.90.0 (2021/09/04)).
-# allowedPrivateNetworks: [
-#   '127.0.0.1/32'
-# ]
+#allowedPrivateNetworks: [
+#  '127.0.0.1/32'
+#]
 
 # Upload or download file size limits (bytes)
-# maxFileSize: 262144000
+#maxFileSize: 262144000
 
 # PID File of master process
-# pidFile: /tmp/misskey.pid
+#pidFile: /tmp/misskey.pid
