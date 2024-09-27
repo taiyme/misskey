@@ -53,7 +53,7 @@ export const paramDef = {
 		withReplies: { type: 'boolean', default: false },
 		withRenotes: { type: 'boolean', default: true },
 		withChannelNotes: { type: 'boolean', default: false },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 11 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
