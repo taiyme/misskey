@@ -2800,3 +2800,11 @@ _tms:
       caption: "長押しを含む操作が中断される問題を解消します。"
   _admin:
     repositoryUrlDescription: "ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。"
+  _search:
+    searchScopeAll: "全て"
+    searchScopeLocal: "ローカル"
+    searchScopeServer: "サーバー指定"
+    searchScopeUser: "ユーザー指定"
+    pleaseEnterServerHost: "サーバーのホストを入力してください"
+    pleaseSelectUser: "ユーザーを選択してください"
+    serverHostPlaceholder: "例: misskey.example.com"
