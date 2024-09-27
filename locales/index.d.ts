@@ -10495,6 +10495,36 @@ export interface Locale extends ILocale {
              */
             readonly "repositoryUrlDescription": string;
         };
+        readonly "_search": {
+            /**
+             * 全て
+             */
+            readonly "searchScopeAll": string;
+            /**
+             * ローカル
+             */
+            readonly "searchScopeLocal": string;
+            /**
+             * サーバー指定
+             */
+            readonly "searchScopeServer": string;
+            /**
+             * ユーザー指定
+             */
+            readonly "searchScopeUser": string;
+            /**
+             * サーバーのホストを入力してください
+             */
+            readonly "pleaseEnterServerHost": string;
+            /**
+             * ユーザーを選択してください
+             */
+            readonly "pleaseSelectUser": string;
+            /**
+             * 例: misskey.example.com
+             */
+            readonly "serverHostPlaceholder": string;
+        };
     };
 }
 declare const locales: {
