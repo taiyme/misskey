@@ -26119,7 +26119,7 @@ export type operations = {
           withRenotes?: boolean;
           /** @default false */
           withChannelNotes?: boolean;
-          /** @default 10 */
+          /** @default 11 */
           limit?: number;
           /** Format: misskey:id */
           sinceId?: string;
