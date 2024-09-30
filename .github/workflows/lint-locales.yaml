@@ -94,13 +94,11 @@ jobs:
           mode: upsert
           create_if_not_exists: true
           message: |
-            Thank you for sending us a great Pull Request! 👍
-            Please regenerate locale type definitions! 🙏
+            Please regenerate locale type definitions! :pray:
+            locale型定義の再生成をお願いします！ :pray:
 
-            example:
             ```sh
-            node --input-type=module \
-              --eval 'import generateDTS from "./locales/generateDTS.js"; generateDTS();'
+            pnpm run build-assets
             ```
 
       - name: Comment PR (delete)

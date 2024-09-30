@@ -124,10 +124,9 @@ jobs:
           mode: upsert
           create_if_not_exists: true
           message: |
-            Thank you for sending us a great Pull Request! 👍
-            Please regenerate misskey-js type definitions! 🙏
+            Please regenerate misskey-js type definitions! :pray:
+            misskey-js型定義の再生成をお願いします！ :pray:
 
-            example:
             ```sh
             pnpm run build-misskey-js-with-types
             ```
