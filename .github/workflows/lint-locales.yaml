@@ -86,7 +86,7 @@ jobs:
           fi
 
       - name: Comment PR (upsert)
-        if: steps.check-changes.outputs.changes == 'true'
+        if: github.event_name == 'pull_request' && steps.check-changes.outputs.changes == 'true'
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -102,7 +102,7 @@ jobs:
             ```
 
       - name: Comment PR (delete)
-        if: steps.check-changes.outputs.changes == 'false'
+        if: github.event_name == 'pull_request' && steps.check-changes.outputs.changes == 'false'
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
