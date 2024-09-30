@@ -14,10 +14,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
-          submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 1
+          submodules: true
 
       - name: Enable corepack
         run: |
@@ -64,10 +66,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
-          submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 1
+          submodules: true
 
       - name: Upload actual_misskey_js
         uses: actions/upload-artifact@v4.4.0

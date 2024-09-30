@@ -30,23 +30,25 @@ jobs:
         run: exit 1
 
       - name: Check base version
+        env:
+          base_version: ${{ inputs.base_version }}
         run: |
-          base="${{ inputs.base_version }}"
-          if [ -z "$base" ]; then
+          if [[ -z "$base_version" ]]; then
             exit 1
           fi
 
-          year="$(echo "$base" | cut -d. -f1)"
+          year="$(cut -d. -f1 <<< "$base_version")"
           if [[ ! "$year" =~ ^[0-9]+$ ]]; then
             exit 1
           fi
 
-          month="$(echo "$base" | cut -d. -f2)"
-          if [[ "$month" -lt 1 && "$month" -gt 12 ]]; then
+          month="$(cut -d. -f2 <<< "$base_version")"
+          if [[ ! "$month" =~ ^[0-9]+$ ]] || \
+            [[ "$month" -lt 1 || "$month" -gt 12 ]]; then
             exit 1
           fi
 
-          patch="$(echo "$base" | cut -d. -f3)"
+          patch="$(cut -d. -f3 <<< "$base_version")"
           if [[ ! "$patch" =~ ^[0-9]+$ ]]; then
             exit 1
           fi
@@ -60,23 +62,26 @@ jobs:
       NEW_VERSION: ${{ steps.generate.outputs.NEW_VERSION }}
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           ref: ${{ github.sha }}
           fetch-depth: 1
 
       - name: Generate new version
         id: generate
+        env:
+          base_version: ${{ inputs.base_version }}
         run: |
           current_version="$(cat package.json | jq -r '.version')"
-          current_base="$(echo $current_version | sed 's/-.*//')"
-          new_base="${{ inputs.base_version }}"
-          new_base="${new_base:-$current_base}"
-          new_suffix=""
-          if [[ "$current_version" != "$current_base" && "$current_base" == "$new_base" ]]; then
-            new_suffix="$(($(echo $current_version | cut -d- -f2 | cut -d. -f2) + 1))"
+          current_base="$(sed 's/-.*//' <<< "$current_version")"
+          new_base="${base_version:-"$current_base"}"
+          if [[ "$current_version" != "$current_base" && \
+            "$current_base" == "$new_base" ]]; then
+            current_suffix="$((cut -d- -f2 | cut -d. -f2) <<< "$current_version")"
+            new_suffix="$(("$current_suffix" + 1))"
           fi
-          new_suffix="${new_suffix:-"0"}"
+          new_suffix="${new_suffix:-'0'}"
           new_version="${new_base}-taiyme.${new_suffix}"
           echo "NEW_VERSION=${new_version}" >> $GITHUB_OUTPUT
 
@@ -87,8 +92,9 @@ jobs:
       - parse_version
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           ref: ${{ github.sha }}
           fetch-depth: 1
 
@@ -141,7 +147,7 @@ jobs:
           echo "user-id=${user_id}" >> $GITHUB_OUTPUT
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -181,7 +187,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -193,8 +199,14 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          created_pr="$(gh pr create --draft --base ${{ vars.RELEASE_BRANCH }} --head ${{ vars.DEVELOP_BRANCH }} --title "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}" --body "")"
-          created_pr="$(echo $created_pr | awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}')"
+          created_pr="$(
+            gh pr create --draft \
+              --base ${{ vars.RELEASE_BRANCH }} \
+              --head ${{ vars.DEVELOP_BRANCH }} \
+              --title "Release: ${{ needs.parse_version.outputs.NEW_VERSION }}" \
+              --body ""
+          )"
+          created_pr="$(awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}' <<< "$created_pr")"
           echo "CREATED_PR=${created_pr}" >> $GITHUB_OUTPUT
 
   merge_pr:
@@ -211,7 +223,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -241,7 +253,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.RELEASE_BRANCH }}
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false

@@ -20,7 +20,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          fetch-depth: 1
 
       - name: Check version
         run: |
@@ -31,11 +34,11 @@ jobs:
           source_version="$(cat "$source_file" | jq -r '.version')"
 
           if [[ "$source_version" != "$target_version" ]]; then
-            source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1)"
-            echo "::error file=${source_file},line=${source_line}::Version mismatch!"
+            source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1 || true)"
+            echo "::error file=${source_file},line=${source_line:-'0'}::Version mismatch!"
 
-            target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1)"
-            echo "::error file=${target_file},line=${target_line}::Version mismatch!"
+            target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1 || true)"
+            echo "::error file=${target_file},line=${target_line:-'0'}::Version mismatch!"
 
             exit 1
           fi
