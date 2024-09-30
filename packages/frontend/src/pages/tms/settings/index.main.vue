@@ -41,25 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</div>
 	</FormSection>
-	<FormSection>
-		<div class="_gaps">
-			<MkSwitch v-model="enablePakuru">
-				<template #label>{{ i18n.ts._tms._settings._pakuru.label }}</template>
-				<template #caption>{{ i18n.ts._tms._settings._pakuru.caption }}</template>
-			</MkSwitch>
-			<MkSwitch v-model="enableNumberquote">
-				<template #label>{{ i18n.ts._tms._settings._numberquote.label }}</template>
-				<template #caption>{{ i18n.ts._tms._settings._numberquote.caption }}</template>
-			</MkSwitch>
-		</div>
-	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, readonly, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
-import { alert, confirm } from '@/os.js';
+import { confirm } from '@/os.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
 import { tmsStore } from '@/tms/store.js';
 import FormSection from '@/components/form/section.vue';
@@ -84,30 +72,6 @@ const pullToRefreshSensitivity = computed({
 	set: (newValue) => {
 		tmsStore.set('pullToRefreshSensitivity', newValue);
 		reloadAsk();
-	},
-});
-const enablePakuru = computed({
-	get: () => tmsStore.reactiveState.enablePakuru.value,
-	set: async (newValue) => {
-		if (!enablePakuru.value && newValue) { // false -> true
-			await alert({
-				type: 'warning',
-				text: i18n.ts._tms._settings._pakuru.warning,
-			});
-		}
-		tmsStore.set('enablePakuru', newValue);
-	},
-});
-const enableNumberquote = computed({
-	get: () => tmsStore.reactiveState.enableNumberquote.value,
-	set: async (newValue) => {
-		if (!enableNumberquote.value && newValue) { // false -> true
-			await alert({
-				type: 'warning',
-				text: i18n.ts._tms._settings._numberquote.warning,
-			});
-		}
-		tmsStore.set('enableNumberquote', newValue);
 	},
 });
 //#endregion
