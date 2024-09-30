@@ -1,4 +1,4 @@
-name: Lint (locales)
+name: Lint locales
 
 on:
   push:
@@ -13,9 +13,11 @@ on:
       - locales/**/*
 
 jobs:
-  lint_locales:
-    name: Lint locales
+  check_verify:
+    name: Check verify
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.0
@@ -41,3 +43,77 @@ jobs:
         working-directory: locales
         run: |
           node verify.js
+
+  check_dts:
+    name: Check locale type
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Generate locale type
+        run: |
+          node --input-type=module \
+            --eval 'import generateDTS from "./locales/generateDTS.js"; generateDTS();'
+
+      - name: Check locale type changes
+        id: check-changes
+        run: |
+          if git diff --name-only HEAD | grep -x locales/index.d.ts; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR (upsert)
+        if: steps.check-changes.outputs.changes == 'true'
+        uses: thollander/actions-comment-pull-request@v2.5.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment_tag: check-locale-type
+          mode: upsert
+          create_if_not_exists: true
+          message: |
+            Thank you for sending us a great Pull Request! 👍
+            Please regenerate locale type definitions! 🙏
+
+            example:
+            ```sh
+            node --input-type=module \
+              --eval 'import generateDTS from "./locales/generateDTS.js"; generateDTS();'
+            ```
+
+      - name: Comment PR (delete)
+        if: steps.check-changes.outputs.changes == 'false'
+        uses: thollander/actions-comment-pull-request@v2.5.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment_tag: check-locale-type
+          mode: delete
+          create_if_not_exists: false
+          message: |
+            Thank you!
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1

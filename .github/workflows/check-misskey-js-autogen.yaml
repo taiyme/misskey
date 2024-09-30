@@ -142,3 +142,7 @@ jobs:
           create_if_not_exists: false
           message: |
             Thank you!
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1
