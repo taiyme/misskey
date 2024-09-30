@@ -248,8 +248,22 @@ jobs:
           ref: ${{ vars.RELEASE_BRANCH }}
           fetch-depth: 0
 
+      - name: Generate release notes
+        id: generate-release-notes
+        uses: ./.github/actions/generate-release-notes
+        with:
+          version: ${{ needs.parse_version.outputs.NEW_VERSION }}
+
+      - name: Set release notes
+        env:
+          release_notes: ${{ steps.generate-release-notes.outputs.release_notes }}
+        run: |
+          echo "$release_notes" > /tmp/release-notes.md
+
       - name: Create Release
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh release create ${{ needs.parse_version.outputs.NEW_VERSION }} --generate-notes
+          gh release create ${{ needs.parse_version.outputs.NEW_VERSION }} \
+            --title ${{ needs.parse_version.outputs.NEW_VERSION }} \
+            --notes-file /tmp/release-notes.md
