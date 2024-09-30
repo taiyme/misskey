@@ -26,8 +26,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           fetch-depth: 1
           submodules: true
 
@@ -63,8 +64,9 @@ jobs:
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           fetch-depth: 1
           submodules: true
 
@@ -106,8 +108,9 @@ jobs:
         - misskey-js
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           fetch-depth: 1
           submodules: true
 

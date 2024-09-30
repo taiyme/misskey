@@ -21,7 +21,7 @@ runs:
       shell: bash
       run: |
         current_version="$INPUT_VERSION"
-        current_version_base="$(echo "$current_version" | sed 's/-.*//')"
+        current_version_base="$(sed 's/-.*//' <<< "$current_version")"
 
         tag_list="$(gh release list --exclude-drafts --exclude-pre-releases --json tagName --jq '.[].tagName')"
         previous_version="$(echo "$tag_list" | grep -x -A1 "$current_version" | tail -n1 || true)"

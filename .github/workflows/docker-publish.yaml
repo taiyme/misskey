@@ -32,8 +32,9 @@ jobs:
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
           ref: ${{ github.event.release.tag_name }}
           fetch-depth: 1
 
@@ -58,7 +59,7 @@ jobs:
 
       - name: Build and Push to Registry
         id: build
-        uses: docker/build-push-action@v6.7.0
+        uses: docker/build-push-action@v6.9.0
         with:
           context: .
           push: true

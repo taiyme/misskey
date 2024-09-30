@@ -14,10 +14,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
-          submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 1
+          submodules: true
 
       - name: Enable corepack
         run: |
@@ -64,10 +66,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
-          submodules: true
+          persist-credentials: false
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          fetch-depth: 1
+          submodules: true
 
       - name: Upload actual_misskey_js
         uses: actions/upload-artifact@v4.4.0
@@ -120,10 +124,9 @@ jobs:
           mode: upsert
           create_if_not_exists: true
           message: |
-            Thank you for sending us a great Pull Request! 👍
-            Please regenerate misskey-js type definitions! 🙏
+            Please regenerate misskey-js type definitions! :pray:
+            misskey-js型定義の再生成をお願いします！ :pray:
 
-            example:
             ```sh
             pnpm run build-misskey-js-with-types
             ```
@@ -138,3 +141,7 @@ jobs:
           create_if_not_exists: false
           message: |
             Thank you!
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1
