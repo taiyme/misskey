@@ -21,10 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
+import { v4 as uuid } from 'uuid';
+import { render } from 'buraha';
+import { WorkerMultiDispatch } from '@@/js/worker-multi-dispatch.js';
+import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
+import { defaultStore } from '@/store.js';
 import DrawBlurhash from '@/workers/draw-blurhash.js?worker';
 import TestWebGL2 from '@/workers/test-webgl2.js?worker';
-import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch.js';
-import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash.js';
 
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
@@ -57,11 +61,6 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
-import { v4 as uuid } from 'uuid';
-import { render } from 'buraha';
-import { defaultStore } from '@/store.js';
-
 const props = withDefaults(defineProps<{
 	transition?: {
 		duration?: number | { enter: number; leave: number; };

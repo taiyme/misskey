@@ -37,7 +37,9 @@ COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubbl
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
 COPY --link ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --link ./packages/backend/package.json ./packages/backend/
+COPY --link ./packages/frontend-shared/package.json ./packages/frontend-shared/
 COPY --link ./packages/frontend/package.json ./packages/frontend/
+COPY --link ./packages/frontend-embed/package.json ./packages/frontend-embed/
 COPY --link ./pnpm-lock.yaml ./pnpm-workspace.yaml ./package.json ./
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
@@ -55,14 +57,21 @@ COPY --link ./packages/misskey-js/src/ ./packages/misskey-js/src/
 COPY --link ./packages/backend/.swcrc ./packages/backend/
 COPY --link ./packages/backend/src/ ./packages/backend/src/
 COPY --link ./locales/ ./locales/
+COPY --link ./packages/frontend-shared/build.js ./packages/frontend-shared/tsconfig.json ./packages/frontend-shared/
+COPY --link ./packages/frontend-shared/js/ ./packages/frontend-shared/js/
+COPY --link ./packages/frontend-shared/themes/ ./packages/frontend-shared/themes/
 COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/tsconfig.json ./packages/frontend/
 COPY --link ./packages/frontend/assets/ ./packages/frontend/assets/
 COPY --link ./packages/frontend/lib/ ./packages/frontend/lib/
 COPY --link ./packages/frontend/src/ ./packages/frontend/src/
-COPY --link ./scripts/changelog-checker/.gitignore ./scripts/changelog-checker/
+COPY --link ./packages/frontend-embed/vite.config.ts ./packages/frontend-embed/vite.json5.ts ./packages/frontend-embed/tsconfig.json ./packages/frontend-embed/
+COPY --link ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
+COPY --link ./packages/frontend-embed/src/ ./packages/frontend-embed/src/
 COPY --link ./packages/misskey-js/generator/.gitignore ./packages/misskey-js/generator/
+COPY --link ./packages/frontend-shared/.gitignore ./packages/frontend-shared/
 COPY --link ./packages/frontend/.storybook/.gitignore ./packages/frontend/.storybook/
 COPY --link ./packages/frontend/.gitignore ./packages/frontend/
+COPY --link ./packages/frontend-embed/.gitignore ./packages/frontend-embed/
 COPY --link ./.gitignore ./
 COPY --link ./.git/ ./.git/
 COPY --link --from=submodule /misskey/fluent-emojis/ ./fluent-emojis/
@@ -127,6 +136,7 @@ COPY --chown=misskey:misskey ./packages/backend/scripts/ ./packages/backend/scri
 COPY --chown=misskey:misskey ./packages/backend/nsfw-model/ ./packages/backend/nsfw-model/
 COPY --chown=misskey:misskey ./packages/backend/migration/ ./packages/backend/migration/
 COPY --chown=misskey:misskey ./packages/frontend/assets/ ./packages/frontend/assets/
+COPY --chown=misskey:misskey ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
 COPY --chown=misskey:misskey ./.node-version ./package.json ./pnpm-workspace.yaml ./
 COPY --chown=misskey:misskey ./healthcheck.sh ./
 COPY --chown=misskey:misskey --from=submodule /misskey/fluent-emojis/ ./fluent-emojis/

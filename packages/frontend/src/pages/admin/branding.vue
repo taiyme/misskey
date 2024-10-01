@@ -104,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
+import { host } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import FormSuspense from '@/components/form/suspense.vue';
@@ -114,7 +115,6 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { host } from '@/config.js';
 
 const iconUrl = ref<string | null>(null);
 const app192IconUrl = ref<string | null>(null);

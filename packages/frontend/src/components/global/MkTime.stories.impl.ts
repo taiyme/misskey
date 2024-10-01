@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/test';
 import { StoryObj } from '@storybook/vue3';
+import { dateTimeFormat } from '@@/js/intl-const.js';
 import MkTime from './MkTime.vue';
 import { i18n } from '@/i18n.js';
-import { dateTimeFormat } from '@/scripts/intl-const.js';
+
 const now = new Date('2023-04-01T00:00:00.000Z');
 const future = new Date('2024-04-01T00:00:00.000Z');
 const oneHourAgo = new Date(now.getTime() - 3600000);
@@ -16,6 +16,7 @@ const oneDayAgo = new Date(now.getTime() - 86400000);
 const oneWeekAgo = new Date(now.getTime() - 604800000);
 const oneMonthAgo = new Date(now.getTime() - 2592000000);
 const oneYearAgo = new Date(now.getTime() - 31536000000);
+
 export const Empty = {
 	render(args) {
 		return {
@@ -46,6 +47,7 @@ export const Empty = {
 		layout: 'centered',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeFuture = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -57,6 +59,7 @@ export const RelativeFuture = {
 		origin: now,
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteFuture = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -68,6 +71,7 @@ export const AbsoluteFuture = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailFuture = {
 	...Empty,
 	async play(context) {
@@ -82,6 +86,7 @@ export const DetailFuture = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeNow = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -94,6 +99,7 @@ export const RelativeNow = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteNow = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -106,6 +112,7 @@ export const AbsoluteNow = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailNow = {
 	...Empty,
 	async play(context) {
@@ -121,6 +128,7 @@ export const DetailNow = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeOneHourAgo = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -133,6 +141,7 @@ export const RelativeOneHourAgo = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteOneHourAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -145,6 +154,7 @@ export const AbsoluteOneHourAgo = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailOneHourAgo = {
 	...Empty,
 	async play(context) {
@@ -160,6 +170,7 @@ export const DetailOneHourAgo = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeOneDayAgo = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -172,6 +183,7 @@ export const RelativeOneDayAgo = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteOneDayAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -184,6 +196,7 @@ export const AbsoluteOneDayAgo = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailOneDayAgo = {
 	...Empty,
 	async play(context) {
@@ -199,6 +212,7 @@ export const DetailOneDayAgo = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -211,6 +225,7 @@ export const RelativeOneWeekAgo = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteOneWeekAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -223,6 +238,7 @@ export const AbsoluteOneWeekAgo = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailOneWeekAgo = {
 	...Empty,
 	async play(context) {
@@ -238,6 +254,7 @@ export const DetailOneWeekAgo = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -250,6 +267,7 @@ export const RelativeOneMonthAgo = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteOneMonthAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -262,6 +280,7 @@ export const AbsoluteOneMonthAgo = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailOneMonthAgo = {
 	...Empty,
 	async play(context) {
@@ -277,6 +296,7 @@ export const DetailOneMonthAgo = {
 		mode: 'detail',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const RelativeOneYearAgo = {
 	...Empty,
 	async play({ canvasElement }) {
@@ -289,6 +309,7 @@ export const RelativeOneYearAgo = {
 		mode: 'relative',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const AbsoluteOneYearAgo = {
 	...Empty,
 	async play({ canvasElement, args }) {
@@ -301,6 +322,7 @@ export const AbsoluteOneYearAgo = {
 		mode: 'absolute',
 	},
 } satisfies StoryObj<typeof MkTime>;
+
 export const DetailOneYearAgo = {
 	...Empty,
 	async play(context) {

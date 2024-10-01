@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { toASCII } from 'punycode';
 import { nextTick, Ref, ref, defineAsyncComponent } from 'vue';
 import getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode/';
 import { popup } from '@/os.js';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
@@ -97,7 +97,7 @@ export class Autocomplete {
 
 		const isMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
-		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam?.includes(' ');
+		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
 		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
 

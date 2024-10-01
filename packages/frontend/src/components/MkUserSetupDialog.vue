@@ -129,6 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef, watch, nextTick, defineAsyncComponent } from 'vue';
+import { host } from '@@/js/config.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
@@ -137,7 +138,6 @@ import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { host } from '@/config.js';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -147,8 +147,7 @@ const emit = defineEmits<{
 }>();
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
-
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+ 
 const page = ref(defaultStore.state.accountSetupWizard);
 
 watch(page, () => {

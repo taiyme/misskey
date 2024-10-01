@@ -44,6 +44,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
+					<div v-if="user.followedMessage != null" class="followedMessage">
+						<div style="border: solid 1px var(--love); border-radius: 6px; background: color-mix(in srgb, var(--love), transparent 90%); padding: 6px 8px;">
+							<Mfm :text="user.followedMessage" :author="user"/>
+						</div>
+					</div>
 					<div v-if="user.roles.length > 0" class="roles">
 						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
 							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
@@ -350,6 +355,11 @@ onMounted(() => {
 					box-shadow: 1px 1px 3px rgba(#000, 0.2);
 				}
 
+				> .followedMessage {
+					padding: 24px 24px 0 154px;
+					font-size: 0.9em;
+				}
+
 				> .roles {
 					padding: 12px 24px 0 154px;
 					font-size: 0.95em;
@@ -497,6 +507,10 @@ onMounted(() => {
 					width: 92px;
 					height: 92px;
 					margin: auto;
+				}
+
+				> .followedMessage {
+					padding: 16px 16px 0 16px;
 				}
 
 				> .roles {

@@ -22,8 +22,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, shallowRef } from 'vue';
+import { version } from '@@/js/config.js';
 import { $i } from '@/account.js';
-import { version } from '@/config.js';
 import { defaultStore } from '@/store.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
 import { physics } from '@/scripts/physics.js';

@@ -25,17 +25,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, onDeactivated, onMounted, computed, shallowRef, onActivated } from 'vue';
+import { notificationTypes } from '@@/js/const.js';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkNote from '@/components/MkNote.vue';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
-import { notificationTypes } from '@/const.js';
 import { infoImageUrl } from '@/instance.js';
 import { defaultStore } from '@/store.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import * as Misskey from 'misskey-js';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][];

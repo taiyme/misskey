@@ -65,6 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
@@ -73,7 +74,6 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { url } from '@/config.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
@@ -171,35 +171,35 @@ function reportAbuse() {
 function showMenu(ev: MouseEvent) {
 	if (!post.value) return;
 
-	const menu: MenuItem[] = [
-		...($i && $i.id !== post.value.userId ? [
-			{
-				icon: 'ti ti-exclamation-circle',
-				text: i18n.ts.reportAbuse,
-				action: reportAbuse,
-			},
-			...($i.isModerator || $i.isAdmin ? [
-				{
-					type: 'divider' as const,
-				},
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: () => os.confirm({
-						type: 'warning',
-						text: i18n.ts.deleteConfirm,
-					}).then(({ canceled }) => {
-						if (canceled || !post.value) return;
+	const menuItems: MenuItem[] = [];
 
-						os.apiWithDialog('gallery/posts/delete', { postId: post.value.id });
-					}),
-				},
-			] : []),
-		] : []),
-	];
+	if ($i && $i.id !== post.value.userId) {
+		menuItems.push({
+			icon: 'ti ti-exclamation-circle',
+			text: i18n.ts.reportAbuse,
+			action: reportAbuse,
+		});
 
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({
+				type: 'divider',
+			}, {
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: () => os.confirm({
+					type: 'warning',
+					text: i18n.ts.deleteConfirm,
+				}).then(({ canceled }) => {
+					if (canceled || !post.value) return;
+
+					os.apiWithDialog('gallery/posts/delete', { postId: post.value.id });
+				}),
+			});
+		}
+	}
+
+	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
 watch(() => props.postId, fetchPost, { immediate: true });
