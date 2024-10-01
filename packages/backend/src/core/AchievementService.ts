@@ -8,6 +8,7 @@ import type { UserProfilesRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 
 export const ACHIEVEMENT_TYPES = [
@@ -97,6 +98,7 @@ export class AchievementService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		private roleService: RoleService,
 		private notificationService: NotificationService,
 	) {
 	}
@@ -109,6 +111,10 @@ export class AchievementService {
 		if (!ACHIEVEMENT_TYPES.includes(type)) return;
 
 		const date = Date.now();
+
+		const policies = await this.roleService.getUserPolicies(userId);
+
+		if (!policies.tmsAchievementsAvailable) return;
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: userId });
 

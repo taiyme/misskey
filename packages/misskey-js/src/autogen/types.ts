@@ -4841,6 +4841,7 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
+      tmsAchievementsAvailable: boolean;
     };
     ReversiGameLite: {
       /** Format: id */
@@ -5002,6 +5003,7 @@ export type components = {
         serviceWorker: boolean;
         /** @default true */
         miauth?: boolean;
+        tmsAchievements: boolean;
       };
       proxyAccountName: string | null;
       /** @example false */

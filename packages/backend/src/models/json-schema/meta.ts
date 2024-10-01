@@ -309,6 +309,10 @@ export const packedMetaDetailedOnlySchema = {
 					optional: true, nullable: false,
 					default: true,
 				},
+				tmsAchievements: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 			},
 		},
 		proxyAccountName: {

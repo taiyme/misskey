@@ -105,6 +105,7 @@ export const ROLE_POLICIES = [
 	'canImportFollowing',
 	'canImportMuting',
 	'canImportUserLists',
+	'tmsAchievementsAvailable',
 ] as const;
 
 // なんか動かない

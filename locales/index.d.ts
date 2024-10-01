@@ -6846,6 +6846,10 @@ export interface Locale extends ILocale {
              * リストのインポートを許可
              */
             readonly "canImportUserLists": string;
+            /**
+             * [tms] 実績の獲得・獲得した実績の取得
+             */
+            readonly "tmsAchievementsAvailable": string;
         };
         readonly "_condition": {
             /**

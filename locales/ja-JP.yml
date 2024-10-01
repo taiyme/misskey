@@ -1768,6 +1768,7 @@ _role:
     canImportFollowing: "フォローのインポートを許可"
     canImportMuting: "ミュートのインポートを許可"
     canImportUserLists: "リストのインポートを許可"
+    tmsAchievementsAvailable: "[tms] 実績の獲得・獲得した実績の取得"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"

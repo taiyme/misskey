@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	requireCredential: false,
@@ -40,8 +41,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const policies = await this.roleService.getUserPolicies(ps.userId);
+
+			if (!policies.tmsAchievementsAvailable) return [];
+
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: ps.userId });
 
 			return profile.achievements;

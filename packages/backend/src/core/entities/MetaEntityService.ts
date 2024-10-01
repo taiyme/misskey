@@ -165,6 +165,7 @@ export class MetaEntityService {
 				objectStorage: instance.useObjectStorage,
 				serviceWorker: instance.enableServiceWorker,
 				miauth: true,
+				tmsAchievements: instance.policies.tmsAchievementsAvailable,
 			},
 		};
 

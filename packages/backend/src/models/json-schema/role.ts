@@ -292,6 +292,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		tmsAchievementsAvailable: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 
