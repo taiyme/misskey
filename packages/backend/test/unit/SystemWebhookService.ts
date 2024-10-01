@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
+import { randomString } from '../utils.js';
 import { MiUser } from '@/models/User.js';
 import { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
@@ -17,7 +20,6 @@ import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { randomString } from '../utils.js';
 
 describe('SystemWebhookService', () => {
 	let app: TestingModule;
@@ -313,7 +315,7 @@ describe('SystemWebhookService', () => {
 					isActive: true,
 					on: ['abuseReport'],
 				});
-				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' });
+				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' } as any);
 
 				expect(queueService.systemWebhookDeliver).toHaveBeenCalled();
 			});
@@ -323,7 +325,7 @@ describe('SystemWebhookService', () => {
 					isActive: false,
 					on: ['abuseReport'],
 				});
-				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' });
+				await service.enqueueSystemWebhook(webhook.id, 'abuseReport', { foo: 'bar' } as any);
 
 				expect(queueService.systemWebhookDeliver).not.toHaveBeenCalled();
 			});
@@ -337,8 +339,8 @@ describe('SystemWebhookService', () => {
 					isActive: true,
 					on: ['abuseReportResolved'],
 				});
-				await service.enqueueSystemWebhook(webhook1.id, 'abuseReport', { foo: 'bar' });
-				await service.enqueueSystemWebhook(webhook2.id, 'abuseReport', { foo: 'bar' });
+				await service.enqueueSystemWebhook(webhook1.id, 'abuseReport', { foo: 'bar' } as any);
+				await service.enqueueSystemWebhook(webhook2.id, 'abuseReport', { foo: 'bar' } as any);
 
 				expect(queueService.systemWebhookDeliver).not.toHaveBeenCalled();
 			});

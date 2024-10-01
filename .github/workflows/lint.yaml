@@ -6,19 +6,11 @@ on:
       - taiyme
     paths:
       - .github/workflows/lint.yaml
-      - packages/backend/**/*
-      - packages/frontend/**/*
-      - packages/sw/**/*
-      - packages/misskey-js/**/*
-      - packages/shared/eslint.config.js
+      - packages/**/*
   pull_request:
     paths:
       - .github/workflows/lint.yaml
-      - packages/backend/**/*
-      - packages/frontend/**/*
-      - packages/sw/**/*
-      - packages/misskey-js/**/*
-      - packages/shared/eslint.config.js
+      - packages/**/*
 
 jobs:
   run_pnpm_install:
@@ -57,8 +49,12 @@ jobs:
         workspace:
           - backend
           - frontend
-          - sw
+          - frontend-embed
+          - frontend-shared
+          - misskey-bubble-game
           - misskey-js
+          - misskey-reversi
+          - sw
     env:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
@@ -104,8 +100,9 @@ jobs:
     strategy:
       matrix:
         workspace:
-        - backend
-        - misskey-js
+          - backend
+          - misskey-js
+          - sw
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.0
@@ -129,7 +126,7 @@ jobs:
           pnpm i --frozen-lockfile
 
       - name: Build (misskey-js)
-        if: matrix.workspace == 'backend'
+        if: matrix.workspace == 'backend' || matrix.workspace == 'sw'
         run: |
           pnpm --filter misskey-js run build
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { hostname } from '@/config.js';
+import { hostname } from '@@/js/config.js';
 
 export function transformPlayerUrl(url: string): string {
 	const urlObj = new URL(url);
