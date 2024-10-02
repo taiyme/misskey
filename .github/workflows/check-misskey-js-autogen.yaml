@@ -6,10 +6,15 @@ on:
       - packages/backend/**
 
 jobs:
-  generate_misskey_js:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  generate-misskey-js:
     name: Generate misskey-js
     runs-on: ubuntu-22.04
-    if: github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true
+    needs:
+      - pre-checkout
     permissions:
       contents: read
     steps:
@@ -17,7 +22,7 @@ jobs:
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
@@ -58,10 +63,11 @@ jobs:
           name: generated_misskey_js
           path: packages/misskey-js/generator/built/autogen
 
-  get_actual_misskey_js:
+  get-actual-misskey-js:
     name: Get actual misskey-js
     runs-on: ubuntu-22.04
-    if: github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true
+    needs:
+      - pre-checkout
     permissions:
       contents: read
     steps:
@@ -69,7 +75,7 @@ jobs:
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
-          ref: refs/pull/${{ github.event.pull_request.number }}/merge
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
@@ -79,12 +85,12 @@ jobs:
           name: actual_misskey_js
           path: packages/misskey-js/src/autogen
 
-  comment_misskey_js_autogen:
+  comment-misskey-js-autogen:
     name: Comment misskey-js autogen
     runs-on: ubuntu-22.04
     needs:
-      - generate_misskey_js
-      - get_actual_misskey_js
+      - generate-misskey-js
+      - get-actual-misskey-js
     permissions:
       contents: read
       pull-requests: write
@@ -117,6 +123,7 @@ jobs:
 
       - name: Comment PR (upsert)
         if: steps.check-changes.outputs.changes == 'true'
+        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -133,6 +140,7 @@ jobs:
 
       - name: Comment PR (delete)
         if: steps.check-changes.outputs.changes == 'false'
+        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

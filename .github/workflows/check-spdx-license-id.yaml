@@ -9,22 +9,28 @@ on:
       - cypress/e2e/**/*
       - packages/**/*
       - scripts/**/*
-  pull_request:
+  pull_request_target:
     paths:
-      - .github/workflows/check-spdx-license-id.yaml
       - cypress/e2e/**/*
       - packages/**/*
       - scripts/**/*
 
 jobs:
-  check_spdx_license_id:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  check-spdx-license-id:
     name: Check SPDX-License-Identifier
     runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
 
       - name: Check SPDX-License-Identifier

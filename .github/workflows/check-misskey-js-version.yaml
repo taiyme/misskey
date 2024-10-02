@@ -8,21 +8,27 @@ on:
       - .github/workflows/check-misskey-js-version.yaml
       - packages/misskey-js/package.json
       - package.json
-  pull_request:
+  pull_request_target:
     paths:
-      - .github/workflows/check-misskey-js-version.yaml
       - packages/misskey-js/package.json
       - package.json
 
 jobs:
-  check_version:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  check-version:
     name: Check version
     runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
 
       - name: Check version
