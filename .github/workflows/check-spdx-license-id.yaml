@@ -4,16 +4,24 @@ on:
   push:
     branches:
       - taiyme
+      - release
     paths:
       - .github/workflows/check-spdx-license-id.yaml
       - cypress/e2e/**/*
       - packages/**/*
       - scripts/**/*
+
   pull_request_target:
+    branches:
+      - taiyme
+      - release
     paths:
       - cypress/e2e/**/*
       - packages/**/*
       - scripts/**/*
+
+permissions:
+  contents: read
 
 jobs:
   pre-checkout:
@@ -41,13 +49,13 @@ jobs:
             local directory="$1"
             find "$directory" -type f \
               '(' \
-                -name "*.cjs" -and -not -name '*.config.cjs' -o \
-                -name "*.html" -o \
-                -name "*.js" -and -not -name '*.config.js' -o \
-                -name "*.mjs" -and -not -name '*.config.mjs' -o \
-                -name "*.scss" -o \
-                -name "*.ts" -and -not -name '*.config.ts' -o \
-                -name "*.vue" \
+                -name '*.cjs' -and -not -name '*.config.cjs' -o \
+                -name '*.html' -o \
+                -name '*.js' -and -not -name '*.config.js' -o \
+                -name '*.mjs' -and -not -name '*.config.mjs' -o \
+                -name '*.scss' -o \
+                -name '*.ts' -and -not -name '*.config.ts' -o \
+                -name '*.vue' \
               ')' -and \
               -not -name '*eslint*'
           }
@@ -55,45 +63,45 @@ jobs:
           check() {
             local file="$1"
             if ! (
-              grep -q "SPDX-FileCopyrightText: syuilo and misskey-project" "$file" ||
-              grep -q "SPDX-License-Identifier: AGPL-3.0-only" "$file"
+              grep -q 'SPDX-FileCopyrightText: ' "$file" &&
+              grep -q 'SPDX-License-Identifier: ' "$file"
             ); then
-              echo "Missing: $file"
+              echo "::error file=${file},line=0::Missing SPDX-License-Identifier"
               ((counter++))
             fi
           }
 
           directories=(
-            "cypress/e2e"
-            "packages/backend/migration"
-            "packages/backend/src"
-            "packages/backend/test"
-            "packages/frontend/.storybook"
-            "packages/frontend/@types"
-            "packages/frontend/lib"
-            "packages/frontend/public"
-            "packages/frontend/src"
-            "packages/frontend/test"
-            "packages/frontend-embed/@types"
-            "packages/frontend-embed/src"
-            "packages/frontend-shared/@types"
-            "packages/frontend-shared/js"
-            "packages/misskey-bubble-game/src"
-            "packages/misskey-reversi/src"
-            "packages/sw/src"
-            "scripts"
+            'cypress/e2e'
+            'packages/backend/migration'
+            'packages/backend/src'
+            'packages/backend/test'
+            'packages/frontend/.storybook'
+            'packages/frontend/@types'
+            'packages/frontend/lib'
+            'packages/frontend/public'
+            'packages/frontend/src'
+            'packages/frontend/test'
+            'packages/frontend-embed/@types'
+            'packages/frontend-embed/src'
+            'packages/frontend-shared/@types'
+            'packages/frontend-shared/js'
+            'packages/misskey-bubble-game/src'
+            'packages/misskey-reversi/src'
+            'packages/sw/src'
+            'scripts'
           )
 
           for directory in "${directories[@]}"; do
-            for file in $(search $directory); do
+            for file in "$(search "$directory")"; do
               check "$file"
             done
           done
 
-          if [ $counter -gt 0 ]; then
-            echo "SPDX-License-Identifier is missing in $counter files."
+          if [ "$counter" -gt 0 ]; then
+            echo "::error::SPDX-License-Identifier is missing in ${counter} file(s)."
             exit 1
           else
-            echo "SPDX-License-Identifier is certainly described in all target files!"
+            echo '::notice::SPDX-License-Identifier is certainly described in all target file(s)!'
             exit 0
           fi

@@ -143,7 +143,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          user_id="$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)"
+          user_id="$(gh api '/users/${{ steps.app-token.outputs.app-slug }}[bot]' --jq '.id')"
           echo "user-id=${user_id}" >> $GITHUB_OUTPUT
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
@@ -165,7 +165,7 @@ jobs:
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
           git add .
-          git commit -m "Release: ${{ needs.parse-version.outputs.new_version }}"
+          git commit -m 'Release: ${{ needs.parse-version.outputs.new_version }}'
           git tag ${{ needs.parse-version.outputs.new_version }}
           git push origin HEAD
           git push origin ${{ needs.parse-version.outputs.new_version }}
@@ -203,8 +203,8 @@ jobs:
             gh pr create --draft \
               --base ${{ vars.RELEASE_BRANCH }} \
               --head ${{ vars.DEVELOP_BRANCH }} \
-              --title "Release: ${{ needs.parse-version.outputs.new_version }}" \
-              --body ""
+              --title 'Release: ${{ needs.parse-version.outputs.new_version }}' \
+              --body ''
           )"
           pr_number="$(awk -F '/' '/\/pull\/[0-9]+$/ {print $NF}' <<< "$created_pr")"
           echo "pr_number=${pr_number}" >> $GITHUB_OUTPUT

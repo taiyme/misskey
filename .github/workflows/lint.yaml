@@ -4,12 +4,20 @@ on:
   push:
     branches:
       - taiyme
+      - release
     paths:
       - .github/workflows/lint.yaml
       - packages/**/*
+
   pull_request_target:
+    branches:
+      - taiyme
+      - release
     paths:
       - packages/**/*
+
+permissions:
+  contents: read
 
 jobs:
   pre-checkout:
