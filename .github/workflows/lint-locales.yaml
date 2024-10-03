@@ -7,15 +7,20 @@ on:
     paths:
       - .github/workflows/lint-locales.yaml
       - locales/**/*
-  pull_request:
+  pull_request_target:
     paths:
-      - .github/workflows/lint-locales.yaml
       - locales/**/*
 
 jobs:
-  check_verify:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  check-verify:
     name: Check verify
     runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
     permissions:
       contents: read
     steps:
@@ -23,6 +28,7 @@ jobs:
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
 
       - name: Enable corepack
@@ -44,9 +50,11 @@ jobs:
         run: |
           node verify.js
 
-  check_dts:
+  check-dts:
     name: Check locale type
     runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
     permissions:
       contents: read
       pull-requests: write
@@ -55,6 +63,7 @@ jobs:
         uses: actions/checkout@v4.2.0
         with:
           persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
 
       - name: Enable corepack
@@ -86,7 +95,8 @@ jobs:
           fi
 
       - name: Comment PR (upsert)
-        if: github.event_name == 'pull_request' && steps.check-changes.outputs.changes == 'true'
+        if: steps.check-changes.outputs.changes == 'true'
+        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -102,7 +112,8 @@ jobs:
             ```
 
       - name: Comment PR (delete)
-        if: github.event_name == 'pull_request' && steps.check-changes.outputs.changes == 'false'
+        if: steps.check-changes.outputs.changes == 'false'
+        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
