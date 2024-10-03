@@ -25,7 +25,7 @@ export const meta = {
 	description: 'Show the properties of a user.',
 
 	res: {
-		optional: false, nullable: false,
+		optional: false, nullable: true,
 		oneOf: [
 			{
 				type: 'object',

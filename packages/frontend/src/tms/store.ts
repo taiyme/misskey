@@ -1,10 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and misskey-project
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { markRaw } from 'vue';
 import { Storage } from '@/pizzax.js';
+
+//#region test
+const e = '';
+//#endregion
 
 /**
  * tmsStore -- 独自実装した機能についてのデータを格納する

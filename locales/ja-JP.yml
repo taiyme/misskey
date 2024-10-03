@@ -2768,6 +2768,7 @@ _embedCodeGen:
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"
 
 _tms:
+  test: "テスト"
   taiy: "taiy"
   taiyme: "taiyme"
   aboutTaiyme: "taiymeについて"
