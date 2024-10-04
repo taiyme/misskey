@@ -31,14 +31,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { toUnicode as decodePunycode } from 'punycode';
 import { computed, defineAsyncComponent, shallowRef } from 'vue';
-import { toUnicode as decodePunycode } from 'punycode/';
-import { url as local } from '@/config.js';
+import { url as local } from '@@/js/config.js';
 import { popup } from '@/os.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
-import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 import { isEnabledUrlPreview } from '@/instance.js';
 import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
+
+function safeURIDecode(str: string): string {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
 
 const props = withDefaults(defineProps<{
 	url: string;

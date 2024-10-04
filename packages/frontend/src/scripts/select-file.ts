@@ -70,7 +70,7 @@ export function chooseFileFromUrl(): Promise<Misskey.entities.DriveFile> {
 				url: url,
 				folderId: defaultStore.state.uploadFolder,
 				marker,
-			}).catch(() => {});
+			});
 
 			os.alert({
 				title: i18n.ts.uploadFromUrlRequested,

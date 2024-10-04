@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { host } from '@/config.js';
+import { host } from '@@/js/config.js';
 import { instance } from '@/instance.js';
 
 const serverRef = computed(() => {

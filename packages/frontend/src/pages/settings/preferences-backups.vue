@@ -44,6 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
+import { version, host } from '@@/js/config.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -54,7 +55,6 @@ import { unisonReload } from '@/scripts/unison-reload.js';
 import { useStream } from '@/stream.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { version, host } from '@/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 
@@ -80,7 +80,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'dataSaver',
 	'disableShowingAnimatedImages',
 	'emojiStyle',
-	'disableDrawer',
+	'menuStyle',
 	'useBlurEffectForModal',
 	'useBlurEffect',
 	'showFixedPostForm',
@@ -92,7 +92,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'emojiPickerScale',
 	'emojiPickerWidth',
 	'emojiPickerHeight',
-	'emojiPickerUseDrawerForMobile',
+	'emojiPickerStyle',
 	'defaultSideView',
 	'menuDisplay',
 	'reportError',
@@ -108,7 +108,6 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'mediaListWithOneImageAppearance',
 	'notificationPosition',
 	'notificationStackAxis',
-	'enableCondensedLineForAcct',
 	'keepScreenOn',
 	'defaultWithReplies',
 	'disableStreamingTimeline',

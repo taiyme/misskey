@@ -34,9 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import type * as Misskey from 'misskey-js';
-import 'photoswipe/style.css';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { claimZIndex } from '@/os.js';
 import { defaultStore } from '@/store.js';
 import { focusParent } from '@/scripts/focus.js';
@@ -44,6 +43,7 @@ import XAudio from '@/components/MkMediaAudio.vue';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
+import 'photoswipe/style.css';
 
 const EXPANDED_MIN_HEIGHT = 80 as const;
 

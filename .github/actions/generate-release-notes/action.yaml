@@ -1,0 +1,80 @@
+name: Generate release notes
+description: リリースノートを作成します
+
+inputs:
+  token:
+    description: Token
+    required: false
+  version:
+    description: Version
+    required: true
+
+outputs:
+  release_notes:
+    value: ${{ steps.generate-release-notes.outputs.release_notes }}
+    description: Release notes
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.token || github.token }}
+      shell: bash
+      run: |
+        current_version="$INPUT_VERSION"
+        current_version_base="$(sed 's/-.*//' <<< "$current_version")"
+
+        tag_list="$(gh release list --exclude-drafts --exclude-pre-releases --json tagName --jq '.[].tagName')"
+        previous_version="$(echo "$tag_list" | grep -x -A1 "$current_version" | tail -n1 || true)"
+        if [[ -z "$previous_version" ]]; then
+          previous_version="$(echo "$tag_list" | head -n1)"
+        fi
+
+        {
+          echo "current_version=${current_version}"
+          echo "previous_version=${previous_version}"
+          echo "current_version_base=${current_version_base}"
+        } >> $GITHUB_ENV
+
+    - name: Get upstream changelog
+      id: get-upstream-changelog
+      uses: ./.github/actions/get-upstream-changelog
+      with:
+        current_version_base: ${{ env.current_version_base }}
+
+    - name: Generate notes
+      env:
+        GH_TOKEN: ${{ inputs.token || github.token }}
+      shell: bash
+      run: |
+        delimiter="$(openssl rand -hex 8)"
+        {
+          echo "generated_notes<<${delimiter}"
+          gh api repos/taiyme/misskey/releases/generate-notes \
+            -f "tag_name=${current_version}" \
+            -f "previous_tag_name=${previous_version}" \
+            --jq '.body'
+          echo "$delimiter"
+        } >> $GITHUB_ENV
+
+    - name: Generate release notes
+      id: generate-release-notes
+      env:
+        generated_notes: ${{ env.generated_notes }}
+        upstream_changelog: ${{ steps.get-upstream-changelog.outputs.upstream_changelog }}
+      shell: bash
+      run: |
+        delimiter="$(openssl rand -hex 8)"
+        {
+          echo "release_notes<<${delimiter}"
+          echo "$generated_notes"
+          echo ''
+          echo "## ${current_version_base} (Merged upstream)"
+          echo ''
+          echo '<details><summary>Click to view</summary>'
+          echo "$upstream_changelog"
+          echo '</details>'
+          echo "$delimiter"
+        } >> $GITHUB_OUTPUT

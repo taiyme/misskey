@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<MkButton :class="$style.linkButton" full @click="onCreateWebhookClicked">
-				{{ i18n.ts._webhookSettings.createWebhook }}
+			<MkButton primary @click="onCreateWebhookClicked">
+				<i class="ti ti-plus"></i> {{ i18n.ts._webhookSettings.createWebhook }}
 			</MkButton>
 
 			<FormSection>
@@ -24,8 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import type * as Misskey from 'misskey-js';
 import XItem from './system-webhook.item.vue';
+import type * as Misskey from 'misskey-js';
 import FormSection from '@/components/form/section.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -85,8 +85,5 @@ definePageMetadata(() => ({
 </script>
 
 <style lang="scss" module>
-.linkButton {
-	text-align: left;
-	padding: 10px 18px;
-}
+
 </style>

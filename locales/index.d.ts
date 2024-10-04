@@ -961,6 +961,14 @@ export interface Locale extends ILocale {
      */
     readonly "mediaSilencedInstancesDescription": string;
     /**
+     * 連合を許可するサーバー
+     */
+    readonly "federationAllowedHosts": string;
+    /**
+     * 連合を許可するサーバーのホストを改行で区切って設定します。
+     */
+    readonly "federationAllowedHostsDescription": string;
+    /**
      * ミュートとブロック
      */
     readonly "muteAndBlock": string;
@@ -1352,6 +1360,10 @@ export interface Locale extends ILocale {
      * ファイルを追加
      */
     readonly "addFile": string;
+    /**
+     * ファイルを表示
+     */
+    readonly "showFile": string;
     /**
      * ドライブは空です
      */
@@ -2053,9 +2065,21 @@ export interface Locale extends ILocale {
      */
     readonly "native": string;
     /**
-     * メニューをドロワーで表示しない
+     * メニューのスタイル
      */
-    readonly "disableDrawer": string;
+    readonly "menuStyle": string;
+    /**
+     * スタイル
+     */
+    readonly "style": string;
+    /**
+     * ドロワー
+     */
+    readonly "drawer": string;
+    /**
+     * ポップアップ
+     */
+    readonly "popup": string;
     /**
      * ノートのアクションをホバー時のみ表示する
      */
@@ -2384,6 +2408,14 @@ export interface Locale extends ILocale {
      * スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。
      */
     readonly "scratchpadDescription": string;
+    /**
+     * UIインスペクター
+     */
+    readonly "uiInspector": string;
+    /**
+     * メモリ上に存在しているUIコンポーネントのインスタンスの一覧を見ることができます。UIコンポーネントはUi:C:系関数により生成されます。
+     */
+    readonly "uiInspectorDescription": string;
     /**
      * 出力
      */
@@ -3121,7 +3153,7 @@ export interface Locale extends ILocale {
      */
     readonly "narrow": string;
     /**
-     * 設定はページリロード後に反映されます。今すぐリロードしますか？
+     * 設定はページリロード後に反映されます。
      */
     readonly "reloadToApplySetting": string;
     /**
@@ -5068,6 +5100,58 @@ export interface Locale extends ILocale {
      * 作成したアンテナ
      */
     readonly "createdAntennas": string;
+    /**
+     * {x}から
+     */
+    readonly "fromX": ParameterizedString<"x">;
+    /**
+     * 埋め込みコードを生成
+     */
+    readonly "genEmbedCode": string;
+    /**
+     * このユーザーのノート一覧
+     */
+    readonly "noteOfThisUser": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    readonly "clipNoteLimitExceeded": string;
+    /**
+     * パフォーマンス
+     */
+    readonly "performance": string;
+    /**
+     * 変更あり
+     */
+    readonly "modified": string;
+    /**
+     * 破棄
+     */
+    readonly "discard": string;
+    /**
+     * {n}件の変更があります
+     */
+    readonly "thereAreNChanges": ParameterizedString<"n">;
+    /**
+     * パスキーでログイン
+     */
+    readonly "signinWithPasskey": string;
+    /**
+     * 登録されていないパスキーです。
+     */
+    readonly "unknownWebAuthnKey": string;
+    /**
+     * パスキーの検証に失敗しました。
+     */
+    readonly "passkeyVerificationFailed": string;
+    /**
+     * パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。
+     */
+    readonly "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
+    /**
+     * フォロワーへのメッセージ
+     */
+    readonly "messageToFollower": string;
     readonly "_delivery": {
         /**
          * 配信状態
@@ -5559,6 +5643,10 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         readonly "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。
+         */
+        readonly "reactionsBufferingDescription": string;
         /**
          * 問い合わせ先URL
          */
@@ -6738,6 +6826,26 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             readonly "avatarDecorationLimit": string;
+            /**
+             * アンテナのインポートを許可
+             */
+            readonly "canImportAntennas": string;
+            /**
+             * ブロックのインポートを許可
+             */
+            readonly "canImportBlocking": string;
+            /**
+             * フォローのインポートを許可
+             */
+            readonly "canImportFollowing": string;
+            /**
+             * ミュートのインポートを許可
+             */
+            readonly "canImportMuting": string;
+            /**
+             * リストのインポートを許可
+             */
+            readonly "canImportUserLists": string;
         };
         readonly "_condition": {
             /**
@@ -8629,6 +8737,18 @@ export interface Locale extends ILocale {
          * 最大{max}つまでデコレーションを付けられます。
          */
         readonly "avatarDecorationMax": ParameterizedString<"max">;
+        /**
+         * フォローされた時のメッセージ
+         */
+        readonly "followedMessage": string;
+        /**
+         * フォローされた時に相手に表示する短いメッセージを設定できます。
+         */
+        readonly "followedMessageDescription": string;
+        /**
+         * フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。
+         */
+        readonly "followedMessageDescriptionForLockedAccount": string;
     };
     readonly "_exportOrImport": {
         /**
@@ -9161,6 +9281,10 @@ export interface Locale extends ILocale {
          * 通知の履歴をリセットする
          */
         readonly "flushNotification": string;
+        /**
+         * {x}のエクスポートが完了しました
+         */
+        readonly "exportOfXCompleted": ParameterizedString<"x">;
         readonly "_types": {
             /**
              * すべて
@@ -9214,6 +9338,14 @@ export interface Locale extends ILocale {
              * 実績の獲得
              */
             readonly "achievementEarned": string;
+            /**
+             * エクスポートが完了した
+             */
+            readonly "exportCompleted": string;
+            /**
+             * 通知のテスト
+             */
+            readonly "test": string;
             /**
              * 連携アプリからの通知
              */
@@ -9461,6 +9593,10 @@ export interface Locale extends ILocale {
          * Webhookを削除しますか？
          */
         readonly "deleteConfirm": string;
+        /**
+         * スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。
+         */
+        readonly "testRemarks": string;
     };
     readonly "_abuseReport": {
         readonly "_notificationRecipient": {
@@ -10192,6 +10328,60 @@ export interface Locale extends ILocale {
          */
         readonly "native": string;
     };
+    readonly "_embedCodeGen": {
+        /**
+         * 埋め込みコードをカスタマイズ
+         */
+        readonly "title": string;
+        /**
+         * ヘッダーを表示
+         */
+        readonly "header": string;
+        /**
+         * 自動で続きを読み込む（非推奨）
+         */
+        readonly "autoload": string;
+        /**
+         * 高さの最大値
+         */
+        readonly "maxHeight": string;
+        /**
+         * 0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。
+         */
+        readonly "maxHeightDescription": string;
+        /**
+         * 高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。
+         */
+        readonly "maxHeightWarn": string;
+        /**
+         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         */
+        readonly "previewIsNotActual": string;
+        /**
+         * 角丸にする
+         */
+        readonly "rounded": string;
+        /**
+         * 外枠に枠線をつける
+         */
+        readonly "border": string;
+        /**
+         * プレビューに反映
+         */
+        readonly "applyToPreview": string;
+        /**
+         * 埋め込みコードを作成
+         */
+        readonly "generateCode": string;
+        /**
+         * コードが生成されました
+         */
+        readonly "codeGenerated": string;
+        /**
+         * 生成されたコードをウェブサイトに貼り付けてご利用ください。
+         */
+        readonly "codeGeneratedDescription": string;
+    };
     readonly "_tms": {
         /**
          * taiy
@@ -10273,22 +10463,6 @@ export interface Locale extends ILocale {
          * フォロワーリノート (連合なし)
          */
         readonly "disableFederationFollowersRenote": string;
-        /**
-         * パクる
-         */
-        readonly "pakuru": string;
-        /**
-         * 数字引用する
-         */
-        readonly "numberquote": string;
-        /**
-         * パクりました
-         */
-        readonly "didPakuru": string;
-        /**
-         * 数字引用しました
-         */
-        readonly "didNumberquote": string;
         /**
          * {user}によって解決済み
          */
@@ -10427,34 +10601,6 @@ export interface Locale extends ILocale {
                  * 構成しているページ全体を再読み込みする動作に置き換えます。
                  */
                 readonly "caption": string;
-            };
-            readonly "_pakuru": {
-                /**
-                 * 「パクる」機能を有効にする
-                 */
-                readonly "label": string;
-                /**
-                 * リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。
-                 */
-                readonly "caption": string;
-                /**
-                 * 「パクる」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
-                 */
-                readonly "warning": string;
-            };
-            readonly "_numberquote": {
-                /**
-                 * 「数字引用」機能を有効にする
-                 */
-                readonly "label": string;
-                /**
-                 * リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。
-                 */
-                readonly "caption": string;
-                /**
-                 * 「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
-                 */
-                readonly "warning": string;
             };
         };
         readonly "_flags": {

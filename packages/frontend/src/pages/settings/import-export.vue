@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 						</div>
 					</MkFolder>
-					<MkFolder v-if="$i && !$i.movedTo">
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportFollowing">
 						<template #label>{{ i18n.ts.import }}</template>
 						<template #icon><i class="ti ti-upload"></i></template>
 						<MkSwitch v-model="withReplies">
@@ -66,7 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #icon><i class="ti ti-download"></i></template>
 						<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 					</MkFolder>
-					<MkFolder v-if="$i && !$i.movedTo">
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportUserLists">
 						<template #label>{{ i18n.ts.import }}</template>
 						<template #icon><i class="ti ti-upload"></i></template>
 						<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #icon><i class="ti ti-download"></i></template>
 						<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 					</MkFolder>
-					<MkFolder v-if="$i && !$i.movedTo">
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportMuting">
 						<template #label>{{ i18n.ts.import }}</template>
 						<template #icon><i class="ti ti-upload"></i></template>
 						<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #icon><i class="ti ti-download"></i></template>
 						<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 					</MkFolder>
-					<MkFolder v-if="$i && !$i.movedTo">
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportBlocking">
 						<template #label>{{ i18n.ts.import }}</template>
 						<template #icon><i class="ti ti-upload"></i></template>
 						<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #icon><i class="ti ti-download"></i></template>
 						<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 					</MkFolder>
-					<MkFolder v-if="$i && !$i.movedTo">
+					<MkFolder v-if="$i && !$i.movedTo && $i.policies.canImportAntennas">
 						<template #label>{{ i18n.ts.import }}</template>
 						<template #icon><i class="ti ti-upload"></i></template>
 						<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>

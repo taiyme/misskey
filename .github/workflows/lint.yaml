@@ -4,30 +4,37 @@ on:
   push:
     branches:
       - taiyme
+      - release
     paths:
       - .github/workflows/lint.yaml
-      - packages/backend/**/*
-      - packages/frontend/**/*
-      - packages/sw/**/*
-      - packages/misskey-js/**/*
-      - packages/shared/eslint.config.js
-  pull_request:
+      - packages/**/*
+
+  pull_request_target:
+    branches:
+      - taiyme
+      - release
     paths:
-      - .github/workflows/lint.yaml
-      - packages/backend/**/*
-      - packages/frontend/**/*
-      - packages/sw/**/*
-      - packages/misskey-js/**/*
-      - packages/shared/eslint.config.js
+      - packages/**/*
+
+permissions:
+  contents: read
 
 jobs:
-  run_pnpm_install:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  run-pnpm-install:
     name: Run pnpm install
     runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
@@ -49,22 +56,29 @@ jobs:
     name: Lint
     runs-on: ubuntu-22.04
     needs:
-      - run_pnpm_install
-    continue-on-error: true
+      - pre-checkout
+      - run-pnpm-install
     strategy:
+      fail-fast: false
       matrix:
         workspace:
           - backend
           - frontend
-          - sw
+          - frontend-embed
+          - frontend-shared
+          - misskey-bubble-game
           - misskey-js
+          - misskey-reversi
+          - sw
     env:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
@@ -86,7 +100,7 @@ jobs:
         uses: actions/cache@v4.0.2
         with:
           path: ${{ env.eslint-cache-path }}
-          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.ref_name }}-${{ github.sha }}
+          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ needs.pre-checkout.outputs.sha }}
           restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Run eslint
@@ -97,17 +111,21 @@ jobs:
     name: Typecheck
     runs-on: ubuntu-22.04
     needs:
-      - run_pnpm_install
-    continue-on-error: true
+      - pre-checkout
+      - run-pnpm-install
     strategy:
+      fail-fast: false
       matrix:
         workspace:
-        - backend
-        - misskey-js
+          - backend
+          - misskey-js
+          - sw
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.0
         with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
@@ -126,7 +144,7 @@ jobs:
           pnpm i --frozen-lockfile
 
       - name: Build (misskey-js)
-        if: matrix.workspace == 'backend'
+        if: matrix.workspace == 'backend' || matrix.workspace == 'sw'
         run: |
           pnpm --filter misskey-js run build
 
@@ -138,3 +156,22 @@ jobs:
       - name: Run typecheck
         run: |
           pnpm --filter ${{ matrix.workspace }} run typecheck
+
+  status-checks:
+    name: status-checks:lint # required status checks
+    runs-on: ubuntu-22.04
+    if: always()
+    needs:
+      - lint
+      - typecheck
+    steps:
+      - name: Check needs results
+        env:
+          needs_result: ${{ toJSON(needs.*.result) }}
+        run: |
+          results="$(jq -r '.[]' <<< "$needs_result")"
+          echo "$results" | while read -r line; do
+            if [[ "$line" != "success" ]]; then
+              exit 1
+            fi
+          done

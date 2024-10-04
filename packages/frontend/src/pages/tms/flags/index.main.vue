@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, readonly, ref, watch } from 'vue';
-import { commitHash, lang, version } from '@/config.js';
+import { commitHash, lang, version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { confirm, popup, waiting } from '@/os.js';

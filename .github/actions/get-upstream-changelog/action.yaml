@@ -1,0 +1,28 @@
+name: Get upstream changelog
+description: upstreamのchangelogを取得します
+
+inputs:
+  current_version_base:
+    description: Current version base
+    required: true
+
+outputs:
+  upstream_changelog:
+    value: ${{ steps.get-upstream-changelog.outputs.upstream_changelog }}
+    description: Changelog
+
+runs:
+  using: composite
+  steps:
+    - name: Get upstream changelog
+      id: get-upstream-changelog
+      env:
+        current_version_base: ${{ inputs.current_version_base }}
+      shell: bash
+      run: |
+        delimiter="$(openssl rand -hex 8)"
+        {
+          echo "upstream_changelog<<${delimiter}"
+          sed -n "/## ${current_version_base}/,/^## /p" CHANGELOG.md | sed -e 1d -e '$d'
+          echo "$delimiter"
+        } >> $GITHUB_OUTPUT
