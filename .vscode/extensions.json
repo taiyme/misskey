@@ -5,7 +5,7 @@
 		"Vue.volar",
 		"Orta.vscode-jest",
 		"mrmlnc.vscode-json5",
-    "github.vscode-github-actions",
-    "redhat.vscode-yaml"
+		"github.vscode-github-actions",
+		"redhat.vscode-yaml"
 	]
 }
