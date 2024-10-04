@@ -264,6 +264,7 @@ jobs:
         id: generate-release-notes
         uses: ./.github/actions/generate-release-notes
         with:
+          token: ${{ steps.app-token.outputs.token }}
           version: ${{ needs.parse-version.outputs.new_version }}
 
       - name: Set release notes
