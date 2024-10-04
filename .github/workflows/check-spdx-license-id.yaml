@@ -93,7 +93,7 @@ jobs:
           )
 
           for directory in "${directories[@]}"; do
-            for file in "$(search "$directory")"; do
+            for file in $(search "$directory"); do
               check "$file"
             done
           done
