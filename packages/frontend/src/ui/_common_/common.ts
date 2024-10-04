@@ -148,6 +148,8 @@ export function openInstanceMenu(ev: MouseEvent) {
 		});
 	}
 
+	menuItems.push({ type: 'divider' });
+
 	menuItems.push({
 		type: 'link',
 		text: i18n.ts._tms.aboutTaiyme,
