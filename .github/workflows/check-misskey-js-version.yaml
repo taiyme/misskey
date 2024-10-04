@@ -4,14 +4,22 @@ on:
   push:
     branches:
       - taiyme
+      - release
     paths:
       - .github/workflows/check-misskey-js-version.yaml
       - packages/misskey-js/package.json
       - package.json
+
   pull_request_target:
+    branches:
+      - taiyme
+      - release
     paths:
       - packages/misskey-js/package.json
       - package.json
+
+permissions:
+  contents: read
 
 jobs:
   pre-checkout:

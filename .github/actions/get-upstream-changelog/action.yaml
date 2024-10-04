@@ -24,5 +24,5 @@ runs:
         {
           echo "upstream_changelog<<${delimiter}"
           sed -n "/## ${current_version_base}/,/^## /p" CHANGELOG.md | sed -e 1d -e '$d'
-          echo $delimiter
+          echo "$delimiter"
         } >> $GITHUB_OUTPUT

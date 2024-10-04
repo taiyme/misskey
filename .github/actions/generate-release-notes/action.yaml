@@ -53,7 +53,7 @@ runs:
             -f "tag_name=${current_version}" \
             -f "previous_tag_name=${previous_version}" \
             --jq '.body'
-          echo $delimiter
+          echo "$delimiter"
         } >> $GITHUB_ENV
 
     - name: Generate release notes
@@ -73,5 +73,5 @@ runs:
           echo '<details><summary>Click to view</summary>'
           echo "$upstream_changelog"
           echo '</details>'
-          echo $delimiter
+          echo "$delimiter"
         } >> $GITHUB_OUTPUT
