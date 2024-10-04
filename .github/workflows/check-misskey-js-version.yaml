@@ -49,10 +49,10 @@ jobs:
 
           if [[ "$source_version" != "$target_version" ]]; then
             source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1 || true)"
-            echo "::error file=${source_file},line=${source_line:-'0'}::Version mismatch!"
+            echo "::error file=${source_file},line=${source_line:-0}::Version mismatch!"
 
             target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1 || true)"
-            echo "::error file=${target_file},line=${target_line:-'0'}::Version mismatch!"
+            echo "::error file=${target_file},line=${target_line:-0}::Version mismatch!"
 
             exit 1
           fi
