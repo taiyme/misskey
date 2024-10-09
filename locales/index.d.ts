@@ -49,6 +49,20 @@ export interface Locale extends ILocale {
      */
     readonly "password": string;
     /**
+     * 初期設定開始用パスワード
+     */
+    readonly "initialPasswordForSetup": string;
+    /**
+     * 初期設定開始用のパスワードが違います。
+     */
+    readonly "initialPasswordIsIncorrect": string;
+    /**
+     * Misskeyを自分でインストールした場合は、設定ファイルに入力したパスワードを使用してください。
+     * Misskeyのホスティングサービスなどを使用している場合は、提供されたパスワードを使用してください。
+     * パスワードを設定していない場合は、空欄にしたまま続行してください。
+     */
+    readonly "initialPasswordForSetupDescription": string;
+    /**
      * パスワードを忘れた
      */
     readonly "forgotPassword": string;
@@ -1821,6 +1835,10 @@ export interface Locale extends ILocale {
      */
     readonly "moderationNote": string;
     /**
+     * モデレーター間でだけ共有されるメモを記入することができます。
+     */
+    readonly "moderationNoteDescription": string;
+    /**
      * モデレーションノートを追加する
      */
     readonly "addModerationNote": string;
@@ -2881,21 +2899,9 @@ export interface Locale extends ILocale {
      */
     readonly "reporterOrigin": string;
     /**
-     * リモートサーバーに通報を転送する
-     */
-    readonly "forwardReport": string;
-    /**
-     * リモートサーバーからはあなたの情報は見れず、匿名のシステムアカウントとして表示されます。
-     */
-    readonly "forwardReportIsAnonymous": string;
-    /**
      * 送信
      */
     readonly "send": string;
-    /**
-     * 対応済みにする
-     */
-    readonly "abuseMarkAsResolved": string;
     /**
      * 新しいタブで開く
      */
@@ -3700,6 +3706,10 @@ export interface Locale extends ILocale {
      * パスワードが間違っています。
      */
     readonly "incorrectPassword": string;
+    /**
+     * ワンタイムパスワードが間違っているか、期限切れになっています。
+     */
+    readonly "incorrectTotp": string;
     /**
      * 「{choice}」に投票しますか？
      */
@@ -5152,6 +5162,37 @@ export interface Locale extends ILocale {
      * フォロワーへのメッセージ
      */
     readonly "messageToFollower": string;
+    /**
+     * 対象
+     */
+    readonly "target": string;
+    readonly "_abuseUserReport": {
+        /**
+         * 転送
+         */
+        readonly "forward": string;
+        /**
+         * 匿名のシステムアカウントとして、リモートサーバーに通報を転送します。
+         */
+        readonly "forwardDescription": string;
+        /**
+         * 解決
+         */
+        readonly "resolve": string;
+        /**
+         * 是認
+         */
+        readonly "accept": string;
+        /**
+         * 否認
+         */
+        readonly "reject": string;
+        /**
+         * 内容が正当である通報に対応した場合は「是認」を選択し、肯定的にケースが解決されたことをマークします。
+         * 内容が正当でない通報の場合は「否認」を選択し、否定的にケースが解決されたことをマークします。
+         */
+        readonly "resolveTutorial": string;
+    };
     readonly "_delivery": {
         /**
          * 配信状態
@@ -9285,6 +9326,10 @@ export interface Locale extends ILocale {
          * {x}のエクスポートが完了しました
          */
         readonly "exportOfXCompleted": ParameterizedString<"x">;
+        /**
+         * ログインがありました
+         */
+        readonly "login": string;
         readonly "_types": {
             /**
              * すべて
@@ -9342,6 +9387,10 @@ export interface Locale extends ILocale {
              * エクスポートが完了した
              */
             readonly "exportCompleted": string;
+            /**
+             * ログイン
+             */
+            readonly "login": string;
             /**
              * 通知のテスト
              */
@@ -9759,6 +9808,14 @@ export interface Locale extends ILocale {
          * 通報を解決
          */
         readonly "resolveAbuseReport": string;
+        /**
+         * 通報を転送
+         */
+        readonly "forwardAbuseReport": string;
+        /**
+         * 通報のモデレーションノート更新
+         */
+        readonly "updateAbuseReportNote": string;
         /**
          * 招待コードを作成
          */
@@ -10464,14 +10521,6 @@ export interface Locale extends ILocale {
          */
         readonly "disableFederationFollowersRenote": string;
         /**
-         * {user}によって解決済み
-         */
-        readonly "resolvedBy": ParameterizedString<"user">;
-        /**
-         * リモートサーバーに転送済み
-         */
-        readonly "forwardedReport": string;
-        /**
          * まだ提供されていません
          */
         readonly "notYetProvided": string;
@@ -10670,6 +10719,56 @@ export interface Locale extends ILocale {
              * 例: misskey.example.com
              */
             readonly "serverHostPlaceholder": string;
+        };
+        readonly "_abuseUserReport": {
+            /**
+             * 解決済み
+             */
+            readonly "resolved": string;
+            /**
+             * {user}によって解決済み
+             */
+            readonly "resolvedBy": ParameterizedString<"user">;
+            /**
+             * 是認としてマーク済み
+             */
+            readonly "markedAsAccept": string;
+            /**
+             * 否認としてマーク済み
+             */
+            readonly "markedAsReject": string;
+            /**
+             * 投稿元のサーバーに転送済み
+             */
+            readonly "forwardedReport": string;
+            /**
+             * 是認としてマークして解決
+             */
+            readonly "markAsAcceptedAndResolve": string;
+            /**
+             * 否認としてマークして解決
+             */
+            readonly "markAsRejectedAndResolve": string;
+            /**
+             * その他としてマークして解決
+             */
+            readonly "markAsOtherAndResolve": string;
+            /**
+             * 投稿元のサーバーに通報を転送
+             */
+            readonly "forwardReport": string;
+            /**
+             * 通報メモ
+             */
+            readonly "reportMemo": string;
+            /**
+             * 通報メモを追加
+             */
+            readonly "addReportMemo": string;
+            /**
+             * 通報メモはモデレーター間で共有されます。
+             */
+            readonly "reportMemoIsSharedAmongModerators": string;
         };
     };
 }

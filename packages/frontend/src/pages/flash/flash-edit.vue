@@ -465,6 +465,7 @@ definePageMetadata(() => ({
 	title: flash.value ? `${i18n.ts._play.edit}: ${flash.value.title}` : i18n.ts._play.new,
 }));
 </script>
+
 <style lang="scss" module>
 .footer {
 	backdrop-filter: var(--blur, blur(15px));

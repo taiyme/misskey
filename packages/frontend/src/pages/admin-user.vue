@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkTextarea v-model="moderationNote" manualSave>
 					<template #label>{{ i18n.ts.moderationNote }}</template>
+					<template #caption>{{ i18n.ts._tms.moderationNoteIsSharedAmongModerators }}</template>
 				</MkTextarea>
 
 				<!--

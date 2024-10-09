@@ -46,6 +46,7 @@ import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import XRecipient from './notification-recipient.item.vue';
 import type * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -81,8 +82,6 @@ const filteredRecipients = computed(() => {
 		return true;
 	});
 });
-const headerActions = computed(() => []);
-const headerTabs = computed(() => []);
 
 async function onAddButtonClicked() {
 	await showEditor('create');
@@ -143,6 +142,15 @@ async function fetchRecipients() {
 onMounted(async () => {
 	await fetchRecipients();
 });
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
+
+definePageMetadata(() => ({
+	title: i18n.ts.notificationSetting,
+	icon: 'ti ti-pencil',
+}));
 </script>
 
 <style lang="scss" module>

@@ -8,7 +8,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-user-preview="canonicalRef"
 	:class="[$style.root, { [$style.isMe]: isMeRef }]"
 	:to="userPageUrlRef"
-	:style="{ background: bgColorRef }"
 	:behavior="navigationBehavior"
 >
 	<img :class="$style.icon" :src="avatarUrlRef" alt="">
@@ -22,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toASCII, toUnicode } from 'punycode';
 import { computed } from 'vue';
-import tinycolor from 'tinycolor2';
 import { host as localHost } from '@@/js/config.js';
 import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
@@ -56,15 +54,10 @@ const userPageUrlRef = computed(() => {
 });
 
 const avatarUrlRef = computed(() => {
-	if (defaultStore.state.disableShowingAnimatedImages) {
+	if (defaultStore.state.disableShowingAnimatedImages || defaultStore.state.dataSaver.avatar) {
 		return getStaticImageUrl(`/avatar/@${props.username}@${toASCII(props.host)}`);
 	}
 	return `/avatar/@${props.username}@${toASCII(props.host)}`;
-});
-
-const bgColorRef = computed(() => {
-	const fgColor = window.getComputedStyle(document.documentElement).getPropertyValue(isMeRef.value ? '--mentionMe' : '--mention');
-	return tinycolor(fgColor).setAlpha(0.1).toRgbString();
 });
 </script>
 
@@ -79,9 +72,11 @@ const bgColorRef = computed(() => {
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--mention);
+	background: color(from var(--mention) srgb r g b / 0.1);
 
 	&.isMe {
 		color: var(--mentionMe);
+		background: color(from var(--mentionMe) srgb r g b / 0.1);
 	}
 }
 

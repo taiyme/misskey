@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, '_panel', '_margin']">
+<div :class="[$style.root, '_panel']">
 	<!-- 通報されたユーザー -->
 	<div :class="[$style.item, '_gaps_s']">
 		<MkA v-user-preview="props.report.targetUser.id" :to="`/admin/user/${props.report.targetUser.id}`" :behavior="'window'">
@@ -34,12 +34,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<!-- 通報の本文 -->
 	<div :class="$style.item">
-		<Mfm v-if="props.report.comment.trim() !== ''" :text="props.report.comment.trim()" :linkNavigationBehavior="'window'"/>
+		<MkOmit v-if="props.report.comment.trim() !== ''" toggleable>
+			<Mfm :text="props.report.comment.trim()" :linkNavigationBehavior="'window'"/>
+		</MkOmit>
 		<span v-else :class="$style.noComment">({{ i18n.ts.noDescription }})</span>
 	</div>
 
 	<!-- 通報の情報 -->
-	<div :class="$style.item">
+	<div :class="[$style.item, '_gaps_s']">
 		<div :class="$style.information">
 			<div :class="$style.infoItem">
 				<div :class="$style.infoLabel">{{ i18n.ts.reporter }}</div>
@@ -54,40 +56,89 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.infoContent">{{ dateString(props.report.createdAt) }} (<MkTime :time="props.report.createdAt"/>)</div>
 			</div>
 		</div>
+		<div v-if="hideReportMemoRef">
+			<button class="_textButton" @click="showReportMemo">
+				{{ i18n.ts._tms._abuseUserReport.addReportMemo }}
+			</button>
+		</div>
+		<div v-else>
+			<TmsUserMemoInput ref="reportMemoEl" v-model="editReportMemoRef" @update:modelValue="updateReportMemo">
+				<template #heading>{{ i18n.ts._tms._abuseUserReport.reportMemo }}</template>
+				<template #caption>{{ i18n.ts._tms._abuseUserReport.reportMemoIsSharedAmongModerators }}</template>
+			</TmsUserMemoInput>
+		</div>
 	</div>
 
 	<!-- 通報の状態 -->
 	<div :class="$style.item">
 		<div v-if="resolvedRef">
 			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
-			<I18n v-if="props.report.assignee != null" :src="i18n.ts._tms.resolvedBy" tag="span">
+			<I18n v-if="props.report.assignee != null" :src="i18n.ts._tms._abuseUserReport.resolvedBy" tag="span">
 				<template #user>
 					<MkA :to="`/admin/user/${props.report.assignee.id}`" class="_link" :behavior="'window'">
 						<MkAcct :user="props.report.assignee"/>
 					</MkA>
 				</template>
 			</I18n>
-			<span v-else>{{ i18n.ts.resolved }}</span>
+			<span v-else>{{ i18n.ts._tms._abuseUserReport.resolved }}</span>
+		</div>
+		<div v-if="resolvedAsRef === 'accept'">
+			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
+			<span>{{ i18n.ts._tms._abuseUserReport.markedAsAccept }}</span>
+		</div>
+		<div v-else-if="resolvedAsRef === 'reject'">
+			<i class="ti ti-x" style="color: var(--error); margin-right: 0.5em;"></i>
+			<span>{{ i18n.ts._tms._abuseUserReport.markedAsReject }}</span>
 		</div>
 		<div v-if="forwardedRef">
 			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
-			<span>{{ i18n.ts._tms.forwardedReport }}</span>
+			<span>{{ i18n.ts._tms._abuseUserReport.forwardedReport }}</span>
 		</div>
 	</div>
 
 	<!-- 通報の操作 -->
 	<div :class="$style.item">
-		<div v-if="!resolvedRef" :class="$style.operations">
-			<MkSwitch v-if="props.report.targetUser.host != null" v-model="editForwardRef">
-				<template #label>{{ i18n.ts.forwardReport }}</template>
-			</MkSwitch>
-			<div :class="$style.resolveButton">
-				<MkButton primary @click="resolveReport">{{ i18n.ts.abuseMarkAsResolved }}</MkButton>
+		<div v-if="!resolvedRef" class="_gaps_s">
+			<MkRadios v-model="editResolvedAsRef">
+				<option value="accept">
+					<i class="ti ti-check" style="color: var(--success); margin-right: 0.25em;"></i>
+					<span>{{ i18n.ts._abuseUserReport.accept }}</span>
+				</option>
+				<option value="reject">
+					<i class="ti ti-x" style="color: var(--error); margin-right: 0.25em;"></i>
+					<span>{{ i18n.ts._abuseUserReport.reject }}</span>
+				</option>
+				<option :value="null">
+					<span>{{ i18n.ts.other }}</span>
+				</option>
+			</MkRadios>
+			<div :class="$style.operations">
+				<MkSwitch v-if="props.report.targetUser.host != null" v-model="editForwardRef" :helpText="i18n.ts._abuseUserReport.forwardDescription">
+					<template #label>{{ i18n.ts._tms._abuseUserReport.forwardReport }}</template>
+				</MkSwitch>
+				<div :class="$style.resolveButton">
+					<MkButton v-if="editResolvedAsRef === 'accept'" primary @click="resolveReport">
+						<i class="ti ti-check" style="margin-right: 0.5em;"></i>
+						<span>{{ i18n.ts._tms._abuseUserReport.markAsAcceptedAndResolve }}</span>
+					</MkButton>
+					<MkButton v-else-if="editResolvedAsRef === 'reject'" danger @click="resolveReport">
+						<i class="ti ti-x" style="margin-right: 0.5em;"></i>
+						<span>{{ i18n.ts._tms._abuseUserReport.markAsRejectedAndResolve }}</span>
+					</MkButton>
+					<MkButton v-else @click="resolveReport">
+						<i class="ti ti-check" style="margin-right: 0.5em;"></i>
+						<span>{{ i18n.ts._tms._abuseUserReport.markAsOtherAndResolve }}</span>
+					</MkButton>
+				</div>
 			</div>
 		</div>
-		<div v-else-if="!forwardedRef && props.report.targetUser.host != null" :class="$style.operations">
-			<div :class="$style.resolveButton">
-				<MkButton @click="forwardReport">{{ i18n.ts.forwardReport }}</MkButton>
+		<div v-else-if="!forwardedRef && props.report.targetUser.host != null">
+			<div :class="$style.operations">
+				<div :class="$style.resolveButton">
+					<MkButton @click="forwardReport">
+						{{ i18n.ts._tms._abuseUserReport.forwardReport }}
+					</MkButton>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -95,14 +146,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { nextTick, ref, useTemplateRef } from 'vue';
 import type * as Misskey from 'misskey-js';
 import { apiWithDialog } from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
+import MkOmit from '@/components/MkOmit.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import TmsUserMemoInput from '@/components/TmsUserMemo.input.vue';
 
 export type AbuseUserReport = Misskey.entities.AdminAbuseUserReportsResponse[number];
 
@@ -114,9 +169,21 @@ const emit = defineEmits<{
 	resolved: [reportId: string];
 }>();
 
+const reportMemoEl = useTemplateRef('reportMemoEl');
+
+const editResolvedAsRef = ref<AbuseUserReport['resolvedAs']>('accept');
 const editForwardRef = ref(false);
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const editReportMemoRef = ref(props.report.moderationNote.trim());
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const hideReportMemoRef = ref(props.report.moderationNote.trim() === '');
+
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const resolvedRef = ref(props.report.resolved);
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const resolvedAsRef = ref(props.report.resolvedAs);
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const forwardedRef = ref(props.report.forwarded);
 
 const resolveReport = () => {
@@ -124,13 +191,24 @@ const resolveReport = () => {
 	if (resolvedRef.value) return;
 
 	const reportId = props.report.id;
+	const resolvedAs = editResolvedAsRef.value;
 	const forward = editForwardRef.value && props.report.targetUser.host != null;
 
-	apiWithDialog('admin/resolve-abuse-user-report', { reportId, forward }).then(() => {
+	apiWithDialog('admin/resolve-abuse-user-report', {
+		reportId,
+		resolvedAs,
+	}).then(() => {
 		emit('resolved', reportId);
 		resolvedRef.value = true;
+		resolvedAsRef.value = resolvedAs;
 		forwardedRef.value = forward;
 	});
+
+	if (forward) {
+		misskeyApi('admin/forward-abuse-user-report', {
+			reportId,
+		}).catch(() => {});
+	}
 };
 
 const forwardReport = () => {
@@ -140,11 +218,26 @@ const forwardReport = () => {
 	if (props.report.targetUser.host == null) return;
 
 	const reportId = props.report.id;
-	const forward = true;
 
-	apiWithDialog('admin/resolve-abuse-user-report', { reportId, forward }).then(() => {
-		resolvedRef.value = true;
-		forwardedRef.value = forward;
+	apiWithDialog('admin/forward-abuse-user-report', {
+		reportId,
+	}).then(() => {
+		forwardedRef.value = true;
+	});
+};
+
+const updateReportMemo = () => {
+	apiWithDialog('admin/update-abuse-user-report', {
+		reportId: props.report.id,
+		moderationNote: editReportMemoRef.value || '',
+	});
+};
+
+const showReportMemo = () => {
+	if (!hideReportMemoRef.value) return;
+	hideReportMemoRef.value = false;
+	nextTick(() => {
+		reportMemoEl.value?.focus();
 	});
 };
 </script>
