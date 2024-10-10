@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div v-if="showMain" :class="$style.mainRoot">
 				<div style="container-type: inline-size;">
-					<RouterView/>
+					<RouterView nested/>
 				</div>
 			</div>
 		</div>

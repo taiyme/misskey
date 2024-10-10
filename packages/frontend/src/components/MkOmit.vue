@@ -4,10 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="content" :class="[$style.content, { [$style.omitted]: omitted }]">
-	<slot></slot>
-	<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
-		<span v-show="!hiddenFadeButton" :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
+<div :class="[$style.content, { [$style.omitted]: omitted }]">
+	<div ref="contentEl">
+		<slot></slot>
+	</div>
+	<button v-if="omitted" :class="['_button', $style.showMoreFade]" @click="showMore">
+		<span v-if="!hiddenFadeButton" :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
+	</button>
+	<button v-else-if="toggleable && manuallyOperated && !hiddenFadeButton" :class="['_button', $style.showLessFade]" @click="showLess">
+		<span :class="$style.fadeLabel">{{ i18n.ts.showLess }}</span>
 	</button>
 </div>
 </template>
@@ -18,28 +23,42 @@ import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	maxHeight?: number;
+	toggleable?: boolean;
 	hiddenFadeButton?: boolean;
 }>(), {
 	maxHeight: 200,
+	toggleable: false,
 	hiddenFadeButton: false,
 });
 
-const content = shallowRef<HTMLElement>();
+const contentEl = shallowRef<HTMLElement | null>(null);
 const omitted = ref(false);
-const ignoreOmit = ref(false);
+const manuallyOperated = ref(false);
 
-const calcOmit = () => {
-	if (omitted.value || ignoreOmit.value || content.value == null) return;
-	omitted.value = content.value.offsetHeight > props.maxHeight;
+const showMore = () => {
+	manuallyOperated.value = true;
+	omitted.value = false;
 };
 
-const omitObserver = new ResizeObserver((entries, observer) => {
+const showLess = () => {
+	manuallyOperated.value = true;
+	omitted.value = true;
+};
+
+const calcOmit = () => {
+	if (manuallyOperated.value || contentEl.value == null) return;
+	omitted.value = contentEl.value.offsetHeight > props.maxHeight;
+};
+
+const omitObserver = new ResizeObserver(() => {
 	calcOmit();
 });
 
 onMounted(() => {
 	calcOmit();
-	omitObserver.observe(content.value as HTMLElement);
+	if (contentEl.value != null) {
+		omitObserver.observe(contentEl.value);
+	}
 });
 
 onUnmounted(() => {
@@ -50,38 +69,51 @@ onUnmounted(() => {
 <style lang="scss" module>
 .content {
 	--stickyTop: 0px;
+}
 
-	&.omitted {
-		position: relative;
-		min-height: 64px; // .fade
-		max-height: v-bind("props.maxHeight + 'px'");
-		overflow: hidden;
+.omitted {
+	position: relative;
+	min-height: 64px; // .showMoreFade
+	max-height: v-bind("props.maxHeight + 'px'");
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+}
 
-		> .fade {
-			display: block;
-			position: absolute;
-			z-index: 10;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 64px; // .omitted
-			background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+.showMoreFade {
+	display: block;
+	position: absolute;
+	z-index: 10;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 64px; // .omitted
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+}
 
-			> .fadeLabel {
-				display: inline-block;
-				background: var(--panel);
-				padding: 6px 10px;
-				font-size: 0.8em;
-				border-radius: 999px;
-				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-			}
+.showLessFade {
+	display: block;
+	position: sticky;
+	z-index: 10;
+	bottom: var(--stickyBottom, 0px);
+	width: 100%;
+	height: 64px;
+}
 
-			&:hover {
-				> .fadeLabel {
-					background: var(--panelHighlight);
-				}
-			}
+.showMoreFade,
+.showLessFade {
+	&:hover {
+		> .fadeLabel {
+			background: var(--panelHighlight);
 		}
+	}
+
+	> .fadeLabel {
+		display: inline-block;
+		background: var(--panel);
+		padding: 6px 10px;
+		font-size: 0.8em;
+		border-radius: 999px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 	}
 }
 </style>

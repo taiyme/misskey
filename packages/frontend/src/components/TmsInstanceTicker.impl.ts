@@ -62,7 +62,6 @@ export const getTickerInfo = (props: TmsInstanceTickerProps) => {
 type ITickerColors = {
 	readonly '--ticker-bg': string;
 	readonly '--ticker-fg': string;
-	readonly '--ticker-bg-rgb': string;
 };
 
 const TICKER_YUV_THRESHOLD = 191 as const;
@@ -83,7 +82,6 @@ export const getTickerColors = (info: ITickerInfo) => {
 	const tickerColors = {
 		'--ticker-fg': fgHex,
 		'--ticker-bg': bgHex,
-		'--ticker-bg-rgb': `${r}, ${g}, ${b}`,
 	} as const satisfies ITickerColors;
 
 	tickerColorsCache.set(bgHex, tickerColors);

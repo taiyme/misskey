@@ -81,7 +81,7 @@ jobs:
             current_suffix="$((cut -d- -f2 | cut -d. -f2) <<< "$current_version")"
             new_suffix="$(("$current_suffix" + 1))"
           fi
-          new_suffix="${new_suffix:-'0'}"
+          new_suffix="${new_suffix:-0}"
           new_version="${new_base}-taiyme.${new_suffix}"
           echo "new_version=${new_version}" >> $GITHUB_OUTPUT
 

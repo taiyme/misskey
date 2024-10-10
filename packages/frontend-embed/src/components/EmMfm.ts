@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h, SetupContext, provide } from 'vue';
+import { VNode, h, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
@@ -41,9 +41,6 @@ type MfmProps = {
 	rootScale?: number;
 	nyaize?: boolean | 'respect';
 	parsedNodes?: mfm.MfmNode[] | null;
-	enableEmojiMenu?: boolean;
-	enableEmojiMenuReaction?: boolean;
-	linkNavigationBehavior?: string;
 };
 
 type MfmEvents = {
@@ -52,8 +49,6 @@ type MfmEvents = {
 
 // eslint-disable-next-line import/no-default-export
 export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
-	provide('linkNavigationBehavior', props.linkNavigationBehavior);
-
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -72,8 +67,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 		if (typeof c !== 'string') return null;
 		return c.match(/^[0-9a-f]{3,6}$/i) ? c : null;
 	};
-
-	const useAnim = true;
 
 	/**
 	 * Gen Vue Elements from MFM AST
@@ -123,25 +116,25 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = `font-size: 150%; animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};`;
 						break;
 					}
 					case 'jelly': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = `animation: mfm-rubberBand ${speed} linear infinite both; animation-delay: ${delay};`;
 						break;
 					}
 					case 'twitch': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = useAnim ? `animation: mfm-twitch ${speed} ease infinite; animation-delay: ${delay};` : '';
+						style = `animation: mfm-twitch ${speed} ease infinite; animation-delay: ${delay};`;
 						break;
 					}
 					case 'shake': {
 						const speed = validTime(token.props.args.speed) ?? '0.5s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = useAnim ? `animation: mfm-shake ${speed} ease infinite; animation-delay: ${delay};` : '';
+						style = `animation: mfm-shake ${speed} ease infinite; animation-delay: ${delay};`;
 						break;
 					}
 					case 'spin': {
@@ -155,19 +148,19 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 							'mfm-spin';
 						const speed = validTime(token.props.args.speed) ?? '1.5s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction}; animation-delay: ${delay};` : '';
+						style = `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction}; animation-delay: ${delay};`;
 						break;
 					}
 					case 'jump': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = useAnim ? `animation: mfm-jump ${speed} linear infinite; animation-delay: ${delay};` : '';
+						style = `animation: mfm-jump ${speed} linear infinite; animation-delay: ${delay};`;
 						break;
 					}
 					case 'bounce': {
 						const speed = validTime(token.props.args.speed) ?? '0.75s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom; animation-delay: ${delay};` : '';
+						style = `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom; animation-delay: ${delay};`;
 						break;
 					}
 					case 'flip': {
@@ -211,11 +204,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
-						if (!useAnim) {
-							return h('span', {
-								class: '_mfm_rainbow_fallback_',
-							}, genEl(token.children, scale));
-						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
 						style = `animation: mfm-rainbow ${speed} linear infinite; animation-delay: ${delay};`;
@@ -397,8 +385,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						normal: props.plain,
 						host: null,
 						useOriginalSize: scale >= 2.5,
-						menu: props.enableEmojiMenu,
-						menuReaction: props.enableEmojiMenuReaction,
 						fallbackToImage: false,
 					})];
 				} else {
@@ -422,8 +408,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(EmEmoji, {
 					key: Math.random(),
 					emoji: token.props.emoji,
-					menu: props.enableEmojiMenu,
-					menuReaction: props.enableEmojiMenuReaction,
 				})];
 			}
 
