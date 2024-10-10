@@ -233,10 +233,14 @@ export async function common(createVue: () => App<Element>) {
 			const customCss = (value as CustomCSSBackup).customCss;
 			miLocalStorage.setItem('customCss', customCss);
 
-			const styleDom = document.querySelector('style#customCss');
-			if (styleDom) {
-				styleDom.innerHTML = customCss;
+			let styleTag = document.getElementById('custom_css');
+			if (styleTag == null) {
+				styleTag = document.createElement('style');
+				styleTag.id = 'custom_css';
+				document.head.appendChild(styleTag);
 			}
+
+			styleTag.textContent = customCss;
 		});
 	}
 
