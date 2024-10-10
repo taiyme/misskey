@@ -26,7 +26,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import FormSection from '@/components/form/section.vue';
-import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 
 const XBackup = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/backup.vue'));

@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { readonly, ref, watch } from 'vue';
-import type { CustomCSSBackup, CustomCSSBackups } from './backup.vue.js';
+import type { CustomCSSBackup, CustomCSSBackups } from './backup.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';

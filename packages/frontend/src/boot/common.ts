@@ -223,14 +223,10 @@ export async function common(createVue: () => App<Element>) {
 		const scope = ['tms', 'customCssBackups'] as const satisfies string[];
 
 		connection.on('registryUpdated', ({ scope: recievedScope, key, value }) => {
-			if (!recievedScope || scope.length !== recievedScope.length || scope.some((v, i) => v !== recievedScope[i])) {
-				return;
-			}
-			if (key !== syncingCustomCssId) {
-				return;
-			}
+			if (scope.join('/') !== recievedScope?.join('/')) return;
+			if (key !== syncingCustomCssId) return;
 
-			const customCss = (value as CustomCSSBackup).customCss;
+			const { customCss } = value as unknown as CustomCSSBackup;
 			miLocalStorage.setItem('customCss', customCss);
 
 			let styleTag = document.getElementById('custom_css');

@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { v4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { apiWithDialog, inputText, popupMenu, confirm } from '@/os.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { unisonReload } from '@/scripts/unison-reload.js';
@@ -66,13 +66,14 @@ const saveNew = async () => {
 
 	const { canceled, result: name } = await inputText({
 		title: i18n.ts._tms._flags._backupAndSyncingCustomCss._backup.inputBackupName,
+		default: '',
 	});
 	if (canceled) {
 		return;
 	}
 
 	const backup: CustomCSSBackup = {
-		id: v4(),
+		id: uuid(),
 		name,
 		createAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
@@ -144,7 +145,7 @@ const upload = async () => {
 const validate = (json: { [key: string]: unknown }): { valid: true, value: CustomCSSBackup } | { valid: false, error: string } => {
 	const uuidv4Matcher = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 	if ('id' in json && (typeof json.id !== 'string' || !uuidv4Matcher.test(json.id) || customCssBackups.value.some((b) => b.id === json.id))) {
-		json.id = v4();
+		json.id = uuid();
 	}
 	if ('name' in json && typeof json.name !== 'string') {
 		return {
@@ -340,7 +341,6 @@ onMounted(() => {
 defineExpose({
 	customCssBackups,
 });
-
 </script>
 
 <style lang="scss" module>
@@ -349,6 +349,7 @@ defineExpose({
 	gap: var(--margin);
 	flex-wrap: wrap;
 }
+
 .profile {
 	padding: 20px;
 	cursor: pointer;
@@ -361,4 +362,5 @@ defineExpose({
 		font-size: 0.85em;
 		opacity: 0.7;
 	}
-}</style>
+}
+</style>
