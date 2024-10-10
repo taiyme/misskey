@@ -22,4 +22,3 @@ export class fixRemoteFileProxy1626509500668 {
         await queryRunner.query(`ALTER TABLE "user" ADD "avatarUrl" character varying(512)`);
     }
 }
-

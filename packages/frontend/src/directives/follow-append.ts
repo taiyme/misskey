@@ -4,8 +4,9 @@
  */
 
 import { Directive } from 'vue';
-import { getScrollContainer, getScrollPosition } from '@/scripts/scroll.js';
+import { getScrollContainer, getScrollPosition } from '@@/js/scroll.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(src, binding, vn) {
 		if (binding.value === false) return;

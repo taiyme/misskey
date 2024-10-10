@@ -3,16 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/**
- * BOOT LOADER
- * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
- * - 翻訳ファイルをフェッチする。
- * - バージョンに基づいて適切なメインスクリプトを読み込む。
- * - キャッシュされたコンパイル済みテーマを適用する。
- * - クライアントの設定値に基づいて対応するHTMLクラス等を設定する。
- * テーマをこの段階で設定するのは、メインスクリプトが読み込まれる間もテーマを適用したいためです。
- * 注: webpackは介さないため、このファイルではrequireやimportは使えません。
- */
+/* global window, document, localStorage, navigator, console, LANGS, CLIENT_ENTRY */
 
 'use strict';
 
@@ -29,11 +20,12 @@
 
 	let forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
-		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
+		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
+		return;
 	}
 
 	//#region Detect language & fetch translations
-	if (!localStorage.hasOwnProperty('locale')) {
+	if (!localStorage.getItem('locale')) {
 		const supportedLangs = LANGS;
 		let lang = localStorage.getItem('lang');
 		if (lang == null || !supportedLangs.includes(lang)) {
@@ -156,12 +148,17 @@
 		document.head.appendChild(css);
 	}
 
-	function renderError(code, details) {
+	async function renderError(code, details) {
+		// Cannot set property 'innerHTML' of null を回避
+		if (document.readyState === 'loading') {
+			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
+		}
+
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
 			document.body.innerHTML = `
-			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
@@ -171,10 +168,10 @@
 				<span class="button-label-big">Reload / リロード</span>
 			</button>
 			<p><b>The following actions may solve the problem. / 以下を行うと解決する可能性があります。</b></p>
-			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
 			<p>Update your os and browser / ブラウザおよびOSを最新バージョンに更新する</p>
 			<p>Disable an adblocker / アドブロッカーを無効にする</p>
-	 		<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
+			<p>Clear the browser cache / ブラウザのキャッシュをクリアする</p>
+			<p>&#40;Tor Browser&#41; Set dom.webaudio.enabled to true / dom.webaudio.enabledをtrueに設定する</p>
 			<details style="color: #86b300;">
 				<summary>Other options / その他のオプション</summary>
 				<a href="/flush">
@@ -207,7 +204,7 @@
 		<summary>
 			<code>ERROR CODE: ${code}</code>
 		</summary>
-		<code>${JSON.stringify(details)}</code>`;
+		<code>${details.toString()} ${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		addStyle(`
 		* {
@@ -315,6 +312,6 @@
 			#errorInfo {
 				width: 50%;
 			}
-		`)
+		}`);
 	}
 })();

@@ -35,7 +35,7 @@ export class UserPreview {
 
 		const showing = ref(true);
 
-		popup(defineAsyncComponent(() => import('@/components/MkUserPopup.vue')), {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserPopup.vue')), {
 			showing,
 			q: this.user,
 			source: this.el,
@@ -47,7 +47,8 @@ export class UserPreview {
 				window.clearTimeout(this.showTimer);
 				this.hideTimer = window.setTimeout(this.close, 500);
 			},
-		}, 'closed');
+			closed: () => dispose(),
+		});
 
 		this.promise = {
 			cancel: () => {
@@ -90,9 +91,9 @@ export class UserPreview {
 	}
 
 	public attach() {
-		this.el.addEventListener('mouseover', this.onMouseover);
-		this.el.addEventListener('mouseleave', this.onMouseleave);
-		this.el.addEventListener('click', this.onClick);
+		this.el.addEventListener('mouseover', this.onMouseover, { passive: true });
+		this.el.addEventListener('mouseleave', this.onMouseleave, { passive: true });
+		this.el.addEventListener('click', this.onClick, { passive: true });
 	}
 
 	public detach() {
@@ -102,6 +103,7 @@ export class UserPreview {
 	}
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		if (binding.value == null) return;

@@ -10,15 +10,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div ref="rootEl" :class="[$style.root, { [$style.wide]: isWide }]">
 			<div v-if="showNav" :class="$style.navRoot">
 				<MkSpacer :contentMax="700" :marginMin="16">
-					<div>
-						<MkInfo v-if="emailNotConfigured" warn :class="$style.navInfo">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :wideMode="isWide"></MkSuperMenu>
+					<div class="_gaps_m">
+						<div :class="[$style.navInfoList, '_gaps_s']">
+							<MkInfo v-if="emailNotConfigured" warn>{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+						</div>
+
+						<TmsSuperMenu :def="menuDef" :wideMode="isWide"></TmsSuperMenu>
 					</div>
 				</MkSpacer>
 			</div>
 			<div v-if="showMain" :class="$style.mainRoot">
 				<div style="container-type: inline-size;">
-					<RouterView/>
+					<RouterView nested/>
 				</div>
 			</div>
 		</div>
@@ -36,9 +39,9 @@ import * as os from '@/os.js';
 import { clearCache } from '@/scripts/clear-cache.js';
 import { PageMetadata, definePageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
 import { useRouter } from '@/router/supplier.js';
-import { SuperMenuDef } from '@/types/tms/super-menu.js';
 import MkInfo from '@/components/MkInfo.vue';
-import MkSuperMenu from '@/components/MkSuperMenu.vue';
+import TmsSuperMenu from '@/components/TmsSuperMenu.vue';
+import { type ISuperMenuDefinitions } from '@/components/TmsSuperMenu.impl.js';
 
 const ROOT_PAGE_PATH = '/settings' as const;
 const INITIAL_PAGE_PATH = '/settings/profile' as const;
@@ -142,7 +145,7 @@ provideReactiveMetadata(pageMetadata);
 definePageMetadata(() => pageMetadata.value);
 
 //#region menuDef
-const menuDef = computed<SuperMenuDef>(() => [{
+const menuDef = computed<ISuperMenuDefinitions>(() => [{
 	title: i18n.ts.basicSettings,
 	items: [{
 		icon: 'ti ti-user',
@@ -326,7 +329,9 @@ const menuDef = computed<SuperMenuDef>(() => [{
 	}
 }
 
-.navInfo {
-	margin: 16px 0;
+.navInfoList {
+	&:empty {
+		display: none;
+	}
 }
 </style>

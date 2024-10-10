@@ -107,6 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { useStream } from '@/stream.js';
@@ -117,7 +118,6 @@ import { $i } from '@/account.js';
 import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import * as sound from '@/scripts/sound.js';
 
@@ -250,7 +250,7 @@ onMounted(() => {
 		invitations.value = _invitations;
 	});
 
-	window.addEventListener('beforeunload', cancelMatching);
+	window.addEventListener('beforeunload', cancelMatching, { passive: true });
 });
 
 onDeactivated(() => {
@@ -285,7 +285,7 @@ definePageMetadata(() => ({
 .gamePreviews {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-	grid-gap: var(--margin);
+	gap: var(--margin);
 }
 
 .gamePreview {

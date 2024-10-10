@@ -54,29 +54,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, shallowRef, ref } from 'vue';
+import type { MenuItem } from '@/types/menu.js';
 import contains from '@/scripts/contains.js';
 import * as os from '@/os.js';
-import { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const minHeight = 50;
 const minWidth = 250;
 
 function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('touchmove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-	window.addEventListener('touchend', dragClear.bind(null, fn));
-}
+	const controller = new AbortController();
+	const { signal } = controller;
 
-function dragClear(fn) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+	window.addEventListener('mousemove', fn, { passive: true, signal });
+	window.addEventListener('touchmove', fn, { passive: true, signal });
+	window.addEventListener('mouseleave', () => controller.abort(), { passive: true, signal });
+	window.addEventListener('mouseup', () => controller.abort(), { passive: true, signal });
+	window.addEventListener('touchend', () => controller.abort(), { passive: true, signal });
 }
 
 const props = withDefaults(defineProps<{
@@ -121,13 +117,13 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
-	if (evt.which === 27) { // Esc
+const onKeydown = filterKeyboardNonComposing(evt => {
+	if (evt.key === 'Escape') {
 		evt.preventDefault();
 		evt.stopPropagation();
 		close();
 	}
-}
+});
 
 function onContextmenu(ev: MouseEvent) {
 	if (props.contextmenu) {
@@ -509,10 +505,6 @@ defineExpose({
 .header {
 	--height: 39px;
 
-	&.mini {
-		--height: 32px;
-	}
-
 	display: flex;
 	position: relative;
 	z-index: 1;
@@ -525,6 +517,10 @@ defineExpose({
 	// border-bottom: solid 1px var(--divider);
 	font-size: 90%;
 	font-weight: bold;
+
+	&.mini {
+		--height: 32px;
+	}
 }
 
 .headerButton {

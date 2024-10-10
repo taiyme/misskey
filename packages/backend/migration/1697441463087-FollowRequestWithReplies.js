@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-
 export class FollowRequestWithReplies1697441463087 {
     name = 'FollowRequestWithReplies1697441463087'
 

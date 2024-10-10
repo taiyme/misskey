@@ -1,0 +1,58 @@
+name: Check misskey-js version
+
+on:
+  push:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - .github/workflows/check-misskey-js-version.yaml
+      - packages/misskey-js/package.json
+      - package.json
+
+  pull_request_target:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - packages/misskey-js/package.json
+      - package.json
+
+permissions:
+  contents: read
+
+jobs:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  check-version:
+    name: Check version
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Check version
+        run: |
+          target_file='packages/misskey-js/package.json'
+          target_version="$(cat "$target_file" | jq -r '.version')"
+
+          source_file='package.json'
+          source_version="$(cat "$source_file" | jq -r '.version')"
+
+          if [[ "$source_version" != "$target_version" ]]; then
+            source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1 || true)"
+            echo "::error file=${source_file},line=${source_line:-0}::Version mismatch!"
+
+            target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1 || true)"
+            echo "::error file=${target_file},line=${target_line:-0}::Version mismatch!"
+
+            exit 1
+          fi

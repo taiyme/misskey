@@ -49,6 +49,20 @@ export interface Locale extends ILocale {
      */
     readonly "password": string;
     /**
+     * 初期設定開始用パスワード
+     */
+    readonly "initialPasswordForSetup": string;
+    /**
+     * 初期設定開始用のパスワードが違います。
+     */
+    readonly "initialPasswordIsIncorrect": string;
+    /**
+     * Misskeyを自分でインストールした場合は、設定ファイルに入力したパスワードを使用してください。
+     * Misskeyのホスティングサービスなどを使用している場合は、提供されたパスワードを使用してください。
+     * パスワードを設定していない場合は、空欄にしたまま続行してください。
+     */
+    readonly "initialPasswordForSetupDescription": string;
+    /**
      * パスワードを忘れた
      */
     readonly "forgotPassword": string;
@@ -257,6 +271,10 @@ export interface Locale extends ILocale {
      */
     readonly "searchUser": string;
     /**
+     * ユーザーのノートを検索
+     */
+    readonly "searchThisUsersNotes": string;
+    /**
      * 返信
      */
     readonly "reply": string;
@@ -449,6 +467,10 @@ export interface Locale extends ILocale {
      */
     readonly "renoted": string;
     /**
+     * {name} にリノートしました。
+     */
+    readonly "renotedToX": ParameterizedString<"name">;
+    /**
      * この投稿はリノートできません。
      */
     readonly "cantRenote": string;
@@ -468,6 +490,14 @@ export interface Locale extends ILocale {
      * チャンネル内引用
      */
     readonly "inChannelQuote": string;
+    /**
+     * チャンネルにリノート
+     */
+    readonly "renoteToChannel": string;
+    /**
+     * 他のチャンネルにリノート
+     */
+    readonly "renoteToOtherChannel": string;
     /**
      * ピン留めされたノート
      */
@@ -621,6 +651,10 @@ export interface Locale extends ILocale {
      */
     readonly "editAntenna": string;
     /**
+     * アンテナを作成
+     */
+    readonly "createAntenna": string;
+    /**
      * ウィジェットを選択
      */
     readonly "selectWidget": string;
@@ -725,6 +759,22 @@ export interface Locale extends ILocale {
      */
     readonly "showOnRemote": string;
     /**
+     * リモートで続行
+     */
+    readonly "continueOnRemote": string;
+    /**
+     * Misskey Hubからサーバーを選択
+     */
+    readonly "chooseServerOnMisskeyHub": string;
+    /**
+     * サーバーのドメインを直接指定
+     */
+    readonly "specifyServerHost": string;
+    /**
+     * ドメインを入力してください
+     */
+    readonly "inputHostName": string;
+    /**
      * 全般
      */
     readonly "general": string;
@@ -764,6 +814,10 @@ export interface Locale extends ILocale {
      * ホスト
      */
     readonly "host": string;
+    /**
+     * 自分を選択
+     */
+    readonly "selectSelf": string;
     /**
      * ユーザーを選択
      */
@@ -824,6 +878,10 @@ export interface Locale extends ILocale {
      * サーバーをサイレンス
      */
     readonly "silenceThisInstance": string;
+    /**
+     * サーバーをメディアサイレンス
+     */
+    readonly "mediaSilenceThisInstance": string;
     /**
      * 操作
      */
@@ -905,9 +963,25 @@ export interface Locale extends ILocale {
      */
     readonly "silencedInstances": string;
     /**
-     * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになり、フォロワーでないローカルアカウントにはメンションできなくなります。ブロックしたインスタンスには影響しません。
+     * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになります。ブロックしたインスタンスには影響しません。
      */
     readonly "silencedInstancesDescription": string;
+    /**
+     * メディアサイレンスしたサーバー
+     */
+    readonly "mediaSilencedInstances": string;
+    /**
+     * メディアサイレンスしたいサーバーのホストを改行で区切って設定します。メディアサイレンスされたサーバーに所属するアカウントによるファイルはすべてセンシティブとして扱われ、カスタム絵文字が使用できないようになります。ブロックしたインスタンスには影響しません。
+     */
+    readonly "mediaSilencedInstancesDescription": string;
+    /**
+     * 連合を許可するサーバー
+     */
+    readonly "federationAllowedHosts": string;
+    /**
+     * 連合を許可するサーバーのホストを改行で区切って設定します。
+     */
+    readonly "federationAllowedHostsDescription": string;
     /**
      * ミュートとブロック
      */
@@ -1269,6 +1343,10 @@ export interface Locale extends ILocale {
      */
     readonly "selectFolders": string;
     /**
+     * ファイルが選択されていません
+     */
+    readonly "fileNotSelected": string;
+    /**
      * ファイル名を変更
      */
     readonly "renameFile": string;
@@ -1296,6 +1374,10 @@ export interface Locale extends ILocale {
      * ファイルを追加
      */
     readonly "addFile": string;
+    /**
+     * ファイルを表示
+     */
+    readonly "showFile": string;
     /**
      * ドライブは空です
      */
@@ -1617,6 +1699,10 @@ export interface Locale extends ILocale {
      */
     readonly "antennaExcludeKeywords": string;
     /**
+     * Botアカウントを除外
+     */
+    readonly "antennaExcludeBots": string;
+    /**
      * スペースで区切るとAND指定になり、改行で区切るとOR指定になります
      */
     readonly "antennaKeywordsDescription": string;
@@ -1748,6 +1834,10 @@ export interface Locale extends ILocale {
      * モデレーションノート
      */
     readonly "moderationNote": string;
+    /**
+     * モデレーター間でだけ共有されるメモを記入することができます。
+     */
+    readonly "moderationNoteDescription": string;
     /**
      * モデレーションノートを追加する
      */
@@ -1885,6 +1975,10 @@ export interface Locale extends ILocale {
      */
     readonly "quoteQuestion": string;
     /**
+     * クリップボードのテキストが長いです。テキストファイルとして添付しますか？
+     */
+    readonly "attachAsFileQuestion": string;
+    /**
      * まだチャットはありません
      */
     readonly "noMessagesYet": string;
@@ -1897,9 +1991,13 @@ export interface Locale extends ILocale {
      */
     readonly "onlyOneFileCanBeAttached": string;
     /**
-     * 続行する前に、サインアップまたはサインインが必要です
+     * 続行する前に、登録またはログインが必要です
      */
     readonly "signinRequired": string;
+    /**
+     * 続行するには、お使いのサーバーに移動するか、このサーバーに登録・ログインする必要があります
+     */
+    readonly "signinOrContinueOnRemote": string;
     /**
      * 招待
      */
@@ -1985,9 +2083,21 @@ export interface Locale extends ILocale {
      */
     readonly "native": string;
     /**
-     * メニューをドロワーで表示しない
+     * メニューのスタイル
      */
-    readonly "disableDrawer": string;
+    readonly "menuStyle": string;
+    /**
+     * スタイル
+     */
+    readonly "style": string;
+    /**
+     * ドロワー
+     */
+    readonly "drawer": string;
+    /**
+     * ポップアップ
+     */
+    readonly "popup": string;
     /**
      * ノートのアクションをホバー時のみ表示する
      */
@@ -2316,6 +2426,14 @@ export interface Locale extends ILocale {
      * スクラッチパッドは、AiScriptの実験環境を提供します。Misskeyと対話するコードの記述、実行、結果の確認ができます。
      */
     readonly "scratchpadDescription": string;
+    /**
+     * UIインスペクター
+     */
+    readonly "uiInspector": string;
+    /**
+     * メモリ上に存在しているUIコンポーネントのインスタンスの一覧を見ることができます。UIコンポーネントはUi:C:系関数により生成されます。
+     */
+    readonly "uiInspectorDescription": string;
     /**
      * 出力
      */
@@ -2761,7 +2879,7 @@ export interface Locale extends ILocale {
      */
     readonly "reportAbuseOf": ParameterizedString<"name">;
     /**
-     * 通報理由の詳細を記入してください。対象のノートがある場合はそのURLも記入してください。
+     * 通報理由の詳細を記入してください。対象のノートやページなどがある場合はそのURLも記入してください。
      */
     readonly "fillAbuseReportDescription": string;
     /**
@@ -2781,21 +2899,9 @@ export interface Locale extends ILocale {
      */
     readonly "reporterOrigin": string;
     /**
-     * リモートサーバーに通報を転送する
-     */
-    readonly "forwardReport": string;
-    /**
-     * リモートサーバーからはあなたの情報は見れず、匿名のシステムアカウントとして表示されます。
-     */
-    readonly "forwardReportIsAnonymous": string;
-    /**
      * 送信
      */
     readonly "send": string;
-    /**
-     * 対応済みにする
-     */
-    readonly "abuseMarkAsResolved": string;
     /**
      * 新しいタブで開く
      */
@@ -3053,7 +3159,7 @@ export interface Locale extends ILocale {
      */
     readonly "narrow": string;
     /**
-     * 設定はページリロード後に反映されます。今すぐリロードしますか？
+     * 設定はページリロード後に反映されます。
      */
     readonly "reloadToApplySetting": string;
     /**
@@ -3341,6 +3447,10 @@ export interface Locale extends ILocale {
      */
     readonly "noMaintainerInformationWarning": string;
     /**
+     * 問い合わせ先URLが設定されていません。
+     */
+    readonly "noInquiryUrlWarning": string;
+    /**
      * Botプロテクションが設定されていません。
      */
     readonly "noBotProtectionWarning": string;
@@ -3596,6 +3706,10 @@ export interface Locale extends ILocale {
      * パスワードが間違っています。
      */
     readonly "incorrectPassword": string;
+    /**
+     * ワンタイムパスワードが間違っているか、期限切れになっています。
+     */
+    readonly "incorrectTotp": string;
     /**
      * 「{choice}」に投票しますか？
      */
@@ -4093,9 +4207,13 @@ export interface Locale extends ILocale {
      */
     readonly "thisPostMayBeAnnoyingIgnore": string;
     /**
-     * 見たことのあるリノートを省略して表示
+     * リノートのスマート省略
      */
     readonly "collapseRenotes": string;
+    /**
+     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     */
+    readonly "collapseRenotesDescription": string;
     /**
      * サーバー内部エラー
      */
@@ -4389,6 +4507,14 @@ export interface Locale extends ILocale {
      */
     readonly "archive": string;
     /**
+     * アーカイブ済み
+     */
+    readonly "archived": string;
+    /**
+     * アーカイブ解除
+     */
+    readonly "unarchive": string;
+    /**
      * {name}をアーカイブしますか？
      */
     readonly "channelArchiveConfirmTitle": ParameterizedString<"name">;
@@ -4428,6 +4554,18 @@ export interface Locale extends ILocale {
      * ユーザー指定
      */
     readonly "specifyUser": string;
+    /**
+     * 照会しますか？
+     */
+    readonly "lookupConfirm": string;
+    /**
+     * ハッシュタグのページを開きますか？
+     */
+    readonly "openTagPageConfirm": string;
+    /**
+     * ホスト指定
+     */
+    readonly "specifyHost": string;
     /**
      * プレビューできません
      */
@@ -4912,6 +5050,181 @@ export interface Locale extends ILocale {
      * リトライ
      */
     readonly "gameRetry": string;
+    /**
+     * 使用しない場合は空欄にしてください
+     */
+    readonly "notUsePleaseLeaveBlank": string;
+    /**
+     * ワンタイムパスワードを使う
+     */
+    readonly "useTotp": string;
+    /**
+     * バックアップコードを使う
+     */
+    readonly "useBackupCode": string;
+    /**
+     * アプリを起動
+     */
+    readonly "launchApp": string;
+    /**
+     * 動画・音声の再生にブラウザのUIを使用する
+     */
+    readonly "useNativeUIForVideoAudioPlayer": string;
+    /**
+     * オリジナルのファイル名を保持
+     */
+    readonly "keepOriginalFilename": string;
+    /**
+     * この設定をオフにすると、アップロード時にファイル名が自動でランダム文字列に置き換えられます。
+     */
+    readonly "keepOriginalFilenameDescription": string;
+    /**
+     * 説明文はありません
+     */
+    readonly "noDescription": string;
+    /**
+     * フォローの際常に確認する
+     */
+    readonly "alwaysConfirmFollow": string;
+    /**
+     * お問い合わせ
+     */
+    readonly "inquiry": string;
+    /**
+     * もう一度お試しください。
+     */
+    readonly "tryAgain": string;
+    /**
+     * センシティブなメディアを表示するとき確認する
+     */
+    readonly "confirmWhenRevealingSensitiveMedia": string;
+    /**
+     * センシティブなメディアです。表示しますか？
+     */
+    readonly "sensitiveMediaRevealConfirm": string;
+    /**
+     * 作成したリスト
+     */
+    readonly "createdLists": string;
+    /**
+     * 作成したアンテナ
+     */
+    readonly "createdAntennas": string;
+    /**
+     * {x}から
+     */
+    readonly "fromX": ParameterizedString<"x">;
+    /**
+     * 埋め込みコードを生成
+     */
+    readonly "genEmbedCode": string;
+    /**
+     * このユーザーのノート一覧
+     */
+    readonly "noteOfThisUser": string;
+    /**
+     * これ以上このクリップにノートを追加できません。
+     */
+    readonly "clipNoteLimitExceeded": string;
+    /**
+     * パフォーマンス
+     */
+    readonly "performance": string;
+    /**
+     * 変更あり
+     */
+    readonly "modified": string;
+    /**
+     * 破棄
+     */
+    readonly "discard": string;
+    /**
+     * {n}件の変更があります
+     */
+    readonly "thereAreNChanges": ParameterizedString<"n">;
+    /**
+     * パスキーでログイン
+     */
+    readonly "signinWithPasskey": string;
+    /**
+     * 登録されていないパスキーです。
+     */
+    readonly "unknownWebAuthnKey": string;
+    /**
+     * パスキーの検証に失敗しました。
+     */
+    readonly "passkeyVerificationFailed": string;
+    /**
+     * パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。
+     */
+    readonly "passkeyVerificationSucceededButPasswordlessLoginDisabled": string;
+    /**
+     * フォロワーへのメッセージ
+     */
+    readonly "messageToFollower": string;
+    /**
+     * 対象
+     */
+    readonly "target": string;
+    readonly "_abuseUserReport": {
+        /**
+         * 転送
+         */
+        readonly "forward": string;
+        /**
+         * 匿名のシステムアカウントとして、リモートサーバーに通報を転送します。
+         */
+        readonly "forwardDescription": string;
+        /**
+         * 解決
+         */
+        readonly "resolve": string;
+        /**
+         * 是認
+         */
+        readonly "accept": string;
+        /**
+         * 否認
+         */
+        readonly "reject": string;
+        /**
+         * 内容が正当である通報に対応した場合は「是認」を選択し、肯定的にケースが解決されたことをマークします。
+         * 内容が正当でない通報の場合は「否認」を選択し、否定的にケースが解決されたことをマークします。
+         */
+        readonly "resolveTutorial": string;
+    };
+    readonly "_delivery": {
+        /**
+         * 配信状態
+         */
+        readonly "status": string;
+        /**
+         * 配信停止
+         */
+        readonly "stop": string;
+        /**
+         * 配信再開
+         */
+        readonly "resume": string;
+        readonly "_type": {
+            /**
+             * 配信中
+             */
+            readonly "none": string;
+            /**
+             * 手動停止中
+             */
+            readonly "manuallySuspended": string;
+            /**
+             * サーバー削除のため停止中
+             */
+            readonly "goneSuspended": string;
+            /**
+             * サーバー応答なしのため停止中
+             */
+            readonly "autoSuspendedForNotResponding": string;
+        };
+    };
     readonly "_bubbleGame": {
         /**
          * 遊び方
@@ -5371,6 +5684,18 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         readonly "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。
+         */
+        readonly "reactionsBufferingDescription": string;
+        /**
+         * 問い合わせ先URL
+         */
+        readonly "inquiryUrl": string;
+        /**
+         * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
+         */
+        readonly "inquiryUrlDescription": string;
     };
     readonly "_accountMigration": {
         /**
@@ -6483,6 +6808,10 @@ export interface Locale extends ILocale {
              */
             readonly "alwaysMarkNsfw": string;
             /**
+             * アイコンとバナーの更新を許可
+             */
+            readonly "canUpdateBioMedia": string;
+            /**
              * ノートのピン留めの最大数
              */
             readonly "pinMax": string;
@@ -6538,6 +6867,26 @@ export interface Locale extends ILocale {
              * アイコンデコレーションの最大取付個数
              */
             readonly "avatarDecorationLimit": string;
+            /**
+             * アンテナのインポートを許可
+             */
+            readonly "canImportAntennas": string;
+            /**
+             * ブロックのインポートを許可
+             */
+            readonly "canImportBlocking": string;
+            /**
+             * フォローのインポートを許可
+             */
+            readonly "canImportFollowing": string;
+            /**
+             * ミュートのインポートを許可
+             */
+            readonly "canImportMuting": string;
+            /**
+             * リストのインポートを許可
+             */
+            readonly "canImportUserLists": string;
         };
         readonly "_condition": {
             /**
@@ -6552,6 +6901,26 @@ export interface Locale extends ILocale {
              * リモートユーザー
              */
             readonly "isRemote": string;
+            /**
+             * 猫ユーザー
+             */
+            readonly "isCat": string;
+            /**
+             * botユーザー
+             */
+            readonly "isBot": string;
+            /**
+             * サスペンド済みユーザー
+             */
+            readonly "isSuspended": string;
+            /**
+             * 鍵アカウントユーザー
+             */
+            readonly "isLocked": string;
+            /**
+             * 「アカウントを見つけやすくする」が有効なユーザー
+             */
+            readonly "isExplorable": string;
             /**
              * アカウント作成から～以内
              */
@@ -7384,14 +7753,6 @@ export interface Locale extends ILocale {
          */
         readonly "notification": string;
         /**
-         * アンテナ受信
-         */
-        readonly "antenna": string;
-        /**
-         * チャンネル通知
-         */
-        readonly "channel": string;
-        /**
          * リアクション選択時
          */
         readonly "reaction": string;
@@ -7421,6 +7782,10 @@ export interface Locale extends ILocale {
          * 長い音声を使用するとMisskeyの使用に支障をきたす可能性があります。それでも続行しますか？
          */
         readonly "driveFileDurationWarnDescription": string;
+        /**
+         * 音声が読み込めませんでした。設定を変更してください
+         */
+        readonly "driveFileError": string;
     };
     readonly "_ago": {
         /**
@@ -7526,13 +7891,9 @@ export interface Locale extends ILocale {
          */
         readonly "step1": ParameterizedString<"a" | "b">;
         /**
-         * 次に、表示されているQRコードをアプリでスキャンします。
+         * 次に、表示されているQRコードをアプリでスキャンするか、ボタンをクリックして端末上でアプリを開きます。
          */
         readonly "step2": string;
-        /**
-         * QRコードをクリックすると、お使いの端末にインストールされている認証アプリやキーリングに登録できます。
-         */
-        readonly "step2Click": string;
         /**
          * デスクトップアプリを使用する場合は次のURIを入力します
          */
@@ -7625,6 +7986,10 @@ export interface Locale extends ILocale {
          * バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。
          */
         readonly "backupCodesExhaustedWarning": string;
+        /**
+         * 詳細なガイドはこちら
+         */
+        readonly "moreDetailedGuideHere": string;
     };
     readonly "_permissions": {
         /**
@@ -7823,10 +8188,6 @@ export interface Locale extends ILocale {
          * ユーザーのプライベートな情報を見る
          */
         readonly "read:admin:show-user": string;
-        /**
-         * ユーザーのプライベートな情報を見る
-         */
-        readonly "read:admin:show-users": string;
         /**
          * ユーザーを凍結する
          */
@@ -8417,6 +8778,18 @@ export interface Locale extends ILocale {
          * 最大{max}つまでデコレーションを付けられます。
          */
         readonly "avatarDecorationMax": ParameterizedString<"max">;
+        /**
+         * フォローされた時のメッセージ
+         */
+        readonly "followedMessage": string;
+        /**
+         * フォローされた時に相手に表示する短いメッセージを設定できます。
+         */
+        readonly "followedMessageDescription": string;
+        /**
+         * フォローを承認制にしている場合、フォローリクエストを許可した時に表示されます。
+         */
+        readonly "followedMessageDescriptionForLockedAccount": string;
     };
     readonly "_exportOrImport": {
         /**
@@ -8774,6 +9147,10 @@ export interface Locale extends ILocale {
          */
         readonly "chooseBlock": string;
         /**
+         * セクションタイトルを入力
+         */
+        readonly "enterSectionTitle": string;
+        /**
          * 種類を選択
          */
         readonly "selectType": string;
@@ -8810,6 +9187,14 @@ export interface Locale extends ILocale {
              * ボタン
              */
             readonly "button": string;
+            /**
+             * 動的ブロック
+             */
+            readonly "dynamic": string;
+            /**
+             * このブロックは廃止されています。今後は{play}を利用してください。
+             */
+            readonly "dynamicDescription": ParameterizedString<"play">;
             /**
              * ノート埋め込み
              */
@@ -8937,6 +9322,14 @@ export interface Locale extends ILocale {
          * 通知の履歴をリセットする
          */
         readonly "flushNotification": string;
+        /**
+         * {x}のエクスポートが完了しました
+         */
+        readonly "exportOfXCompleted": ParameterizedString<"x">;
+        /**
+         * ログインがありました
+         */
+        readonly "login": string;
         readonly "_types": {
             /**
              * すべて
@@ -8991,6 +9384,18 @@ export interface Locale extends ILocale {
              */
             readonly "achievementEarned": string;
             /**
+             * エクスポートが完了した
+             */
+            readonly "exportCompleted": string;
+            /**
+             * ログイン
+             */
+            readonly "login": string;
+            /**
+             * 通知のテスト
+             */
+            readonly "test": string;
+            /**
              * 連携アプリからの通知
              */
             readonly "app": string;
@@ -9023,6 +9428,10 @@ export interface Locale extends ILocale {
          * カラムを追加
          */
         readonly "addColumn": string;
+        /**
+         * 新着ノート通知の設定
+         */
+        readonly "newNoteNotificationSettings": string;
         /**
          * カラムの設定
          */
@@ -9166,6 +9575,10 @@ export interface Locale extends ILocale {
          */
         readonly "createWebhook": string;
         /**
+         * Webhookを編集
+         */
+        readonly "modifyWebhook": string;
+        /**
          * 名前
          */
         readonly "name": string;
@@ -9174,9 +9587,9 @@ export interface Locale extends ILocale {
          */
         readonly "secret": string;
         /**
-         * Webhookを実行するタイミング
+         * トリガー
          */
-        readonly "events": string;
+        readonly "trigger": string;
         /**
          * 有効
          */
@@ -9210,6 +9623,80 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             readonly "mention": string;
+        };
+        readonly "_systemEvents": {
+            /**
+             * ユーザーから通報があったとき
+             */
+            readonly "abuseReport": string;
+            /**
+             * ユーザーからの通報を処理したとき
+             */
+            readonly "abuseReportResolved": string;
+            /**
+             * ユーザーが作成されたとき
+             */
+            readonly "userCreated": string;
+        };
+        /**
+         * Webhookを削除しますか？
+         */
+        readonly "deleteConfirm": string;
+        /**
+         * スイッチの右にあるボタンをクリックするとダミーのデータを使用したテスト用Webhookを送信できます。
+         */
+        readonly "testRemarks": string;
+    };
+    readonly "_abuseReport": {
+        readonly "_notificationRecipient": {
+            /**
+             * 通報の通知先を追加
+             */
+            readonly "createRecipient": string;
+            /**
+             * 通報の通知先を編集
+             */
+            readonly "modifyRecipient": string;
+            /**
+             * 通知先の種類
+             */
+            readonly "recipientType": string;
+            readonly "_recipientType": {
+                /**
+                 * メール
+                 */
+                readonly "mail": string;
+                /**
+                 * Webhook
+                 */
+                readonly "webhook": string;
+                readonly "_captions": {
+                    /**
+                     * モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)
+                     */
+                    readonly "mail": string;
+                    /**
+                     * 指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)
+                     */
+                    readonly "webhook": string;
+                };
+            };
+            /**
+             * キーワード
+             */
+            readonly "keywords": string;
+            /**
+             * 通知先ユーザー
+             */
+            readonly "notifiedUser": string;
+            /**
+             * 使用するWebhook
+             */
+            readonly "notifiedWebhook": string;
+            /**
+             * 通知先を削除しますか？
+             */
+            readonly "deleteConfirm": string;
         };
     };
     readonly "_moderationLogTypes": {
@@ -9322,6 +9809,14 @@ export interface Locale extends ILocale {
          */
         readonly "resolveAbuseReport": string;
         /**
+         * 通報を転送
+         */
+        readonly "forwardAbuseReport": string;
+        /**
+         * 通報のモデレーションノート更新
+         */
+        readonly "updateAbuseReportNote": string;
+        /**
          * 招待コードを作成
          */
         readonly "createInvitation": string;
@@ -9357,6 +9852,46 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         readonly "unsetUserBanner": string;
+        /**
+         * SystemWebhookを作成
+         */
+        readonly "createSystemWebhook": string;
+        /**
+         * SystemWebhookを更新
+         */
+        readonly "updateSystemWebhook": string;
+        /**
+         * SystemWebhookを削除
+         */
+        readonly "deleteSystemWebhook": string;
+        /**
+         * 通報の通知先を作成
+         */
+        readonly "createAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を更新
+         */
+        readonly "updateAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を削除
+         */
+        readonly "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * アカウントを削除
+         */
+        readonly "deleteAccount": string;
+        /**
+         * ページを削除
+         */
+        readonly "deletePage": string;
+        /**
+         * Playを削除
+         */
+        readonly "deleteFlash": string;
+        /**
+         * ギャラリーの投稿を削除
+         */
+        readonly "deleteGalleryPost": string;
     };
     readonly "_fileViewer": {
         /**
@@ -9527,7 +10062,7 @@ export interface Locale extends ILocale {
     readonly "_dataSaver": {
         readonly "_media": {
             /**
-             * メディアの読み込み
+             * メディアの読み込みを無効化
              */
             readonly "title": string;
             /**
@@ -9537,7 +10072,7 @@ export interface Locale extends ILocale {
         };
         readonly "_avatar": {
             /**
-             * アイコン画像
+             * アイコン画像のアニメーションを無効化
              */
             readonly "title": string;
             /**
@@ -9547,7 +10082,7 @@ export interface Locale extends ILocale {
         };
         readonly "_urlPreview": {
             /**
-             * URLプレビューのサムネイル
+             * URLプレビューのサムネイルを非表示
              */
             readonly "title": string;
             /**
@@ -9557,7 +10092,7 @@ export interface Locale extends ILocale {
         };
         readonly "_code": {
             /**
-             * コードハイライト
+             * コードハイライトを非表示
              */
             readonly "title": string;
             /**
@@ -9764,6 +10299,146 @@ export interface Locale extends ILocale {
          */
         readonly "header": string;
     };
+    readonly "_urlPreviewSetting": {
+        /**
+         * URLプレビューの設定
+         */
+        readonly "title": string;
+        /**
+         * URLプレビューを有効にする
+         */
+        readonly "enable": string;
+        /**
+         * プレビュー取得時のタイムアウト(ms)
+         */
+        readonly "timeout": string;
+        /**
+         * プレビュー取得の所要時間がこの値を超えた場合、プレビューは生成されません。
+         */
+        readonly "timeoutDescription": string;
+        /**
+         * Content-Lengthの最大値(byte)
+         */
+        readonly "maximumContentLength": string;
+        /**
+         * Content-Lengthがこの値を超えた場合、プレビューは生成されません。
+         */
+        readonly "maximumContentLengthDescription": string;
+        /**
+         * Content-Lengthが取得できた場合のみプレビューを生成
+         */
+        readonly "requireContentLength": string;
+        /**
+         * 相手サーバがContent-Lengthを返さない場合、プレビューは生成されません。
+         */
+        readonly "requireContentLengthDescription": string;
+        /**
+         * User-Agent
+         */
+        readonly "userAgent": string;
+        /**
+         * プレビュー取得時に使用されるUser-Agentを設定します。空欄の場合、デフォルトのUser-Agentが使用されます。
+         */
+        readonly "userAgentDescription": string;
+        /**
+         * プレビューを生成するプロキシのエンドポイント
+         */
+        readonly "summaryProxy": string;
+        /**
+         * Misskey本体ではなく、サマリープロキシを使用してプレビューを生成します。
+         */
+        readonly "summaryProxyDescription": string;
+        /**
+         * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
+         */
+        readonly "summaryProxyDescription2": string;
+    };
+    readonly "_mediaControls": {
+        /**
+         * ピクチャインピクチャ
+         */
+        readonly "pip": string;
+        /**
+         * 再生速度
+         */
+        readonly "playbackRate": string;
+        /**
+         * ループ再生
+         */
+        readonly "loop": string;
+    };
+    readonly "_contextMenu": {
+        /**
+         * コンテキストメニュー
+         */
+        readonly "title": string;
+        /**
+         * アプリケーション
+         */
+        readonly "app": string;
+        /**
+         * Shiftキーでアプリケーション
+         */
+        readonly "appWithShift": string;
+        /**
+         * ブラウザのUI
+         */
+        readonly "native": string;
+    };
+    readonly "_embedCodeGen": {
+        /**
+         * 埋め込みコードをカスタマイズ
+         */
+        readonly "title": string;
+        /**
+         * ヘッダーを表示
+         */
+        readonly "header": string;
+        /**
+         * 自動で続きを読み込む（非推奨）
+         */
+        readonly "autoload": string;
+        /**
+         * 高さの最大値
+         */
+        readonly "maxHeight": string;
+        /**
+         * 0で最大値の設定が無効になります。ウィジェットが縦に伸び続けるのを防ぐために、何らかの値に指定してください。
+         */
+        readonly "maxHeightDescription": string;
+        /**
+         * 高さの最大値制限が無効（0）になっています。これが意図した変更ではない場合は、高さの最大値を何らかの値に設定してください。
+         */
+        readonly "maxHeightWarn": string;
+        /**
+         * プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。
+         */
+        readonly "previewIsNotActual": string;
+        /**
+         * 角丸にする
+         */
+        readonly "rounded": string;
+        /**
+         * 外枠に枠線をつける
+         */
+        readonly "border": string;
+        /**
+         * プレビューに反映
+         */
+        readonly "applyToPreview": string;
+        /**
+         * 埋め込みコードを作成
+         */
+        readonly "generateCode": string;
+        /**
+         * コードが生成されました
+         */
+        readonly "codeGenerated": string;
+        /**
+         * 生成されたコードをウェブサイトに貼り付けてご利用ください。
+         */
+        readonly "codeGeneratedDescription": string;
+    };
     readonly "_tms": {
         /**
          * taiy
@@ -9802,6 +10477,22 @@ export interface Locale extends ILocale {
          */
         readonly "reportIssuesToGithub": string;
         /**
+         * センシティブな画像
+         */
+        readonly "sensitiveImage": string;
+        /**
+         * センシティブな動画
+         */
+        readonly "sensitiveVideo": string;
+        /**
+         * センシティブな音声
+         */
+        readonly "sensitiveAudio": string;
+        /**
+         * センシティブなファイル
+         */
+        readonly "sensitiveFile": string;
+        /**
          * GIFファイルを表示しています。
          */
         readonly "displayingGifFiles": string;
@@ -9810,21 +10501,45 @@ export interface Locale extends ILocale {
          */
         readonly "displayingSensitiveFiles": string;
         /**
-         * パクる
+         * ホームリノート
          */
-        readonly "pakuru": string;
+        readonly "homeRenote": string;
         /**
-         * 数字引用する
+         * フォロワーリノート
          */
-        readonly "numberquote": string;
+        readonly "followersRenote": string;
         /**
-         * パクりました
+         * リノート (連合なし)
          */
-        readonly "didPakuru": string;
+        readonly "disableFederationRenote": string;
         /**
-         * 数字引用しました
+         * ホームリノート (連合なし)
          */
-        readonly "didNumberquote": string;
+        readonly "disableFederationHomeRenote": string;
+        /**
+         * フォロワーリノート (連合なし)
+         */
+        readonly "disableFederationFollowersRenote": string;
+        /**
+         * まだ提供されていません
+         */
+        readonly "notYetProvided": string;
+        /**
+         * モデレーションノートはモデレーター間で共有されます。
+         */
+        readonly "moderationNoteIsSharedAmongModerators": string;
+        /**
+         * あなたのメモは他のユーザーと共有されません。
+         */
+        readonly "memoIsNotShared": string;
+        /**
+         * taiymeが更新されました！
+         */
+        readonly "taiymeUpdated": string;
+        /**
+         * {x}が更新されました！
+         */
+        readonly "updatedX": ParameterizedString<"x">;
         readonly "_about": {
             /**
              * taiymeについて
@@ -9856,6 +10571,32 @@ export interface Locale extends ILocale {
              * これらの機能はtaiymeで独自実装したものです。
              */
             readonly "description": string;
+            readonly "_tickerPosition": {
+                /**
+                 * ノートのサーバー情報の表示位置
+                 */
+                readonly "label": string;
+                /**
+                 * デフォルト
+                 */
+                readonly "default": string;
+                /**
+                 * 縦 (左端)
+                 */
+                readonly "leftVerticalBar": string;
+                /**
+                 * 縦 (右端)
+                 */
+                readonly "rightVerticalBar": string;
+                /**
+                 * 透かし (左下)
+                 */
+                readonly "leftWatermark": string;
+                /**
+                 * 透かし (右下)
+                 */
+                readonly "rightWatermark": string;
+            };
             readonly "_superMenuDisplayMode": {
                 /**
                  * 設定メニューの表示モード
@@ -9878,33 +10619,37 @@ export interface Locale extends ILocale {
                  */
                 readonly "forceList": string;
             };
-            readonly "_pakuru": {
+            readonly "_pullToRefreshSensitivity": {
                 /**
-                 * 「パクる」機能を有効にする
+                 * 「引っ張ってリロード」の感度
                  */
                 readonly "label": string;
                 /**
-                 * リノートメニューに「パクる」を追加します。添付ファイルを含むノートをパクる場合、時間がかかる場合があります。
+                 * 離してリロードするまでの所要スクロールを変更します。
                  */
                 readonly "caption": string;
                 /**
-                 * 「パクる」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
+                 * 低感度
                  */
-                readonly "warning": string;
+                readonly "low": string;
+                /**
+                 * 中感度 (規定)
+                 */
+                readonly "middle": string;
+                /**
+                 * 高感度
+                 */
+                readonly "high": string;
             };
-            readonly "_numberquote": {
+            readonly "_pullToRefreshAllReload": {
                 /**
-                 * 「数字引用」機能を有効にする
+                 * 「引っ張ってリロード」でページ全体を再読み込みする
                  */
                 readonly "label": string;
                 /**
-                 * リノートメニューに「数字引用する」を追加します。添付ファイルを含むノートを数字引用する場合、時間がかかる場合があります。
+                 * 構成しているページ全体を再読み込みする動作に置き換えます。
                  */
                 readonly "caption": string;
-                /**
-                 * 「数字引用」は身内ノリに特化した機能です。悪用や嫌がらせなどを目的として使用しないようにしましょう。
-                 */
-                readonly "warning": string;
             };
         };
         readonly "_flags": {
@@ -9928,6 +10673,16 @@ export interface Locale extends ILocale {
              * {x}を開く
              */
             readonly "openX": ParameterizedString<"x">;
+            readonly "_preventLongPressContextMenu": {
+                /**
+                 * 長押しによるコンテキストメニューイベントの発行を防ぐ
+                 */
+                readonly "label": string;
+                /**
+                 * 長押しを含む操作が中断される問題を解消します。
+                 */
+                readonly "caption": string;
+            };
             readonly "_backupAndSyncingCustomCss": {
                 readonly "_backup": {
                     /**
@@ -10043,6 +10798,86 @@ export interface Locale extends ILocale {
              * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。
              */
             readonly "repositoryUrlDescription": string;
+        };
+        readonly "_search": {
+            /**
+             * 全て
+             */
+            readonly "searchScopeAll": string;
+            /**
+             * ローカル
+             */
+            readonly "searchScopeLocal": string;
+            /**
+             * サーバー指定
+             */
+            readonly "searchScopeServer": string;
+            /**
+             * ユーザー指定
+             */
+            readonly "searchScopeUser": string;
+            /**
+             * サーバーのホストを入力してください
+             */
+            readonly "pleaseEnterServerHost": string;
+            /**
+             * ユーザーを選択してください
+             */
+            readonly "pleaseSelectUser": string;
+            /**
+             * 例: misskey.example.com
+             */
+            readonly "serverHostPlaceholder": string;
+        };
+        readonly "_abuseUserReport": {
+            /**
+             * 解決済み
+             */
+            readonly "resolved": string;
+            /**
+             * {user}によって解決済み
+             */
+            readonly "resolvedBy": ParameterizedString<"user">;
+            /**
+             * 是認としてマーク済み
+             */
+            readonly "markedAsAccept": string;
+            /**
+             * 否認としてマーク済み
+             */
+            readonly "markedAsReject": string;
+            /**
+             * 投稿元のサーバーに転送済み
+             */
+            readonly "forwardedReport": string;
+            /**
+             * 是認としてマークして解決
+             */
+            readonly "markAsAcceptedAndResolve": string;
+            /**
+             * 否認としてマークして解決
+             */
+            readonly "markAsRejectedAndResolve": string;
+            /**
+             * その他としてマークして解決
+             */
+            readonly "markAsOtherAndResolve": string;
+            /**
+             * 投稿元のサーバーに通報を転送
+             */
+            readonly "forwardReport": string;
+            /**
+             * 通報メモ
+             */
+            readonly "reportMemo": string;
+            /**
+             * 通報メモを追加
+             */
+            readonly "addReportMemo": string;
+            /**
+             * 通報メモはモデレーター間で共有されます。
+             */
+            readonly "reportMemoIsSharedAmongModerators": string;
         };
     };
 }

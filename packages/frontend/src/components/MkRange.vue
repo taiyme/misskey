@@ -5,7 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="timctyfi" :class="{ disabled, easing }">
-	<div class="label"><slot name="label"></slot></div>
+	<div class="label">
+		<slot name="label"></slot>
+	</div>
 	<div v-adaptive-border class="body">
 		<div ref="containerEl" class="container">
 			<div class="track">
@@ -14,16 +16,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="steps && showTicks" class="ticks">
 				<div v-for="i in (steps + 1)" class="tick" :style="{ left: (((i - 1) / steps) * 100) + '%' }"></div>
 			</div>
-			<div ref="thumbEl" v-tooltip="textConverter(finalValue)" class="thumb" :style="{ left: thumbPosition + 'px' }" @mousedown="onMousedown" @touchstart="onMousedown"></div>
+			<div
+				ref="thumbEl"
+				class="thumb"
+				:style="{ left: thumbPosition + 'px' }"
+				@mouseenter.passive="onMouseenter"
+				@mousedown="onMousedown"
+				@touchstart="onMousedown"
+			></div>
 		</div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<div class="caption">
+		<slot name="caption"></slot>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
-import * as os from '@/os.js';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { isTouchUsing } from '@/scripts/touch.js';
+import { popup } from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -101,17 +113,43 @@ const steps = computed(() => {
 	}
 });
 
-const onMousedown = (ev: MouseEvent | TouchEvent) => {
-	ev.preventDefault();
+const tooltipForDragShowing = ref(false);
+const tooltipForHoverShowing = ref(false);
 
-	const tooltipShowing = ref(true);
-	os.popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
-		showing: tooltipShowing,
+function onMouseenter() {
+	if (isTouchUsing) return;
+
+	tooltipForHoverShowing.value = true;
+
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+		showing: computed(() => tooltipForHoverShowing.value && !tooltipForDragShowing.value),
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
 		targetElement: thumbEl,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
+
+	thumbEl.value!.addEventListener('mouseleave', () => {
+		tooltipForHoverShowing.value = false;
+	}, { once: true, passive: true });
+}
+
+function onMousedown(ev: MouseEvent | TouchEvent) {
+	ev.preventDefault();
+
+	tooltipForDragShowing.value = true;
+
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+		showing: tooltipForDragShowing,
+		text: computed(() => {
+			return props.textConverter(finalValue.value);
+		}),
+		targetElement: thumbEl,
+	}, {
+		closed: () => dispose(),
+	});
 
 	const style = document.createElement('style');
 	style.appendChild(document.createTextNode('* { cursor: grabbing !important; } body * { pointer-events: none !important; }'));
@@ -135,7 +173,7 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 
 	const onMouseup = () => {
 		document.head.removeChild(style);
-		tooltipShowing.value = false;
+		tooltipForDragShowing.value = false;
 		window.removeEventListener('mousemove', onDrag);
 		window.removeEventListener('touchmove', onDrag);
 		window.removeEventListener('mouseup', onMouseup);
@@ -148,11 +186,11 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 		}
 	};
 
-	window.addEventListener('mousemove', onDrag);
-	window.addEventListener('touchmove', onDrag);
-	window.addEventListener('mouseup', onMouseup, { once: true });
-	window.addEventListener('touchend', onMouseup, { once: true });
-};
+	window.addEventListener('mousemove', onDrag, { passive: false });
+	window.addEventListener('touchmove', onDrag, { passive: false });
+	window.addEventListener('mouseup', onMouseup, { passive: true, once: true });
+	window.addEventListener('touchend', onMouseup, { passive: true, once: true });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -260,12 +298,12 @@ const onMousedown = (ev: MouseEvent | TouchEvent) => {
 			> .container {
 				> .track {
 					> .highlight {
-						transition: width 0.2s cubic-bezier(0,0,0,1);
+						transition: width 0.2s cubic-bezier(0, 0, 0, 1);
 					}
 				}
 
 				> .thumb {
-					transition: left 0.2s cubic-bezier(0,0,0,1);
+					transition: left 0.2s cubic-bezier(0, 0, 0, 1);
 				}
 			}
 		}

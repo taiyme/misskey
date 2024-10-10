@@ -6,6 +6,7 @@
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { popup } from '@/os.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el, binding, vn) {
 		// 明示的に false であればバインドしない
@@ -17,7 +18,9 @@ export default {
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
 
-			popup(MkRippleEffect, { x, y }, {}, 'end');
-		});
+			const { dispose } = popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
+		}, { passive: true });
 	},
 };

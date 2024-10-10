@@ -23,4 +23,3 @@ misskeyApi('roles/list').then(res => {
 	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => b.displayOrder - a.displayOrder);
 });
 </script>
-

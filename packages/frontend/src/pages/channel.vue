@@ -72,6 +72,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
@@ -82,7 +84,7 @@ import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import MkNotes from '@/components/MkNotes.vue';
-import { url } from '@/config.js';
+import { favoritedChannelsCache } from '@/cache.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import { defaultStore } from '@/store.js';
@@ -90,9 +92,8 @@ import MkNote from '@/components/MkNote.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { PageHeaderItem } from '@/types/page-header.js';
 import { isSupportShare } from '@/scripts/navigator.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router/supplier.js';
 
@@ -153,6 +154,7 @@ function favorite() {
 		channelId: channel.value.id,
 	}).then(() => {
 		favorited.value = true;
+		favoritedChannelsCache.delete();
 	});
 }
 
@@ -168,6 +170,7 @@ async function unfavorite() {
 		channelId: channel.value.id,
 	}).then(() => {
 		favorited.value = false;
+		favoritedChannelsCache.delete();
 	});
 }
 
@@ -202,7 +205,7 @@ const headerActions = computed(() => {
 					console.warn('failed to copy channel URL. channel.value is null.');
 					return;
 				}
-				copyToClipboard(`${url}/channels/${channel.value.id}`);
+				copyText(`${url}/channels/${channel.value.id}`);
 				os.success();
 			},
 		});
@@ -307,7 +310,7 @@ definePageMetadata(() => ({
 	left: 0;
 	width: 100%;
 	height: 64px;
-	background: linear-gradient(0deg, var(--panel), var(--X15));
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
 }
 
 .bannerStatus {

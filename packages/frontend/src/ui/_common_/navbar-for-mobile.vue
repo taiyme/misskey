@@ -6,10 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.top">
-		<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
-		<button class="_button" :class="$style.instance" @click="openInstanceMenu">
-			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
-		</button>
+		<div :class="$style.serverLogo">
+			<TmsServerLogo/>
+		</div>
 	</div>
 	<div :class="$style.middle">
 		<MkA :class="$style.item" :activeClass="$style.active" to="/" exact>
@@ -41,22 +40,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<button class="_button" :class="$style.post" data-cy-open-post-form @click="os.post">
 			<i :class="$style.postIcon" class="ti ti-pencil ti-fw"></i><span style="position: relative;">{{ i18n.ts.note }}</span>
 		</button>
-		<button class="_button" :class="$style.account" @click="openAccountMenu">
-			<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct :class="$style.acct" class="_nowrap" :user="$i"/>
-		</button>
+		<div :class="$style.accountButton">
+			<TmsAccountButton/>
+		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, toRef } from 'vue';
-import { openInstanceMenu } from './common.js';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
+import { $i } from '@/account.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
+import TmsAccountButton from '@/components/TmsAccountButton.vue';
+import TmsServerLogo from '@/components/TmsServerLogo.vue';
 
 const menu = toRef(defaultStore.state, 'menu');
 const otherMenuItemIndicated = computed(() => {
@@ -67,20 +66,17 @@ const otherMenuItemIndicated = computed(() => {
 	return false;
 });
 
-function openAccountMenu(ev: MouseEvent) {
-	openAccountMenu_({
-		withExtraOperation: true,
-	}, ev);
-}
-
 function more() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {
-	}, 'closed');
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {}, {
+		closed: () => dispose(),
+	});
 }
 </script>
 
 <style lang="scss" module>
 .root {
+	--nav-bg-transparent: color(from var(--navBg) srgb r g b / 0.5);
+
 	display: flex;
 	flex-direction: column;
 }
@@ -89,42 +85,20 @@ function more() {
 	position: sticky;
 	top: 0;
 	z-index: 1;
-	padding: 20px 0;
-	background: var(--X14);
+	background: var(--nav-bg-transparent);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(8px));
 }
 
-.banner {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-size: cover;
-	background-position: center center;
-	-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-	mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-}
-
-.instance {
-	position: relative;
-	display: block;
-	text-align: center;
-	width: 100%;
-}
-
-.instanceIcon {
-	display: inline-block;
-	width: 38px;
-	aspect-ratio: 1;
+.serverLogo {
+	--tmsServerLogo-padding: 20px 12px;
 }
 
 .bottom {
 	position: sticky;
 	bottom: 0;
-	padding: 20px 0;
-	background: var(--X14);
+	padding-top: 20px;
+	background: var(--nav-bg-transparent);
 	-webkit-backdrop-filter: var(--blur, blur(8px));
 	backdrop-filter: var(--blur, blur(8px));
 }
@@ -138,23 +112,29 @@ function more() {
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);
 		height: 100%;
 		margin: auto;
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		inset: 0;
 		border-radius: 999px;
 		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 	}
 
+	&:focus-visible {
+		outline: none;
+
+		&::before {
+			outline: 2px solid var(--focus);
+			outline-offset: -4px;
+		}
+	}
+
 	&:hover, &.active {
-		&:before {
+		&::before {
 			background: var(--accentLighten);
 		}
 	}
@@ -167,30 +147,8 @@ function more() {
 	width: 32px;
 }
 
-.account {
-	position: relative;
-	display: flex;
-	align-items: center;
-	padding-left: 30px;
-	width: 100%;
-	text-align: left;
-	box-sizing: border-box;
-	margin-top: 16px;
-}
-
-.avatar {
-	display: block;
-	flex-shrink: 0;
-	position: relative;
-	width: 32px;
-	aspect-ratio: 1;
-	margin-right: 8px;
-}
-
-.acct {
-	display: block;
-	flex-shrink: 1;
-	padding-right: 8px;
+.accountButton {
+	--tmsAccountButton-padding: 20px 12px;
 }
 
 .middle {
@@ -215,28 +173,32 @@ function more() {
 	box-sizing: border-box;
 	color: var(--navFg);
 
-	&:hover {
-		text-decoration: none;
-		color: var(--navHoverFg);
+	&::before {
+		content: "";
+		display: block;
+		width: calc(100% - 24px);
+		height: 100%;
+		margin: auto;
+		position: absolute;
+		inset: 0;
+		border-radius: 999px;
+		background: transparent;
 	}
 
-	&.active {
-		color: var(--navActive);
+	&:focus-visible {
+		outline: none;
+
+		&::before {
+			outline: 2px solid var(--focus);
+			outline-offset: -2px;
+		}
 	}
 
 	&:hover, &.active {
-		&:before {
-			content: "";
-			display: block;
-			width: calc(100% - 24px);
-			height: 100%;
-			margin: auto;
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			border-radius: 999px;
+		text-decoration: none;
+		color: var(--accent);
+
+		&::before {
 			background: var(--accentedBg);
 		}
 	}

@@ -25,4 +25,3 @@ definePageMetadata(() => ({
 	icon: 'ti ti-ad',
 }));
 </script>
-

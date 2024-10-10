@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, shallowRef, ref } from 'vue';
 import MkMenu from './MkMenu.vue';
-import { MenuItem } from '@/types/menu.js';
+import type { MenuItem } from '@/types/menu.js';
 import contains from '@/scripts/contains.js';
 import { defaultStore } from '@/store.js';
 import * as os from '@/os.js';
@@ -47,12 +47,12 @@ onMounted(() => {
 	const width = rootEl.value!.offsetWidth;
 	const height = rootEl.value!.offsetHeight;
 
-	if (left + width - window.pageXOffset >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
-		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset;
+	if (left + width - window.scrollX >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.scrollX;
 	}
 
-	if (top + height - window.pageYOffset >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
-		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.pageYOffset;
+	if (top + height - window.scrollY >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = (window.innerHeight - SCROLLBAR_THICKNESS) - height + window.scrollY;
 	}
 
 	if (top < 0) {
@@ -68,7 +68,7 @@ onMounted(() => {
 		rootEl.value.style.left = `${left}px`;
 	}
 
-	document.body.addEventListener('mousedown', onMousedown);
+	document.body.addEventListener('mousedown', onMousedown, { passive: true });
 });
 
 onBeforeUnmount(() => {

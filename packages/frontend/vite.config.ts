@@ -6,18 +6,38 @@ import { type UserConfig, defineConfig } from 'vite';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
+import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
 
 const commitHash = (() => {
 	try {
-		return execSync('git show --format=\'%h\' --no-patch').toString().trim() || null;
-	} catch {
+		const rawCommitHash = execSync('git show --format=\'%H\' --no-patch').toString().trim();
+		return rawCommitHash.slice(0, 9) || null;
+	} catch (err) {
 		return null;
 	}
 })();
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+/**
+ * Misskeyのフロントエンドにバンドルせず、CDNなどから別途読み込むリソースを記述する。
+ * CDNを使わずにバンドルしたい場合、以下の配列から該当要素を削除orコメントアウトすればOK
+ */
+const externalPackages = [
+	// shiki（コードブロックのシンタックスハイライトで使用中）はテーマ・言語の定義の容量が大きいため、それらはCDNから読み込む
+	{
+		name: 'shiki',
+		match: /^shiki\/(?<subPkg>(langs|themes))$/,
+		path(id: string, pattern: RegExp): string {
+			const match = pattern.exec(id)?.groups;
+			return match
+				? `https://esm.sh/shiki@${packageInfo.dependencies.shiki}/${match['subPkg']}`
+				: id;
+		},
+	},
+];
 
 const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed,
@@ -55,6 +75,9 @@ export function getConfig(): UserConfig {
 
 		server: {
 			port: 5173,
+			headers: { // なんか効かない
+				'X-Frame-Options': 'DENY',
+			},
 		},
 
 		plugins: [
@@ -77,6 +100,7 @@ export function getConfig(): UserConfig {
 			extensions,
 			alias: {
 				'@/': __dirname + '/src/',
+				'@@/': __dirname + '/../frontend-shared/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
@@ -93,6 +117,11 @@ export function getConfig(): UserConfig {
 					} else {
 						return id;
 					}
+				},
+			},
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler',
 				},
 			},
 		},
@@ -122,6 +151,7 @@ export function getConfig(): UserConfig {
 				input: {
 					app: './src/_boot_.ts',
 				},
+				external: externalPackages.map(p => p.match),
 				output: {
 					manualChunks: {
 						vue: ['vue'],
@@ -129,10 +159,19 @@ export function getConfig(): UserConfig {
 					},
 					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
 					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					paths(id) {
+						for (const p of externalPackages) {
+							if (p.match.test(id)) {
+								return p.path(id, p.match);
+							}
+						}
+
+						return id;
+					},
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_vite_',
+			outDir: __dirname + '/../../built/_frontend_vite_',
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',

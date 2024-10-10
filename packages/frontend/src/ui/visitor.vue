@@ -70,7 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, provide, ref } from 'vue';
-import { instanceName } from '@/config.js';
+import { instanceName } from '@@/js/config.js';
+import XCommon from './_common_/common.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
@@ -79,7 +80,9 @@ import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import XCommon from './_common_/common.vue';
+import { provideUi } from '@/scripts/tms/provide-ui.js';
+
+provideUi('visitor');
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -109,7 +112,7 @@ provideMetadataReceiver((metadataGetter) => {
 });
 provideReactiveMetadata(pageMetadata);
 
-const isTimelineAvailable = ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
+const isTimelineAvailable = ref(instance.policies.ltlAvailable || instance.policies.gtlAvailable);
 
 const drawerMenuShowing = ref(false);
 
@@ -118,15 +121,19 @@ mainRouter.on('change', () => {
 });
 
 function signin() {
-	os.popup(XSigninDialog, {
+	const { dispose } = os.popup(XSigninDialog, {
 		autoSet: true,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 function signup() {
-	os.popup(XSignupDialog, {
+	const { dispose } = os.popup(XSignupDialog, {
 		autoSet: true,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 </script>
 

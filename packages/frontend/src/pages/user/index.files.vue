@@ -67,11 +67,13 @@ onMounted(() => {
 		limit: 15,
 	}).then(notes => {
 		for (const note of notes) {
-			for (const file of note.files) {
-				files.value.push({
-					note,
-					file,
-				});
+			for (const file of note.files ?? []) {
+				if (file.type.startsWith('image')) {
+					files.value.push({
+						note,
+						file,
+					});
+				}
 			}
 		}
 		fetching.value = false;
@@ -87,7 +89,7 @@ onMounted(() => {
 .stream {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-	grid-gap: 6px;
+	gap: 6px;
 }
 
 .img {
@@ -112,6 +114,7 @@ onMounted(() => {
 	height: 100%;
 	filter: brightness(0.7);
 }
+
 .sensitive {
 	position: absolute;
 	top: 0;

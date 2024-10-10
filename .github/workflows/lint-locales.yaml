@@ -1,0 +1,131 @@
+name: Lint locales
+
+on:
+  push:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - .github/workflows/lint-locales.yaml
+      - locales/**/*
+
+  pull_request_target:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - locales/**/*
+
+permissions:
+  contents: read
+
+jobs:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  check-verify:
+    name: Check verify
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Check Verify
+        working-directory: locales
+        run: |
+          node verify.js
+
+  check-dts:
+    name: Check locale type
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Generate locale type
+        run: |
+          node --input-type=module \
+            --eval 'import generateDTS from "./locales/generateDTS.js"; generateDTS();'
+
+      - name: Check locale type changes
+        id: check-changes
+        run: |
+          if git diff --name-only HEAD | grep -x locales/index.d.ts; then
+            echo 'changes=true' >> $GITHUB_OUTPUT
+          else
+            echo 'changes=false' >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR (update)
+        if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'true'
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: check-locale-type
+          recreate: true
+          message: |
+            ### ${{ github.workflow }}
+
+            Please regenerate locale type definitions! :pray:\
+            locale型定義の再生成をお願いします！ :pray:
+
+            ```sh
+            pnpm run build-assets
+            ```
+
+      - name: Comment on PR (delete)
+        if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'false'
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: check-locale-type
+          delete: true
+
+      - name: Make failure if changes are detected
+        if: steps.check-changes.outputs.changes == 'true'
+        run: exit 1

@@ -5,7 +5,7 @@
 
 import { App } from 'vue';
 
-import Mfm from './global/MkMisskeyFlavoredMarkdown.js';
+import Mfm from './global/MkMfm.js';
 import MkA from './global/MkA.vue';
 import MkAcct from './global/MkAcct.vue';
 import MkAvatar from './global/MkAvatar.vue';
@@ -28,6 +28,7 @@ import MkStickyContainer from './global/MkStickyContainer.vue';
 import MkLazy from './global/MkLazy.vue';
 import TmsNoCache from './global/TmsNoCache.vue';
 
+// eslint-disable-next-line import/no-default-export
 export default function(app: App) {
 	for (const [key, value] of Object.entries(components)) {
 		app.component(key, value);

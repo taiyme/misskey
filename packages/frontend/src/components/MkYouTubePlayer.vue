@@ -4,7 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true">
+<MkWindow
+	:initialWidth="640"
+	:initialHeight="402"
+	:canResize="true"
+	:closeButton="true"
+	@closed="emit('closed')"
+>
 	<template #header>
 		<i class="icon ti ti-brand-youtube" style="margin-right: 0.5em;"></i>
 		<span>{{ title ?? 'YouTube' }}</span>
@@ -13,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="poamfof">
 		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
-				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+				<iframe v-if="!fetching" :src="transformPlayerUrl(player.url)" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 			</div>
 			<span v-else>invalid url</span>
 		</Transition>
@@ -25,12 +31,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { versatileLang } from '@@/js/intl-const.js';
 import MkWindow from '@/components/MkWindow.vue';
-import { versatileLang } from '@/scripts/intl-const.js';
+import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
 import { defaultStore } from '@/store.js';
 
 const props = defineProps<{
 	url: string;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const requestUrl = new URL(props.url);

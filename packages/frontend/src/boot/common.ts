@@ -5,11 +5,11 @@
 
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
+import { version, lang, updateLocale, locale, commitHash } from '@@/js/config.js';
 import type { CustomCSSBackup } from '@/pages/tms/backup-and-syncing-custom-css/backup.vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
-import { version, lang, updateLocale, locale } from '@/config.js';
 import { applyTheme } from '@/scripts/theme.js';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
 import { updateI18n } from '@/i18n.js';
@@ -23,14 +23,15 @@ import { getAccountFromId } from '@/scripts/get-account-from-id.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { setupRouter } from '@/router/definition.js';
+import { setupRouter } from '@/router/main.js';
+import { createMainRouter } from '@/router/definition.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
 import { useStream } from '@/stream.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { preventLongPressContextMenu } from '@/scripts/tms/prevent-longpress-contextmenu.js';
 
 export async function common(createVue: () => App<Element>) {
-	console.info(`Misskey v${version}`);
+	console.info(`taiyme v${version}`);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
@@ -51,7 +52,7 @@ export async function common(createVue: () => App<Element>) {
 				text: event.message
 			});
 			*/
-		});
+		}, { passive: true });
 
 		window.addEventListener('unhandledrejection', event => {
 			console.error(event);
@@ -62,7 +63,7 @@ export async function common(createVue: () => App<Element>) {
 				text: event.reason
 			});
 			*/
-		});
+		}, { passive: true });
 	}
 
 	let isClientUpdated = false;
@@ -76,23 +77,24 @@ export async function common(createVue: () => App<Element>) {
 		miLocalStorage.removeItem('theme');
 
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
-			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
-				isClientUpdated = true;
-			}
+			const a = version.split('-').at(0);
+			const b = lastVersion?.split('-').at(0);
+			isClientUpdated = a != null && b != null && compareVersions(a, b) === 1;
 		} catch (err) { /* empty */ }
 	}
 	//#endregion
 
 	//#region Detect language & fetch translations
-	const localeVersion = miLocalStorage.getItem('localeVersion');
-	const localeOutdated = (localeVersion == null || localeVersion !== version || locale == null);
+	const revision = commitHash ?? 'unknown';
+	const newLocaleVersion = `${version}+REV:${revision}`;
+	const localeOutdated = miLocalStorage.getItem('localeVersion') !== newLocaleVersion || locale == null;
 	if (localeOutdated) {
-		const res = await window.fetch(`/assets/locales/${lang}.${version}.json`);
+		const res = await window.fetch(`/assets/locales/${lang}.${version}.json?rev=${revision}`);
 		if (res.status === 200) {
 			const newLocale = await res.text();
 			const parsedNewLocale = JSON.parse(newLocale);
 			miLocalStorage.setItem('locale', newLocale);
-			miLocalStorage.setItem('localeVersion', version);
+			miLocalStorage.setItem('localeVersion', newLocaleVersion);
 			updateLocale(parsedNewLocale);
 			updateI18n(parsedNewLocale);
 		}
@@ -125,6 +127,10 @@ export async function common(createVue: () => App<Element>) {
 	await tmsStore.loaded;
 	await tmsFlaskStore.loaded;
 
+	if (tmsFlaskStore.state.preventLongPressContextMenu) {
+		preventLongPressContextMenu();
+	}
+
 	const fetchInstanceMetaPromise = fetchInstance();
 
 	fetchInstanceMetaPromise.then(() => {
@@ -154,6 +160,8 @@ export async function common(createVue: () => App<Element>) {
 		applyTheme(darkMode ? ColdDeviceStorage.get('darkTheme') : ColdDeviceStorage.get('lightTheme'));
 	}, { immediate: miLocalStorage.getItem('theme') == null });
 
+	document.documentElement.dataset.colorScheme = defaultStore.state.darkMode ? 'dark' : 'light';
+
 	const darkTheme = computed(ColdDeviceStorage.makeGetterSetter('darkTheme'));
 	const lightTheme = computed(ColdDeviceStorage.makeGetterSetter('lightTheme'));
 
@@ -178,7 +186,7 @@ export async function common(createVue: () => App<Element>) {
 		if (ColdDeviceStorage.get('syncDeviceDarkMode')) {
 			defaultStore.set('darkMode', mql.matches);
 		}
-	});
+	}, { passive: true });
 	//#endregion
 
 	fetchInstanceMetaPromise.then(() => {
@@ -237,7 +245,7 @@ export async function common(createVue: () => App<Element>) {
 		if (document.visibilityState === 'visible') {
 			navigator.wakeLock.request('screen');
 		}
-	});
+	}, { passive: true });
 	if (defaultStore.state.keepScreenOn && 'wakeLock' in navigator) {
 		navigator.wakeLock.request('screen')
 			.then(onVisibilityChange)
@@ -247,7 +255,7 @@ export async function common(createVue: () => App<Element>) {
 				document.addEventListener(
 					'click',
 					() => navigator.wakeLock.request('screen').then(onVisibilityChange),
-					{ once: true },
+					{ passive: true, once: true },
 				);
 			});
 	}
@@ -268,7 +276,7 @@ export async function common(createVue: () => App<Element>) {
 
 	const app = createVue();
 
-	setupRouter(app);
+	setupRouter(app, createMainRouter);
 
 	if (_DEV_) {
 		app.config.performance = true;

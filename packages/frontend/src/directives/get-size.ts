@@ -37,6 +37,7 @@ function calc(src: Element) {
 	info.fn(width, height);
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(src, binding, vn) {
 		const resize = new ResizeObserver((entries, observer) => {

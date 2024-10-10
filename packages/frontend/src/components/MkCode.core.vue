@@ -3,15 +3,15 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<!-- eslint-disable vue/no-v-html -->
 <template>
+<!-- eslint-disable-next-line vue/no-v-html -->
 <div :class="[$style.codeBlockRoot, { [$style.codeEditor]: codeEditor }, (darkMode ? $style.dark : $style.light)]" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
-import { bundledLanguagesInfo } from 'shiki';
-import type { BuiltinLanguage } from 'shiki';
+import { computed, ref, watch } from 'vue';
+import { bundledLanguagesInfo } from 'shiki/langs';
+import type { BundledLanguage } from 'shiki/langs';
 import { getHighlighter, getTheme } from '@/scripts/code-highlighter.js';
 import { defaultStore } from '@/store.js';
 
@@ -23,7 +23,7 @@ const props = defineProps<{
 
 const highlighter = await getHighlighter();
 const darkMode = defaultStore.reactiveState.darkMode;
-const codeLang = ref<BuiltinLanguage | 'aiscript'>('js');
+const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
 const [lightThemeName, darkThemeName] = await Promise.all([
 	getTheme('light', true),
@@ -42,7 +42,7 @@ const html = computed(() => highlighter.codeToHtml(props.code, {
 }));
 
 async function fetchLanguage(to: string): Promise<void> {
-	const language = to as BuiltinLanguage;
+	const language = to as BundledLanguage;
 
 	// Check for the loaded languages, and load the language if it's not loaded yet.
 	if (!highlighter.getLoadedLanguages().includes(language)) {
@@ -71,7 +71,7 @@ watch(() => props.lang, (to) => {
 }, { immediate: true });
 </script>
 
-<style module lang="scss">
+<style lang="scss" module>
 .codeBlockRoot :global(.shiki) {
 	padding: 1em;
 	margin: .5em 0;

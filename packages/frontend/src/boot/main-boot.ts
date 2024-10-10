@@ -4,22 +4,23 @@
  */
 
 import { createApp, defineAsyncComponent, markRaw } from 'vue';
+import { ui } from '@@/js/config.js';
 import { common } from './common.js';
-import { ui } from '@/config.js';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import { alert, confirm, popup, post, toast } from '@/os.js';
+import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
 import * as sound from '@/scripts/sound.js';
 import { $i, signout, updateAccount } from '@/account.js';
 import { ColdDeviceStorage, defaultStore } from '@/store.js';
-import { makeHotkey } from '@/scripts/hotkey.js';
 import { reactionPicker } from '@/scripts/reaction-picker.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
 import { initializeSw } from '@/scripts/initialize-sw.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mainRouter } from '@/router/main.js';
+import { type Keymap, makeHotkey } from '@/scripts/hotkey.js';
+import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
@@ -34,7 +35,9 @@ export async function mainBoot() {
 	emojiPicker.init();
 
 	if (isClientUpdated && $i) {
-		popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+			closed: () => dispose(),
+		});
 	}
 
 	const stream = useStream();
@@ -58,6 +61,18 @@ export async function mainBoot() {
 		}
 	});
 
+	stream.on('emojiAdded', emojiData => {
+		addCustomEmoji(emojiData.emoji);
+	});
+
+	stream.on('emojiUpdated', emojiData => {
+		updateCustomEmojis(emojiData.emojis);
+	});
+
+	stream.on('emojiDeleted', emojiData => {
+		removeCustomEmojis(emojiData.emojis);
+	});
+
 	for (const plugin of ColdDeviceStorage.get('plugins').filter(p => p.active)) {
 		import('@/plugin.js').then(async ({ install }) => {
 			// Workaround for https://bugs.webkit.org/show_bug.cgi?id=242740
@@ -66,14 +81,6 @@ export async function mainBoot() {
 		});
 	}
 
-	const hotkeys = {
-		'd': (): void => {
-			defaultStore.set('darkMode', !defaultStore.state.darkMode);
-		},
-		's': (): void => {
-			mainRouter.push('/search');
-		},
-	};
 	try {
 		if (defaultStore.state.enableSeasonalScreenEffect) {
 			const month = new Date().getMonth() + 1;
@@ -102,29 +109,34 @@ export async function mainBoot() {
 	}
 
 	if ($i) {
-		// only add post shortcuts if logged in
-		hotkeys['p|n'] = post;
-
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
-				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {
+					closed: () => dispose(),
+				});
 			}
 		});
 
 		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
-			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 		}
 
-		stream.on('announcementCreated', (ev) => {
+		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
-				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 					announcement,
-				}, {}, 'closed');
+				}, {
+					closed: () => dispose(),
+				});
 			}
-		});
+		}
+
+		stream.on('announcementCreated', onAnnouncementCreated);
 
 		if ($i.isDeleted) {
 			alert({
@@ -216,31 +228,25 @@ export async function mainBoot() {
 			claimAchievement('collectAchievements30');
 		}
 
-		window.setInterval(() => {
-			if (Math.floor(Math.random() * 20000) === 0) {
-				claimAchievement('justPlainLucky');
-			}
-		}, 1000 * 10);
-
-		window.setTimeout(() => {
-			claimAchievement('client30min');
-		}, 1000 * 60 * 30);
-
-		window.setTimeout(() => {
-			claimAchievement('client60min');
-		}, 1000 * 60 * 60);
-
-		const lastUsed = miLocalStorage.getItem('lastUsed');
-		if (lastUsed) {
-			const lastUsedDate = parseInt(lastUsed, 10);
-			// 二時間以上前なら
-			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.tsx.welcomeBackWithName({
-					name: $i.name || $i.username,
-				}));
-			}
+		if (!claimedAchievements.includes('justPlainLucky')) {
+			window.setInterval(() => {
+				if (Math.floor(Math.random() * 20000) === 0) {
+					claimAchievement('justPlainLucky');
+				}
+			}, 1000 * 10);
 		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+
+		if (!claimedAchievements.includes('client30min')) {
+			window.setTimeout(() => {
+				claimAchievement('client30min');
+			}, 1000 * 60 * 30);
+		}
+
+		if (!claimedAchievements.includes('client60min')) {
+			window.setTimeout(() => {
+				claimAchievement('client60min');
+			}, 1000 * 60 * 60);
+		}
 
 		if ('Notification' in window) {
 			// 許可を得ていなかったらリクエスト
@@ -300,6 +306,9 @@ export async function mainBoot() {
 			updateAccount({ hasUnreadAnnouncement: false });
 		});
 
+		// 個人宛てお知らせが発行されたとき
+		main.on('announcementCreated', onAnnouncementCreated);
+
 		// トークンが再生成されたとき
 		// このままではMisskeyが利用できないので強制的にサインアウトさせる
 		main.on('myTokenRegenerated', () => {
@@ -308,7 +317,19 @@ export async function mainBoot() {
 	}
 
 	// shortcut
-	document.addEventListener('keydown', makeHotkey(hotkeys));
+	const keymap = {
+		'p|n': () => {
+			if ($i == null) return;
+			post();
+		},
+		'd': () => {
+			defaultStore.set('darkMode', !defaultStore.state.darkMode);
+		},
+		's': () => {
+			mainRouter.push('/search');
+		},
+	} as const satisfies Keymap;
+	document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
 
 	initializeSw();
 }

@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
+<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')" @esc="cancel()">
 	<div :class="$style.root">
 		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>
@@ -36,7 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
-				<option v-for="item in select.items" :value="item.value">{{ item.text }}</option>
+				<template v-for="item in select.items">
+					<optgroup v-if="'sectionTitle' in item" :label="item.sectionTitle">
+						<option v-for="subItem in item.items" :value="subItem.value">{{ subItem.text }}</option>
+					</optgroup>
+					<option v-else :value="item.value">{{ item.text }}</option>
+				</template>
 			</template>
 		</MkSelect>
 		<div v-if="note" :class="$style.note">
@@ -56,14 +61,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref, shallowRef, computed } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import TmsMockNoteSimple from '@/components/TmsMockNoteSimple.vue';
-import { i18n } from '@/i18n.js';
 
 type Input = {
 	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
@@ -74,11 +80,16 @@ type Input = {
 	maxLength?: number;
 };
 
+type SelectItem = {
+	value: any;
+	text: string;
+};
+
 type Select = {
-	items: {
-		value: any;
-		text: string;
-	}[];
+	items: (SelectItem | {
+		sectionTitle: string;
+		items: SelectItem[];
+	})[];
 	default: string | null;
 };
 
@@ -164,24 +175,13 @@ function onBgClick() {
 	if (props.cancelableByBgClick) cancel();
 }
 */
-function onKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Escape') cancel();
-}
 
-function onInputKeydown(evt: KeyboardEvent) {
-	if (evt.key === 'Enter') {
+const onInputKeydown = filterKeyboardNonComposing(evt => {
+	if (evt.key === 'Enter' && okButtonDisabledReason.value === null) {
 		evt.preventDefault();
 		evt.stopPropagation();
 		ok();
 	}
-}
-
-onMounted(() => {
-	document.addEventListener('keydown', onKeydown);
-});
-
-onBeforeUnmount(() => {
-	document.removeEventListener('keydown', onKeydown);
 });
 </script>
 

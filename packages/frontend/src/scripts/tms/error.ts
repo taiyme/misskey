@@ -32,6 +32,7 @@ export const parseErrorMessage = (error: unknown): string => {
 		return `${error.message}\n${error.code}\n${error.id}`;
 	}
 	if (typeof error === 'object' && error != null && 'message' in error && typeof error.message === 'string') {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return `${error.message}\n${(error as any).id}`;
 	}
 	if (typeof error === 'string' && error !== '') {

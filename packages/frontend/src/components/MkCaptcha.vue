@@ -86,7 +86,7 @@ if (loaded || props.provider === 'mcaptcha') {
 		id: scriptId.value,
 		src: src.value,
 	})))
-		.addEventListener('load', () => available.value = true);
+		.addEventListener('load', () => available.value = true, { passive: true });
 }
 
 function reset() {
@@ -104,7 +104,6 @@ async function requestRender() {
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
-		// @ts-expect-error avoid typecheck error
 		new Widget({
 			siteKey: {
 				instanceUrl: new URL(props.instanceUrl),
@@ -130,7 +129,7 @@ function onReceivedMessage(message: MessageEvent) {
 
 onMounted(() => {
 	if (available.value) {
-		window.addEventListener('message', onReceivedMessage);
+		window.addEventListener('message', onReceivedMessage, { passive: true });
 		requestRender();
 	} else {
 		watch(available, requestRender);

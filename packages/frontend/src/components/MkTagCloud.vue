@@ -60,7 +60,7 @@ onMounted(() => {
 		document.head.appendChild(Object.assign(document.createElement('script'), {
 			async: true,
 			src: '/client-assets/tagcanvas.min.js',
-		})).addEventListener('load', () => available.value = true);
+		})).addEventListener('load', () => available.value = true, { passive: true });
 	}
 });
 

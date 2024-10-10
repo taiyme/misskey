@@ -11,8 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="isExpired" style="color: var(--error)">{{ i18n.ts.expired }}</span>
 		<span v-else style="color: var(--success)">{{ i18n.ts.unused }}</span>
 	</template>
+	<template #footer>
+		<div class="_buttons">
+			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+		</div>
+	</template>
 
-	<div class="_gaps_s" :class="$style.root">
+	<div :class="$style.root">
 		<div :class="$style.items">
 			<div>
 				<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
@@ -49,10 +55,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
 			</div>
 		</div>
-		<div :class="$style.buttons">
-			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
-			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
-		</div>
 	</div>
 </MkFolder>
 </template>
@@ -62,7 +64,7 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -87,7 +89,7 @@ function deleteCode() {
 }
 
 function copyInviteCode() {
-	copyToClipboard(props.invite.code);
+	copyText(props.invite.code);
 	os.success();
 }
 </script>
@@ -100,7 +102,7 @@ function copyInviteCode() {
 .items {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	grid-gap: 12px;
+	gap: 12px;
 }
 
 .label {
@@ -120,10 +122,5 @@ function copyInviteCode() {
 	--height: 24px;
 	width: var(--height);
 	height: var(--height);
-}
-
-.buttons {
-	display: flex;
-	gap: 8px;
 }
 </style>

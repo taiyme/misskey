@@ -5,6 +5,7 @@
 
 import { App, defineAsyncComponent } from 'vue';
 
+// eslint-disable-next-line import/no-default-export
 export default function(app: App) {
 	app.component('WidgetProfile', defineAsyncComponent(() => import('./WidgetProfile.vue')));
 	app.component('WidgetInstanceInfo', defineAsyncComponent(() => import('./WidgetInstanceInfo.vue')));

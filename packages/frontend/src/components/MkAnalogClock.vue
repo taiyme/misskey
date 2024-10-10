@@ -182,7 +182,7 @@ function tick() {
 					}
 				});
 			});
-		}, { once: true });
+		}, { passive: true, once: true });
 	} else {
 		sAngle.value = Math.PI * s.value / 30;
 	}

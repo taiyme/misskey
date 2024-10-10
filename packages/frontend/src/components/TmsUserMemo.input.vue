@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps_s">
+<div>
 	<div :class="$style.textarea" @click="focus">
 		<div :class="$style.heading"><slot name="heading"></slot></div>
 		<textarea
@@ -12,17 +12,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-model="modelValue"
 			:class="$style.core"
 			rows="1"
-			@input="adjustInputEl"
+			@input.passive="adjustInputEl"
+			@compositionupdate.passive="onCompositionUpdate"
+			@compositionend.passive="onCompositionEnd"
 		/>
 	</div>
-	<div v-if="changed" class="_buttons">
-		<MkButton small primary @click="update"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<div v-if="changed" :class="$style.footer">
+		<div :class="$style.caption"><slot name="caption"></slot></div>
+		<MkButton small primary :class="$style.save" @click="update"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
+import { computed, nextTick, onMounted, ref, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -36,11 +39,14 @@ const emit = defineEmits<{
 
 const inputEl = shallowRef<HTMLTextAreaElement>();
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const modelValue = ref(props.modelValue);
 
 const beforeValue = ref(modelValue.value);
 
-const changed = computed(() => modelValue.value !== beforeValue.value);
+const imeText = ref('');
+
+const changed = computed(() => `${modelValue.value}${imeText.value}` !== beforeValue.value);
 
 const update = () => {
 	beforeValue.value = modelValue.value;
@@ -54,9 +60,23 @@ const adjustInputEl = () => {
 	inputEl.value.style.height = `${inputEl.value.scrollHeight}px`;
 };
 
+const onCompositionUpdate = (ev: CompositionEvent) => {
+	imeText.value = ev.data;
+};
+
+const onCompositionEnd = () => {
+	imeText.value = '';
+};
+
 const focus = () => {
 	inputEl.value?.focus();
 };
+
+onMounted(() => {
+	nextTick(() => {
+		adjustInputEl();
+	});
+});
 
 defineExpose({
 	focus,
@@ -98,5 +118,27 @@ defineExpose({
 	overflow: hidden;
 	background: transparent;
 	font-family: inherit;
+}
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 6px 0 0 0;
+}
+
+.caption {
+	font-size: 0.85em;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.save {
+	margin-left: auto;
 }
 </style>

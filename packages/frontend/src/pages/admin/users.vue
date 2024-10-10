@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSelect>
 			</div>
 			<div :class="$style.inputs">
-				<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:modelValue="$refs.users.reload()">
+				<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false">
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.username }}</template>
 				</MkInput>
-				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
+				<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'">
 					<template #prefix>@</template>
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
@@ -60,7 +60,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import * as os from '@/os.js';
-import { lookupUser } from '@/scripts/lookup-user.js';
+import { lookupUser } from '@/scripts/admin-lookup.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -150,7 +150,7 @@ definePageMetadata(() => ({
 .users {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-	grid-gap: 12px;
+	gap: 12px;
 
 	> .user:hover {
 		text-decoration: none;

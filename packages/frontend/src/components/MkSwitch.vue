@@ -4,14 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.disabled]: disabled }]">
-	<input
-		ref="input"
-		type="checkbox"
-		:disabled="disabled"
-		:class="$style.input"
-		@keydown.enter="toggle"
-	>
+<div
+	role="switch"
+	tabindex="0"
+	:aria-checked="checked"
+	:aria-disabled="disabled"
+	:class="{
+		[$style.root]: true,
+		[$style.disabled]: disabled,
+	}"
+	@keydown="onKeydown"
+>
 	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
 	<span :class="$style.body">
 		<!-- TODO: 無名slotの方は廃止 -->
@@ -27,22 +30,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toRefs, Ref } from 'vue';
+import { type MaybeRef, computed, unref } from 'vue';
+import { filterKeyboardEnterOrSpace } from '@/scripts/tms/filter-keyboard.js';
 import XButton from '@/components/MkSwitch.button.vue';
 
-const props = defineProps<{
-	modelValue: boolean | Ref<boolean>;
-	disabled?: boolean;
+const props = withDefaults(defineProps<{
+	modelValue: MaybeRef<boolean>;
+	disabled?: MaybeRef<boolean>;
 	helpText?: string;
-}>();
+}>(), {
+	disabled: false,
+	helpText: undefined,
+});
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
-const checked = toRefs(props).modelValue;
+const checked = computed(() => unref(props.modelValue));
+const disabled = computed(() => unref(props.disabled));
+
+const onKeydown = filterKeyboardEnterOrSpace(() => toggle());
+
 const toggle = () => {
-	if (props.disabled) return;
+	if (disabled.value) return;
 	emit('update:modelValue', !checked.value);
 };
 </script>
@@ -51,13 +62,10 @@ const toggle = () => {
 .root {
 	position: relative;
 	display: flex;
-	transition: all 0.2s ease;
 	user-select: none;
 
-	&:hover {
-		> .button {
-			border-color: var(--inputBorderHover) !important;
-		}
+	&:focus-visible {
+		outline-offset: 2px;
 	}
 
 	&.disabled {
@@ -66,13 +74,6 @@ const toggle = () => {
 	}
 }
 
-.input {
-	position: absolute;
-	width: 0;
-	height: 0;
-	opacity: 0;
-	margin: 0;
-}
 .body {
 	margin-left: 12px;
 	margin-top: 2px;

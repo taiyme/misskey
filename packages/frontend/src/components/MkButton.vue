@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:type="type"
 	:name="name"
 	:value="value"
+	:disabled="disabled"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
@@ -23,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-else class="_button"
 	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
 	:to="to ?? '#'"
+	:behavior="linkBehavior"
 	@mousedown="onMousedown"
 >
 	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
@@ -43,6 +45,7 @@ const props = defineProps<{
 	inline?: boolean;
 	link?: boolean;
 	to?: string;
+	linkBehavior?: null | 'window' | 'browser';
 	autofocus?: boolean;
 	wait?: boolean;
 	danger?: boolean;
@@ -53,6 +56,7 @@ const props = defineProps<{
 	asLike?: boolean;
 	name?: string;
 	value?: string;
+	disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -168,11 +172,11 @@ function onMousedown(evt: MouseEvent): void {
 		background: var(--accent);
 
 		&:not(:disabled):hover {
-			background: var(--X8);
+			background: hsl(from var(--accent) h s calc(l + 5));
 		}
 
 		&:not(:disabled):active {
-			background: var(--X8);
+			background: hsl(from var(--accent) h s calc(l + 5));
 		}
 	}
 
@@ -217,15 +221,16 @@ function onMousedown(evt: MouseEvent): void {
 		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 
 		&:not(:disabled):hover {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 		}
 
 		&:not(:disabled):active {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 		}
 	}
 
 	&.danger {
+		font-weight: bold;
 		color: #ff2a2a;
 
 		&.primary {
@@ -243,11 +248,10 @@ function onMousedown(evt: MouseEvent): void {
 	}
 
 	&:disabled {
-		opacity: 0.7;
+		opacity: 0.5;
 	}
 
 	&:focus-visible {
-		outline: solid 2px var(--focus);
 		outline-offset: 2px;
 	}
 

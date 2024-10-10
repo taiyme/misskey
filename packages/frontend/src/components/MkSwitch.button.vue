@@ -6,10 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <span
 	v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff"
+	aria-hidden="true"
 	:class="{
 		[$style.button]: true,
 		[$style.buttonChecked]: checked,
-		[$style.buttonDisabled]: props.disabled
+		[$style.buttonDisabled]: disabled
 	}"
 	data-cy-switch-toggle
 	@click.prevent.stop="toggle"
@@ -19,12 +20,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toRefs, Ref } from 'vue';
+import { type MaybeRef, computed, unref } from 'vue';
 import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
-	checked: boolean | Ref<boolean>;
-	disabled?: boolean | Ref<boolean>;
+	checked: MaybeRef<boolean>;
+	disabled?: MaybeRef<boolean>;
 }>(), {
 	disabled: false,
 });
@@ -33,21 +34,26 @@ const emit = defineEmits<{
 	(ev: 'toggle'): void;
 }>();
 
-const checked = toRefs(props).checked;
+const checked = computed(() => unref(props.checked));
+const disabled = computed(() => unref(props.disabled));
+
 const toggle = () => {
+	if (disabled.value) return;
 	emit('toggle');
 };
 </script>
 
 <style lang="scss" module>
 .button {
+	--height: 21px;
+
 	position: relative;
 	display: inline-flex;
 	flex-shrink: 0;
 	margin: 0;
 	box-sizing: border-box;
-	width: 32px;
-	height: 23px;
+	width: calc(var(--height) * 1.6);
+	height: calc(var(--height) + 2px); // 枠線
 	outline: none;
 	background: var(--switchOffBg);
 	background-clip: content-box;
@@ -69,9 +75,10 @@ const toggle = () => {
 
 .knob {
 	position: absolute;
+	box-sizing: border-box;
 	top: 3px;
-	width: 15px;
-	height: 15px;
+	width: calc(var(--height) - 6px);
+	height: calc(var(--height) - 6px);
 	border-radius: 999px;
 	transition: all 0.2s ease;
 
@@ -82,7 +89,7 @@ const toggle = () => {
 }
 
 .knobChecked {
-	left: 12px;
+	left: calc(calc(100% - var(--height)) + 3px);
 	background: var(--switchOnFg);
 }
 </style>

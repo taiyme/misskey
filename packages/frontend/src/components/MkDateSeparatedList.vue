@@ -5,13 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import type { MisskeyEntity } from '@/types/date-separated-list.js';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { defaultStore } from '@/store.js';
-import { MisskeyEntity } from '@/types/date-separated-list.js';
 
+// eslint-disable-next-line import/no-default-export
 export default defineComponent({
 	props: {
 		items: {
@@ -43,9 +44,9 @@ export default defineComponent({
 	setup(props, { slots, expose }) {
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
 
-		function getDateText(time: string) {
-			const date = new Date(time).getDate();
-			const month = new Date(time).getMonth() + 1;
+		function getDateText(dateInstance: Date) {
+			const date = dateInstance.getDate();
+			const month = dateInstance.getMonth() + 1;
 			return i18n.tsx.monthAndDay({
 				month: month.toString(),
 				day: date.toString(),
@@ -62,9 +63,16 @@ export default defineComponent({
 			})[0];
 			if (el.key == null && item.id) el.key = item.id;
 
+			const date = new Date(item.createdAt);
+			const nextDate = props.items[i + 1] ? new Date(props.items[i + 1].createdAt) : null;
+
 			if (
 				i !== props.items.length - 1 &&
-				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
+				nextDate != null && (
+					date.getFullYear() !== nextDate.getFullYear() ||
+					date.getMonth() !== nextDate.getMonth() ||
+					date.getDate() !== nextDate.getDate()
+				)
 			) {
 				const separator = h('div', {
 					class: $style['separator'],
@@ -78,12 +86,12 @@ export default defineComponent({
 						h('i', {
 							class: `ti ti-chevron-up ${$style['date-1-icon']}`,
 						}),
-						getDateText(item.createdAt),
+						getDateText(date),
 					]),
 					h('span', {
 						class: $style['date-2'],
 					}, [
-						getDateText(props.items[i + 1].createdAt),
+						getDateText(nextDate),
 						h('i', {
 							class: `ti ti-chevron-down ${$style['date-2-icon']}`,
 						}),
@@ -130,7 +138,7 @@ export default defineComponent({
 			el.style.left = '';
 		}
 
-		// eslint-disable-next-line vue/no-setup-props-destructure
+		// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 		const classes = {
 			[$style['date-separated-list']]: true,
 			[$style['date-separated-list-nogap']]: props.noGap,
@@ -201,6 +209,7 @@ export default defineComponent({
 	}
 	}
 }
+
 .direction-down {
 	&:global {
 	> .list-enter-from,
@@ -247,4 +256,3 @@ export default defineComponent({
 	margin-left: 8px;
 }
 </style>
-

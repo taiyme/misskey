@@ -82,4 +82,3 @@ export class RoleEntityService {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}
 }
-

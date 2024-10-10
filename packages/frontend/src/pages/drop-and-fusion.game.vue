@@ -195,6 +195,8 @@ import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch
 import * as Matter from 'matter-js';
 import * as Misskey from 'misskey-js';
 import { DropAndFusionGame, Mono } from 'misskey-bubble-game';
+import { useInterval } from '@@/js/use-interval.js';
+import { apiUrl } from '@@/js/config.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os.js';
@@ -205,12 +207,10 @@ import { claimAchievement } from '@/scripts/achievements.js';
 import { defaultStore } from '@/store.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import * as sound from '@/scripts/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -622,7 +622,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		 
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -647,8 +647,7 @@ function loadMonoTextures() {
 
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
-
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	 
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 
@@ -847,7 +846,7 @@ function exportLog() {
 		d: new Date().toISOString(),
 		l: DropAndFusionGame.serializeLogs(logs),
 	});
-	copyToClipboard(data);
+	copyText(data);
 	os.success();
 }
 
@@ -869,7 +868,7 @@ function loadImage(url: string) {
 		img.src = url;
 		img.addEventListener('load', () => {
 			res(img);
-		});
+		}, { passive: true });
 	});
 }
 
@@ -1008,8 +1007,21 @@ function attachGameEvents() {
 		const domX = rect.left + (x * viewScale);
 		const domY = rect.top + (y * viewScale);
 		const scoreUnit = getScoreUnit(props.gameMode);
-		os.popup(MkRippleEffect, { x: domX, y: domY }, {}, 'end');
-		os.popup(MkPlusOneEffect, { x: domX, y: domY, value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit) }, {}, 'end');
+
+		const { dispose: disposeRippleEffect } = os.popup(MkRippleEffect, {
+			x: domX,
+			y: domY,
+		}, {
+			end: () => disposeRippleEffect(),
+		});
+
+		const { dispose: disposePlusOneEffect } = os.popup(MkPlusOneEffect, {
+			x: domX,
+			y: domY,
+			value: scoreDelta + (scoreUnit === 'pt' ? '' : scoreUnit),
+		}, {
+			end: () => disposePlusOneEffect(),
+		});
 
 		if (nextMono) {
 			const def = monoDefinitions.value.find(x => x.id === nextMono.id)!;

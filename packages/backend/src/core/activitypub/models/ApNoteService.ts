@@ -4,16 +4,14 @@
  */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/_.js';
+import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
@@ -25,7 +23,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
@@ -48,6 +45,9 @@ export class ApNoteService {
 		@Inject(DI.config)
 		private config: Config,
 
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -67,7 +67,6 @@ export class ApNoteService {
 		private apMentionService: ApMentionService,
 		private apImageService: ApImageService,
 		private apQuestionService: ApQuestionService,
-		private metaService: MetaService,
 		private appLockService: AppLockService,
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
@@ -80,22 +79,23 @@ export class ApNoteService {
 	@bindThis
 	public validateNote(object: IObject, uri: string): Error | null {
 		const expectHost = this.utilityService.extractDbHost(uri);
+		const apType = getApType(object);
 
-		if (!validPost.includes(getApType(object))) {
-			return new Error(`invalid Note: invalid object type ${getApType(object)}`);
+		if (apType == null || !validPost.includes(apType)) {
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: invalid object type ${apType ?? 'undefined'}`);
 		}
 
 		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
-			return new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
 		}
 
 		const actualHost = object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo));
 		if (object.attributedTo && actualHost !== expectHost) {
-			return new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 		}
 
 		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
-			return new Error('invalid Note: published timestamp is malformed');
+			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', 'invalid Note: published timestamp is malformed');
 		}
 
 		return null;
@@ -183,7 +183,7 @@ export class ApNoteService {
 		/**
 		 * 禁止ワードチェック
 		 */
-		const hasProhibitedWords = await this.noteCreateService.checkProhibitedWordsContain({ cw, text, pollChoices: poll?.choices });
+		const hasProhibitedWords = this.noteCreateService.checkProhibitedWordsContain({ cw, text, pollChoices: poll?.choices });
 		if (hasProhibitedWords) {
 			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
 		}
@@ -209,15 +209,13 @@ export class ApNoteService {
 		}
 
 		// 添付ファイル
-		// TODO: attachmentは必ずしもImageではない
-		// TODO: attachmentは必ずしも配列ではない
-		const limit = promiseLimit<MiDriveFile>(2);
-		const files = (await Promise.all(toArray(note.attachment).map(attach => (
-			limit(() => this.apImageService.resolveImage(actor, {
-				...attach,
-				sensitive: note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
-			}))
-		))));
+		const files: MiDriveFile[] = [];
+
+		for (const attach of toArray(note.attachment)) {
+			attach.sensitive ??= note.sensitive;
+			const file = await this.apImageService.resolveImage(actor, attach);
+			if (file) files.push(file);
+		}
 
 		// リプライ
 		const reply: MiNote | null = note.inReplyTo
@@ -256,7 +254,7 @@ export class ApNoteService {
 				}
 			};
 
-			const uris = unique([note._misskey_quote, note.quoteUrl].filter(isNotNull));
+			const uris = unique([note._misskey_quote, note.quoteUrl].filter(x => x != null));
 			const results = await Promise.all(uris.map(tryResolveNote));
 
 			quote = results.filter((x): x is { status: 'ok', res: MiNote } => x.status === 'ok').map(x => x.res).at(0);
@@ -338,9 +336,7 @@ export class ApNoteService {
 	public async resolveNote(value: string | IObject, options: { sentFrom?: URL, resolver?: Resolver } = {}): Promise<MiNote | null> {
 		const uri = getApId(value);
 
-		// ブロックしていたら中断
-		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) {
+		if (!this.utilityService.isFederationAllowedUri(uri)) {
 			throw new StatusError('blocked host', 451);
 		}
 
@@ -410,7 +406,7 @@ export class ApNoteService {
 
 			this.logger.info(`register emoji host=${host}, name=${name}`);
 
-			return await this.emojisRepository.insert({
+			return await this.emojisRepository.insertOne({
 				id: this.idService.gen(),
 				host,
 				name,
@@ -419,7 +415,7 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
-			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+			});
 		}));
 	}
 }

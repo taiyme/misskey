@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { commitHash, version } from '@/config.js';
+import { commitHash, version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import FormSplit from '@/components/form/split.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';

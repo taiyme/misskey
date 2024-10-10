@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import { defaultStore } from '@/store.js';
 
@@ -46,7 +46,7 @@ useInterval(fetch, 1000 * 60, {
 .instances {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-	grid-gap: 12px;
+	gap: 12px;
 }
 
 .instance:hover {

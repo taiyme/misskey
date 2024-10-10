@@ -5,38 +5,45 @@
 
 import { defineAsyncComponent, Ref, ShallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
 import { claimAchievement } from './achievements.js';
+import type { MenuItem } from '@/types/menu.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import copyToClipboard from '@/scripts/copy-to-clipboard.js';
-import { url } from '@/config.js';
+import { copyText } from '@/scripts/tms/clipboard.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { clipsCache } from '@/cache.js';
-import { MenuItem } from '@/types/menu.js';
+import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { parseErrorMessage } from '@/scripts/tms/error.js';
-import { getAppearNote } from '@/scripts/tms/is-pure-renote.js';
-import { numberquote } from '@/scripts/tms/numberquote.js';
-import { pakuru } from '@/scripts/tms/pakuru.js';
+import { getAppearNote } from '@/scripts/tms/get-appear-note.js';
 import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
-import { tmsStore } from '@/tms/store.js';
+import { smallerVisibility } from '@/scripts/tms/visibility.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
 	isDeleted: Ref<boolean>;
 	currentClip?: Misskey.entities.Clip;
 }) {
+	function getClipName(clip: Misskey.entities.Clip) {
+		if ($i && clip.userId === $i.id && clip.notesCount != null) {
+			return `${clip.name} (${clip.notesCount}/${$i.policies.noteEachClipsLimit})`;
+		} else {
+			return clip.name;
+		}
+	}
+
 	const appearNote = getAppearNote(props.note);
 
 	const clips = await clipsCache.fetch();
 	const menu: MenuItem[] = [...clips.map(clip => ({
-		text: clip.name,
+		text: getClipName(clip),
 		action: () => {
 			claimAchievement('noteClipped1');
 			os.promiseDialog(
@@ -49,9 +56,25 @@ export async function getNoteClipMenu(props: {
 							text: i18n.tsx.confirmToUnclipAlreadyClippedNote({ name: clip.name }),
 						});
 						if (!confirm.canceled) {
-							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
+							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id }).then(() => {
+								clipsCache.set(clips.map(c => {
+									if (c.id === clip.id) {
+										return {
+											...c,
+											notesCount: Math.max(0, ((c.notesCount ?? 0) - 1)),
+										};
+									} else {
+										return c;
+									}
+								}));
+							});
 							if (props.currentClip?.id === clip.id) props.isDeleted.value = true;
 						}
+					} else if (err.id === 'f0dba960-ff73-4615-8df4-d6ac5d9dc118') {
+						os.alert({
+							type: 'error',
+							text: i18n.ts.clipNoteLimitExceeded,
+						});
 					} else {
 						os.alert({
 							type: 'error',
@@ -59,7 +82,18 @@ export async function getNoteClipMenu(props: {
 						});
 					}
 				},
-			);
+			).then(() => {
+				clipsCache.set(clips.map(c => {
+					if (c.id === clip.id) {
+						return {
+							...c,
+							notesCount: (c.notesCount ?? 0) + 1,
+						};
+					} else {
+						return c;
+					}
+				}));
+			});
 		},
 	})), { type: 'divider' }, {
 		icon: 'ti ti-plus',
@@ -68,11 +102,13 @@ export async function getNoteClipMenu(props: {
 			const { canceled, result } = await os.form(i18n.ts.createNewClip, {
 				name: {
 					type: 'string',
+					default: null,
 					label: i18n.ts.name,
 				},
 				description: {
 					type: 'string',
 					required: false,
+					default: null,
 					multiline: true,
 					label: i18n.ts.description,
 				},
@@ -105,10 +141,12 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 			let noteInfo = '';
 			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
 			noteInfo += `Local Note: ${localUrl}\n`;
-			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 				user: note.user,
 				initialComment: `${noteInfo}-----\n`,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 		},
 	};
 }
@@ -118,8 +156,21 @@ export function getCopyNoteLinkMenu(note: Misskey.entities.Note, text: string): 
 		icon: 'ti ti-link',
 		text,
 		action: (): void => {
-			copyToClipboard(`${url}/notes/${note.id}`);
+			copyText(`${url}/notes/${note.id}`);
 			os.success();
+		},
+	};
+}
+
+function getNoteEmbedCodeMenu(note: Misskey.entities.Note, text: string): MenuItem | undefined {
+	if (note.url != null || note.uri != null) return undefined;
+	if (['specified', 'followers'].includes(note.visibility)) return undefined;
+
+	return {
+		icon: 'ti ti-code',
+		text,
+		action: (): void => {
+			genEmbedCode('notes', note.id);
 		},
 	};
 }
@@ -187,12 +238,12 @@ export function getNoteMenu(props: {
 	}
 
 	function copyContent(): void {
-		copyToClipboard(appearNote.text);
+		copyText(appearNote.text);
 		os.success();
 	}
 
 	function copyLink(): void {
-		copyToClipboard(`${url}/notes/${appearNote.id}`);
+		copyText(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
@@ -210,6 +261,7 @@ export function getNoteMenu(props: {
 	}
 
 	async function unclip(): Promise<void> {
+		if (!props.currentClip) return;
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
@@ -219,7 +271,7 @@ export function getNoteMenu(props: {
 			title: i18n.ts.numberOfDays,
 		});
 
-		if (canceled) return;
+		if (canceled || days == null) return;
 
 		os.apiWithDialog('admin/promo/create', {
 			noteId: appearNote.id,
@@ -229,8 +281,8 @@ export function getNoteMenu(props: {
 
 	function share(): void {
 		navigator.share({
-			title: i18n.tsx.noteOf({ user: appearNote.user.name }),
-			text: appearNote.text,
+			title: i18n.tsx.noteOf({ user: appearNote.user.name ?? appearNote.user.username }),
+			text: appearNote.text ?? '',
 			url: `${url}/notes/${appearNote.id}`,
 		});
 	}
@@ -250,161 +302,23 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
-	let menu: MenuItem[];
+	const menuItems: MenuItem[] = [];
+
 	if ($i) {
 		const statePromise = misskeyApi('notes/state', {
 			noteId: appearNote.id,
 		});
 
-		menu = [
-			...(
-				props.currentClip?.userId === $i.id ? [{
-					icon: 'ti ti-backspace',
-					text: i18n.ts.unclip,
-					danger: true,
-					action: unclip,
-				}, { type: 'divider' }] : []
-			), {
-				icon: 'ti ti-info-circle',
-				text: i18n.ts.details,
-				action: openDetail,
-			}, {
-				icon: 'ti ti-copy',
-				text: i18n.ts.copyContent,
-				action: copyContent,
-			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-			, (appearNote.url || appearNote.uri) ? {
-				icon: 'ti ti-external-link',
-				text: i18n.ts.showOnRemote,
-				action: () => {
-					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
-				},
-			} : undefined,
-			...(isSupportShare() ? [{
-				icon: 'ti ti-share',
-				text: i18n.ts.share,
-				action: share,
-			}] : []),
-			$i && $i.policies.canUseTranslator && instance.translatorAvailable ? {
-				icon: 'ti ti-language-hiragana',
-				text: i18n.ts.translate,
-				action: translate,
-			} : undefined,
-			{ type: 'divider' },
-			statePromise.then(state => state.isFavorited ? {
-				icon: 'ti ti-star-off',
-				text: i18n.ts.unfavorite,
-				action: () => toggleFavorite(false),
-			} : {
-				icon: 'ti ti-star',
-				text: i18n.ts.favorite,
-				action: () => toggleFavorite(true),
-			}),
-			{
-				type: 'parent' as const,
-				icon: 'ti ti-paperclip',
-				text: i18n.ts.clip,
-				children: () => getNoteClipMenu(props),
-			},
-			statePromise.then(state => state.isMutedThread ? {
-				icon: 'ti ti-message-off',
-				text: i18n.ts.unmuteThread,
-				action: () => toggleThreadMute(false),
-			} : {
-				icon: 'ti ti-message-off',
-				text: i18n.ts.muteThread,
-				action: () => toggleThreadMute(true),
-			}),
-			appearNote.userId === $i.id ? ($i.pinnedNoteIds ?? []).includes(appearNote.id) ? {
-				icon: 'ti ti-pinned-off',
-				text: i18n.ts.unpin,
-				action: () => togglePin(false),
-			} : {
-				icon: 'ti ti-pin',
-				text: i18n.ts.pin,
-				action: () => togglePin(true),
-			} : undefined,
-			{
-				type: 'parent' as const,
-				icon: 'ti ti-user',
-				text: i18n.ts.user,
-				children: async () => {
-					const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
-					const { menu, cleanup } = getUserMenu(user);
-					cleanups.push(cleanup);
-					return menu;
-				},
-			},
-			/*
-		...($i.isModerator || $i.isAdmin ? [
-			{ type: 'divider' },
-			{
-				icon: 'ti ti-speakerphone',
-				text: i18n.ts.promote,
-				action: promote
-			}]
-			: []
-		),*/
-			...(appearNote.userId !== $i.id ? [
-				{ type: 'divider' },
-				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
-			]
-			: []
-			),
-			...(appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin) ? [
-				{ type: 'divider' },
-				{
-					type: 'parent' as const,
-					icon: 'ti ti-device-tv',
-					text: i18n.ts.channel,
-					children: async () => {
-						const channelChildMenu = [] as MenuItem[];
+		if (props.currentClip?.userId === $i.id) {
+			menuItems.push({
+				icon: 'ti ti-backspace',
+				text: i18n.ts.unclip,
+				danger: true,
+				action: unclip,
+			}, { type: 'divider' });
+		}
 
-						const channel = await misskeyApi('channels/show', { channelId: appearNote.channel!.id });
-
-						if (channel.pinnedNoteIds.includes(appearNote.id)) {
-							channelChildMenu.push({
-								icon: 'ti ti-pinned-off',
-								text: i18n.ts.unpin,
-								action: () => os.apiWithDialog('channels/update', {
-									channelId: appearNote.channel!.id,
-									pinnedNoteIds: channel.pinnedNoteIds.filter(id => id !== appearNote.id),
-								}),
-							});
-						} else {
-							channelChildMenu.push({
-								icon: 'ti ti-pin',
-								text: i18n.ts.pin,
-								action: () => os.apiWithDialog('channels/update', {
-									channelId: appearNote.channel!.id,
-									pinnedNoteIds: [...channel.pinnedNoteIds, appearNote.id],
-								}),
-							});
-						}
-						return channelChildMenu;
-					},
-				},
-			]
-			: []
-			),
-			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
-				{ type: 'divider' },
-				appearNote.userId === $i.id ? {
-					icon: 'ti ti-edit',
-					text: i18n.ts.deleteAndEdit,
-					action: delEdit,
-				} : undefined,
-				{
-					icon: 'ti ti-trash',
-					text: i18n.ts.delete,
-					danger: true,
-					action: del,
-				}]
-			: []
-			)]
-			.filter(x => x !== undefined);
-	} else {
-		menu = [{
+		menuItems.push({
 			icon: 'ti ti-info-circle',
 			text: i18n.ts.details,
 			action: openDetail,
@@ -412,35 +326,194 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (appearNote.url || appearNote.uri) ? {
-			icon: 'ti ti-external-link',
-			text: i18n.ts.showOnRemote,
-			action: () => {
-				window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
+
+		if (appearNote.url || appearNote.uri) {
+			menuItems.push({
+				icon: 'ti ti-external-link',
+				text: i18n.ts.showOnRemote,
+				action: () => {
+					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+				},
+			});
+		} else {
+			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
+		}
+
+		if (isSupportShare()) {
+			menuItems.push({
+				icon: 'ti ti-share',
+				text: i18n.ts.share,
+				action: share,
+			});
+		}
+
+		if ($i.policies.canUseTranslator && instance.translatorAvailable) {
+			menuItems.push({
+				icon: 'ti ti-language-hiragana',
+				text: i18n.ts.translate,
+				action: translate,
+			});
+		}
+
+		menuItems.push({ type: 'divider' });
+
+		menuItems.push(statePromise.then(state => state.isFavorited ? {
+			icon: 'ti ti-star-off',
+			text: i18n.ts.unfavorite,
+			action: () => toggleFavorite(false),
+		} : {
+			icon: 'ti ti-star',
+			text: i18n.ts.favorite,
+			action: () => toggleFavorite(true),
+		}));
+
+		menuItems.push({
+			type: 'parent',
+			icon: 'ti ti-paperclip',
+			text: i18n.ts.clip,
+			children: () => getNoteClipMenu(props),
+		});
+
+		menuItems.push(statePromise.then(state => state.isMutedThread ? {
+			icon: 'ti ti-message-off',
+			text: i18n.ts.unmuteThread,
+			action: () => toggleThreadMute(false),
+		} : {
+			icon: 'ti ti-message-off',
+			text: i18n.ts.muteThread,
+			action: () => toggleThreadMute(true),
+		}));
+
+		if (appearNote.userId === $i.id) {
+			if (($i.pinnedNoteIds ?? []).includes(appearNote.id)) {
+				menuItems.push({
+					icon: 'ti ti-pinned-off',
+					text: i18n.ts.unpin,
+					action: () => togglePin(false),
+				});
+			} else {
+				menuItems.push({
+					icon: 'ti ti-pin',
+					text: i18n.ts.pin,
+					action: () => togglePin(true),
+				});
+			}
+		}
+
+		menuItems.push({
+			type: 'parent',
+			icon: 'ti ti-user',
+			text: i18n.ts.user,
+			children: async () => {
+				const user = appearNote.userId === $i?.id ? $i : await misskeyApi('users/show', { userId: appearNote.userId });
+				const { menu, cleanup } = getUserMenu(user);
+				cleanups.push(cleanup);
+				return menu;
 			},
-		} : undefined]
-			.filter(x => x !== undefined);
+		});
+
+		if (appearNote.userId !== $i.id) {
+			menuItems.push({ type: 'divider' });
+			menuItems.push(getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse));
+		}
+
+		if (appearNote.channel && (appearNote.channel.userId === $i.id || $i.isModerator || $i.isAdmin)) {
+			menuItems.push({ type: 'divider' });
+			menuItems.push({
+				type: 'parent',
+				icon: 'ti ti-device-tv',
+				text: i18n.ts.channel,
+				children: async () => {
+					const channelChildMenu = [] as MenuItem[];
+
+					const channel = await misskeyApi('channels/show', { channelId: appearNote.channel!.id });
+
+					if (channel.pinnedNoteIds.includes(appearNote.id)) {
+						channelChildMenu.push({
+							icon: 'ti ti-pinned-off',
+							text: i18n.ts.unpin,
+							action: () => os.apiWithDialog('channels/update', {
+								channelId: appearNote.channel!.id,
+								pinnedNoteIds: channel.pinnedNoteIds.filter(id => id !== appearNote.id),
+							}),
+						});
+					} else {
+						channelChildMenu.push({
+							icon: 'ti ti-pin',
+							text: i18n.ts.pin,
+							action: () => os.apiWithDialog('channels/update', {
+								channelId: appearNote.channel!.id,
+								pinnedNoteIds: [...channel.pinnedNoteIds, appearNote.id],
+							}),
+						});
+					}
+					return channelChildMenu;
+				},
+			});
+		}
+
+		if (appearNote.userId === $i.id || $i.isModerator || $i.isAdmin) {
+			menuItems.push({ type: 'divider' });
+			if (appearNote.userId === $i.id) {
+				menuItems.push({
+					icon: 'ti ti-edit',
+					text: i18n.ts.deleteAndEdit,
+					action: delEdit,
+				});
+			}
+			menuItems.push({
+				icon: 'ti ti-trash',
+				text: i18n.ts.delete,
+				danger: true,
+				action: del,
+			});
+		}
+	} else {
+		menuItems.push({
+			icon: 'ti ti-info-circle',
+			text: i18n.ts.details,
+			action: openDetail,
+		}, {
+			icon: 'ti ti-copy',
+			text: i18n.ts.copyContent,
+			action: copyContent,
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
+
+		if (appearNote.url || appearNote.uri) {
+			menuItems.push({
+				icon: 'ti ti-external-link',
+				text: i18n.ts.showOnRemote,
+				action: () => {
+					window.open(appearNote.url ?? appearNote.uri, '_blank', 'noopener');
+				},
+			});
+		} else {
+			menuItems.push(getNoteEmbedCodeMenu(appearNote, i18n.ts.genEmbedCode));
+		}
 	}
 
 	if (noteActions.length > 0) {
-		menu = menu.concat([{ type: 'divider' }, ...noteActions.map(action => ({
+		menuItems.push({ type: 'divider' });
+
+		menuItems.push(...noteActions.map(action => ({
 			icon: 'ti ti-plug',
 			text: action.title,
 			action: () => {
 				action.handler(appearNote);
 			},
-		}))]);
+		})));
 	}
 
 	if (defaultStore.state.devMode) {
-		menu = menu.concat([{ type: 'divider' }, {
+		menuItems.push({ type: 'divider' }, {
 			icon: 'ti ti-id',
 			text: i18n.ts.copyNoteId,
 			action: () => {
-				copyToClipboard(appearNote.id);
+				copyText(appearNote.id);
+				os.success();
 			},
-		}]);
+		});
 	}
 
 	const cleanup = () => {
@@ -451,156 +524,142 @@ export function getNoteMenu(props: {
 	};
 
 	return {
-		menu,
+		menu: menuItems,
 		cleanup,
 	};
 }
 
-type Visibility = 'public' | 'home' | 'followers' | 'specified';
-
-// defaultStore.state.visibilityがstringなためstringも受け付けている
-function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
-	if (a === 'specified' || b === 'specified') return 'specified';
-	if (a === 'followers' || b === 'followers') return 'followers';
-	if (a === 'home' || b === 'home') return 'home';
-	// if (a === 'public' || b === 'public')
-	return 'public';
-}
-
-export function getRenoteMenu(props: {
+export async function getRenoteMenu(props: {
 	note: Misskey.entities.Note;
 	renoteButton: ShallowRef<HTMLElement | undefined>;
 	mock?: boolean;
 }) {
 	const appearNote = getAppearNote(props.note);
+	const favoritedChannels = (await favoritedChannelsCache.fetch()).filter(channel => {
+		return appearNote.channel == null || channel.id !== appearNote.channel.id;
+	});
+
+	const rippleEffect = (): void => {
+		const el = props.renoteButton.value;
+		if (el == null) return;
+		const rect = el.getBoundingClientRect();
+		const x = rect.left + (el.offsetWidth / 2);
+		const y = rect.top + (el.offsetHeight / 2);
+		const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+			end: () => dispose(),
+		});
+	};
+
+	const tooltipEffect = (text: string): void => {
+		tooltipFromElement({
+			targetElement: props.renoteButton.value,
+			primary: true,
+			text,
+		});
+	};
+
+	const errorDialog = (err: unknown): void => {
+		os.alert({
+			type: 'error',
+			text: parseErrorMessage(err),
+		});
+	};
 
 	const channelRenoteItems: MenuItem[] = [];
 	const normalRenoteItems: MenuItem[] = [];
-	const pakuruItems: MenuItem[] = [];
+	const normalExternalChannelRenoteItems: MenuItem[] = [];
 
-	if (appearNote.channel) {
-		channelRenoteItems.push(...[{
+	if (appearNote.channel != null) {
+		channelRenoteItems.push({
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
-				const el = props.renoteButton.value;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				if (!props.mock) {
-					misskeyApi('notes/create', {
-						renoteId: appearNote.id,
-						channelId: appearNote.channelId,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				}
+				rippleEffect();
+				if (props.mock) return tooltipEffect(i18n.ts.renoted);
+				misskeyApi('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				}).then(() => tooltipEffect(i18n.ts.renoted)).catch(errorDialog);
 			},
-		}, {
-			text: i18n.ts.inChannelQuote,
-			icon: 'ti ti-quote',
-			action: () => {
-				if (!props.mock) {
+		});
+		if (!props.mock) {
+			channelRenoteItems.push({
+				text: i18n.ts.inChannelQuote,
+				icon: 'ti ti-quote',
+				action: () => {
 					os.post({
 						renote: appearNote,
 						channel: appearNote.channel,
 					});
-				}
-			},
-		}]);
+				},
+			});
+		}
 	}
 
-	if (!appearNote.channel || appearNote.channel.allowRenoteToExternal) {
-		normalRenoteItems.push(...[{
-			text: i18n.ts.renote,
+	if (appearNote.channel == null || appearNote.channel.allowRenoteToExternal) {
+		let renoteVisibility = appearNote.visibility;
+		const renoteLocalOnly = appearNote.localOnly ?? false;
+
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		if (appearNote.channel?.isSensitive || $i?.isSilenced) {
+			renoteVisibility = smallerVisibility([renoteVisibility, 'home']);
+		}
+
+		const renoteButtonText = (() => {
+			if (renoteVisibility === 'home') {
+				if (renoteLocalOnly) return i18n.ts._tms.disableFederationHomeRenote;
+				return i18n.ts._tms.homeRenote;
+			}
+			if (renoteVisibility === 'followers') {
+				if (renoteLocalOnly) return i18n.ts._tms.disableFederationFollowersRenote;
+				return i18n.ts._tms.followersRenote;
+			}
+			if (renoteLocalOnly) return i18n.ts._tms.disableFederationRenote;
+			return i18n.ts.renote;
+		})();
+
+		normalRenoteItems.push({
+			text: renoteButtonText,
 			icon: 'ti ti-repeat',
 			action: () => {
-				const el = props.renoteButton.value;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
-
-				const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
-				const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
-
-				let visibility = appearNote.visibility;
-				visibility = smallerVisibility(visibility, configuredVisibility);
-				if (appearNote.channel?.isSensitive) {
-					visibility = smallerVisibility(visibility, 'home');
-				}
-
-				if (!props.mock) {
-					misskeyApi('notes/create', {
-						localOnly,
-						visibility,
-						renoteId: appearNote.id,
-					}).then(() => {
-						os.toast(i18n.ts.renoted);
-					});
-				}
-			},
-		}, (props.mock) ? undefined : {
-			text: i18n.ts.quote,
-			icon: 'ti ti-quote',
-			action: () => {
-				os.post({
-					renote: appearNote,
-				});
-			},
-		}]);
-	}
-
-	if (tmsStore.state.enablePakuru) {
-		pakuruItems.push({
-			text: i18n.ts._tms.pakuru,
-			icon: 'ti ti-swipe',
-			action: () => {
-				const tooltip = (): void => {
-					tooltipFromElement({
-						targetElement: props.renoteButton.value,
-						text: i18n.ts._tms.didPakuru,
-						primary: true,
-					});
-				};
-				if (props.mock) return tooltip();
-				pakuru(appearNote).then(() => tooltip()).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: parseErrorMessage(err),
-					});
-				});
+				rippleEffect();
+				if (props.mock) return tooltipEffect(i18n.ts.renoted);
+				misskeyApi('notes/create', {
+					renoteId: appearNote.id,
+					visibility: renoteVisibility,
+					localOnly: renoteLocalOnly,
+				}).then(() => tooltipEffect(i18n.ts.renoted)).catch(errorDialog);
 			},
 		});
-	}
+		if (!props.mock) {
+			normalRenoteItems.push({
+				text: i18n.ts.quote,
+				icon: 'ti ti-quote',
+				action: () => {
+					os.post({
+						renote: appearNote,
+					});
+				},
+			});
+		}
 
-	if (tmsStore.state.enableNumberquote) {
-		pakuruItems.push({
-			text: i18n.ts._tms.numberquote,
-			icon: 'ti ti-exposure-plus-1',
-			action: () => {
-				const tooltip = (): void => {
-					tooltipFromElement({
-						targetElement: props.renoteButton.value,
-						text: i18n.ts._tms.didNumberquote,
-						primary: true,
-					});
-				};
-				if (props.mock) return tooltip();
-				numberquote(appearNote).then(() => tooltip()).catch((err) => {
-					os.alert({
-						type: 'error',
-						text: parseErrorMessage(err),
-					});
-				});
-			},
-		});
+		if (!props.mock && favoritedChannels.length > 0) {
+			normalExternalChannelRenoteItems.push({
+				type: 'parent',
+				text: appearNote.channel == null ? i18n.ts.renoteToChannel : i18n.ts.renoteToOtherChannel,
+				icon: 'ti ti-repeat',
+				children: favoritedChannels.map(channel => ({
+					text: channel.name,
+					action: () => {
+						rippleEffect();
+						misskeyApi('notes/create', {
+							renoteId: appearNote.id,
+							channelId: channel.id,
+						}).then(() => tooltipEffect(i18n.tsx.renotedToX({ name: channel.name }))).catch(errorDialog);
+					},
+				})),
+			});
+		}
 	}
 
 	const renoteItems: MenuItem[] = [];
@@ -611,9 +670,9 @@ export function getRenoteMenu(props: {
 		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
 		renoteItems.push(...channelRenoteItems);
 	}
-	if (pakuruItems.length > 0) {
+	if (normalExternalChannelRenoteItems.length > 0) {
 		if (renoteItems.length > 0) renoteItems.push({ type: 'divider' });
-		renoteItems.push(...pakuruItems);
+		renoteItems.push(...normalExternalChannelRenoteItems);
 	}
 
 	return {

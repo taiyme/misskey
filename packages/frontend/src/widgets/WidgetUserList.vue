@@ -26,12 +26,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { useInterval } from '@/scripts/use-interval.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 
@@ -121,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 		> .users {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(30px, 40px));
-			grid-gap: 12px;
+			gap: 12px;
 			place-content: center;
 			padding: 16px;
 

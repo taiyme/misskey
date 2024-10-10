@@ -5,6 +5,7 @@
 
 import { Directive } from 'vue';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(src, binding, vn) {
 		const getBgColor = (el: HTMLElement) => {

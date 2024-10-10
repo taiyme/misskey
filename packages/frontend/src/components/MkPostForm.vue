@@ -81,9 +81,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="toggleUseCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="toggleWithHashtags"><i class="ti ti-hash"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
 			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
@@ -100,16 +100,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { toASCII } from 'punycode';
 import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { toASCII } from 'punycode/';
+import { host, url } from '@@/js/config.js';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
 import MkPollEditor, { type PollEditorModelValue } from '@/components/MkPollEditor.vue';
-import { host, url } from '@/config.js';
 import { erase, unique } from '@/scripts/array.js';
 import { extractMentions } from '@/scripts/extract-mentions.js';
 import { formatTimeString } from '@/scripts/format-time-string.js';
@@ -129,10 +129,11 @@ import { miLocalStorage } from '@/local-storage.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { emojiPicker } from '@/scripts/emoji-picker.js';
 import { mfmFunctionPicker } from '@/scripts/mfm-function-picker.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const $i = signinRequired();
 
-const modal = inject('modal');
+const modal = inject<boolean>('modal', false);
 
 const props = withDefaults(defineProps<{
 	reply?: Misskey.entities.Note;
@@ -156,6 +157,7 @@ const props = withDefaults(defineProps<{
 	initialVisibleUsers: () => [],
 	autofocus: true,
 	mock: false,
+	initialLocalOnly: undefined,
 });
 
 provide('mock', props.mock);
@@ -185,11 +187,11 @@ watch(showPreview, () => defaultStore.set('showPreview', showPreview.value));
 const showAddMfmFunction = ref(defaultStore.state.enableQuickAddMfmFunction);
 watch(showAddMfmFunction, () => defaultStore.set('enableQuickAddMfmFunction', showAddMfmFunction.value));
 const cw = ref<string | null>(props.initialCw ?? null);
-const localOnly = ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
-const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
+const localOnly = ref(props.initialLocalOnly ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly));
+const visibility = ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility));
 const visibleUsers = ref<Misskey.entities.UserDetailed[]>([]);
 if (props.initialVisibleUsers) {
-	props.initialVisibleUsers.forEach(pushVisibleUser);
+	props.initialVisibleUsers.forEach(u => pushVisibleUser(u));
 }
 const reactionAcceptance = ref(defaultStore.state.reactionAcceptance);
 const autocomplete = ref(null);
@@ -244,7 +246,7 @@ const submitText = computed((): string => {
 });
 
 const textLength = computed((): number => {
-	return (text.value + imeText.value).trim().length;
+	return (text.value + imeText.value).length;
 });
 
 const maxTextLength = computed((): number => {
@@ -253,7 +255,13 @@ const maxTextLength = computed((): number => {
 
 const canPost = computed((): boolean => {
 	return !props.mock && !posting.value && !posted.value &&
-		(1 <= textLength.value || 1 <= files.value.length || !!poll.value || !!props.renote) &&
+		(
+			1 <= textLength.value ||
+			1 <= files.value.length ||
+			poll.value != null ||
+			props.renote != null ||
+			quoteId.value != null
+		) &&
 		(textLength.value <= maxTextLength.value) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
@@ -329,7 +337,7 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 			misskeyApi('users/show', {
 				userIds: props.reply.visibleUserIds.filter(uid => uid !== $i.id && uid !== props.reply?.userId),
 			}).then(users => {
-				users.forEach(pushVisibleUser);
+				users.forEach(u => pushVisibleUser(u));
 			});
 		}
 
@@ -360,6 +368,8 @@ function watchForDraft() {
 	watch(files, () => saveDraft(), { deep: true });
 	watch(visibility, () => saveDraft());
 	watch(localOnly, () => saveDraft());
+	watch(quoteId, () => saveDraft());
+	watch(reactionAcceptance, () => saveDraft());
 }
 
 function checkMissingMention() {
@@ -382,13 +392,14 @@ function addMissingMention() {
 	for (const x of extractMentions(ast)) {
 		if (!visibleUsers.value.some(u => (u.username === x.username) && (u.host === x.host))) {
 			misskeyApi('users/show', { username: x.username, host: x.host }).then(user => {
-				visibleUsers.value.push(user);
+				pushVisibleUser(user);
 			});
 		}
 	}
 }
 
 function togglePoll() {
+	if (props.mock) return;
 	if (poll.value) {
 		poll.value = null;
 	} else {
@@ -450,13 +461,14 @@ function upload(file: File, name?: string): void {
 }
 
 function setVisibility() {
+	if (props.mock) return;
 	if (props.channel) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
 	}
 
-	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility.value,
 		isSilenced: $i.isSilenced,
 		localOnly: localOnly.value,
@@ -469,10 +481,12 @@ function setVisibility() {
 				defaultStore.set('visibility', visibility.value);
 			}
 		},
-	}, 'closed');
+		closed: () => dispose(),
+	});
 }
 
 async function toggleLocalOnly() {
+	if (props.mock) return;
 	if (props.channel) {
 		visibility.value = 'public';
 		localOnly.value = true; // TODO: チャンネルが連合するようになった折には消す
@@ -512,9 +526,13 @@ async function toggleLocalOnly() {
 	}
 
 	localOnly.value = !localOnly.value;
+	if (defaultStore.state.rememberNoteVisibility) {
+		defaultStore.set('localOnly', localOnly.value);
+	}
 }
 
 async function toggleReactionAcceptance() {
+	if (props.mock) return;
 	const select = await os.select({
 		title: i18n.ts.reactionAcceptance,
 		items: [
@@ -528,6 +546,16 @@ async function toggleReactionAcceptance() {
 	});
 	if (select.canceled) return;
 	reactionAcceptance.value = select.result;
+}
+
+function toggleUseCw() {
+	if (props.mock) return;
+	useCw.value = !useCw.value;
+}
+
+function toggleWithHashtags() {
+	if (props.mock) return;
+	withHashtags.value = !withHashtags.value;
 }
 
 function pushVisibleUser(user: Misskey.entities.UserDetailed) {
@@ -557,10 +585,10 @@ function clear() {
 	quoteId.value = null;
 }
 
-function onKeydown(ev: KeyboardEvent) {
+const onKeydown = filterKeyboardNonComposing(ev => {
 	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost.value) post();
 	if (ev.key === 'Escape') emit('esc');
-}
+});
 
 function onCompositionUpdate(ev: CompositionEvent) {
 	imeText.value = ev.data;
@@ -600,6 +628,23 @@ async function onPaste(ev: ClipboardEvent) {
 			}
 
 			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
+		});
+	}
+
+	if (paste.length > 1000) {
+		ev.preventDefault();
+		os.confirm({
+			type: 'info',
+			text: i18n.ts.attachAsFileQuestion,
+		}).then(({ canceled }) => {
+			if (canceled) {
+				insertTextAtCursor(textareaEl.value, paste);
+				return;
+			}
+
+			const fileName = formatTimeString(new Date(), defaultStore.state.pastedFileName).replace(/{{number}}/g, '0');
+			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
+			upload(file, `${fileName}.txt`);
 		});
 	}
 }
@@ -673,6 +718,9 @@ function saveDraft() {
 			localOnly: localOnly.value,
 			files: files.value,
 			poll: poll.value,
+			visibleUserIds: visibility.value === 'specified' ? visibleUsers.value.map(x => x.id) : undefined,
+			quoteId: quoteId.value,
+			reactionAcceptance: reactionAcceptance.value,
 		},
 	};
 
@@ -703,7 +751,9 @@ async function post(ev?: MouseEvent) {
 			const rect = el.getBoundingClientRect();
 			const x = rect.left + (el.offsetWidth / 2);
 			const y = rect.top + (el.offsetHeight / 2);
-			os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
+				end: () => dispose(),
+			});
 		}
 	}
 
@@ -861,19 +911,34 @@ function cancel() {
 }
 
 function insertMention() {
+	if (props.mock) return;
 	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
 		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }
 
 async function insertEmoji(ev: MouseEvent) {
+	if (props.mock) return;
 	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
+
+	// emojiPickerはダイアログが閉じずにtextareaとやりとりするので、
+	// focustrapをかけているとinsertTextAtCursorが効かない
+	// そのため、投稿フォームのテキストに直接注入する
+	// See: https://github.com/misskey-dev/misskey/pull/14282
+	//      https://github.com/misskey-dev/misskey/issues/14274
+
+	let pos = textareaEl.value?.selectionStart ?? 0;
+	let posEnd = textareaEl.value?.selectionEnd ?? text.value.length;
 	emojiPicker.show(
 		target as HTMLElement,
 		emoji => {
-			insertTextAtCursor(textareaEl.value, emoji);
+			const textBefore = text.value.substring(0, pos);
+			const textAfter = text.value.substring(posEnd);
+			text.value = textBefore + emoji + textAfter;
+			pos += emoji.length;
+			posEnd += emoji.length;
 		},
 		() => {
 			textAreaReadOnly.value = false;
@@ -883,6 +948,7 @@ async function insertEmoji(ev: MouseEvent) {
 }
 
 async function insertMfmFunction(ev: MouseEvent) {
+	if (props.mock) return;
 	if (textareaEl.value == null) return;
 	mfmFunctionPicker(
 		ev.currentTarget ?? ev.target,
@@ -892,6 +958,7 @@ async function insertMfmFunction(ev: MouseEvent) {
 }
 
 function showActions(ev: MouseEvent) {
+	if (props.mock) return;
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
 		action: () => {
@@ -954,6 +1021,13 @@ onMounted(() => {
 				if (draft.data.poll) {
 					poll.value = draft.data.poll;
 				}
+				if (draft.data.visibleUserIds) {
+					misskeyApi('users/show', { userIds: draft.data.visibleUserIds }).then(users => {
+						users.forEach(u => pushVisibleUser(u));
+					});
+				}
+				quoteId.value = draft.data.quoteId;
+				reactionAcceptance.value = draft.data.reactionAcceptance;
 			}
 		}
 
@@ -961,9 +1035,11 @@ onMounted(() => {
 		if (props.initialNote) {
 			const init = props.initialNote;
 			text.value = init.text ? init.text : '';
-			files.value = init.files ?? [];
-			cw.value = init.cw ?? null;
 			useCw.value = init.cw != null;
+			cw.value = init.cw ?? null;
+			visibility.value = init.visibility;
+			localOnly.value = init.localOnly ?? false;
+			files.value = init.files ?? [];
 			if (init.poll) {
 				poll.value = {
 					choices: init.poll.choices.map(x => x.text),
@@ -972,9 +1048,13 @@ onMounted(() => {
 					expiredAfter: null,
 				};
 			}
-			visibility.value = init.visibility;
-			localOnly.value = init.localOnly ?? false;
+			if (init.visibleUserIds) {
+				misskeyApi('users/show', { userIds: init.visibleUserIds }).then(users => {
+					users.forEach(u => pushVisibleUser(u));
+				});
+			}
 			quoteId.value = init.renote ? init.renote.id : null;
+			reactionAcceptance.value = init.reactionAcceptance;
 		}
 
 		nextTick(() => watchForDraft());
@@ -1048,6 +1128,15 @@ defineExpose({
 	margin: 12px 12px 12px 6px;
 	vertical-align: bottom;
 
+	&:focus-visible {
+		outline: none;
+
+		.submitInner {
+			outline: 2px solid var(--fgOnAccent);
+			outline-offset: -4px;
+		}
+	}
+
 	&:disabled {
 		opacity: 0.7;
 	}
@@ -1058,13 +1147,13 @@ defineExpose({
 
 	&:not(:disabled):hover {
 		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 		}
 	}
 
 	&:not(:disabled):active {
 		> .inner {
-			background: linear-gradient(90deg, var(--X8), var(--X8));
+			background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
 		}
 	}
 }
@@ -1132,6 +1221,15 @@ defineExpose({
 	min-height: 75px;
 	max-height: 150px;
 	overflow: auto;
+	background-size: auto auto;
+}
+
+html[data-color-scheme=dark] .preview {
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #0004 5px, #0004 10px);
+}
+
+html[data-color-scheme=light] .preview {
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 5px, #00000005 5px, #00000005 10px);
 }
 
 .targetNote {

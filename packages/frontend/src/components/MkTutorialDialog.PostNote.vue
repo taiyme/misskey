@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { reactive } from 'vue';
 import { i18n } from '@/i18n.js';
@@ -105,7 +105,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 	font-weight: bold;
 	text-align: left;
 
-	&:before {
+	&::before {
 		content: "";
 		display: block;
 		width: calc(100% - 38px);

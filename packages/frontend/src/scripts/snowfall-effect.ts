@@ -156,7 +156,7 @@ export class SnowfallEffect {
 		easing: 0.0005,
 	};
 	/**
-	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas 
+	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas
 	 */
 	constructor(options: {
 		sakura?: boolean;
@@ -186,7 +186,7 @@ export class SnowfallEffect {
 		this.resize = this.resize.bind(this);
 		this.update = this.update.bind(this);
 
-		window.addEventListener('resize', () => this.resize());
+		window.addEventListener('resize', () => this.resize(), { passive: true });
 	}
 
 	private initCanvas(): HTMLCanvasElement {

@@ -5,13 +5,15 @@
 
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from '@misskey-dev/browser-image-resizer';
+import { apiUrl } from '@@/js/config.js';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';
-import { apiUrl } from '@/config.js';
 import { $i } from '@/account.js';
 import { alert } from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 type Uploading = {
 	id: string;
@@ -38,14 +40,26 @@ export function uploadFile(
 
 	if (folder && typeof folder === 'object') folder = folder.id;
 
+	if (file.size > instance.maxFileSize) {
+		alert({
+			type: 'error',
+			title: i18n.ts.failedToUpload,
+			text: i18n.ts.cannotUploadBecauseExceedsFileSizeLimit,
+		});
+		return Promise.reject();
+	}
+
 	return new Promise((resolve, reject) => {
-		const id = Math.random().toString();
+		const id = uuid();
 
 		const reader = new FileReader();
 		reader.onload = async (): Promise<void> => {
+			const filename = name ?? file.name ?? 'untitled';
+			const extension = filename.split('.').length > 1 ? '.' + filename.split('.').pop() : '';
+
 			const ctx = reactive<Uploading>({
-				id: id,
-				name: name ?? file.name ?? 'untitled',
+				id,
+				name: defaultStore.state.keepOriginalFilename ? filename : id + extension,
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),

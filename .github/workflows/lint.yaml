@@ -1,0 +1,177 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - .github/workflows/lint.yaml
+      - packages/**/*
+
+  pull_request_target:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - packages/**/*
+
+permissions:
+  contents: read
+
+jobs:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  run-pnpm-install:
+    name: Run pnpm install
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+      - run-pnpm-install
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace:
+          - backend
+          - frontend
+          - frontend-embed
+          - frontend-shared
+          - misskey-bubble-game
+          - misskey-js
+          - misskey-reversi
+          - sw
+    env:
+      eslint-cache-version: v1
+      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Restore eslint cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: ${{ env.eslint-cache-path }}
+          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ needs.pre-checkout.outputs.sha }}
+          restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Run eslint
+        run: |
+          pnpm --filter ${{ matrix.workspace }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+      - run-pnpm-install
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace:
+          - backend
+          - misskey-js
+          - sw
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Build (misskey-js)
+        if: matrix.workspace == 'backend' || matrix.workspace == 'sw'
+        run: |
+          pnpm --filter misskey-js run build
+
+      - name: Build (misskey-reversi)
+        if: matrix.workspace == 'backend'
+        run: |
+          pnpm --filter misskey-reversi run build
+
+      - name: Run typecheck
+        run: |
+          pnpm --filter ${{ matrix.workspace }} run typecheck
+
+  status-checks:
+    name: status-checks:lint # required status checks
+    runs-on: ubuntu-22.04
+    if: always()
+    needs:
+      - lint
+      - typecheck
+    steps:
+      - name: Check needs results
+        env:
+          needs_result: ${{ toJSON(needs.*.result) }}
+        run: |
+          results="$(jq -r '.[]' <<< "$needs_result")"
+          echo "$results" | while read -r line; do
+            if [[ "$line" != "success" ]]; then
+              exit 1
+            fi
+          done

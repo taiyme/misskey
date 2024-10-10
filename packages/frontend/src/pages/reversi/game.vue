@@ -12,6 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
 import GameSetting from './game.setting.vue';
 import GameBoard from './game.board.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -21,7 +23,6 @@ import { signinRequired } from '@/account.js';
 import { useRouter } from '@/router/supplier.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
 
 const $i = signinRequired();
 
@@ -44,7 +45,7 @@ function start(_game: Misskey.entities.ReversiGameDetailed) {
 
 	if (shareWhenStart.value) {
 		misskeyApi('notes/create', {
-			text: i18n.ts._reversi.iStartedAGame + '\n' + location.href,
+			text: `${i18n.ts._reversi.iStartedAGame}\n${url}/reversi/g/${props.gameId}`,
 			visibility: 'home',
 		});
 	}

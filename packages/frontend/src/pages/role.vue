@@ -38,12 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { instanceName } from '@@/js/config.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { instanceName } from '@/config.js';
 import { serverErrorImageUrl, infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
@@ -103,7 +103,6 @@ definePageMetadata(() => ({
 .root {
 	padding: 32px;
 	text-align: center;
-	align-items: center;
 }
 
 .text {
@@ -112,10 +111,8 @@ definePageMetadata(() => ({
 
 .img {
 	vertical-align: bottom;
-	width: 128px;
 	height: 128px;
 	margin-bottom: 16px;
 	border-radius: 16px;
 }
 </style>
-

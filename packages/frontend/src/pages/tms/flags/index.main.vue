@@ -7,6 +7,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps_m">
 	<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
 	<FormSection>
+		<div class="_gaps">
+			<MkSwitch v-model="preventLongPressContextMenu">
+				<template #label>{{ i18n.ts._tms._flags._preventLongPressContextMenu.label }}</template>
+				<template #caption>{{ i18n.ts._tms._flags._preventLongPressContextMenu.caption }}</template>
+			</MkSwitch>
+		</div>
+	</FormSection>
+	<FormSection>
 		<template #label>For developer</template>
 		<div class="_gaps_s">
 			<MkFolder defaultOpen>
@@ -28,14 +36,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, readonly, ref, shallowRef, watch } from 'vue';
-import { commitHash, lang, version } from '@/config.js';
+import { computed, defineAsyncComponent, readonly, ref, shallowRef, watch } from 'vue';
+import { commitHash, lang, version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { confirm, inputText, popup, waiting } from '@/os.js';
+import { confirm, popup, waiting } from '@/os.js';
+import { tmsFlaskStore } from '@/tms/flask-store.js';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+
+//#region 即時変更
+const preventLongPressContextMenu = computed(tmsFlaskStore.makeGetterSetter('preventLongPressContextMenu'));
+//#endregion
 
 const XBackupAndSyncingCustomCss = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/main.vue'));
 const backupAndSyncingCustomCss = shallowRef<InstanceType<typeof XBackupAndSyncingCustomCss> | null>(null);
@@ -51,34 +65,31 @@ const confirmDialog = async (): Promise<boolean> => {
 };
 
 const forceFetchLocale = async (): Promise<void> => {
-	const defaultValue = commitHash ?? Date.now().toString();
-	const { canceled, result } = await inputText({
-		type: 'text',
-		text: 'Revision?',
-		placeholder: defaultValue,
-		default: defaultValue,
-	});
-	if (canceled) return;
 	if (!(await confirmDialog())) return;
 	waiting();
-	const revision = result || defaultValue;
-	const res = await window.fetch(`/assets/locales/${lang}.${version}.json?rev=${revision}`);
+	const revision = commitHash ?? 'unknown';
+	const newLocaleVersion = `${version}+REV:${revision}`;
+	const res = await window.fetch(`/assets/locales/${lang}.${version}.json?date=${Date.now().toString()}`);
 	if (res.status === 200) {
 		const newLocale = await res.text();
 		miLocalStorage.setItem('locale', newLocale);
-		miLocalStorage.setItem('localeVersion', version);
+		miLocalStorage.setItem('localeVersion', newLocaleVersion);
 	}
 	location.reload();
 };
 
 const openMkUpdated = async (): Promise<void> => {
 	if (!(await confirmDialog())) return;
-	popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {
+		closed: () => dispose(),
+	});
 };
 
 const openMkDonation = async (): Promise<void> => {
 	if (!(await confirmDialog())) return;
-	popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
+	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {
+		closed: () => dispose(),
+	});
 };
 
 const edited = ref(false);

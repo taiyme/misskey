@@ -28,9 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		@leave="leave"
 		@afterLeave="afterLeave"
 	>
-		<div v-show="showBody" ref="contentEl" :class="[$style.content, { [$style.omitted]: omitted }]">
-			<slot></slot>
-			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
+		<div v-show="showBody" :class="[$style.content, { [$style.omitted]: omitted }]">
+			<div ref="contentEl">
+				<slot></slot>
+			</div>
+			<button v-if="omitted" :class="['_button', $style.showMoreFade]" @click="showMore">
 				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
@@ -61,8 +63,8 @@ const rootEl = shallowRef<HTMLElement>();
 const contentEl = shallowRef<HTMLElement>();
 const headerEl = shallowRef<HTMLElement>();
 const showBody = ref(props.expanded);
-const ignoreOmit = ref(false);
 const omitted = ref(false);
+const manuallyOperated = ref(false);
 
 function enter(el) {
 	const elementHeight = el.getBoundingClientRect().height;
@@ -86,14 +88,17 @@ function afterLeave(el) {
 	el.style.height = null;
 }
 
-const calcOmit = () => {
-	if (omitted.value || ignoreOmit.value || props.maxHeight == null) return;
-	if (!contentEl.value) return;
-	const height = contentEl.value.offsetHeight;
-	omitted.value = height > props.maxHeight;
+const showMore = () => {
+	manuallyOperated.value = true;
+	omitted.value = false;
 };
 
-const omitObserver = new ResizeObserver((entries, observer) => {
+const calcOmit = () => {
+	if (manuallyOperated.value || contentEl.value == null || props.maxHeight == null) return;
+	omitted.value = contentEl.value.offsetHeight > props.maxHeight;
+};
+
+const omitObserver = new ResizeObserver(() => {
 	calcOmit();
 });
 
@@ -204,37 +209,41 @@ onUnmounted(() => {
 
 .content {
 	--stickyTop: 0px;
+}
 
-	&.omitted {
-		position: relative;
-		max-height: var(--maxHeight);
-		overflow: hidden;
+.omitted {
+	position: relative;
+	min-height: 64px; // .showMoreFade
+	max-height: var(--maxHeight);
+	overflow: hidden; // fallback (overflow: clip)
+	overflow: clip;
+}
 
-		> .fade {
-			display: block;
-			position: absolute;
-			z-index: 10;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			height: 64px;
-			background: linear-gradient(0deg, var(--panel), var(--X15));
+.showMoreFade {
+	display: block;
+	position: absolute;
+	z-index: 10;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 64px; // .omitted
+	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+}
 
-			> .fadeLabel {
-				display: inline-block;
-				background: var(--panel);
-				padding: 6px 10px;
-				font-size: 0.8em;
-				border-radius: 999px;
-				box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-			}
-
-			&:hover {
-				> .fadeLabel {
-					background: var(--panelHighlight);
-				}
-			}
+.showMoreFade {
+	&:hover {
+		> .fadeLabel {
+			background: var(--panelHighlight);
 		}
+	}
+
+	> .fadeLabel {
+		display: inline-block;
+		background: var(--panel);
+		padding: 6px 10px;
+		font-size: 0.8em;
+		border-radius: 999px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
 	}
 }
 

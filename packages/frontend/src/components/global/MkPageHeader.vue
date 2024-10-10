@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="`fullButton:${action.text}:${action.icon}`"
 					:class="$style.fullButton"
 					primary
+					:disabled="action.disabled"
 					@click.stop="action.handler"
 					@touchstart.stop="() => {}"
 				>
@@ -46,6 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:key="`button:${action.text}:${action.icon}`"
 					v-tooltip.noDelay="action.text"
 					:class="['_button', $style.button, { [$style.highlighted]: action.highlighted }]"
+					:disabled="action.disabled"
 					@click.stop="action.handler"
 					@touchstart.stop="() => {}"
 				>
@@ -63,12 +65,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import tinycolor from 'tinycolor2';
+import { scrollToTop } from '@@/js/scroll.js';
 import XTabs, { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@/scripts/scroll.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import { globalEvents } from '@/events.js';
 import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
-import { PageHeaderItem } from '@/types/page-header.js';
 import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
@@ -78,7 +80,9 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
-	tabs: () => ([] as Tab[]),
+	tabs: () => [],
+	tab: undefined,
+	actions: null,
 });
 
 const emit = defineEmits<{
@@ -87,8 +91,8 @@ const emit = defineEmits<{
 
 const pageMetadata = injectReactiveMetadata();
 
-const hideTitle = inject('shouldOmitHeaderTitle', false);
-const thin_ = props.thin || inject('shouldHeaderThin', false);
+const hideTitle = inject<boolean>('shouldOmitHeaderTitle', false);
+const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
 
 const el = shallowRef<HTMLElement | undefined>(undefined);
 const bg = ref<string | undefined>(undefined);
@@ -130,7 +134,7 @@ onMounted(() => {
 
 	if (el.value && el.value.parentElement) {
 		narrow.value = el.value.parentElement.offsetWidth < 500;
-		ro = new ResizeObserver((entries, observer) => {
+		ro = new ResizeObserver(() => {
 			if (el.value && el.value.parentElement && document.body.contains(el.value as HTMLElement)) {
 				narrow.value = el.value.parentElement.offsetWidth < 500;
 			}

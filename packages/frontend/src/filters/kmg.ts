@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// eslint-disable-next-line import/no-default-export
 export default (v, fractionDigits = 0) => {
 	if (v == null) return 'N/A';
 	if (v === 0) return '0';

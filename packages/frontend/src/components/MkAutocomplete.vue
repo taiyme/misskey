@@ -46,18 +46,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import { markRaw, ref, shallowRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import sanitizeHtml from 'sanitize-html';
+import { emojilist, getEmojiName } from '@@/js/emojilist.js';
+import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
+import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
 import contains from '@/scripts/contains.js';
-import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@/scripts/emoji-base.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
-import { emojilist, getEmojiName } from '@/scripts/emojilist.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { MFM_TAGS, MFM_PARAMS } from '@/const.js';
 import { searchEmoji, EmojiDef } from '@/scripts/search-emoji.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const lib = emojilist.filter(x => x.category !== 'flags');
 
@@ -115,6 +116,7 @@ const emojiDb = computed(() => {
 	return markRaw([...customEmojiDB, ...unicodeEmojiDB]);
 });
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	emojiDb,
 	emojilist,
@@ -260,7 +262,7 @@ function onMousedown(event: Event) {
 	if (!contains(rootEl.value, event.target) && (rootEl.value !== event.target)) props.close();
 }
 
-function onKeydown(event: KeyboardEvent) {
+const onKeydown = filterKeyboardNonComposing(event => {
 	const cancel = () => {
 		event.preventDefault();
 		event.stopPropagation();
@@ -313,7 +315,7 @@ function onKeydown(event: KeyboardEvent) {
 			event.stopPropagation();
 			props.textarea.focus();
 	}
-}
+});
 
 function selectNext() {
 	if (++select.value >= items.value.length) select.value = 0;
@@ -353,9 +355,9 @@ onUpdated(() => {
 onMounted(() => {
 	setPosition();
 
-	props.textarea.addEventListener('keydown', onKeydown);
+	props.textarea.addEventListener('keydown', onKeydown, { passive: false });
 
-	document.body.addEventListener('mousedown', onMousedown);
+	document.body.addEventListener('mousedown', onMousedown, { passive: true });
 
 	nextTick(() => {
 		exec();

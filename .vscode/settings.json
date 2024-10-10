@@ -11,5 +11,14 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit"
 	},
-	"editor.formatOnSave": false
+	"editor.formatOnSave": false,
+	"yaml.schemas": {
+		"https://json.schemastore.org/github-action.json": [
+			".github/actions/**/action.yaml",
+			".github/actions/**/action.yml"
+		],
+		"https://json.schemastore.org/github-issue-config.json": [
+			".github/ISSUE_TEMPLATE/config.yml"
+		]
+	}
 }

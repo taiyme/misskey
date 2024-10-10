@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
-			<MkA v-for="(user, i) in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
+			<MkA v-for="user in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
 				<MkUserCardMini :user="user"/>
 			</MkA>
 		</div>
@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import * as Misskey from 'misskey-js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { defaultStore } from '@/store.js';
 
@@ -47,13 +47,13 @@ useInterval(fetch, 1000 * 60, {
 .root {
 	&:global {
 		> .users {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 12px;
+
 			.chart-move {
 				transition: transform 1s ease;
 			}
-
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-			grid-gap: 12px;
 
 			> .user:hover {
 				text-decoration: none;

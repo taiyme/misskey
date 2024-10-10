@@ -4,8 +4,9 @@
  */
 
 import { Directive } from 'vue';
-import { makeHotkey } from '../scripts/hotkey.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el, binding) {
 		el._hotkey_global = binding.modifiers.global === true;
@@ -13,9 +14,9 @@ export default {
 		el._keyHandler = makeHotkey(binding.value);
 
 		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler);
+			document.addEventListener('keydown', el._keyHandler, { passive: false });
 		} else {
-			el.addEventListener('keydown', el._keyHandler);
+			el.addEventListener('keydown', el._keyHandler, { passive: false });
 		}
 	},
 

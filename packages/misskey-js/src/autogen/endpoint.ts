@@ -4,6 +4,15 @@ import type {
 	AdminMetaResponse,
 	AdminAbuseUserReportsRequest,
 	AdminAbuseUserReportsResponse,
+	AdminAbuseReportNotificationRecipientListRequest,
+	AdminAbuseReportNotificationRecipientListResponse,
+	AdminAbuseReportNotificationRecipientShowRequest,
+	AdminAbuseReportNotificationRecipientShowResponse,
+	AdminAbuseReportNotificationRecipientCreateRequest,
+	AdminAbuseReportNotificationRecipientCreateResponse,
+	AdminAbuseReportNotificationRecipientUpdateRequest,
+	AdminAbuseReportNotificationRecipientUpdateResponse,
+	AdminAbuseReportNotificationRecipientDeleteRequest,
 	AdminAccountsCreateRequest,
 	AdminAccountsCreateResponse,
 	AdminAccountsDeleteRequest,
@@ -74,6 +83,8 @@ import type {
 	AdminResetPasswordRequest,
 	AdminResetPasswordResponse,
 	AdminResolveAbuseUserReportRequest,
+	AdminForwardAbuseUserReportRequest,
+	AdminUpdateAbuseUserReportRequest,
 	AdminSendEmailRequest,
 	AdminServerInfoResponse,
 	AdminShowModerationLogsRequest,
@@ -99,8 +110,20 @@ import type {
 	AdminRolesUpdateDefaultPoliciesRequest,
 	AdminRolesUsersRequest,
 	AdminRolesUsersResponse,
+	AdminSystemWebhookCreateRequest,
+	AdminSystemWebhookCreateResponse,
+	AdminSystemWebhookDeleteRequest,
+	AdminSystemWebhookListRequest,
+	AdminSystemWebhookListResponse,
+	AdminSystemWebhookShowRequest,
+	AdminSystemWebhookShowResponse,
+	AdminSystemWebhookUpdateRequest,
+	AdminSystemWebhookUpdateResponse,
+	AdminSystemWebhookTestRequest,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
+	AnnouncementsShowRequest,
+	AnnouncementsShowResponse,
 	AntennasCreateRequest,
 	AntennasCreateResponse,
 	AntennasDeleteRequest,
@@ -210,7 +233,6 @@ import type {
 	DriveFilesUpdateRequest,
 	DriveFilesUpdateResponse,
 	DriveFilesUploadFromUrlRequest,
-	DriveFilesUploadFromUrlResponse,
 	DriveFoldersRequest,
 	DriveFoldersResponse,
 	DriveFoldersCreateRequest,
@@ -357,6 +379,7 @@ import type {
 	IWebhooksShowResponse,
 	IWebhooksUpdateRequest,
 	IWebhooksDeleteRequest,
+	IWebhooksTestRequest,
 	InviteCreateResponse,
 	InviteDeleteRequest,
 	InviteListRequest,
@@ -444,6 +467,7 @@ import type {
 	FlashCreateRequest,
 	FlashCreateResponse,
 	FlashDeleteRequest,
+	FlashFeaturedRequest,
 	FlashFeaturedResponse,
 	FlashLikeRequest,
 	FlashShowRequest,
@@ -557,6 +581,11 @@ import type {
 export type Endpoints = {
 	'admin/meta': { req: EmptyRequest; res: AdminMetaResponse };
 	'admin/abuse-user-reports': { req: AdminAbuseUserReportsRequest; res: AdminAbuseUserReportsResponse };
+	'admin/abuse-report/notification-recipient/list': { req: AdminAbuseReportNotificationRecipientListRequest; res: AdminAbuseReportNotificationRecipientListResponse };
+	'admin/abuse-report/notification-recipient/show': { req: AdminAbuseReportNotificationRecipientShowRequest; res: AdminAbuseReportNotificationRecipientShowResponse };
+	'admin/abuse-report/notification-recipient/create': { req: AdminAbuseReportNotificationRecipientCreateRequest; res: AdminAbuseReportNotificationRecipientCreateResponse };
+	'admin/abuse-report/notification-recipient/update': { req: AdminAbuseReportNotificationRecipientUpdateRequest; res: AdminAbuseReportNotificationRecipientUpdateResponse };
+	'admin/abuse-report/notification-recipient/delete': { req: AdminAbuseReportNotificationRecipientDeleteRequest; res: EmptyResponse };
 	'admin/accounts/create': { req: AdminAccountsCreateRequest; res: AdminAccountsCreateResponse };
 	'admin/accounts/delete': { req: AdminAccountsDeleteRequest; res: EmptyResponse };
 	'admin/accounts/find-by-email': { req: AdminAccountsFindByEmailRequest; res: AdminAccountsFindByEmailResponse };
@@ -612,6 +641,8 @@ export type Endpoints = {
 	'admin/relays/remove': { req: AdminRelaysRemoveRequest; res: EmptyResponse };
 	'admin/reset-password': { req: AdminResetPasswordRequest; res: AdminResetPasswordResponse };
 	'admin/resolve-abuse-user-report': { req: AdminResolveAbuseUserReportRequest; res: EmptyResponse };
+	'admin/forward-abuse-user-report': { req: AdminForwardAbuseUserReportRequest; res: EmptyResponse };
+	'admin/update-abuse-user-report': { req: AdminUpdateAbuseUserReportRequest; res: EmptyResponse };
 	'admin/send-email': { req: AdminSendEmailRequest; res: EmptyResponse };
 	'admin/server-info': { req: EmptyRequest; res: AdminServerInfoResponse };
 	'admin/show-moderation-logs': { req: AdminShowModerationLogsRequest; res: AdminShowModerationLogsResponse };
@@ -631,7 +662,14 @@ export type Endpoints = {
 	'admin/roles/unassign': { req: AdminRolesUnassignRequest; res: EmptyResponse };
 	'admin/roles/update-default-policies': { req: AdminRolesUpdateDefaultPoliciesRequest; res: EmptyResponse };
 	'admin/roles/users': { req: AdminRolesUsersRequest; res: AdminRolesUsersResponse };
+	'admin/system-webhook/create': { req: AdminSystemWebhookCreateRequest; res: AdminSystemWebhookCreateResponse };
+	'admin/system-webhook/delete': { req: AdminSystemWebhookDeleteRequest; res: EmptyResponse };
+	'admin/system-webhook/list': { req: AdminSystemWebhookListRequest; res: AdminSystemWebhookListResponse };
+	'admin/system-webhook/show': { req: AdminSystemWebhookShowRequest; res: AdminSystemWebhookShowResponse };
+	'admin/system-webhook/update': { req: AdminSystemWebhookUpdateRequest; res: AdminSystemWebhookUpdateResponse };
+	'admin/system-webhook/test': { req: AdminSystemWebhookTestRequest; res: EmptyResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
+	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
 	'antennas/list': { req: EmptyRequest; res: AntennasListResponse };
@@ -695,7 +733,7 @@ export type Endpoints = {
 	'drive/files/find': { req: DriveFilesFindRequest; res: DriveFilesFindResponse };
 	'drive/files/show': { req: DriveFilesShowRequest; res: DriveFilesShowResponse };
 	'drive/files/update': { req: DriveFilesUpdateRequest; res: DriveFilesUpdateResponse };
-	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: DriveFilesUploadFromUrlResponse };
+	'drive/files/upload-from-url': { req: DriveFilesUploadFromUrlRequest; res: EmptyResponse };
 	'drive/folders': { req: DriveFoldersRequest; res: DriveFoldersResponse };
 	'drive/folders/create': { req: DriveFoldersCreateRequest; res: DriveFoldersCreateResponse };
 	'drive/folders/delete': { req: DriveFoldersDeleteRequest; res: EmptyResponse };
@@ -796,6 +834,7 @@ export type Endpoints = {
 	'i/webhooks/show': { req: IWebhooksShowRequest; res: IWebhooksShowResponse };
 	'i/webhooks/update': { req: IWebhooksUpdateRequest; res: EmptyResponse };
 	'i/webhooks/delete': { req: IWebhooksDeleteRequest; res: EmptyResponse };
+	'i/webhooks/test': { req: IWebhooksTestRequest; res: EmptyResponse };
 	'invite/create': { req: EmptyRequest; res: InviteCreateResponse };
 	'invite/delete': { req: InviteDeleteRequest; res: EmptyResponse };
 	'invite/list': { req: InviteListRequest; res: InviteListResponse };
@@ -855,7 +894,7 @@ export type Endpoints = {
 	'pages/update': { req: PagesUpdateRequest; res: EmptyResponse };
 	'flash/create': { req: FlashCreateRequest; res: FlashCreateResponse };
 	'flash/delete': { req: FlashDeleteRequest; res: EmptyResponse };
-	'flash/featured': { req: EmptyRequest; res: FlashFeaturedResponse };
+	'flash/featured': { req: FlashFeaturedRequest; res: FlashFeaturedResponse };
 	'flash/like': { req: FlashLikeRequest; res: EmptyResponse };
 	'flash/show': { req: FlashShowRequest; res: FlashShowResponse };
 	'flash/unlike': { req: FlashUnlikeRequest; res: EmptyResponse };
@@ -924,3 +963,10 @@ export type Endpoints = {
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
 }
+
+/**
+ * NOTE: The content-type for all endpoints not listed here is application/json.
+ */
+export const endpointReqTypes = {
+	'drive/files/create': 'multipart/form-data',
+} as const satisfies { [K in keyof Endpoints]?: 'multipart/form-data'; };

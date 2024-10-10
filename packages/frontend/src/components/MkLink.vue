@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:rel="rel ?? 'nofollow noopener'"
 	:target="target"
 	:title="url"
+	:behavior="navigationBehavior"
 >
 	<slot></slot>
 	<i v-if="target === '_blank'" class="ti ti-external-link" :class="$style.icon"></i>
@@ -21,14 +22,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, shallowRef } from 'vue';
-import { url as local } from '@/config.js';
+import { url as local } from '@@/js/config.js';
 import { useTooltip } from '@/scripts/use-tooltip.js';
-import * as os from '@/os.js';
-import MkA from '@/components/global/MkA.vue';
+import { popup } from '@/os.js';
+import { isEnabledUrlPreview } from '@/instance.js';
+import MkA, { type MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
+	navigationBehavior?: MkABehavior;
 }>(), {
 });
 
@@ -44,11 +47,15 @@ const anchorElement = computed(() => {
 });
 
 useTooltip(anchorElement, (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: anchorElement.value,
-	}, {}, 'closed');
+	if (isEnabledUrlPreview.value && anchorElement.value != null) {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: anchorElement.value,
+		}, {
+			closed: () => dispose(),
+		});
+	}
 });
 </script>
 

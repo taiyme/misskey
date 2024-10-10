@@ -10,6 +10,8 @@ import * as os from 'node:os';
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
+import * as Sentry from '@sentry/node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
@@ -23,7 +25,7 @@ const _dirname = dirname(_filename);
 const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json`, 'utf-8'));
 
 const logger = new Logger('core', 'cyan');
-const bootLogger = logger.createSubLogger('boot', 'magenta', false);
+const bootLogger = logger.createSubLogger('boot', 'magenta');
 
 const themeColor = chalk.hex('#86b300');
 
@@ -38,15 +40,15 @@ function greet() {
 		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please donate to support development. https://www.patreon.com/syuilo'));
+		console.log(' taiyme is an OSS forked from Misskey.');
+		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please donate to support development. https://www.patreon.com/taiy'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${meta.version}`, null, true);
+	bootLogger.info('Welcome to taiyme!');
+	bootLogger.info(`taiyme v${meta.version}`, null, true);
 }
 
 /**
@@ -69,7 +71,25 @@ export async function masterMain() {
 		process.exit(1);
 	}
 
-	bootLogger.succ('Misskey initialized');
+	bootLogger.succ('taiyme initialized');
+
+	if (config.sentryForBackend) {
+		Sentry.init({
+			integrations: [
+				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
+			],
+
+			// Performance Monitoring
+			tracesSampleRate: 1.0, //  Capture 100% of the transactions
+
+			// Set sampling rate for profiling - this is relative to tracesSampleRate
+			profilesSampleRate: 1.0,
+
+			maxBreadcrumbs: 0,
+
+			...config.sentryForBackend.options,
+		});
+	}
 
 	if (envOption.disableClustering) {
 		if (envOption.onlyServer) {

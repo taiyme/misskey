@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 			</FormSplit>
 		</div>
-		<div v-if="username != '' || host != ''" :class="[$style.result, { [$style.hit]: users.length > 0 }]">
+		<div v-if="username !== '' || host !== ''" :class="[$style.result, { [$style.hit]: users.length > 0 }]">
 			<div v-if="users.length > 0" :class="$style.users">
 				<div v-for="user in users" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span>{{ i18n.ts.noUsers }}</span>
 			</div>
 		</div>
-		<div v-if="username == '' && host == ''" :class="$style.recent">
+		<div v-if="username === '' && host === ''" :class="$style.recent">
 			<div :class="$style.users">
 				<div v-for="user in recentUsers" :key="user.id" class="_button" :class="[$style.user, { [$style.selected]: selected && selected.id === user.id }]" @click="selected = user" @dblclick="ok()">
 					<MkAvatar :user="user" :class="$style.avatar" indicator/>
@@ -61,8 +61,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { host as currentHost, hostname } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -70,7 +71,6 @@ import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { host as currentHost, hostname } from '@/config.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
@@ -91,7 +91,7 @@ const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
-const dialogEl = ref();
+const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function search() {
 	if (username.value === '' && host.value === '') {
@@ -122,7 +122,7 @@ async function ok() {
 	});
 	emit('ok', user);
 
-	dialogEl.value.close();
+	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
 	let recents = defaultStore.state.recentlyUsedUsers;
@@ -133,7 +133,7 @@ async function ok() {
 
 function cancel() {
 	emit('cancel');
-	dialogEl.value.close();
+	dialogEl.value?.close();
 }
 
 onMounted(() => {

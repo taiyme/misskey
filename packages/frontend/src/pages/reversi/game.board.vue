@@ -145,11 +145,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import { useInterval } from '@@/js/use-interval.js';
+import { url } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { deepClone } from '@/scripts/clone.js';
-import { useInterval } from '@/scripts/use-interval.js';
 import { signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -168,7 +169,7 @@ const props = defineProps<{
 const showBoardLabels = ref<boolean>(false);
 const useAvatarAsStone = ref<boolean>(true);
 const autoplaying = ref<boolean>(false);
-// eslint-disable-next-line vue/no-setup-props-destructure
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const game = ref<Misskey.entities.ReversiGameDetailed & { logs: Reversi.Serializer.SerializedLog[] }>(deepClone(props.game));
 const logPos = ref<number>(game.value.logs.length);
 const engine = shallowRef<Reversi.Game>(Reversi.Serializer.restoreGame({
@@ -442,7 +443,7 @@ function autoplay() {
 
 function share() {
 	os.post({
-		initialText: `#MisskeyReversi ${location.href}`,
+		initialText: `#MisskeyReversi\n${url}/reversi/g/${game.value.id}`,
 		instant: true,
 	});
 }
@@ -561,7 +562,7 @@ $gap: 4px;
 .boardCells {
 	flex: 1;
 	display: grid;
-	grid-gap: $gap;
+	gap: $gap;
 }
 
 .boardCell {

@@ -13,6 +13,7 @@ import { popup, alert } from '@/os.js';
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
+// eslint-disable-next-line import/no-default-export
 export default {
 	mounted(el: HTMLElement, binding, vn) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;
@@ -41,8 +42,7 @@ export default {
 					type: 'info',
 					text: binding.value,
 				});
-				return false;
-			});
+			}, { passive: false });
 		}
 
 		self.show = () => {
@@ -51,13 +51,15 @@ export default {
 			if (self.text == null) return;
 
 			const showing = ref(true);
-			popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkTooltip.vue')), {
 				showing,
 				text: self.text,
 				asMfm: binding.modifiers.mfm,
 				direction: binding.modifiers.left ? 'left' : binding.modifiers.right ? 'right' : binding.modifiers.top ? 'top' : binding.modifiers.bottom ? 'bottom' : 'top',
 				targetElement: el,
-			}, {}, 'closed');
+			}, {
+				closed: () => dispose(),
+			});
 
 			self._close = () => {
 				showing.value = false;
@@ -66,9 +68,9 @@ export default {
 
 		el.addEventListener('selectstart', ev => {
 			ev.preventDefault();
-		});
+		}, { passive: false });
 
-		el.addEventListener(start, (ev) => {
+		el.addEventListener(start, () => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			if (delay === 0) {
@@ -91,7 +93,7 @@ export default {
 		el.addEventListener('click', () => {
 			window.clearTimeout(self.showTimer);
 			self.close();
-		});
+		}, { passive: true });
 	},
 
 	updated(el, binding) {

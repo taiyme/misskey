@@ -39,10 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import { GetFormResultType } from '@/scripts/form.js';
 import { i18n } from '@/i18n.js';
-import { useInterval } from '@/scripts/use-interval.js';
 
 const name = 'calendar';
 
@@ -121,7 +121,7 @@ defineExpose<WidgetComponentExpose>({
 .root {
 	padding: 16px 0;
 
-	&:after {
+	&::after {
 		content: "";
 		display: block;
 		clear: both;

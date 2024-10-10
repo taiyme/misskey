@@ -9,6 +9,7 @@ import { entities } from './built/postgres.js';
 
 const config = loadConfig();
 
+// eslint-disable-next-line import/no-default-export
 export default new DataSource({
 	type: 'postgres',
 	host: config.db.host,

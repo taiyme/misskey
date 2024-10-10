@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 
-				<MkInfo v-if="user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
+				<MkInfo v-if="['instance.actor', 'relay.actor'].includes(user.username)">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
 				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkTextarea v-model="moderationNote" manualSave>
 					<template #label>{{ i18n.ts.moderationNote }}</template>
+					<template #caption>{{ i18n.ts._tms.moderationNoteIsSharedAmongModerators }}</template>
 				</MkTextarea>
 
 				<!--
@@ -205,6 +206,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { url } from '@@/js/config.js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -220,7 +222,6 @@ import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
-import { url } from '@/config.js';
 import { acct } from '@/filters/user.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
@@ -416,7 +417,7 @@ async function assignRole() {
 	if (canceled) return;
 
 	const { canceled: canceled2, result: period } = await os.select({
-		title: i18n.ts.period,
+		title: i18n.ts.period + ': ' + roles.find(r => r.id === roleId)!.name,
 		items: [{
 			value: 'indefinitely', text: i18n.ts.indefinitely,
 		}, {
@@ -464,16 +465,20 @@ function toggleRoleItem(role) {
 }
 
 function createAnnouncement() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
 		user: user.value,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 function editAnnouncement(announcement) {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
 		user: user.value,
 		announcement,
-	}, {}, 'closed');
+	}, {
+		closed: () => dispose(),
+	});
 }
 
 watch(() => props.userId, () => {

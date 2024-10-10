@@ -92,7 +92,7 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<void> {
+	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<void> {
 		const antennas = await this.getAntennas();
 		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
@@ -110,9 +110,11 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; isBot: boolean; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
+
+		if (antenna.excludeBots && noteUser.isBot) return false;
 
 		if (antenna.localOnly && noteUser.host != null) return false;
 
@@ -121,11 +123,14 @@ export class AntennaService implements OnApplicationShutdown {
 		if (antenna.src === 'home') {
 			// TODO
 		} else if (antenna.src === 'list') {
-			const listUsers = (await this.userListMembershipsRepository.findBy({
-				userListId: antenna.userListId!,
-			})).map(x => x.userId);
-
-			if (!listUsers.includes(note.userId)) return false;
+			if (antenna.userListId == null) return false;
+			const exists = await this.userListMembershipsRepository.exists({
+				where: {
+					userListId: antenna.userListId,
+					userId: note.userId,
+				},
+			});
+			if (!exists) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);

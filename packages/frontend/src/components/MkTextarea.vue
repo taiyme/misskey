@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:spellcheck="spellcheck"
 			@focus="focused = true"
 			@blur="focused = false"
-			@keydown="onKeydown($event)"
+			@keydown="onKeydown"
 			@input="onInput"
 		></textarea>
 	</div>
@@ -41,6 +41,7 @@ import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { Autocomplete, SuggestionType } from '@/scripts/autocomplete.js';
+import { filterKeyboardNonComposing } from '@/scripts/tms/filter-keyboard.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -83,12 +84,10 @@ const onInput = (ev) => {
 	changed.value = true;
 	emit('change', ev);
 };
-const onKeydown = (ev: KeyboardEvent) => {
-	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
-
+const onKeydown = filterKeyboardNonComposing(ev => {
 	emit('keydown', ev);
 
-	if (ev.code === 'Enter') {
+	if (ev.key === 'Enter') {
 		emit('enter');
 	}
 
@@ -101,7 +100,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 		});
 		ev.preventDefault();
 	}
-};
+});
 
 const updated = () => {
 	changed.value = false;

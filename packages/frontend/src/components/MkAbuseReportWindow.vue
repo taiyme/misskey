@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkWindow>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkWindow from '@/components/MkWindow.vue';
@@ -39,7 +39,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	user: Misskey.entities.UserDetailed;
+	user: Misskey.entities.UserLite;
 	initialComment?: string;
 }>();
 

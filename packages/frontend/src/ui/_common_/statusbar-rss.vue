@@ -28,8 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { useInterval } from '@@/js/use-interval.js';
 import MarqueeText from '@/components/MkMarquee.vue';
-import { useInterval } from '@/scripts/use-interval.js';
 import { shuffle } from '@/scripts/shuffle.js';
 
 const props = defineProps<{
@@ -42,13 +43,13 @@ const props = defineProps<{
 	refreshIntervalSec?: number;
 }>();
 
-const items = ref([]);
+const items = ref<Misskey.entities.FetchRssResponse['items']>([]);
 const fetching = ref(true);
 const key = ref(0);
 
 const tick = () => {
 	window.fetch(`/api/fetch-rss?url=${props.url}`, {}).then(res => {
-		res.json().then(feed => {
+		res.json().then((feed: Misskey.entities.FetchRssResponse) => {
 			if (props.shuffle) {
 				shuffle(feed.items);
 			}

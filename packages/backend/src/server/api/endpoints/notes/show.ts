@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -42,6 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private getterService: GetterService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
@@ -49,8 +51,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
+			const isAdministrator = await this.roleService.isAdministrator(me);
+
 			return await this.noteEntityService.pack(note, me, {
 				detail: true,
+				skipHide: isAdministrator,
 			});
 		});
 	}
