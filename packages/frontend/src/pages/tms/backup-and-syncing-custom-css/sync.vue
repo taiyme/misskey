@@ -34,6 +34,10 @@ import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 
+defineProps<{
+	customCssBackups: CustomCSSBackups;
+}>();
+
 const scope = ['tms', 'customCssBackups'] as const satisfies string[];
 
 const edited = ref(false);
@@ -67,10 +71,6 @@ watch([
 	edited.value = true;
 	changed.value = tmsFlaskStore.state.enabledCustomCssSyncing !== enabled.value || tmsFlaskStore.state.syncingCustomCssId !== selected.value;
 }, { deep: true });
-
-defineProps<{
-	customCssBackups: CustomCSSBackups;
-}>();
 
 defineExpose({
 	save,
