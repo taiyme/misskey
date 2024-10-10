@@ -93,11 +93,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					</div>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
-					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
-						<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
+					<button v-if="isLong && collapsed" :class="['_button', $style.showMoreFade]" @click="collapsed = false">
+						<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 					</button>
-					<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
-						<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+					<button v-else-if="isLong && !collapsed" :class="['_button', $style.showLessFade]" @click="collapsed = true">
+						<span :class="$style.fadeLabel">{{ i18n.ts.showLess }}</span>
 					</button>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
@@ -818,52 +818,50 @@ function emitUpdReaction(emoji: string, delta: number) {
 	overflow-wrap: break-word;
 }
 
-.showLess {
-	width: 100%;
-	margin-top: 14px;
-	position: sticky;
-	bottom: calc(var(--stickyBottom, 0px) + 14px);
-}
-
-.showLessLabel {
-	display: inline-block;
-	background: var(--popup);
-	padding: 6px 10px;
-	font-size: 0.8em;
-	border-radius: 999px;
-	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-}
-
 .contentCollapsed {
 	position: relative;
-	min-height: 64px; // .collapsed
+	min-height: 64px; // .showMoreFade
 	max-height: 9em;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
 }
 
-.collapsed {
+.showMoreFade {
 	display: block;
 	position: absolute;
+	z-index: 10;
 	bottom: 0;
 	left: 0;
-	z-index: 2;
 	width: 100%;
 	height: 64px; // .contentCollapsed
 	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
-
-	&:hover > .collapsedLabel {
-		background: var(--panelHighlight);
-	}
 }
 
-.collapsedLabel {
-	display: inline-block;
-	background: var(--panel);
-	padding: 6px 10px;
-	font-size: 0.8em;
-	border-radius: 999px;
-	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+.showLessFade {
+	display: block;
+	position: sticky;
+	z-index: 10;
+	bottom: var(--stickyBottom, 0px);
+	width: 100%;
+	height: 64px;
+}
+
+.showMoreFade,
+.showLessFade {
+	&:hover {
+		> .fadeLabel {
+			background: var(--panelHighlight);
+		}
+	}
+
+	> .fadeLabel {
+		display: inline-block;
+		background: var(--panel);
+		padding: 6px 10px;
+		font-size: 0.8em;
+		border-radius: 999px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+	}
 }
 
 .text {

@@ -36,9 +36,6 @@ import * as os from '@/os.js';
 
 const webhooks = ref<Misskey.entities.SystemWebhook[]>([]);
 
-const headerActions = computed(() => []);
-const headerTabs = computed(() => []);
-
 async function onCreateWebhookClicked() {
 	await showSystemWebhookEditorDialog({
 		mode: 'create',
@@ -77,6 +74,10 @@ async function fetchWebhooks() {
 onMounted(async () => {
 	await fetchWebhooks();
 });
+
+const headerActions = computed(() => []);
+
+const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
 	title: 'SystemWebhook',
