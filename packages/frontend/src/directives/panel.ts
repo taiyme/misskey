@@ -4,20 +4,12 @@
  */
 
 import { Directive } from 'vue';
+import { getBgColor } from '@/scripts/tms/get-bg-color.js';
 
 // eslint-disable-next-line import/no-default-export
 export default {
 	mounted(src, binding, vn) {
-		const getBgColor = (el: HTMLElement) => {
-			const style = window.getComputedStyle(el);
-			if (style.backgroundColor && !['rgba(0, 0, 0, 0)', 'rgba(0,0,0,0)', 'transparent'].includes(style.backgroundColor)) {
-				return style.backgroundColor;
-			} else {
-				return el.parentElement ? getBgColor(el.parentElement) : 'transparent';
-			}
-		};
-
-		const parentBg = getBgColor(src.parentElement);
+		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
 		const myBg = getComputedStyle(document.documentElement).getPropertyValue('--panel');
 

@@ -92,9 +92,13 @@ const props = defineProps<{
 	}
 
 	&:global(.gray) {
-		--c: var(--bg);
-		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
-		background-size: 16px 16px;
+		background-image: repeating-linear-gradient(
+			135deg,
+			transparent,
+			transparent 10px,
+			var(--bg) 6px,
+			var(--bg) 16px
+		);
 	}
 
 	@media (max-width: 700px) {

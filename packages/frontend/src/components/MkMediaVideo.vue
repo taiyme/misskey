@@ -180,13 +180,6 @@ const {
 	reactiveIAmOwner: iAmOwnerRef,
 } = useReactiveDriveFile(() => props.video);
 
-const reactiveColor = computed(() => {
-	if (defaultStore.reactiveState.darkMode.value) {
-		return 'rgba(255, 255, 255, 0.02)';
-	}
-	return 'rgba(0, 0, 0, 0.02)';
-});
-
 const showVideo = async () => {
 	if (!hideRef.value) return;
 	if (sensitiveRef.value && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
@@ -538,17 +531,22 @@ onDeactivated(() => {
 
 .rootVisible {
 	background-color: var(--bg);
-	background-image: linear-gradient(
-		45deg,
-		v-bind(reactiveColor) 16.67%,
-		var(--bg) 16.67%,
-		var(--bg) 50%,
-		v-bind(reactiveColor) 50%,
-		v-bind(reactiveColor) 66.67%,
-		var(--bg) 66.67%,
-		var(--bg) 100%
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
 	);
-	background-size: 16px 16px;
+
+	&,
+	html[data-color-scheme=light] & {
+		--c: color(from color-mix(in srgb, var(--bg), black 15%) srgb r g b / 0.25);
+	}
+
+	html[data-color-scheme=dark] & {
+		--c: color(from color-mix(in srgb, var(--bg), white 15%) srgb r g b / 0.5);
+	}
 }
 
 .rootSensitive {
