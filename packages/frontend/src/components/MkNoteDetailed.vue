@@ -167,7 +167,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #default="{ items }">
 					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px;">
 						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-							<MkUserCardMini :user="item.user" :withChart="false"/>
+							<MkUserCardMini :user="item.user"/>
 						</MkA>
 					</div>
 				</template>
@@ -184,7 +184,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #default="{ items }">
 					<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px;">
 						<MkA v-for="item in items" :key="item.id" :to="userPage(item.user)">
-							<MkUserCardMini :user="item.user" :withChart="false"/>
+							<MkUserCardMini :user="item.user"/>
 						</MkA>
 					</div>
 				</template>
@@ -208,6 +208,7 @@ import { type ComputedRef, computed, inject, onMounted, provide, ref, shallowRef
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
+import { host } from '@@/js/config.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -231,7 +232,6 @@ import { reactionPicker } from '@/scripts/reaction-picker.js';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
-import { host } from '@@/js/config.js';
 import { getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/scripts/get-note-menu.js';
 import { useNoteCapture } from '@/scripts/use-note-capture.js';
 import { deepClone } from '@/scripts/clone.js';
