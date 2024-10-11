@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkLoading v-if="fetching"/>
 		<div v-else class="users">
 			<MkA v-for="user in newUsers" :key="user.id" :to="`/admin/user/${user.id}`" class="user">
-				<MkUserCardMini :user="user"/>
+				<MkUserCardMini :user="user" withChart/>
 			</MkA>
 		</div>
 	</Transition>

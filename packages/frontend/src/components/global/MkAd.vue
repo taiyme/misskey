@@ -123,8 +123,22 @@ function reduceFrequency(): void {
 
 <style lang="scss" module>
 .root {
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(45deg, transparent, transparent 8px, var(--ad) 8px, var(--ad) 14px );
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent,
+		transparent 10px,
+		var(--c) 6px,
+		var(--c) 16px
+	);
+
+	&,
+	html[data-color-scheme=light] & {
+		--c: rgb(0 0 0 / 0.02);
+	}
+
+	html[data-color-scheme=dark] & {
+		--c: rgb(255 255 255 / 0.02);
+	}
 }
 
 .main {

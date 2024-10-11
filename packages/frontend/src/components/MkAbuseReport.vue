@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!-- 通報されたユーザー -->
 	<div :class="[$style.item, '_gaps_s']">
 		<MkA v-user-preview="props.report.targetUser.id" :to="`/admin/user/${props.report.targetUser.id}`" :behavior="'window'">
-			<MkUserCardMini :user="props.report.targetUser" :withChart="false" :class="$style.userCard"/>
+			<MkUserCardMini :user="props.report.targetUser"/>
 		</MkA>
 		<div :class="$style.userStatus">
 			<button
@@ -259,21 +259,6 @@ const showReportMemo = () => {
 	&:empty {
 		display: none;
 	}
-}
-
-.userCard {
-	background-image: linear-gradient(
-		45deg,
-		rgba(255, 196, 0, 0.15) 16.67%,
-		transparent 16.67%,
-		transparent 50%,
-		rgba(255, 196, 0, 0.15) 50%,
-		rgba(255, 196, 0, 0.15) 66.67%,
-		transparent 66.67%,
-		transparent 100%
-	);
-	background-size: 16px 16px;
-	background-color: transparent !important;
 }
 
 .userStatus {
