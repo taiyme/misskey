@@ -90,11 +90,14 @@ const cancel = () => {
 	overflow-y: hidden;
 	background-image: repeating-linear-gradient(
 		135deg,
-		transparent,
-		transparent 10px,
-		var(--c) 6px,
-		var(--c) 16px
+		transparent 0px 10px,
+		var(--c) 6px 16px
 	);
+
+	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
+	html[data-browser-engine=webkit] & {
+		background-image: unset !important;
+	}
 
 	&,
 	html[data-color-scheme=light] & {

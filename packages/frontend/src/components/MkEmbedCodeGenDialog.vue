@@ -307,14 +307,17 @@ onUnmounted(() => {
 .embedCodeGenPreviewRoot {
 	position: relative;
 	background-color: var(--bg);
+	cursor: not-allowed;
 	background-image: repeating-linear-gradient(
 		135deg,
-		transparent,
-		transparent 10px,
-		var(--panel) 6px,
-		var(--panel) 16px
+		transparent 0px 10px,
+		var(--panel) 6px 16px
 	);
-	cursor: not-allowed;
+
+	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
+	html[data-browser-engine=webkit] & {
+		background-image: unset !important;
+	}
 }
 
 .embedCodeGenPreviewWrapper {
