@@ -229,13 +229,16 @@ onMounted(() => {
 	background: var(--acrylicBg);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+	border-radius: 0 0 6px 6px;
 	background-image: repeating-linear-gradient(
 		135deg,
-		transparent,
-		transparent 10px,
-		var(--panel) 6px,
-		var(--panel) 16px
+		transparent 0px 10px,
+		var(--panel) 6px 16px
 	);
-	border-radius: 0 0 6px 6px;
+
+	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
+	html[data-browser-engine=webkit] & {
+		background-image: unset !important;
+	}
 }
 </style>
