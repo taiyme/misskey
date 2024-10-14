@@ -94,11 +94,14 @@ const props = defineProps<{
 	&:global(.gray) {
 		background-image: repeating-linear-gradient(
 			135deg,
-			transparent,
-			transparent 10px,
-			var(--bg) 6px,
-			var(--bg) 16px
+			transparent 0px 10px,
+			var(--bg) 6px 16px
 		);
+
+		// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
+		html[data-browser-engine=webkit] & {
+			background-image: unset !important;
+		}
 	}
 
 	@media (max-width: 700px) {

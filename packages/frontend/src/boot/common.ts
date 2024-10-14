@@ -31,6 +31,14 @@ import { preventLongPressContextMenu } from '@/scripts/tms/prevent-longpress-con
 export async function common(createVue: () => App<Element>) {
 	console.info(`taiyme v${version}`);
 
+	//#region Detect WebKit engine
+	const ua = navigator.userAgent;
+	const isWebkitEngine = ua.includes('AppleWebKit') && !(ua.includes('Chrome') || ua.includes('Chromium'));
+	if (isWebkitEngine) {
+		document.documentElement.dataset.browserEngine = 'webkit';
+	}
+	//#endregion
+
 	if (_DEV_) {
 		console.warn('Development mode!!!');
 
