@@ -105,10 +105,10 @@
 	}
 	//#endregion
 
-	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
+	function addStyle(styleText) {
+		const styleTag = document.createElement('style');
+		styleTag.textContent = styleText;
+		document.head.appendChild(styleTag);
 	}
 
 	async function renderError(code) {

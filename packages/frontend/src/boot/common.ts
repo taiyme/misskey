@@ -6,6 +6,7 @@
 import { computed, watch, version as vueVersion, App } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, updateLocale, locale, commitHash } from '@@/js/config.js';
+import type { CustomCSSBackup } from '@/pages/tms/backup-and-syncing-custom-css/backup.vue';
 import widgets from '@/widgets/index.js';
 import directives from '@/directives/index.js';
 import components from '@/components/index.js';
@@ -26,6 +27,7 @@ import { setupRouter } from '@/router/main.js';
 import { createMainRouter } from '@/router/definition.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
+import { useStream } from '@/stream.js';
 import { preventLongPressContextMenu } from '@/scripts/tms/prevent-longpress-contextmenu.js';
 
 export async function common(createVue: () => App<Element>) {
@@ -128,10 +130,10 @@ export async function common(createVue: () => App<Element>) {
 	html.setAttribute('lang', lang);
 	//#endregion
 
-	await defaultStore.ready;
-	await deckStore.ready;
-	await tmsStore.ready;
-	await tmsFlaskStore.ready;
+	await defaultStore.loaded;
+	await deckStore.loaded;
+	await tmsStore.loaded;
+	await tmsFlaskStore.loaded;
 
 	if (tmsFlaskStore.state.preventLongPressContextMenu) {
 		preventLongPressContextMenu();
@@ -220,6 +222,31 @@ export async function common(createVue: () => App<Element>) {
 			document.documentElement.style.setProperty('--blur', 'none');
 		}
 	}, { immediate: true });
+
+	// tms custom css syncing
+	const enabledCustomCssSyncing = tmsFlaskStore.state.enabledCustomCssSyncing;
+	if (enabledCustomCssSyncing) {
+		const syncingCustomCssId = tmsFlaskStore.state.syncingCustomCssId;
+		const connection = useStream().useChannel('main');
+		const scope = ['tms', 'customCssBackups'] as const satisfies string[];
+
+		connection.on('registryUpdated', ({ scope: recievedScope, key, value }) => {
+			if (scope.join('/') !== recievedScope?.join('/')) return;
+			if (key !== syncingCustomCssId) return;
+
+			const { customCss } = value as unknown as CustomCSSBackup;
+			miLocalStorage.setItem('customCss', customCss);
+
+			let styleTag = document.getElementById('custom_css');
+			if (styleTag == null) {
+				styleTag = document.createElement('style');
+				styleTag.id = 'custom_css';
+				document.head.appendChild(styleTag);
+			}
+
+			styleTag.textContent = customCss;
+		});
+	}
 
 	// Keep screen on
 	const onVisibilityChange = () => document.addEventListener('visibilitychange', () => {

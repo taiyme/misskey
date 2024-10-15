@@ -10683,6 +10683,115 @@ export interface Locale extends ILocale {
                  */
                 readonly "caption": string;
             };
+            readonly "_backupAndSyncingCustomCss": {
+                readonly "_backup": {
+                    /**
+                     * カスタムCSSのバックアップ
+                     */
+                    readonly "title": string;
+                    /**
+                     * 現在のカスタムCSSをバックアップとしてサーバーに保存することが可能です。
+                     */
+                    readonly "description": string;
+                    /**
+                     * バックアップがありません。「新規作成」で現在適用されているカスタムCSSのバックアップを作成できます。
+                     */
+                    readonly "notfound": string;
+                    /**
+                     * 作成日時: {datetime}
+                     */
+                    readonly "createdAt": ParameterizedString<"datetime">;
+                    /**
+                     * バックアップの読み込みに失敗しました。
+                     */
+                    readonly "cannnotLoad": string;
+                    /**
+                     * バックアップファイルはjson形式である必要があります。
+                     */
+                    readonly "invalidFile": string;
+                    /**
+                     * バックアップ名が不正です。
+                     */
+                    readonly "invalidName": string;
+                    /**
+                     * バックアップのカスタムCSSが不正です。
+                     */
+                    readonly "invalidCustomCss": string;
+                    /**
+                     * カスタムCSSが設定されていません
+                     */
+                    readonly "noCustomCss": string;
+                    /**
+                     * カスタムCSSを設定されていない状態ではバックアップを作成できません。
+                     */
+                    readonly "noCustomCssDescription": string;
+                    /**
+                     * バックアップ名を入力
+                     */
+                    readonly "inputBackupName": string;
+                    /**
+                     * カスタムCSSのバックアップを適用
+                     */
+                    readonly "applyBackup": string;
+                    /**
+                     * カスタムCSSのバックアップ「{name}」を適用しますか？
+                     */
+                    readonly "applyBackupDescription": ParameterizedString<"name">;
+                    /**
+                     * カスタムCSSを設定されていない状態では上書き保存できません。
+                     * カスタムCSSのバックアップを削除する場合はメニューから「削除」を選択してください。
+                     */
+                    readonly "cannotOverrideEmpty": string;
+                    /**
+                     * カスタムCSSのバックアップを上書き保存
+                     */
+                    readonly "overrideBackup": string;
+                    /**
+                     * カスタムCSSのバックアップ「{name}」を上書き保存しますか？
+                     * この操作は取り消せません。
+                     */
+                    readonly "overrideBackupDescription": ParameterizedString<"name">;
+                    /**
+                     * カスタムCSSのバックアップを削除
+                     */
+                    readonly "deleteBackup": string;
+                    /**
+                     * カスタムCSSのバックアップ「{name}」を削除しますか？
+                     * この操作は取り消せません。
+                     */
+                    readonly "deleteBackupDescription": ParameterizedString<"name">;
+                    /**
+                     * 上書き保存
+                     */
+                    readonly "override": string;
+                    /**
+                     * バックアップ内容を見る
+                     */
+                    readonly "preview": string;
+                };
+                readonly "_syncing": {
+                    /**
+                     * カスタムCSSの同期
+                     */
+                    readonly "title": string;
+                    /**
+                     * カスタムCSSの同期を有効化すると、カスタムCSSの変更がリアルタイムに同期されます。
+                     */
+                    readonly "description": string;
+                    /**
+                     * カスタムCSSの同期を有効化
+                     */
+                    readonly "enable": string;
+                    /**
+                     * 同期するカスタムCSSを選択
+                     */
+                    readonly "select": string;
+                    /**
+                     * 任意のカスタムCSSのバックアップを他のデバイスとの間で同期することができます。
+                     */
+                    readonly "selectDescription": string;
+                };
+            };
         };
         readonly "_admin": {
             /**

@@ -5,6 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
+	<XBackupAndSyncingCustomCss ref="backupAndSyncingCustomCss"/>
 	<FormSection>
 		<div class="_gaps">
 			<MkSwitch v-model="preventLongPressContextMenu">
@@ -35,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, readonly, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, readonly, ref, shallowRef, watch } from 'vue';
 import { commitHash, lang, version } from '@@/js/config.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -49,6 +50,9 @@ import MkSwitch from '@/components/MkSwitch.vue';
 //#region 即時変更
 const preventLongPressContextMenu = computed(tmsFlaskStore.makeGetterSetter('preventLongPressContextMenu'));
 //#endregion
+
+const XBackupAndSyncingCustomCss = defineAsyncComponent(() => import('@/pages/tms/backup-and-syncing-custom-css/main.vue'));
+const backupAndSyncingCustomCss = shallowRef<InstanceType<typeof XBackupAndSyncingCustomCss> | null>(null);
 
 const confirmDialog = async (): Promise<boolean> => {
 	const { canceled } = await confirm({

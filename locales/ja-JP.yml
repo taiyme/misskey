@@ -2848,6 +2848,34 @@ _tms:
     _preventLongPressContextMenu:
       label: "長押しによるコンテキストメニューイベントの発行を防ぐ"
       caption: "長押しを含む操作が中断される問題を解消します。"
+    _backupAndSyncingCustomCss:
+      _backup:
+        title: "カスタムCSSのバックアップ"
+        description: "現在のカスタムCSSをバックアップとしてサーバーに保存することが可能です。"
+        notfound: "バックアップがありません。「新規作成」で現在適用されているカスタムCSSのバックアップを作成できます。"
+        createdAt: "作成日時: {datetime}"
+        cannnotLoad: "バックアップの読み込みに失敗しました。"
+        invalidFile: "バックアップファイルはjson形式である必要があります。"
+        invalidName: "バックアップ名が不正です。"
+        invalidCustomCss: "バックアップのカスタムCSSが不正です。"
+        noCustomCss: "カスタムCSSが設定されていません"
+        noCustomCssDescription: "カスタムCSSを設定されていない状態ではバックアップを作成できません。"
+        inputBackupName: "バックアップ名を入力"
+        applyBackup: "カスタムCSSのバックアップを適用"
+        applyBackupDescription: "カスタムCSSのバックアップ「{name}」を適用しますか？"
+        cannotOverrideEmpty: "カスタムCSSを設定されていない状態では上書き保存できません。\nカスタムCSSのバックアップを削除する場合はメニューから「削除」を選択してください。"
+        overrideBackup: "カスタムCSSのバックアップを上書き保存"
+        overrideBackupDescription: "カスタムCSSのバックアップ「{name}」を上書き保存しますか？\nこの操作は取り消せません。"
+        deleteBackup: "カスタムCSSのバックアップを削除"
+        deleteBackupDescription: "カスタムCSSのバックアップ「{name}」を削除しますか？\nこの操作は取り消せません。"
+        override: "上書き保存"
+        preview: "バックアップ内容を見る"
+      _syncing:
+        title: "カスタムCSSの同期"
+        description: "カスタムCSSの同期を有効化すると、カスタムCSSの変更がリアルタイムに同期されます。"
+        enable: "カスタムCSSの同期を有効化"
+        select: "同期するカスタムCSSを選択"
+        selectDescription: "任意のカスタムCSSのバックアップを他のデバイスとの間で同期することができます。"
   _admin:
     repositoryUrlDescription: "ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。"
   _search:

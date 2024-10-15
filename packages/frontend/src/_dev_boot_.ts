@@ -79,9 +79,10 @@ async function main() {
 
 	const customCss = localStorage.getItem('customCss');
 	if (customCss && customCss.length > 0) {
-		const style = document.createElement('style');
-		style.innerHTML = customCss;
-		document.head.appendChild(style);
+		const styleTag = document.createElement('style');
+		styleTag.textContent = customCss;
+		styleTag.id = 'custom_css';
+		document.head.appendChild(styleTag);
 	}
 }
 

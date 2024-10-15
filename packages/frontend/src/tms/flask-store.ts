@@ -14,4 +14,12 @@ export const tmsFlaskStore = markRaw(new Storage('tmsFlask', {
 		where: 'device',
 		default: false,
 	},
+	enabledCustomCssSyncing: {
+		where: 'deviceAccount',
+		default: false,
+	},
+	syncingCustomCssId: {
+		where: 'deviceAccount',
+		default: null as string | null,
+	},
 }));

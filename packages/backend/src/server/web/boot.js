@@ -136,15 +136,16 @@
 
 	const customCss = localStorage.getItem('customCss');
 	if (customCss && customCss.length > 0) {
-		const style = document.createElement('style');
-		style.innerHTML = customCss;
-		document.head.appendChild(style);
+		const styleTag = document.createElement('style');
+		styleTag.textContent = customCss;
+		styleTag.id = 'custom_css';
+		document.head.appendChild(styleTag);
 	}
 
-	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
+	function addStyle(styleText) {
+		const styleTag = document.createElement('style');
+		styleTag.textContent = styleText;
+		document.head.appendChild(styleTag);
 	}
 
 	async function renderError(code, details) {
