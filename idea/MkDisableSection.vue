@@ -39,7 +39,7 @@ defineProps<{
 		transparent 0px 10px,
 		var(--c) 6px 16px
 	);
-	--c: color(from var(--error) srgb r g b / 0.25);
+	--c: color(from var(--MI_THEME-error) srgb r g b / 0.25);
 
 	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
 	html[data-browser-engine=webkit] & {

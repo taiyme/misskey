@@ -37,7 +37,7 @@ const rawHtml = computed(() => {
 .mathBlockRoot {
 	display: block;
 	overflow-wrap: anywhere;
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 	padding: 0 1em;
 	margin: 0.5em 0;
 	overflow: auto;

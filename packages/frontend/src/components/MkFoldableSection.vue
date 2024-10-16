@@ -108,10 +108,10 @@ onMounted(() => {
 	position: relative;
 	z-index: 10;
 	position: sticky;
-	top: var(--stickyTop, 0px);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	background-color: color(from v-bind("parentBg ?? 'var(--bg)'") srgb r g b / 0.85);
+	top: var(--MI-stickyTop, 0px);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	background-color: color(from v-bind("parentBg ?? 'var(--MI_THEME-bg)'") srgb r g b / 0.85);
 }
 
 .title {
@@ -125,7 +125,7 @@ onMounted(() => {
 	flex: 1;
 	margin: auto;
 	height: 1px;
-	background: var(--divider);
+	background: var(--MI_THEME-divider);
 }
 
 .button {

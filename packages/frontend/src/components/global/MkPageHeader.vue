@@ -137,11 +137,11 @@ onUnmounted(() => {
 
 <style lang="scss" module>
 .root {
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
-	border-bottom: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 	width: 100%;
-	background: color(from var(--bg) srgb r g b / 0.85);
+	background: color(from var(--MI_THEME-bg) srgb r g b / 0.85);
 }
 
 .upper,
@@ -153,7 +153,7 @@ onUnmounted(() => {
 .upper {
 	--height: 50px;
 	display: flex;
-	gap: var(--margin);
+	gap: var(--MI-margin);
 	height: var(--height);
 
 	.tabs:first-child {
@@ -238,7 +238,7 @@ onUnmounted(() => {
 	}
 
 	&.highlighted {
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 }
 

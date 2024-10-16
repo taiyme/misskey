@@ -305,7 +305,7 @@ const menuDef = computed<ISuperMenuDefinitions>(() => [{
 			height: 100%;
 			max-width: 280px;
 			overflow: auto;
-			border-right: solid 0.5px var(--divider);
+			border-right: solid 0.5px var(--MI_THEME-divider);
 			box-sizing: border-box;
 
 			@supports (height: 100cqh) {

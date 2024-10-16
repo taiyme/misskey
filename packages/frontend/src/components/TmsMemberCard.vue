@@ -29,12 +29,12 @@ const props = defineProps<{
 	align-items: center;
 	padding: 12px;
 	gap: 12px;
-	background: var(--buttonBg);
+	background: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 
 	&:hover {
 		text-decoration: none;
-		background: var(--buttonHoverBg);
+		background: var(--MI_THEME-buttonHoverBg);
 	}
 }
 

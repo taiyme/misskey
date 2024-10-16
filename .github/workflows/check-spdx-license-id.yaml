@@ -47,17 +47,26 @@ jobs:
 
           search() {
             local directory="$1"
+            if [[ ! -d "$directory" ]]; then
+              return 0
+            fi
             find "$directory" -type f \
-              '(' \
-                -name '*.cjs' -and -not -name '*.config.cjs' -o \
-                -name '*.html' -o \
-                -name '*.js' -and -not -name '*.config.js' -o \
-                -name '*.mjs' -and -not -name '*.config.mjs' -o \
-                -name '*.scss' -o \
-                -name '*.ts' -and -not -name '*.config.ts' -o \
+              \( \
+                -name '*.html' -or \
+                -name '*.scss' -or \
+                -name '*.css' -or \
                 -name '*.vue' \
-              ')' -and \
-              -not -name '*eslint*'
+              \) -or \
+              \( \
+                \( \
+                  -name '*.ts' -or \
+                  -name '*.js' -or \
+                  -name '*.mjs' -or \
+                  -name '*.cjs' \
+                \) -and \( \
+                  -not -name '*.config.*' \
+                \) \
+              \)
           }
 
           check() {
@@ -76,6 +85,8 @@ jobs:
             'packages/backend/migration'
             'packages/backend/src'
             'packages/backend/test'
+            'packages/backend/test-federation'
+            'packages/backend/test-server'
             'packages/frontend/.storybook'
             'packages/frontend/@types'
             'packages/frontend/lib'

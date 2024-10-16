@@ -79,7 +79,7 @@ const toggle = () => {
 	margin-top: 2px;
 	display: block;
 	transition: inherit;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 
 .label {
@@ -91,7 +91,7 @@ const toggle = () => {
 
 .caption {
 	margin: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 	font-size: 0.85em;
 
 	&:empty {

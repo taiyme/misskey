@@ -32,14 +32,12 @@ coverage
 !/.config/docker_example.yml
 !/.config/docker_example.env
 !/.config/cypress-devcontainer.yml
-compose.yaml
-compose.yml
-docker-compose.yaml
-docker-compose.yml
-!/.devcontainer/compose.yaml
-!/.devcontainer/compose.yml
-!/.devcontainer/docker-compose.yaml
-!/.devcontainer/docker-compose.yml
+
+# docker
+/compose.yaml
+/compose.yml
+/docker-compose.yaml
+/docker-compose.yml
 
 # misskey
 /build

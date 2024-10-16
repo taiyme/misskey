@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- Media系専用のinput range -->
 <template>
-<div :style="props.sliderBgWhite ? '--sliderBg: rgba(255, 255, 255, 0.25);' : '--sliderBg: var(--scrollbarHandle);'">
+<div :style="props.sliderBgWhite ? '--sliderBg: rgba(255, 255, 255, 0.25);' : '--sliderBg: var(--MI_THEME-scrollbarHandle);'">
 	<div :class="$style.controlsSeekbar">
 		<progress
 			:class="$style.buffer"
@@ -74,7 +74,7 @@ const rangeRef = computed({
 	background: transparent;
 	border: 0;
 	border-radius: 26px;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	display: block;
 	height: 19px;
 	margin: 0;
