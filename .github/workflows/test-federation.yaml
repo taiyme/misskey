@@ -1,0 +1,81 @@
+name: Test (federation)
+
+on:
+  push:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - .github/workflows/test-federation.yaml
+      - packages/backend/**/*
+      - packages/misskey-js/**/*
+
+  pull_request_target:
+    branches:
+      - taiyme
+      - release
+    paths:
+      - packages/backend/**/*
+      - packages/misskey-js/**/*
+
+jobs:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  test-federation:
+    name: Test federation
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.0
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@37062fbf7149fc5578d6c57e08aed62458b375d6 # v3.1
+
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm build
+
+      - name: Setup
+        working-directory: packages/backend/test-federation
+        run: |
+          bash ./setup.sh
+          sudo chmod 644 ./certificates/*.test.key
+
+      - name: Start servers
+        working-directory: packages/backend/test-federation
+        # https://github.com/docker/compose/issues/1294#issuecomment-374847206
+        run: |
+          docker compose up -d --scale tester=0
+
+      - name: Test
+        working-directory: packages/backend/test-federation
+        run: |
+          docker compose run --no-deps tester
+
+      - name: Stop servers
+        working-directory: packages/backend/test-federation
+        run: |
+          docker compose down

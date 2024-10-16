@@ -212,7 +212,7 @@ const showImageMenu = (ev: MouseEvent) => {
 }
 
 .rootVisible {
-	background-color: var(--bg);
+	background-color: var(--MI_THEME-bg);
 	background-image: repeating-linear-gradient(
 		135deg,
 		transparent 0px 10px,
@@ -226,11 +226,11 @@ const showImageMenu = (ev: MouseEvent) => {
 
 	&,
 	html[data-color-scheme=light] & {
-		--c: color(from color-mix(in srgb, var(--bg), black 15%) srgb r g b / 0.25);
+		--c: color(from color-mix(in srgb, var(--MI_THEME-bg), black 15%) srgb r g b / 0.25);
 	}
 
 	html[data-color-scheme=dark] & {
-		--c: color(from color-mix(in srgb, var(--bg), white 15%) srgb r g b / 0.5);
+		--c: color(from color-mix(in srgb, var(--MI_THEME-bg), white 15%) srgb r g b / 0.5);
 	}
 }
 
@@ -244,7 +244,7 @@ const showImageMenu = (ev: MouseEvent) => {
 		height: 100%;
 		pointer-events: none;
 		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
 }
 

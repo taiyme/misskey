@@ -41,13 +41,13 @@ const serverRef = computed(() => {
 	background-position: center center;
 
 	&.onOverlay {
-		-webkit-backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
-		backdrop-filter: var(--blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		-webkit-backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
+		backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
 
 		.bannerInner {
 			background-color: #00000040;
-			-webkit-backdrop-filter: var(--blur, blur(2px));
-			backdrop-filter: var(--blur, blur(2px));
+			-webkit-backdrop-filter: var(--MI-blur, blur(2px));
+			backdrop-filter: var(--MI-blur, blur(2px));
 		}
 
 		.name {
@@ -80,6 +80,6 @@ const serverRef = computed(() => {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-weight: 700;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 }
 </style>

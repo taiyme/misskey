@@ -306,12 +306,12 @@ onUnmounted(() => {
 
 .embedCodeGenPreviewRoot {
 	position: relative;
-	background-color: var(--bg);
+	background-color: var(--MI_THEME-bg);
 	cursor: not-allowed;
 	background-image: repeating-linear-gradient(
 		135deg,
 		transparent 0px 10px,
-		var(--panel) 6px 16px
+		var(--MI_THEME-panel) 6px 16px
 	);
 
 	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
@@ -389,8 +389,8 @@ onUnmounted(() => {
 
 .embedCodeGenResultHeadingIcon {
 	margin: 0 auto;
-	background-color: var(--accentedBg);
-	color: var(--accent);
+	background-color: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 	text-align: center;
 	height: 64px;
 	width: 64px;

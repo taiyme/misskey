@@ -39,6 +39,6 @@ const props = withDefaults(defineProps<{
 .root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-	gap: var(--margin);
+	gap: var(--MI-margin);
 }
 </style>

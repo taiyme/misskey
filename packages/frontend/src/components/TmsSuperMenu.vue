@@ -87,7 +87,7 @@ const props = defineProps<TmsSuperMenuProps>();
 		& + .group {
 			margin-top: 16px;
 			padding-top: 16px;
-			border-top: solid 0.5px var(--divider);
+			border-top: solid 0.5px var(--MI_THEME-divider);
 		}
 	}
 
@@ -112,12 +112,12 @@ const props = defineProps<TmsSuperMenuProps>();
 		}
 
 		&.active, &:hover {
-			color: var(--accent);
-			background-color: var(--accentedBg);
+			color: var(--MI_THEME-accent);
+			background-color: var(--MI_THEME-accentedBg);
 		}
 
 		&.danger {
-			color: var(--error);
+			color: var(--MI_THEME-error);
 		}
 	}
 
@@ -162,11 +162,11 @@ const props = defineProps<TmsSuperMenuProps>();
 
 		&.active, &:hover {
 			background-color: transparent;
-			color: var(--accent);
+			color: var(--MI_THEME-accent);
 			transition: none;
 
 			> .itemIcon {
-				background-color: var(--accentedBg);
+				background-color: var(--MI_THEME-accentedBg);
 			}
 		}
 	}
@@ -178,7 +178,7 @@ const props = defineProps<TmsSuperMenuProps>();
 		width: 60px;
 		height: 60px;
 		aspect-ratio: 1;
-		background-color: var(--panel);
+		background-color: var(--MI_THEME-panel);
 		border-radius: 100%;
 		transition: background-color 0.1s ease;
 	}
@@ -214,7 +214,7 @@ const props = defineProps<TmsSuperMenuProps>();
 		flex-direction: column;
 		gap: 12px;
 		padding: 18px 16px 16px 16px;
-		background-color: var(--panel);
+		background-color: var(--MI_THEME-panel);
 		border-radius: 8px;
 		text-align: center;
 	}

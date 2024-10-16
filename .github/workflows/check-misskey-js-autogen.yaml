@@ -7,14 +7,14 @@ on:
       - release
     paths:
       - .github/workflows/check-misskey-js-autogen.yaml
-      - packages/backend/**
+      - packages/backend/**/*
 
   pull_request_target:
     branches:
       - taiyme
       - release
     paths:
-      - packages/backend/**
+      - packages/backend/**/*
 
 permissions:
   contents: read

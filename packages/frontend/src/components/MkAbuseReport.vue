@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!-- 通報の状態 -->
 	<div :class="$style.item">
 		<div v-if="resolvedRef">
-			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
+			<i class="ti ti-check" style="color: var(--MI_THEME-success); margin-right: 0.5em;"></i>
 			<I18n v-if="props.report.assignee != null" :src="i18n.ts._tms._abuseUserReport.resolvedBy" tag="span">
 				<template #user>
 					<MkA :to="`/admin/user/${props.report.assignee.id}`" class="_link" :behavior="'window'">
@@ -83,15 +83,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-else>{{ i18n.ts._tms._abuseUserReport.resolved }}</span>
 		</div>
 		<div v-if="resolvedAsRef === 'accept'">
-			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
+			<i class="ti ti-check" style="color: var(--MI_THEME-success); margin-right: 0.5em;"></i>
 			<span>{{ i18n.ts._tms._abuseUserReport.markedAsAccept }}</span>
 		</div>
 		<div v-else-if="resolvedAsRef === 'reject'">
-			<i class="ti ti-x" style="color: var(--error); margin-right: 0.5em;"></i>
+			<i class="ti ti-x" style="color: var(--MI_THEME-error); margin-right: 0.5em;"></i>
 			<span>{{ i18n.ts._tms._abuseUserReport.markedAsReject }}</span>
 		</div>
 		<div v-if="forwardedRef">
-			<i class="ti ti-check" style="color: var(--success); margin-right: 0.5em;"></i>
+			<i class="ti ti-check" style="color: var(--MI_THEME-success); margin-right: 0.5em;"></i>
 			<span>{{ i18n.ts._tms._abuseUserReport.forwardedReport }}</span>
 		</div>
 	</div>
@@ -101,11 +101,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!resolvedRef" class="_gaps_s">
 			<MkRadios v-model="editResolvedAsRef">
 				<option value="accept">
-					<i class="ti ti-check" style="color: var(--success); margin-right: 0.25em;"></i>
+					<i class="ti ti-check" style="color: var(--MI_THEME-success); margin-right: 0.25em;"></i>
 					<span>{{ i18n.ts._abuseUserReport.accept }}</span>
 				</option>
 				<option value="reject">
-					<i class="ti ti-x" style="color: var(--error); margin-right: 0.25em;"></i>
+					<i class="ti ti-x" style="color: var(--MI_THEME-error); margin-right: 0.25em;"></i>
 					<span>{{ i18n.ts._abuseUserReport.reject }}</span>
 				</option>
 				<option :value="null">
@@ -250,7 +250,7 @@ const showReportMemo = () => {
 
 .item {
 	padding: 16px;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 
 	&:first-child {
 		border-top: none;
@@ -272,27 +272,27 @@ const showReportMemo = () => {
 
 	> .badge {
 		display: inline-block;
-		border: 1px solid var(--c, var(--fg));
+		border: 1px solid var(--c, var(--MI_THEME-fg));
 		border-radius: 6px;
 		padding: 2px 6px;
 		font-size: 85%;
-		color: var(--c, var(--fg));
+		color: var(--c, var(--MI_THEME-fg));
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
 
 		&.isSuspended {
-			--c: var(--error);
+			--c: var(--MI_THEME-error);
 		}
 
 		&.isSilenced {
-			--c: var(--warn);
+			--c: var(--MI_THEME-warn);
 		}
 	}
 }
 
 .noComment {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 
 .information {
@@ -324,7 +324,7 @@ const showReportMemo = () => {
 }
 
 .infoLabel {
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 
 .infoContent {

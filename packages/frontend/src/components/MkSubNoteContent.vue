@@ -67,14 +67,14 @@ const collapsed = ref(isLong);
 	left: 0;
 	width: 100%;
 	height: 64px; // .collapsed
-	background: linear-gradient(0deg, var(--panel), color(from var(--panel) srgb r g b / 0));
+	background: linear-gradient(0deg, var(--MI_THEME-panel), color(from var(--MI_THEME-panel) srgb r g b / 0));
 }
 
 .showLessFade {
 	display: block;
 	position: sticky;
 	z-index: 10;
-	bottom: var(--stickyBottom, 0px);
+	bottom: var(--MI-stickyBottom, 0px);
 	width: 100%;
 	height: 64px;
 }
@@ -83,13 +83,13 @@ const collapsed = ref(isLong);
 .showLessFade {
 	&:hover {
 		> .fadeLabel {
-			background: var(--panelHighlight);
+			background: var(--MI_THEME-panelHighlight);
 		}
 	}
 
 	> .fadeLabel {
 		display: inline-block;
-		background: var(--panel);
+		background: var(--MI_THEME-panel);
 		padding: 6px 10px;
 		font-size: 0.8em;
 		border-radius: 999px;
@@ -99,13 +99,13 @@ const collapsed = ref(isLong);
 
 .reply {
 	margin-right: 6px;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 }
 
 .rp {
 	margin-left: 4px;
 	font-style: oblique;
-	color: var(--renote);
+	color: var(--MI_THEME-renote);
 }
 
 .poll {

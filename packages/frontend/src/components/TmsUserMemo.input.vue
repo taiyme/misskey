@@ -86,8 +86,8 @@ defineExpose({
 <style lang="scss" module>
 .textarea {
 	background: transparent;
-	color: var(--fg);
-	border: 1px solid var(--divider);
+	color: var(--MI_THEME-fg);
+	border: 1px solid var(--MI_THEME-divider);
 	border-radius: 8px;
 	padding: 8px;
 	line-height: 0;
@@ -96,7 +96,7 @@ defineExpose({
 
 .heading {
 	text-align: left;
-	color: var(--fgTransparent);
+	color: var(--MI_THEME-fgTransparent);
 	line-height: 1.5;
 	font-size: 85%;
 	pointer-events: none;
@@ -114,7 +114,7 @@ defineExpose({
 	height: auto;
 	min-height: 0;
 	line-height: 1.5;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	overflow: hidden;
 	background: transparent;
 	font-family: inherit;
@@ -131,7 +131,7 @@ defineExpose({
 
 .caption {
 	font-size: 0.85em;
-	color: var(--fgTransparentWeak);
+	color: var(--MI_THEME-fgTransparentWeak);
 
 	&:empty {
 		display: none;

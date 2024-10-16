@@ -263,7 +263,7 @@ definePageMetadata(() => ({
 	padding: 32px;
 
 	&:not(:last-child) {
-		margin-bottom: var(--margin);
+		margin-bottom: var(--MI-margin);
 	}
 }
 

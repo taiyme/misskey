@@ -57,6 +57,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSwitch v-model="enableCondensedLine">
 								<template #label>Enable condensed line</template>
 							</MkSwitch>
+							<MkSwitch v-model="skipNoteRender">
+								<template #label>Enable note render skipping</template>
+							</MkSwitch>
 						</div>
 					</MkFolder>
 
@@ -103,14 +106,20 @@ import { defaultStore } from '@/store.js';
 import { signout, signinRequired } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { reloadAsk } from '@/scripts/reload-ask.js';
 import FormSection from '@/components/form/section.vue';
 
 const $i = signinRequired();
 
 // const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLine = computed(defaultStore.makeGetterSetter('enableCondensedLine'));
+const skipNoteRender = computed(defaultStore.makeGetterSetter('skipNoteRender'));
 const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const defaultWithReplies = computed(defaultStore.makeGetterSetter('defaultWithReplies'));
+
+watch(skipNoteRender, async () => {
+	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+});
 
 async function deleteAccount() {
 	{

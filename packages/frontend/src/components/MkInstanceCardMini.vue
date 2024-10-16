@@ -70,7 +70,7 @@ $bodyInfoHieght: 16px;
 	align-items: center;
 	padding: 16px;
 	border-radius: 8px;
-	background-color: var(--panel);
+	background-color: var(--MI_THEME-panel);
 
 	&.isNotResponding,
 	&.isSilenced,
@@ -91,37 +91,37 @@ $bodyInfoHieght: 16px;
 	&,
 	html[data-color-scheme=light] & {
 		&.isNotResponding {
-			--c: color(from color-mix(in srgb, var(--panel), orange 50%) srgb r g b / 0.25);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.25);
 		}
 
 		&.isSilenced {
-			--c: color(from color-mix(in srgb, var(--panel), blue 50%) srgb r g b / 0.25);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.25);
 		}
 
 		&.isSuspended {
-			--c: color(from color-mix(in srgb, var(--panel), black 15%) srgb r g b / 0.25);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), black 15%) srgb r g b / 0.25);
 		}
 
 		&.isBlocked {
-			--c: color(from color-mix(in srgb, var(--panel), red 50%) srgb r g b / 0.25);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.25);
 		}
 	}
 
 	html[data-color-scheme=dark] & {
 		&.isNotResponding {
-			--c: color(from color-mix(in srgb, var(--panel), orange 50%) srgb r g b / 0.5);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), orange 50%) srgb r g b / 0.5);
 		}
 
 		&.isSilenced {
-			--c: color(from color-mix(in srgb, var(--panel), blue 50%) srgb r g b / 0.5);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), blue 50%) srgb r g b / 0.5);
 		}
 
 		&.isSuspended {
-			--c: color(from color-mix(in srgb, var(--panel), white 15%) srgb r g b / 0.5);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), white 15%) srgb r g b / 0.5);
 		}
 
 		&.isBlocked {
-			--c: color(from color-mix(in srgb, var(--panel), red 50%) srgb r g b / 0.5);
+			--c: color(from color-mix(in srgb, var(--MI_THEME-panel), red 50%) srgb r g b / 0.5);
 		}
 	}
 }
@@ -139,7 +139,7 @@ $bodyInfoHieght: 16px;
 	flex: 1;
 	overflow: hidden;
 	font-size: 0.9em;
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	padding-right: 8px;
 }
 

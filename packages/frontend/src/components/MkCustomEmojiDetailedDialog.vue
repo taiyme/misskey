@@ -85,7 +85,7 @@ const cancel = () => {
 .emojiImgWrapper {
 	max-width: 100%;
 	height: 40cqh;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	margin: auto;
 	overflow-y: hidden;
 	background-image: repeating-linear-gradient(
@@ -119,8 +119,8 @@ const cancel = () => {
 	display: inline-block;
 	word-break: break-all;
 	padding: 3px 10px;
-	background-color: var(--X5);
-	border: solid 1px var(--divider);
-	border-radius: var(--radius);
+	background-color: var(--MI_THEME-X5);
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: var(--MI_THEME-radius);
 }
 </style>
