@@ -122,7 +122,7 @@ const showMediaMenu = (ev: MouseEvent) => {
 	height: 100%;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-	border: 0.5px solid var(--divider);
+	border: 0.5px solid var(--MI_THEME-divider);
 	border-radius: var(--mediaList-radius, 8px);
 
 	&:focus-visible {
@@ -142,7 +142,7 @@ const showMediaMenu = (ev: MouseEvent) => {
 		height: 100%;
 		pointer-events: none;
 		border-radius: inherit;
-		box-shadow: inset 0 0 0 4px var(--warn);
+		box-shadow: inset 0 0 0 4px var(--MI_THEME-warn);
 	}
 }
 
@@ -197,8 +197,8 @@ const showMediaMenu = (ev: MouseEvent) => {
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
-		background-color: var(--accentedBg);
+		color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accentedBg);
 	}
 }
 
@@ -225,8 +225,8 @@ const showMediaMenu = (ev: MouseEvent) => {
 	font-size: 1.05rem;
 
 	&:hover {
-		color: var(--accent);
-		background-color: var(--accentedBg);
+		color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accentedBg);
 	}
 
 	&:focus-visible {

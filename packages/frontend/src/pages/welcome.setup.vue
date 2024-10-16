@@ -99,7 +99,7 @@ function submit() {
 .form {
 	position: relative;
 	z-index: 10;
-	border-radius: var(--radius);
+	border-radius: var(--MI-radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
@@ -111,8 +111,8 @@ function submit() {
 	font-size: 1.5em;
 	text-align: center;
 	padding: 32px;
-	background: var(--accentedBg);
-	color: var(--accent);
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
 	font-weight: bold;
 }
 

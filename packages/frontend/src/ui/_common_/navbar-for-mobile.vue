@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="item === '-'" :class="$style.divider"></div>
 			<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" class="_button" :class="[$style.item, { [$style.active]: navbarItemDef[item].active }]" :activeClass="$style.active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
 				<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
-				<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator">
+				<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator" class="_blink">
 					<span v-if="navbarItemDef[item].indicateValue" class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ navbarItemDef[item].indicateValue }}</span>
 					<i v-else class="_indicatorCircle"></i>
 				</span>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkA>
 		<button :class="$style.item" class="_button" @click="more">
 			<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
-			<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
+			<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator" class="_blink"><i class="_indicatorCircle"></i></span>
 		</button>
 		<MkA :class="$style.item" :activeClass="$style.active" to="/settings">
 			<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.settings }}</span>
@@ -75,7 +75,7 @@ function more() {
 
 <style lang="scss" module>
 .root {
-	--nav-bg-transparent: color(from var(--navBg) srgb r g b / 0.5);
+	--nav-bg-transparent: color(from var(--MI_THEME-navBg) srgb r g b / 0.5);
 
 	display: flex;
 	flex-direction: column;
@@ -86,8 +86,8 @@ function more() {
 	top: 0;
 	z-index: 1;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(8px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
 }
 
 .serverLogo {
@@ -99,8 +99,8 @@ function more() {
 	bottom: 0;
 	padding-top: 20px;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--blur, blur(8px));
-	backdrop-filter: var(--blur, blur(8px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
+	backdrop-filter: var(--MI-blur, blur(8px));
 }
 
 .post {
@@ -108,7 +108,7 @@ function more() {
 	display: block;
 	width: 100%;
 	height: 40px;
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 	font-weight: bold;
 	text-align: left;
 
@@ -121,21 +121,21 @@ function more() {
 		position: absolute;
 		inset: 0;
 		border-radius: 999px;
-		background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
 
 	&:focus-visible {
 		outline: none;
 
 		&::before {
-			outline: 2px solid var(--focus);
+			outline: 2px solid var(--MI_THEME-focus);
 			outline-offset: -4px;
 		}
 	}
 
 	&:hover, &.active {
 		&::before {
-			background: var(--accentLighten);
+			background: var(--MI_THEME-accentLighten);
 		}
 	}
 }
@@ -157,7 +157,7 @@ function more() {
 
 .divider {
 	margin: 16px 16px;
-	border-top: solid 0.5px var(--divider);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .item {
@@ -171,7 +171,7 @@ function more() {
 	width: 100%;
 	text-align: left;
 	box-sizing: border-box;
-	color: var(--navFg);
+	color: var(--MI_THEME-navFg);
 
 	&::before {
 		content: "";
@@ -189,17 +189,17 @@ function more() {
 		outline: none;
 
 		&::before {
-			outline: 2px solid var(--focus);
+			outline: 2px solid var(--MI_THEME-focus);
 			outline-offset: -2px;
 		}
 	}
 
 	&:hover, &.active {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 
 		&::before {
-			background: var(--accentedBg);
+			background: var(--MI_THEME-accentedBg);
 		}
 	}
 }
@@ -214,9 +214,8 @@ function more() {
 	position: absolute;
 	top: 0;
 	left: 20px;
-	color: var(--navIndicator);
+	color: var(--MI_THEME-navIndicator);
 	font-size: 8px;
-	animation: global-blink 1s infinite;
 
 	&:has(.itemIndicateValueIcon) {
 		animation: none;

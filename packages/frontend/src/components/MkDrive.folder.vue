@@ -313,7 +313,7 @@ function onContextmenu(ev: MouseEvent) {
 	position: relative;
 	padding: 8px;
 	height: 64px;
-	background: var(--driveFolderBg);
+	background: var(--MI_THEME-driveFolderBg);
 	border-radius: 4px;
 	cursor: pointer;
 
@@ -326,7 +326,7 @@ function onContextmenu(ev: MouseEvent) {
 			right: -4px;
 			bottom: -4px;
 			left: -4px;
-			border: 2px dashed var(--focus);
+			border: 2px dashed var(--MI_THEME-focus);
 			border-radius: 4px;
 		}
 	}
@@ -345,13 +345,13 @@ function onContextmenu(ev: MouseEvent) {
 		width: 18px;
 		height: 18px;
 		background: #fff;
-		border: solid 2px var(--divider);
+		border: solid 2px var(--MI_THEME-divider);
 		border-radius: 4px;
 		box-sizing: border-box;
 
 		&.checked {
-			border-color: var(--accent);
-			background: var(--accent);
+			border-color: var(--MI_THEME-accent);
+			background: var(--MI_THEME-accent);
 
 			&::after {
 				content: "\ea5e";
@@ -368,14 +368,13 @@ function onContextmenu(ev: MouseEvent) {
 	}
 
 	&:hover {
-		background: var(--accentedBg);
+		background: var(--MI_THEME-accentedBg);
 	}
 }
 
 .name {
 	margin: 0;
 	font-size: 0.9em;
-	color: var(--desktopDriveFolderFg);
 }
 
 .icon {
@@ -388,6 +387,5 @@ function onContextmenu(ev: MouseEvent) {
 	margin: 4px 4px;
 	font-size: 0.8em;
 	text-align: right;
-	color: var(--desktopDriveFolderFg);
 }
 </style>

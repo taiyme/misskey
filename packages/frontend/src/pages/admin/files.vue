@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps">
-			<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 				<MkSelect v-model="origin" style="margin: 0; flex: 1;">
 					<template #label>{{ i18n.ts.instance }}</template>
 					<option value="combined">{{ i18n.ts.all }}</option>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.host }}</template>
 				</MkInput>
 			</div>
-			<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
+			<div class="inputs" style="display: flex; gap: var(--MI-margin); flex-wrap: wrap;">
 				<MkInput v-model="userId" :debounce="true" type="search" style="margin: 0; flex: 1;">
 					<template #label>User ID</template>
 				</MkInput>

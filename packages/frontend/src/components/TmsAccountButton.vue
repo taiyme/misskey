@@ -63,7 +63,7 @@ const openAccountMenu = (ev: MouseEvent) => {
 
 		> .iconOnly,
 		> .account {
-			outline: var(--focus) solid 2px;
+			outline: var(--MI_THEME-focus) solid 2px;
 			outline-offset: 2px;
 		}
 	}

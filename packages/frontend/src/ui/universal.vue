@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<button v-if="(!isDesktop || pageMetadata?.needWideArea) && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
 	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
-		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
+		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="isRoot ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')">
 			<i :class="$style.navButtonIcon" class="ti ti-bell"></i>
-			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator">
+			<span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator" class="_blink">
 				<span class="_indicateCounter" :class="$style.itemIndicateValueIcon">{{ $i.unreadNotificationsCount > 99 ? '99+' : $i.unreadNotificationsCount }}</span>
 			</span>
 		</button>
@@ -228,12 +228,12 @@ provide<Ref<number>>(CURRENT_STICKY_BOTTOM, navFooterHeight);
 watch(navFooter, () => {
 	if (navFooter.value) {
 		navFooterHeight.value = navFooter.value.offsetHeight;
-		document.body.style.setProperty('--stickyBottom', `${navFooterHeight.value}px`);
-		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
+		document.body.style.setProperty('--MI-stickyBottom', `${navFooterHeight.value}px`);
+		document.body.style.setProperty('--MI-minBottomSpacing', 'var(--MI-minBottomSpacingMobile)');
 	} else {
 		navFooterHeight.value = 0;
-		document.body.style.setProperty('--stickyBottom', '0px');
-		document.body.style.setProperty('--minBottomSpacing', '0px');
+		document.body.style.setProperty('--MI-stickyBottom', '0px');
+		document.body.style.setProperty('--MI-minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,
@@ -324,7 +324,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .sidebar {
-	border-right: solid 0.5px var(--divider);
+	border-right: solid 0.5px var(--MI_THEME-divider);
 }
 
 .contents {
@@ -334,7 +334,7 @@ $widgets-hide-threshold: 1090px;
 	overflow: auto;
 	overflow-y: scroll;
 	overscroll-behavior: contain;
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 }
 
 .widgets {
@@ -342,9 +342,9 @@ $widgets-hide-threshold: 1090px;
 	height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
-	border-left: solid 0.5px var(--divider);
-	background: var(--bg);
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px));
+	border-left: solid 0.5px var(--MI_THEME-divider);
+	background: var(--MI_THEME-bg);
 
 	@media (max-width: $widgets-hide-threshold) {
 		display: none;
@@ -362,7 +362,7 @@ $widgets-hide-threshold: 1090px;
 	border-radius: 100%;
 	box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
 	font-size: 22px;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 }
 
 .widgetsDrawerBg {
@@ -376,11 +376,11 @@ $widgets-hide-threshold: 1090px;
 	z-index: 1001;
 	width: 310px;
 	height: 100dvh;
-	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
+	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
-	background: var(--bg);
+	background: var(--MI_THEME-bg);
 }
 
 .widgetsCloseButton {
@@ -406,10 +406,10 @@ $widgets-hide-threshold: 1090px;
 	gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--blur, blur(24px));
-	backdrop-filter: var(--blur, blur(24px));
-	background-color: var(--header);
-	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--MI-blur, blur(24px));
+	backdrop-filter: var(--MI-blur, blur(24px));
+	background-color: var(--MI_THEME-header);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .navButton {
@@ -420,29 +420,29 @@ $widgets-hide-threshold: 1090px;
 	max-width: 60px;
 	margin: auto;
 	border-radius: 100%;
-	background: var(--panel);
-	color: var(--fg);
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 
 	&:hover {
-		background: var(--panelHighlight);
+		background: var(--MI_THEME-panelHighlight);
 	}
 
 	&:active {
-		background: hsl(from var(--panel) h s calc(l - 2));
+		background: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
 	}
 }
 
 .postButton {
 	composes: navButton;
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-	color: var(--fgOnAccent);
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
+	color: var(--MI_THEME-fgOnAccent);
 
 	&:hover {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 
 	&:active {
-		background: linear-gradient(90deg, hsl(from var(--accent) h s calc(l + 5)), hsl(from var(--accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 }
 
@@ -455,9 +455,8 @@ $widgets-hide-threshold: 1090px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	color: var(--indicator);
+	color: var(--MI_THEME-indicator);
 	font-size: 16px;
-	animation: global-blink 1s infinite;
 
 	&:has(.itemIndicateValueIcon) {
 		animation: none;
@@ -480,7 +479,7 @@ $widgets-hide-threshold: 1090px;
 	contain: strict;
 	overflow: auto;
 	overscroll-behavior: contain;
-	background: var(--navBg);
+	background: var(--MI_THEME-navBg);
 }
 
 .statusbars {
@@ -490,6 +489,6 @@ $widgets-hide-threshold: 1090px;
 }
 
 .spacer {
-	height: calc(var(--minBottomSpacing));
+	height: calc(var(--MI-minBottomSpacing));
 }
 </style>

@@ -36,7 +36,7 @@ const props = defineProps<{
 
 	&:hover {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--MI_THEME-accent);
 	}
 
 	&:focus-visible {
@@ -83,7 +83,6 @@ const props = defineProps<{
 			> p {
 				display: inline-block;
 				margin: 0;
-				color: var(--urlPreviewInfo);
 				font-size: 0.8em;
 				line-height: 16px;
 				vertical-align: top;
@@ -95,7 +94,7 @@ const props = defineProps<{
 		background-image: repeating-linear-gradient(
 			135deg,
 			transparent 0px 10px,
-			var(--bg) 6px 16px
+			var(--MI_THEME-bg) 6px 16px
 		);
 
 		// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293

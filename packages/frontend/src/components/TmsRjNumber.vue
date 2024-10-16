@@ -51,7 +51,7 @@ useTooltip(rootEl, (showing) => {
 	padding: 0.2em 0.4em;
 	font-size: 0.85em;
 	white-space: break-spaces;
-	background-color: var(--buttonBg);
+	background-color: var(--MI_THEME-buttonBg);
 	border-radius: 6px;
 }
 </style>

@@ -194,7 +194,7 @@ const onInputKeydown = filterKeyboardNonComposing(evt => {
 	max-width: 480px;
 	box-sizing: border-box;
 	text-align: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 16px;
 }
 
@@ -216,15 +216,15 @@ const onInputKeydown = filterKeyboardNonComposing(evt => {
 }
 
 .type_success {
-	color: var(--success);
+	color: var(--MI_THEME-success);
 }
 
 .type_error {
-	color: var(--error);
+	color: var(--MI_THEME-error);
 }
 
 .type_warning {
-	color: var(--warn);
+	color: var(--MI_THEME-warn);
 }
 
 .title {
@@ -247,7 +247,7 @@ const onInputKeydown = filterKeyboardNonComposing(evt => {
 	max-width: 320px;
 	overflow: hidden; // fallback (overflow: clip)
 	overflow: clip;
-	border: 1px solid var(--divider);
+	border: 1px solid var(--MI_THEME-divider);
 	border-radius: 8px;
 	padding: 8px;
 	text-align: start;

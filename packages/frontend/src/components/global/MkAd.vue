@@ -30,12 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</component>
 	</div>
 	<div v-else :class="$style.menu">
-		<div :class="$style.menuContainer">
-			<div>Ads by {{ host }}</div>
-			<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
-			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
-			<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
-		</div>
+		<div>Ads by {{ host }}</div>
+		<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
+		<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+		<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 	</div>
 </div>
 <div v-else></div>
@@ -123,25 +121,6 @@ function reduceFrequency(): void {
 
 <style lang="scss" module>
 .root {
-	background-image: repeating-linear-gradient(
-		135deg,
-		transparent 0px 10px,
-		var(--c) 6px 16px
-	);
-
-	// NOTE: iOS/iPadOS環境でクラッシュする https://github.com/taiyme/misskey/issues/293
-	html[data-browser-engine=webkit] & {
-		background-image: unset !important;
-	}
-
-	&,
-	html[data-color-scheme=light] & {
-		--c: rgb(0 0 0 / 0.02);
-	}
-
-	html[data-color-scheme=dark] & {
-		--c: rgb(255 255 255 / 0.02);
-	}
 }
 
 .main {
@@ -156,8 +135,6 @@ function reduceFrequency(): void {
 	}
 
 	&.form_horizontal {
-		padding: 8px;
-
 		> .link,
 		> .link > .img {
 			max-width: min(600px, 100%);
@@ -166,8 +143,6 @@ function reduceFrequency(): void {
 	}
 
 	&.form_horizontalBig {
-		padding: 8px;
-
 		> .link,
 		> .link > .img {
 			max-width: min(600px, 100%);
@@ -208,7 +183,7 @@ function reduceFrequency(): void {
 	right: 1px;
 	display: grid;
 	place-content: center;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 100%;
 	padding: 2px;
 }
@@ -219,15 +194,12 @@ function reduceFrequency(): void {
 }
 
 .menu {
-	padding: 8px;
 	text-align: center;
-}
-
-.menuContainer {
 	padding: 8px;
 	margin: 0 auto;
 	max-width: 400px;
-	border: solid 1px var(--divider);
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-divider);
 }
 
 .menuButton {
