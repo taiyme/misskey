@@ -33,7 +33,7 @@ jobs:
       - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}

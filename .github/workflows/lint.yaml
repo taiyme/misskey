@@ -31,7 +31,7 @@ jobs:
       - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}
@@ -75,7 +75,7 @@ jobs:
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}
@@ -97,7 +97,7 @@ jobs:
           pnpm i --frozen-lockfile
 
       - name: Restore eslint cache
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4.1.1
         with:
           path: ${{ env.eslint-cache-path }}
           key: eslint-${{ env.eslint-cache-version }}-${{ matrix.workspace }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ needs.pre-checkout.outputs.sha }}
@@ -122,7 +122,7 @@ jobs:
           - sw
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}

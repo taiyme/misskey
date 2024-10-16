@@ -31,7 +31,7 @@ jobs:
       - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}
@@ -70,7 +70,7 @@ jobs:
           pnpm run --filter misskey-js-type-generator generate
 
       - name: Upload generated_misskey_js
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: generated_misskey_js
           path: packages/misskey-js/generator/built/autogen
@@ -82,7 +82,7 @@ jobs:
       - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}
@@ -90,7 +90,7 @@ jobs:
           submodules: true
 
       - name: Upload actual_misskey_js
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: actual_misskey_js
           path: packages/misskey-js/src/autogen

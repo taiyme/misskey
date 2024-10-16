@@ -62,7 +62,7 @@ jobs:
       new_version: ${{ steps.generate.outputs.new_version }}
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ github.sha }}
@@ -92,7 +92,7 @@ jobs:
       - parse-version
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           persist-credentials: false
           ref: ${{ github.sha }}
@@ -116,7 +116,7 @@ jobs:
           sed -i "s|image: ${old_docker_image}|image: ${new_docker_image}|g" compose_example.yml
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: bump_version_files
           path: |
@@ -147,7 +147,7 @@ jobs:
           echo "user-id=${user_id}" >> $GITHUB_OUTPUT
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -187,7 +187,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -223,7 +223,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -253,7 +253,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.RELEASE_BRANCH }}
-        uses: actions/checkout@v4.2.0
+        uses: actions/checkout@v4.2.1
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
