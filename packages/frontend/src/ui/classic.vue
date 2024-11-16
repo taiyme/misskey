@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="!showMenuOnTop" class="sidebar">
 			<XSidebar/>
 		</div>
-		<div v-else-if="!pageMetadata?.needWideArea" ref="widgetsLeft" class="widgets left">
+		<div v-else-if="!routingPageMetadataRef?.needWideArea" ref="widgetsLeft" class="widgets left">
 			<XWidgets place="left" :marginTop="'var(--MI-margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</main>
 
-		<div v-if="isDesktop && !pageMetadata?.needWideArea" ref="widgetsRight" class="widgets right">
+		<div v-if="isDesktop && !routingPageMetadataRef?.needWideArea" ref="widgetsRight" class="widgets right">
 			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--MI-margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
@@ -46,24 +46,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef } from 'vue';
+import { defineAsyncComponent, onMounted, provide, ref, computed, shallowRef, watch } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 import * as os from '@/os.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { mainRouter } from '@/router/main.js';
-import { provideUi } from '@/scripts/tms/provide-ui.js';
+import { DI } from '@/di.js';
 
 const XHeaderMenu = defineAsyncComponent(() => import('./classic.header.vue'));
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 
-provideUi('classic');
+const { routingPageMetadataRef } = useRoutingPageMetadata();
+watch(routingPageMetadataRef, (pageMetadata) => {
+	if (pageMetadata == null) return;
+	if (isRoot.value && pageMetadata.title === instanceName) {
+		document.title = pageMetadata.title;
+	} else {
+		document.title = `${pageMetadata.title} | ${instanceName}`;
+	}
+});
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -71,7 +79,6 @@ const DESKTOP_THRESHOLD = 1100;
 
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 
-const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const fullView = ref(false);
 const globalHeaderHeight = ref(0);
@@ -81,19 +88,7 @@ const live2d = shallowRef<HTMLIFrameElement>();
 const widgetsLeft = ref<HTMLElement>();
 const widgetsRight = ref<HTMLElement>();
 
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-	if (pageMetadata.value) {
-		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
-		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
-		}
-	}
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, mainRouter);
 provide('shouldHeaderThin', showMenuOnTop.value);
 provide('forceSpacerMin', true);
 

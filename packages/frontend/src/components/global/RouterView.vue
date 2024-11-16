@@ -20,24 +20,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onBeforeUnmount, provide, ref, shallowRef, computed, nextTick } from 'vue';
-import { IRouter, Resolved } from '@/nirax.js';
+import { IRouter, Resolved, RouterEvent } from '@/nirax.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
 import MkLoadingPage from '@/pages/_loading_.vue';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	router?: IRouter;
 	nested?: boolean;
 }>();
 
-const router = props.router ?? inject<IRouter | null>('router', null);
+const router = props.router ?? inject(DI.router, null);
 
 if (router == null) {
 	throw new Error('no router provided');
 }
 
-const currentDepth = inject<number>('routerCurrentDepth', 0);
-provide('routerCurrentDepth', currentDepth + 1);
+const currentDepth = inject(DI.routerDepth, 0);
+provide(DI.routerDepth, currentDepth + 1);
 
 function resolveNested(current: Resolved, d = 0): Resolved | null {
 	if (!props.nested) return current;
@@ -58,12 +59,12 @@ const currentPageComponent = shallowRef('component' in current.route ? current.r
 const currentPageProps = ref(current.props);
 const key = ref(router.getCurrentKey() + JSON.stringify(Object.fromEntries(current.props)));
 
-function onChange({ resolved, key: newKey }) {
-	const current = resolveNested(resolved);
-	if (current == null || 'redirect' in current.route) return;
-	currentPageComponent.value = current.route.component;
-	currentPageProps.value = current.props;
-	key.value = newKey + JSON.stringify(Object.fromEntries(current.props));
+const onChange: RouterEvent['change'] = ({ resolved, key: newKey }) => {
+	const current_ = resolveNested(resolved);
+	if (current_ == null || 'redirect' in current_.route) return;
+	currentPageComponent.value = current_.route.component;
+	currentPageProps.value = current_.props;
+	key.value = newKey + JSON.stringify(Object.fromEntries(current_.props));
 
 	nextTick(() => {
 		// ページ遷移完了後に再びキャッシュを有効化
@@ -71,12 +72,11 @@ function onChange({ resolved, key: newKey }) {
 			clearCacheRequested.value = false;
 		}
 	});
-}
+};
 
 router.addListener('change', onChange);
 
-// #region キャッシュ制御
-
+//#region キャッシュ制御
 /**
  * キャッシュクリアが有効になったら、全キャッシュをクリアする
  *
@@ -92,8 +92,7 @@ globalEvents.on('requestClearPageCache', () => {
 		clearCacheRequested.value = true;
 	}
 });
-
-// #endregion
+//#endregion
 
 onBeforeUnmount(() => {
 	router.removeListener('change', onChange);

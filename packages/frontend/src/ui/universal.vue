@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.spacer"></div>
 	</MkStickyContainer>
 
-	<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
+	<div v-if="isDesktop && !routingPageMetadataRef?.needWideArea" :class="$style.widgets">
 		<XWidgets/>
 	</div>
 
-	<button v-if="!isDesktop && !pageMetadata?.needWideArea && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
+	<button v-if="!isDesktop && routingPageMetadataRef?.needWideArea && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
 	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator" class="_blink"><i class="_indicatorCircle"></i></span></button>
@@ -107,19 +107,27 @@ import { defaultStore } from '@/store.js';
 import { navbarItemDef } from '@/navbar.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/account.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
-import { provideUi } from '@/scripts/tms/provide-ui.js';
+import { DI } from '@/di.js';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
-provideUi('universal');
+const { routingPageMetadataRef } = useRoutingPageMetadata();
+watch(routingPageMetadataRef, (pageMetadata) => {
+	if (pageMetadata == null) return;
+	if (isRoot.value && pageMetadata.title === instanceName) {
+		document.title = pageMetadata.title;
+	} else {
+		document.title = `${pageMetadata.title} | ${instanceName}`;
+	}
+});
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -133,24 +141,11 @@ window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 }, { passive: true });
 
-const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
 const navFooter = shallowRef<HTMLElement>();
 const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-	if (pageMetadata.value) {
-		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
-		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
-		}
-	}
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, mainRouter);
 
 const menuIndicated = computed(() => {
 	for (const def in navbarItemDef) {

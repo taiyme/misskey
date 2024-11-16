@@ -5,7 +5,7 @@
 
 // NIRAX --- A lightweight router
 
-import { Component, onMounted, shallowRef, ShallowRef } from 'vue';
+import { type Component, type ShallowRef, onMounted, shallowRef } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 
 function safeURIDecode(str: string): string {
@@ -60,7 +60,7 @@ export type RouterEvent = {
 		beforePath: string;
 		path: string;
 		route: RouteDef | null;
-		props: Map<string, string> | null;
+		props: Map<string, string | boolean> | null;
 		key: string;
 	}) => void;
 	same: () => void;
@@ -83,6 +83,7 @@ export type Resolved = {
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
 
+	// eslint-disable-next-line no-param-reassign
 	path = path.substring(1);
 
 	for (const part of path.split('/')) {
@@ -131,12 +132,12 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 
 	/** @see EventEmitter */
 	listeners<T extends EventEmitter.EventNames<RouterEvent>>(
-		event: T
+		event: T,
 	): Array<EventEmitter.EventListener<RouterEvent, T>>;
 
 	/** @see EventEmitter */
 	listenerCount(
-		event: EventEmitter.EventNames<RouterEvent>
+		event: EventEmitter.EventNames<RouterEvent>,
 	): number;
 
 	/** @see EventEmitter */
@@ -149,42 +150,42 @@ export interface IRouter extends EventEmitter<RouterEvent> {
 	on<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this;
 
 	/** @see EventEmitter */
 	addListener<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this;
 
 	/** @see EventEmitter */
 	once<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this;
 
 	/** @see EventEmitter */
 	removeListener<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+		once?: boolean | undefined,
 	): this;
 
 	/** @see EventEmitter */
 	off<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
-		once?: boolean | undefined
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+		once?: boolean | undefined,
 	): this;
 
 	/** @see EventEmitter */
 	removeAllListeners(
-		event?: EventEmitter.EventNames<RouterEvent>
+		event?: EventEmitter.EventNames<RouterEvent>,
 	): this;
 }
 
@@ -205,7 +206,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		super();
 
 		this.routes = routes;
-		this.current = this.resolve(currentPath)!;
+		this.current = this.resolve(currentPath)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 		this.currentRef = shallowRef(this.current);
 		this.currentRoute = shallowRef(this.current.route);
 		this.currentPath = currentPath;
@@ -225,14 +226,16 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		const fullPath = path;
 		let queryString: string | null = null;
 		let hash: string | null = null;
-		if (path[0] === '/') path = path.substring(1);
+		if (path[0] === '/') {
+			path = path.substring(1); // eslint-disable-line no-param-reassign
+		}
 		if (path.includes('#')) {
 			hash = path.substring(path.indexOf('#') + 1);
-			path = path.substring(0, path.indexOf('#'));
+			path = path.substring(0, path.indexOf('#')); // eslint-disable-line no-param-reassign
 		}
 		if (path.includes('?')) {
 			queryString = path.substring(path.indexOf('?') + 1);
-			path = path.substring(0, path.indexOf('?'));
+			path = path.substring(0, path.indexOf('?')); // eslint-disable-line no-param-reassign
 		}
 
 		const _parsedRoute = {
@@ -247,7 +250,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 			forEachRouteLoop:
 			for (const route of routes) {
 				let parts = [..._parts];
-				const props = new Map<string, string>();
+				const props = new Map<string, string | boolean>();
 
 				pathMatchLoop:
 				for (const p of parsePath(route.path)) {
@@ -258,6 +261,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 							continue forEachRouteLoop;
 						}
 					} else {
+						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						if (parts[0] == null && !p.optional) {
 							continue forEachRouteLoop;
 						}
@@ -269,8 +273,10 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 							break pathMatchLoop;
 						} else {
 							if (p.startsWith) {
-								if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
-
+								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+								if (parts[0] == null || !parts[0].startsWith(p.startsWith)) {
+									continue forEachRouteLoop;
+								}
 								props.set(p.name, safeURIDecode(parts[0].substring(p.startsWith.length)));
 								parts.shift();
 							} else {
@@ -303,8 +309,7 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 					}
 
 					if (route.query != null && queryString != null) {
-						const queryObject = [...new URLSearchParams(queryString).entries()]
-							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+						const queryObject = Object.fromEntries(new URLSearchParams(queryString));
 
 						for (const q in route.query) {
 							const as = route.query[q];
@@ -376,7 +381,9 @@ export class Router extends EventEmitter<RouterEvent> implements IRouter {
 		}
 
 		const isSamePath = beforePath === path;
-		if (isSamePath && key == null) key = this.currentKey;
+		if (isSamePath && key == null) {
+			key = this.currentKey; // eslint-disable-line no-param-reassign
+		}
 		this.current = res;
 		this.currentRef.value = res;
 		this.currentRoute.value = res.route;
@@ -454,7 +461,8 @@ export function useScrollPositionManager(getScrollContainer: () => HTMLElement |
 			const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
 			scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
 			if (scrollPos !== 0) {
-				window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+				// 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
+				window.setTimeout(() => {
 					scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
 				}, 100);
 			}

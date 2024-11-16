@@ -6,9 +6,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :isStacked="isStacked">
 	<template #header>
-		<template v-if="pageMetadata">
-			<i :class="pageMetadata.icon"></i>
-			{{ pageMetadata.title }}
+		<template v-if="routingPageMetadataRef">
+			<i :class="routingPageMetadataRef.icon"></i>
+			{{ routingPageMetadataRef.title }}
 		</template>
 	</template>
 
@@ -19,16 +19,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { provide, shallowRef, ref } from 'vue';
+import { provide, shallowRef } from 'vue';
 import { getScrollContainer } from '@@/js/scroll.js';
 import { isLink } from '@@/js/is-link.js';
 import XColumn from './column.vue';
 import { deckStore, Column } from '@/ui/deck/deck-store.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
+
+const { routingPageMetadataRef } = useRoutingPageMetadata();
 
 const props = defineProps<{
 	column: Column;
@@ -36,14 +39,8 @@ const props = defineProps<{
 }>();
 
 const contents = shallowRef<HTMLElement>();
-const pageMetadata = ref<null | PageMetadata>(null);
 
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, mainRouter);
 
 /*
 function back() {

@@ -25,6 +25,7 @@ import XFollowList from './follow-list.vue';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
+import { acct } from '@/filters/user.js';
 
 const props = defineProps<{
 	acct: string;
@@ -55,10 +56,10 @@ definePageMetadata(() => ({
 	title: i18n.ts.user,
 	icon: 'ti ti-user',
 	...user.value ? {
-		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+		title: user.value.name ? `${user.value.name} (@${acct(user.value)})` : `@${acct(user.value)}`,
 		subtitle: i18n.ts.followers,
-		userName: user.value,
-		avatar: user.value,
+		withUserAvatar: user.value,
+		withUserName: user.value,
 	} : {},
 }));
 </script>

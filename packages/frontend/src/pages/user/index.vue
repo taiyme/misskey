@@ -150,14 +150,14 @@ definePageMetadata(() => ({
 	title: i18n.ts.user,
 	icon: 'ti ti-user',
 	...user.value ? {
-		title: user.value.name ? `${user.value.name} (@${user.value.username})` : `@${user.value.username}`,
+		title: user.value.name ? `${user.value.name} (@${getAcct(user.value)})` : `@${getAcct(user.value)}`,
 		subtitle: `@${getAcct(user.value)}`,
-		userName: user.value,
-		avatar: user.value,
-		path: `/@${user.value.username}`,
-		share: {
-			title: user.value.name,
-		},
+		withUserAvatar: user.value,
+		withUserName: user.value,
+		// path: `/@${user.value.username}`,
+		// share: {
+		// 	title: user.value.name,
+		// },
 	} : {},
 }));
 </script>

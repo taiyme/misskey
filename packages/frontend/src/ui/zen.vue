@@ -22,35 +22,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref } from 'vue';
+import { computed, provide, watch } from 'vue';
 import { instanceName, ui } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router/main.js';
-import { provideUi } from '@/scripts/tms/provide-ui.js';
+import { DI } from '@/di.js';
 
-provideUi('zen');
+const { routingPageMetadataRef } = useRoutingPageMetadata();
+watch(routingPageMetadataRef, (pageMetadata) => {
+	if (pageMetadata == null) return;
+	if (isRoot.value && pageMetadata.title === instanceName) {
+		document.title = pageMetadata.title;
+	} else {
+		document.title = `${pageMetadata.title} | ${instanceName}`;
+	}
+});
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
-const pageMetadata = ref<null | PageMetadata>(null);
-
 const showBottom = !(new URLSearchParams(location.search)).has('zen') && ui === 'deck';
 
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-	if (pageMetadata.value) {
-		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
-		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
-		}
-	}
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, mainRouter);
 
 function goToMisskey() {
 	window.location.href = '/';

@@ -14,32 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref } from 'vue';
+import { computed, watch } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { mainRouter } from '@/router/main.js';
-import { provideUi } from '@/scripts/tms/provide-ui.js';
 
-provideUi('minimum');
-
-const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
-
-const pageMetadata = ref<null | PageMetadata>(null);
-
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-	if (pageMetadata.value) {
-		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
-		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
-		}
+const { routingPageMetadataRef } = useRoutingPageMetadata();
+watch(routingPageMetadataRef, (pageMetadata) => {
+	if (pageMetadata == null) return;
+	if (isRoot.value && pageMetadata.title === instanceName) {
+		document.title = pageMetadata.title;
+	} else {
+		document.title = `${pageMetadata.title} | ${instanceName}`;
 	}
 });
-provideReactiveMetadata(pageMetadata);
+
+const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
 document.documentElement.style.overflowY = 'scroll';
 </script>

@@ -209,9 +209,10 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: post.value ? post.value.title : i18n.ts.gallery,
+	title: i18n.ts.gallery,
 	...post.value ? {
-		avatar: post.value.user,
+		title: post.value.title,
+		withUserAvatar: post.value.user,
 	} : {},
 }));
 </script>

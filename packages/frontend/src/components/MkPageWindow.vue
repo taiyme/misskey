@@ -16,9 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@closed="emit('closed')"
 >
 	<template #header>
-		<template v-if="pageMetadata">
-			<i v-if="pageMetadata.icon" :class="pageMetadata.icon" style="margin-right: 0.5em;"></i>
-			<span>{{ pageMetadata.title }}</span>
+		<template v-if="routingPageMetadataRef">
+			<i v-if="routingPageMetadataRef.icon" :class="routingPageMetadataRef.icon" style="margin-right: 0.5em;"></i>
+			<span>{{ routingPageMetadataRef.title }}</span>
 		</template>
 	</template>
 
@@ -38,11 +38,14 @@ import { popout as _popout } from '@/scripts/popout.js';
 import { copyText } from '@/scripts/tms/clipboard.js';
 import { useScrollPositionManager } from '@/nirax.js';
 import { i18n } from '@/i18n.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import { openingWindowsCount } from '@/os.js';
 import { claimAchievement } from '@/scripts/achievements.js';
 import { useRouterFactory } from '@/router/supplier.js';
 import { mainRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
+
+const { routingPageMetadataRef } = useRoutingPageMetadata();
 
 const props = defineProps<{
 	initialPath: string;
@@ -56,7 +59,6 @@ const routerFactory = useRouterFactory();
 const windowRouter = routerFactory(props.initialPath);
 
 const contents = shallowRef<HTMLElement | null>(null);
-const pageMetadata = ref<null | PageMetadata>(null);
 const windowEl = shallowRef<InstanceType<typeof MkWindow>>();
 const history = ref<{ path: string; key: string; }[]>([{
 	path: windowRouter.getCurrentPath(),
@@ -100,12 +102,7 @@ windowRouter.addListener('replace', ctx => {
 
 windowRouter.init();
 
-provide('router', windowRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, windowRouter);
 provide('shouldOmitHeaderTitle', true);
 provide('shouldHeaderThin', true);
 provide('forceSpacerMin', true);

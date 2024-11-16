@@ -165,12 +165,12 @@ definePageMetadata(() => ({
 	title: i18n.ts.note,
 	...note.value ? {
 		subtitle: dateString(note.value.createdAt),
-		avatar: note.value.user,
-		path: `/notes/${note.value.id}`,
-		share: {
-			title: i18n.tsx.noteOf({ user: note.value.user.name }),
-			text: note.value.text,
-		},
+		withUserAvatar: note.value.user,
+		// path: `/notes/${note.value.id}`,
+		// share: {
+		// 	title: i18n.tsx.noteOf({ user: note.value.user.name }),
+		// 	text: note.value.text,
+		// },
 	} : {},
 }));
 </script>

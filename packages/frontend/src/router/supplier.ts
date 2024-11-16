@@ -3,24 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { inject } from 'vue';
-import { IRouter, Router } from '@/nirax.js';
-import { mainRouter } from '@/router/main.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { inject, type provide } from 'vue';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { IRouter, Router } from '@/nirax.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { mainRouter, type setupRouter } from '@/router/main.js';
+import { DI } from '@/di.js';
 
 /**
  * メインの{@link Router}を取得する。
  * あらかじめ{@link setupRouter}を実行しておく必要がある（{@link provide}により{@link IRouter}のインスタンスを注入可能であるならばこの限りではない）
  */
 export function useRouter(): IRouter {
-	return inject<Router | null>('router', null) ?? mainRouter;
+	return inject(DI.router, null) ?? mainRouter;
 }
 
 /**
  * 任意の{@link Router}を取得するためのファクトリを取得する。
  * あらかじめ{@link setupRouter}を実行しておく必要がある。
  */
-export function useRouterFactory(): (path: string) => IRouter {
-	const factory = inject<(path: string) => IRouter>('routerFactory');
+export function useRouterFactory(): ((path: string) => IRouter) {
+	const factory = inject(DI.routerFactory);
 	if (!factory) {
 		console.error('routerFactory is not defined.');
 		throw new Error('routerFactory is not defined.');

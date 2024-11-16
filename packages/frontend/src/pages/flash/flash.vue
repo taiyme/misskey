@@ -301,14 +301,15 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: flash.value ? flash.value.title : 'Play',
+	title: 'Play',
 	...flash.value ? {
-		avatar: flash.value.user,
-		path: `/play/${flash.value.id}`,
-		share: {
-			title: flash.value.title,
-			text: flash.value.summary,
-		},
+		title: flash.value.title,
+		withUserAvatar: flash.value.user,
+		// path: `/play/${flash.value.id}`,
+		// share: {
+		// 	title: flash.value.title,
+		// 	text: flash.value.summary,
+		// },
 	} : {},
 }));
 </script>

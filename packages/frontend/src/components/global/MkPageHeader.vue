@@ -11,18 +11,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="!thinRef && narrow && !hideTitleRef" :class="$style.buttonsLeft"/>
 
-		<template v-if="pageMetadata">
+		<template v-if="pageMetadataRef">
 			<div v-if="!hideTitleRef" :class="$style.titleContainer" @click="top">
-				<div v-if="pageMetadata.avatar" :class="$style.titleAvatarContainer">
-					<MkAvatar :class="$style.titleAvatar" :user="pageMetadata.avatar" indicator/>
+				<div v-if="pageMetadataRef.withUserAvatar" :class="$style.titleAvatarContainer">
+					<MkAvatar :class="$style.titleAvatar" :user="pageMetadataRef.withUserAvatar" indicator/>
 				</div>
-				<i v-else-if="pageMetadata.icon" :class="[$style.titleIcon, pageMetadata.icon]"></i>
+				<i v-else-if="pageMetadataRef.icon" :class="[$style.titleIcon, pageMetadataRef.icon]"></i>
 
 				<div :class="$style.title">
-					<MkUserName v-if="pageMetadata.userName" :user="pageMetadata.userName" :nowrap="true"/>
-					<div v-else-if="pageMetadata.title">{{ pageMetadata.title }}</div>
-					<div v-if="pageMetadata.subtitle" :class="$style.subtitle">
-						{{ pageMetadata.subtitle }}
+					<MkUserName v-if="pageMetadataRef.withUserName" :user="pageMetadataRef.withUserName" :nowrap="true"/>
+					<div v-else-if="pageMetadataRef.title">{{ pageMetadataRef.title }}</div>
+					<div v-if="pageMetadataRef.subtitle" :class="$style.subtitle">
+						{{ pageMetadataRef.subtitle }}
 					</div>
 				</div>
 			</div>
@@ -67,9 +67,10 @@ import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import { scrollToTop } from '@@/js/scroll.js';
 import XTabs, { Tab } from './MkPageHeader.tabs.vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
-import { injectReactiveMetadata, type PageMetadata } from '@/scripts/page-metadata.js';
+import type { PageMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	overridePageMetadata?: PageMetadata | null;
@@ -90,12 +91,11 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string): void;
 }>();
 
-const injectedPageMetadata = injectReactiveMetadata();
-const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
-
+const injectedPageMetadataRef = inject(DI.pageMetadata);
 const injectedShouldOmitHeaderTitle = inject<boolean>('shouldOmitHeaderTitle', false);
 const injectedShouldHeaderThin = inject<boolean>('shouldHeaderThin', false);
 
+const pageMetadataRef = computed(() => props.overridePageMetadata ?? injectedPageMetadataRef?.value ?? null);
 const hideTitleRef = computed(() => injectedShouldOmitHeaderTitle || props.hideTitle);
 const thinRef = computed(() => injectedShouldHeaderThin || props.thin);
 

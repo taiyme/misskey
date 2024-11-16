@@ -69,20 +69,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, provide, ref } from 'vue';
+import { computed, onMounted, provide, ref, watch } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import XCommon from './_common_/common.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { mainRouter } from '@/router/main.js';
-import { PageMetadata, provideMetadataReceiver, provideReactiveMetadata } from '@/scripts/page-metadata.js';
+import { useRoutingPageMetadata } from '@/scripts/page-metadata.js';
 import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import { provideUi } from '@/scripts/tms/provide-ui.js';
+import { DI } from '@/di.js';
 
-provideUi('visitor');
+const { routingPageMetadataRef } = useRoutingPageMetadata();
+watch(routingPageMetadataRef, (pageMetadata) => {
+	if (pageMetadata == null) return;
+	if (isRoot.value && pageMetadata.title === instanceName) {
+		document.title = pageMetadata.title;
+	} else {
+		document.title = `${pageMetadata.title} | ${instanceName}`;
+	}
+});
 
 const isRoot = computed(() => mainRouter.currentRoute.value.name === 'index');
 
@@ -96,21 +104,7 @@ onMounted(() => {
 	}, { passive: true });
 });
 
-const pageMetadata = ref<null | PageMetadata>(null);
-
-provide('router', mainRouter);
-provideMetadataReceiver((metadataGetter) => {
-	const info = metadataGetter();
-	pageMetadata.value = info;
-	if (pageMetadata.value) {
-		if (isRoot.value && pageMetadata.value.title === instanceName) {
-			document.title = pageMetadata.value.title;
-		} else {
-			document.title = `${pageMetadata.value.title} | ${instanceName}`;
-		}
-	}
-});
-provideReactiveMetadata(pageMetadata);
+provide(DI.router, mainRouter);
 
 const isTimelineAvailable = ref(instance.policies.ltlAvailable || instance.policies.gtlAvailable);
 

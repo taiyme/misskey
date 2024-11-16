@@ -174,6 +174,7 @@ const routes: RouteDef[] = [{
 		component: page(() => import('@/pages/settings/other.vue')),
 	}, {
 		path: '/',
+		name: '_empty_',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],
 }, {
@@ -485,6 +486,7 @@ const routes: RouteDef[] = [{
 		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
 		path: '/',
+		name: '_empty_',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],
 }, {

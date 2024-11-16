@@ -3,68 +3,54 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { MaybeRefOrGetter, Ref, inject, isRef, onActivated, onBeforeUnmount, provide, ref, toValue, watch } from 'vue';
+import { type MaybeRefOrGetter, inject, onActivated, onDeactivated, onMounted, onUnmounted, provide, ref, shallowReadonly, shallowRef, toValue, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
+import { DI } from '@/di.js';
 
 export type PageMetadata = {
-	title: string;
-	subtitle?: string;
-	icon?: string | null;
-	avatar?: Misskey.entities.User | null;
-	userName?: Misskey.entities.User | null;
-	needWideArea?: boolean;
+	readonly title: string;
+	readonly subtitle?: string | null;
+	readonly icon?: string | null;
+	readonly needWideArea?: boolean;
+	readonly withUserAvatar?: Misskey.entities.User | null;
+	readonly withUserName?: Misskey.entities.User | null;
 };
 
-type PageMetadataGetter = () => PageMetadata;
-type PageMetadataReceiver = (getter: PageMetadataGetter) => void;
+export type PageMetadataReceiver = ((pageMetadata: PageMetadata) => void);
 
-const RECEIVER_KEY = Symbol('ReceiverKey');
-const setReceiver = (v: PageMetadataReceiver): void => {
-	provide<PageMetadataReceiver>(RECEIVER_KEY, v);
-};
-const getReceiver = (): PageMetadataReceiver | undefined => {
-	return inject<PageMetadataReceiver>(RECEIVER_KEY);
-};
+export function definePageMetadata(maybeRefOrGetterPageMetadata: MaybeRefOrGetter<PageMetadata>) {
+	const pageActiveRef = ref(false);
+	onMounted(() => pageActiveRef.value = true);
+	onActivated(() => pageActiveRef.value = true);
+	onUnmounted(() => pageActiveRef.value = false);
+	onDeactivated(() => pageActiveRef.value = false);
 
-const METADATA_KEY = Symbol('MetadataKey');
-const setMetadata = (v: Ref<PageMetadata | null>): void => {
-	provide<Ref<PageMetadata | null>>(METADATA_KEY, v);
-};
-const getMetadata = (): Ref<PageMetadata | null> | undefined => {
-	return inject<Ref<PageMetadata | null>>(METADATA_KEY);
-};
+	const receiver = inject(DI.pageMetadataReceiver);
 
-export const definePageMetadata = (maybeRefOrGetterMetadata: MaybeRefOrGetter<PageMetadata>): void => {
-	const metadataRef = ref(toValue(maybeRefOrGetterMetadata));
-	const metadataGetter = () => metadataRef.value;
-	const receiver = getReceiver();
+	const pageMetadataRef = shallowRef(toValue(maybeRefOrGetterPageMetadata));
+	provide(DI.pageMetadata, shallowReadonly(pageMetadataRef));
+	receiver?.(pageMetadataRef.value);
 
-	// setup handler
-	receiver?.(metadataGetter);
+	watch(() => toValue(maybeRefOrGetterPageMetadata), (pageMetadata) => {
+		pageMetadataRef.value = pageMetadata;
+		if (pageActiveRef.value) {
+			receiver?.(pageMetadataRef.value);
+		}
+	}, { deep: true });
 
-	// update handler
-	onBeforeUnmount(watch(
-		() => toValue(maybeRefOrGetterMetadata),
-		(metadata) => {
-			metadataRef.value = metadata;
-			receiver?.(metadataGetter);
-		},
-		{ deep: true },
-	));
-	onActivated(() => {
-		receiver?.(metadataGetter);
+	watch(pageActiveRef, (to, from) => {
+		if (to && !from) {
+			receiver?.(pageMetadataRef.value);
+		}
 	});
-};
+}
 
-export const provideMetadataReceiver = (receiver: PageMetadataReceiver): void => {
-	setReceiver(receiver);
-};
-
-export const provideReactiveMetadata = (metadataRef: Ref<PageMetadata | null>): void => {
-	setMetadata(metadataRef);
-};
-
-export const injectReactiveMetadata = (): Ref<PageMetadata | null> => {
-	const metadataRef = getMetadata();
-	return isRef(metadataRef) ? metadataRef : ref(null);
-};
+export function useRoutingPageMetadata() {
+	const routingPageMetadataRef = shallowRef<PageMetadata | null>(null);
+	provide(DI.pageMetadataReceiver, (pageMetadata) => {
+		routingPageMetadataRef.value = pageMetadata;
+	});
+	return {
+		routingPageMetadataRef: shallowReadonly(routingPageMetadataRef),
+	} as const;
+}

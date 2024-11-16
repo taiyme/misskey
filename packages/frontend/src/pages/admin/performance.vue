@@ -202,7 +202,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: i18n.ts.other,
-	icon: 'ti ti-adjustments',
+	title: i18n.ts.performance,
+	icon: 'ti ti-bolt',
 }));
 </script>

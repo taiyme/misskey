@@ -319,14 +319,15 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: page.value ? page.value.title || page.value.name : i18n.ts.pages,
+	title: i18n.ts.pages,
 	...page.value ? {
-		avatar: page.value.user,
-		path: `/@${page.value.user.username}/pages/${page.value.name}`,
-		share: {
-			title: page.value.title || page.value.name,
-			text: page.value.summary,
-		},
+		title: page.value.title || page.value.name,
+		withUserAvatar: page.value.user,
+		// path: `/@${page.value.user.username}/pages/${page.value.name}`,
+		// share: {
+		// 	title: page.value.title || page.value.name,
+		// 	text: page.value.summary,
+		// },
 	} : {},
 }));
 </script>

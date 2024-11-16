@@ -3,16 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EventEmitter } from 'eventemitter3';
-import type { App, ShallowRef } from 'vue';
-import { IRouter, Resolved, RouteDef, RouterEvent, RouterFlag } from '@/nirax.js';
+import type { EventEmitter } from 'eventemitter3';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { App, ShallowRef, provide } from 'vue';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { IRouter, Resolved, RouteDef, Router, RouterEvent, RouterFlag } from '@/nirax.js';
+import { DI } from '@/di.js';
 
 /**
  * {@link Router}による画面遷移を可能とするために{@link mainRouter}をセットアップする。
- * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（`routerFactory`というキーで取得可能）
+ * また、{@link Router}のインスタンスを作成するためのファクトリも{@link provide}経由で公開する（{@link DI.routerFactory}というキーで取得可能）
  */
 export function setupRouter(app: App, routerFactory: ((path: string) => IRouter)): void {
-	app.provide('routerFactory', routerFactory);
+	app.provide(DI.routerFactory, routerFactory);
 
 	const mainRouter = routerFactory(location.pathname + location.search + location.hash);
 
@@ -136,7 +139,7 @@ class MainRouterProxy implements IRouter {
 	on<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this {
 		this.supplier().on(event, fn, context);
 		return this;
@@ -145,7 +148,7 @@ class MainRouterProxy implements IRouter {
 	addListener<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this {
 		this.supplier().addListener(event, fn, context);
 		return this;
@@ -154,7 +157,7 @@ class MainRouterProxy implements IRouter {
 	once<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	): this {
 		this.supplier().once(event, fn, context);
 		return this;
@@ -163,7 +166,7 @@ class MainRouterProxy implements IRouter {
 	removeListener<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 		once?: boolean,
 	): this {
 		this.supplier().removeListener(event, fn, context, once);
@@ -173,7 +176,7 @@ class MainRouterProxy implements IRouter {
 	off<T extends EventEmitter.EventNames<RouterEvent>>(
 		event: T,
 		fn?: EventEmitter.EventListener<RouterEvent, T>,
-		context?: any,
+		context?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 		once?: boolean,
 	): this {
 		this.supplier().off(event, fn, context, once);
