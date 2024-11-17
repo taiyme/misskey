@@ -170,47 +170,45 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
-	box-sizing: border-box;
+	box-sizing: content-box;
 	overflow: clip;
 	display: inline-flex;
 	height: 34px;
-	margin: 3px;
+	margin: 2px;
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid rgb(from var(--MI_THEME-fg) r g b / 0.2);
 	background-color: var(--MI_THEME-panel);
 	color: var(--MI_THEME-fg);
-	transition: background-color 0.1s ease, outline-color 0.1s ease;
+	transition: border-color 0.1s ease, background-color 0.1s ease;
 
 	&.canToggle {
-		box-shadow: 0 4px 14px -8px var(--MI_THEME-shadow);
-		outline: rgb(from var(--MI_THEME-fg) r g b / 0.5) solid 0.5px;
-
 		&:hover {
+			border-color: rgb(from var(--MI_THEME-fg) r g b / 0.4);
 			background-color: hsl(from var(--MI_THEME-panel) h s calc(l - (var(--TMS-hsl-base-l) * 2)));
-			outline: rgb(from var(--MI_THEME-fg) r g b / 0.8) solid 0.5px;
 		}
 	}
 
 	&.reacted {
+		border-color: var(--MI_THEME-accent);
 		background-color: var(--MI_THEME-accent);
 		color: var(--MI_THEME-fgOnAccent);
-		outline: var(--MI_THEME-accent) solid 0.5px;
 
 		&:hover {
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5)));
 			background-color: hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5)));
-			outline: hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5))) solid 0.5px;
 		}
 	}
 
 	&:not(.canToggle) {
 		cursor: default;
-		outline: rgb(from var(--MI_THEME-fg) r g b / 0.5) dashed 1px;
+		border-style: dashed;
 	}
 
 	&.small {
 		height: 24px;
-		margin: 2px;
+		margin: 1px;
 		border-radius: 4px;
 
 		> .icon {
@@ -227,7 +225,7 @@ if (!mock) {
 
 	&.large {
 		height: 44px;
-		margin: 4px;
+		margin: 3px;
 		border-radius: 8px;
 
 		> .icon {

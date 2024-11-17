@@ -26,19 +26,17 @@ defineProps<{
 
 <style lang="scss" module>
 .root {
-	box-sizing: border-box;
+	box-sizing: content-box;
 	overflow: clip;
 	display: inline-flex;
 	height: 34px;
-	margin: 3px;
+	margin: 2px;
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid rgb(from var(--MI_THEME-fg) r g b / 0.2);
 	background-color: var(--MI_THEME-panel);
 	color: var(--MI_THEME-fg);
-	transition: background-color 0.1s ease, outline-color 0.1s ease;
-	box-shadow: 0 4px 14px -8px var(--MI_THEME-shadow);
-	outline: rgb(from var(--MI_THEME-fg) r g b / 0.5) solid 0.5px;
 	cursor: default;
 }
 
