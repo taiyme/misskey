@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { DI } from '@/di.js';
@@ -23,7 +23,7 @@ const props = defineProps<{
 	noteId: string;
 }>();
 
-const serverContext = inject(DI.serverContext)!;
+const serverContext = inject(DI.serverContext)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const note = ref<Misskey.entities.Note | null>(null);
 

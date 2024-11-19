@@ -11,6 +11,26 @@
 	--MI-marginHalf: 10px;
 
 	--MI-margin: var(--MI-marginFull);
+
+	--TMS-hsl-base-h: 1;
+	--TMS-hsl-base-s: 1;
+	--TMS-hsl-base-l: 1;
+
+	@media (max-width: 500px) {
+		--MI-margin: var(--MI-marginHalf);
+	}
+
+	@supports (color: hsl(from #fff calc(h + 1deg) s l)) {
+		--TMS-hsl-base-h: 1deg;
+	}
+
+	@supports (color: hsl(from #fff h calc(s + 1%) l)) {
+		--TMS-hsl-base-s: 1%;
+	}
+
+	@supports (color: hsl(from #fff h s calc(l + 1%))) {
+		--TMS-hsl-base-l: 1%;
+	}
 }
 
 html {
@@ -115,6 +135,12 @@ rt {
 	text-align: center;
 }
 
+._noSelect {
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
 ._nowrap {
 	white-space: pre !important;
 	word-wrap: normal !important; // https://codeday.me/jp/qa/20190424/690106.html
@@ -122,10 +148,13 @@ rt {
 	text-overflow: ellipsis;
 }
 
+._ghost {
+	@extend ._noSelect;
+	pointer-events: none;
+}
+
 ._button {
-	user-select: none;
-	-webkit-user-select: none;
-	-webkit-touch-callout: none;
+	@extend ._noSelect;
 	appearance: none;
 	display: inline-block;
 	padding: 0;
@@ -163,11 +192,11 @@ rt {
 	background: var(--MI_THEME-accent);
 
 	&:not(:disabled):hover {
-		background: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5)));
 	}
 
 	&:not(:disabled):active {
-		background: hsl(from var(--MI_THEME-accent) h s calc(l - 5));
+		background: hsl(from var(--MI_THEME-accent) h s calc(l - (var(--TMS-hsl-base-l) * 5)));
 	}
 }
 
@@ -177,11 +206,11 @@ rt {
 	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
 	&:not(:disabled):hover {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5))), hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5))));
 	}
 
 	&:not(:disabled):active {
-		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5))), hsl(from var(--MI_THEME-accent) h s calc(l + (var(--TMS-hsl-base-l) * 5))));
 	}
 }
 
@@ -307,6 +336,34 @@ rt {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace !important;
 }
 
+@keyframes global-tada {
+	from {
+		transform: scale3d(1, 1, 1);
+	}
+
+	10%,
+	20% {
+		transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+	}
+
+	30%,
+	50%,
+	70%,
+	90% {
+		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+	}
+
+	40%,
+	60%,
+	80% {
+		transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+	}
+
+	to {
+		transform: scale3d(1, 1, 1);
+	}
+}
+
 // MFM -----------------------------
 
 ._mfm_blur_ {
@@ -345,7 +402,16 @@ rt {
 }
 
 ._mfm_rainbow_fallback_ {
-	background-image: linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 165, 0) 17%, rgb(255, 255, 0) 33%, rgb(0, 255, 0) 50%, rgb(0, 255, 255) 67%, rgb(0, 0, 255) 83%, rgb(255, 0, 255) 100%);
+	background-image: linear-gradient(
+		to right,
+		rgb(255 0 0) 0%,
+		rgb(255 165 0) 17%,
+		rgb(255 255 0) 33%,
+		rgb(0 255 0) 50%,
+		rgb(0 255 255) 67%,
+		rgb(0 0 255) 83%,
+		rgb(255 0 255) 100%
+	);
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;

@@ -13,12 +13,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, computed } from 'vue';
+import { computed, inject } from 'vue';
 import { DEFAULT_NOT_FOUND_IMAGE_URL } from '@@/js/const.js';
 import { DI } from '@/di.js';
 import { i18n } from '@/i18n.js';
 
-const serverMetadata = inject(DI.serverMetadata)!;
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
-const notFoundImageUrl = computed(() => serverMetadata?.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
+const notFoundImageUrl = computed(() => serverMetadata.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 </script>

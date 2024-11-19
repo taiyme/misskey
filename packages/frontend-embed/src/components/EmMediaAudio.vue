@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		rel="noopener"
 		tabindex="0"
 	>
-		<template v-if="mediaRef.isSensitive">
+		<template v-if="audioRef.isSensitive">
 			<div :class="['_noSelect', $style.hideInfo]">
 				<div :class="$style.hideInfoItem">
 					<div :class="$style.hideInfoTitle">
@@ -24,9 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-else :class="$style.labelContainer">
 			<div>
-				<i class="ti ti-file" style="font-size: 1.2em;"></i>
+				<i class="ti ti-music" style="font-size: 1.2em;"></i>
 			</div>
-			<div :class="$style.labelText">{{ mediaRef.name }}</div>
+			<div :class="$style.labelText">{{ audioRef.name }}</div>
 			<div style="margin-left: auto;">
 				<i class="ti ti-chevron-right"></i>
 			</div>
@@ -45,19 +45,19 @@ import { notePage } from '@/utils.js';
 const appearNote = inject(DI.appearNote)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const props = defineProps<{
-	media: Misskey.entities.DriveFile;
+	audio: Misskey.entities.DriveFile;
 }>();
 
-const mediaRef = computed(() => props.media);
+const audioRef = computed(() => props.audio);
 </script>
 
 <style lang="scss" module>
 .cq {
-	container: mediaBanner / inline-size;
+	container: mediaAudio / inline-size;
 }
 
 .root {
-	--mediaBanner-scale: 1;
+	--mediaAudio-scale: 1;
 	box-sizing: border-box;
 	position: relative;
 	display: block;
@@ -99,7 +99,7 @@ const mediaRef = computed(() => props.media);
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	font-size: clamp(6px, calc(12px * var(--mediaBanner-scale)), 12px);
+	font-size: clamp(6px, calc(12px * var(--mediaAudio-scale)), 12px);
 	color: #fff;
 }
 
@@ -129,45 +129,45 @@ const mediaRef = computed(() => props.media);
 	font-weight: 700;
 }
 
-@container mediaBanner (max-width: 250px) {
+@container mediaAudio (max-width: 250px) {
 	.root {
-		--mediaBanner-scale: 0.90;
+		--mediaAudio-scale: 0.90;
 	}
 }
 
-@container mediaBanner (max-width: 200px) {
+@container mediaAudio (max-width: 200px) {
 	.root {
-		--mediaBanner-scale: 0.85;
+		--mediaAudio-scale: 0.85;
 	}
 }
 
-@container mediaBanner (max-width: 150px) {
+@container mediaAudio (max-width: 150px) {
 	.root {
-		--mediaBanner-scale: 0.80;
+		--mediaAudio-scale: 0.80;
 	}
 }
 
-@container mediaBanner (max-width: 130px) {
+@container mediaAudio (max-width: 130px) {
 	.root {
-		--mediaBanner-scale: 0.75;
+		--mediaAudio-scale: 0.75;
 	}
 }
 
-@container mediaBanner (max-width: 120px) {
+@container mediaAudio (max-width: 120px) {
 	.root {
-		--mediaBanner-scale: 0.70;
+		--mediaAudio-scale: 0.70;
 	}
 }
 
-@container mediaBanner (max-width: 110px) {
+@container mediaAudio (max-width: 110px) {
 	.root {
-		--mediaBanner-scale: 0.65;
+		--mediaAudio-scale: 0.65;
 	}
 }
 
-@container mediaBanner (max-width: 100px) {
+@container mediaAudio (max-width: 100px) {
 	.root {
-		--mediaBanner-scale: 0.60;
+		--mediaAudio-scale: 0.60;
 	}
 }
 </style>

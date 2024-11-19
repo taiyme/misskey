@@ -4,11 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<img :class="$style.root" :src="url" :alt="props.emoji" decoding="async"/>
+<img :class="$style.root" :src="url" :alt="props.emoji" decoding="async" @pointerenter="computeTitle"/>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { getEmojiName } from '@@/js/emojilist.js';
 import { char2twemojiFilePath } from '@@/js/emoji-base.js';
 
 const props = defineProps<{
@@ -16,6 +17,11 @@ const props = defineProps<{
 }>();
 
 const url = computed(() => char2twemojiFilePath(props.emoji));
+
+// Searching from an array with 2000 items for every emoji felt like too energy-consuming, so I decided to do it lazily on pointerenter
+function computeTitle(event: PointerEvent): void {
+	(event.target as HTMLElement).title = getEmojiName(props.emoji);
+}
 </script>
 
 <style lang="scss" module>

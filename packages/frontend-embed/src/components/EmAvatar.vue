@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]">
+<component :is="link ? EmA : 'span'" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat }]" :style="{ color }" :title="acct(user)">
 	<EmImgWithBlurhash :class="$style.inner" :src="url" :hash="user.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
-	<div v-if="user.isCat" :class="[$style.ears]">
+	<div v-if="user.isCat" :class="$style.ears">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
@@ -24,7 +24,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<img
 		v-for="decoration in user.avatarDecorations"
-		:class="[$style.decoration]"
+		:key="decoration.id"
+		:class="$style.decoration"
 		:src="getDecorationUrl(decoration)"
 		:style="{
 			rotate: getDecorationAngle(decoration),
@@ -37,25 +38,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import * as Misskey from 'misskey-js';
-import EmImgWithBlurhash from './EmImgWithBlurhash.vue';
-import EmA from './EmA.vue';
-import { userPage } from '@/utils.js';
+import { computed, ref, watch } from 'vue';
+import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
+import type * as Misskey from 'misskey-js';
+import { acct, userPage } from '@/utils.js';
+import EmA from '@/components/EmA.vue';
+import EmImgWithBlurhash from '@/components/EmImgWithBlurhash.vue';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	user: Misskey.entities.User;
 	link?: boolean;
-	preview?: boolean;
-	indicator?: boolean;
-}>(), {
-	link: false,
-	preview: false,
-	indicator: false,
-});
-
-const emit = defineEmits<{
-	(ev: 'click', v: MouseEvent): void;
 }>();
 
 const bound = computed(() => props.link
@@ -86,6 +78,15 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 	const offsetY = decoration.offsetY ?? 0;
 	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
 }
+
+const color = ref<string | undefined>();
+
+watch(() => props.user.avatarBlurhash, () => {
+	if (props.user.avatarBlurhash == null) return;
+	color.value = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
+}, {
+	immediate: true,
+});
 </script>
 
 <style lang="scss" module>
@@ -110,15 +111,6 @@ function getDecorationOffset(decoration: Omit<Misskey.entities.UserDetailed['ava
 	object-fit: cover;
 	width: 100%;
 	height: 100%;
-}
-
-.indicator {
-	position: absolute;
-	z-index: 2;
-	bottom: 0;
-	left: 0;
-	width: 20%;
-	height: 20%;
 }
 
 .cat {

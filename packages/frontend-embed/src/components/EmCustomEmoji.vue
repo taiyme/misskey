@@ -25,11 +25,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
+import { url as local } from '@@/js/config.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-
 import { DI } from '@/di.js';
 
-const mediaProxy = inject(DI.mediaProxy)!;
+const mediaProxy = inject(DI.mediaProxy)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const props = defineProps<{
 	name: string;
@@ -51,7 +51,7 @@ const rawUrl = computed(() => {
 	if (isLocal.value) {
 		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
 	}
-	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
+	return props.host ? `${local}/emoji/${customEmojiName.value}@${props.host}.webp` : `${local}/emoji/${customEmojiName.value}.webp`;
 });
 
 const url = computed(() => {

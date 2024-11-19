@@ -8,11 +8,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as Misskey from 'misskey-js';
-import EmMfm from './EmMfm.js';
+import type * as Misskey from 'misskey-js';
+import EmMfm from '@/components/EmMfm.js';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
 	user: Misskey.entities.User;
 	nowrap?: boolean;
 }>(), {

@@ -10,12 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-
-const props = withDefaults(defineProps<{
+defineProps<{
 	to: string;
-	activeClass?: null | string;
-}>(), {
-	activeClass: null,
-});
+}>();
 </script>

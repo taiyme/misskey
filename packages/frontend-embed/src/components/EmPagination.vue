@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="empty" key="_empty_" class="empty">
 	<slot name="empty">
 		<div class="_fullinfo">
+			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 	</slot>
@@ -34,12 +35,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import { type ComputedRef, computed, inject, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, useTemplateRef, watch } from 'vue';
 import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@@/js/scroll.js';
+import { DEFAULT_INFO_IMAGE_URL } from '@@/js/const.js';
+import type * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
@@ -82,11 +85,15 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
-
 </script>
+
 <script lang="ts" setup>
 import EmError from '@/components/EmError.vue';
 import EmLoading from '@/components/EmLoading.vue';
+
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+
+const infoImageUrl = computed(() => serverMetadata.infoImageUrl ?? DEFAULT_INFO_IMAGE_URL);
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
@@ -97,11 +104,11 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'queue', count: number): void;
-	(ev: 'status', error: boolean): void;
+	queue: [count: number];
+	status: [error: boolean];
 }>();
 
-const rootEl = shallowRef<HTMLElement>();
+const rootEl = useTemplateRef('rootEl');
 
 // 遡り中かどうか
 const backed = ref(false);
@@ -149,7 +156,7 @@ const scrollObserver = ref<IntersectionObserver>();
 watch([() => props.pagination.reversed, scrollableElement], () => {
 	if (scrollObserver.value) scrollObserver.value.disconnect();
 
-	scrollObserver.value = new IntersectionObserver(entries => {
+	scrollObserver.value = new IntersectionObserver((entries) => {
 		backed.value = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement.value,
@@ -189,7 +196,7 @@ watch(error, (n, o) => {
 	emit('status', n);
 });
 
-async function init(): Promise<void> {
+async function init() {
 	items.value = new Map();
 	queue.value = new Map();
 	fetching.value = true;
@@ -198,7 +205,7 @@ async function init(): Promise<void> {
 		...params,
 		limit: props.pagination.limit ?? 10,
 		allowPartial: true,
-	}).then(res => {
+	}).then((res) => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
@@ -215,17 +222,17 @@ async function init(): Promise<void> {
 
 		error.value = false;
 		fetching.value = false;
-	}, err => {
+	}, () => {
 		error.value = true;
 		fetching.value = false;
 	});
 }
 
-const reload = (): Promise<void> => {
+const reload = () => {
 	return init();
 };
 
-const fetchMore = async (): Promise<void> => {
+const fetchMore = async () => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -237,13 +244,13 @@ const fetchMore = async (): Promise<void> => {
 		} : {
 			untilId: Array.from(items.value.keys()).at(-1),
 		}),
-	}).then(res => {
+	}).then((res) => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = _res => {
+		const reverseConcat = (_res: MisskeyEntity[]) => {
 			const oldHeight = scrollableElement.value ? scrollableElement.value.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement.value ? scrollableElement.value.scrollTop : window.scrollY;
 
@@ -283,12 +290,12 @@ const fetchMore = async (): Promise<void> => {
 				moreFetching.value = false;
 			}
 		}
-	}, err => {
+	}, () => {
 		moreFetching.value = false;
 	});
 };
 
-const fetchMoreAhead = async (): Promise<void> => {
+const fetchMoreAhead = async () => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -300,7 +307,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		} : {
 			sinceId: Array.from(items.value.keys()).at(-1),
 		}),
-	}).then(res => {
+	}).then((res) => {
 		if (res.length === 0) {
 			items.value = concatMapWithArray(items.value, res);
 			more.value = false;
@@ -309,7 +316,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 			more.value = true;
 		}
 		moreFetching.value = false;
-	}, err => {
+	}, () => {
 		moreFetching.value = false;
 	});
 };
@@ -318,22 +325,22 @@ const fetchMoreAhead = async (): Promise<void> => {
  * Appear（IntersectionObserver）によってfetchMoreが呼ばれる場合、
  * APPEAR_MINIMUM_INTERVALミリ秒以内に2回fetchMoreが呼ばれるのを防ぐ
  */
-const fetchMoreApperTimeoutFn = (): void => {
+const fetchMoreApperTimeoutFn = () => {
 	preventAppearFetchMore.value = false;
 	preventAppearFetchMoreTimer.value = null;
 };
-const fetchMoreAppearTimeout = (): void => {
+const fetchMoreAppearTimeout = () => {
 	preventAppearFetchMore.value = true;
 	preventAppearFetchMoreTimer.value = window.setTimeout(fetchMoreApperTimeoutFn, APPEAR_MINIMUM_INTERVAL);
 };
 
-const appearFetchMore = async (): Promise<void> => {
+const appearFetchMore = async () => {
 	if (preventAppearFetchMore.value) return;
 	await fetchMore();
 	fetchMoreAppearTimeout();
 };
 
-const appearFetchMoreAhead = async (): Promise<void> => {
+const appearFetchMoreAhead = async () => {
 	if (preventAppearFetchMore.value) return;
 	await fetchMoreAhead();
 	fetchMoreAppearTimeout();
@@ -366,7 +373,7 @@ watch(visibility, () => {
  * ストリーミングから降ってきたアイテムはこれで追加する
  * @param item アイテム
  */
-const prepend = (item: MisskeyEntity): void => {
+const prepend = (item: MisskeyEntity) => {
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -411,7 +418,7 @@ function prependQueue(newItem: MisskeyEntity) {
 /*
  * アイテムを末尾に追加する（使うの？）
  */
-const appendItem = (item: MisskeyEntity): void => {
+const appendItem = (item: MisskeyEntity) => {
 	items.value.set(item.id, item);
 };
 
@@ -420,7 +427,7 @@ const removeItem = (id: string) => {
 	queue.value.delete(id);
 };
 
-const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
+const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity) => {
 	const item = items.value.get(id);
 	if (item) items.value.set(id, replacer(item));
 
@@ -482,15 +489,6 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.transition_fade_enterActive,
-.transition_fade_leaveActive {
-	transition: opacity 0.125s ease;
-}
-.transition_fade_enterFrom,
-.transition_fade_leaveTo {
-	opacity: 0;
-}
-
 .more {
 	display: block;
 	margin-left: auto;

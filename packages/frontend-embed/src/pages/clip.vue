@@ -12,13 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-paperclip"></i>
 				</div>
 				<div :class="$style.headerTitle" @click="top">
-					<div class="_nowrap"><a :href="`/clips/${clip.id}`" target="_blank" rel="noopener">{{ clip.name }}</a></div>
+					<div class="_nowrap"><a :href="`${url}/clips/${clip.id}`" target="_blank" rel="noopener">{{ clip.name }}</a></div>
 					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
 				</div>
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="serverMetadata.iconUrl || '/favicon.ico'"
+						:src="serverMetadata.iconUrl || `${url}/favicon.ico`"
 					/>
 				</a>
 			</div>
@@ -38,12 +38,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, inject, useTemplateRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, inject, ref, useTemplateRef } from 'vue';
 import { scrollToTop } from '@@/js/scroll.js';
 import { url, instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
+import type * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import XNotFound from '@/pages/not-found.vue';
@@ -59,9 +59,9 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const serverMetadata = inject(DI.serverMetadata)!;
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
-const serverContext = inject(DI.serverContext)!;
+const serverContext = inject(DI.serverContext)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const clip = ref<Misskey.entities.Clip | null>();
 

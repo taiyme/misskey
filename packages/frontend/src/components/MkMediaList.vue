@@ -5,23 +5,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.cq">
-	<template v-for="media in mediaList.filter(media => !previewable(media))">
+	<template v-for="media in notPreviewableMediaList">
 		<XAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :key="`audio:${media.id}`" :audio="media" :class="$style.banner"/>
 		<XBanner v-else :key="`banner:${media.id}`" :media="media" :class="$style.banner"/>
 	</template>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
+	<div v-if="previewableMediaList.length > 0" :class="$style.container">
 		<div
 			ref="gallery"
 			:class="[
-				$style.medias,
-				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
-				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
+				$style.mediaList,
+				previewableMediaList.length === 1
+					? [
+						$style.n1, {
+							[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
+							[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
+							[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+						},
+					]
+					: previewableMediaList.length === 2
+						? $style.n2
+						: previewableMediaList.length === 3
+							? $style.n3
+							: previewableMediaList.length === 4
+								? $style.n4
+								: $style.nMany,
 			]"
 		>
-			<template v-for="media in mediaList.filter(media => previewable(media))">
+			<template v-for="media in previewableMediaList">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
@@ -31,12 +41,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import type * as Misskey from 'misskey-js';
-import { claimZIndex } from '@/os.js';
+import { claimZIndex, confirm } from '@/os.js';
+import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { focusParent } from '@/scripts/focus.js';
 import XAudio from '@/components/MkMediaAudio.vue';
@@ -52,15 +63,23 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
-const gallery = shallowRef<HTMLDivElement>();
+const previewable = (file: Misskey.entities.DriveFile) => {
+	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
+	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
+	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
+};
+
+const previewableMediaList = computed(() => props.mediaList.filter(media => previewable(media)));
+const notPreviewableMediaList = computed(() => props.mediaList.filter(media => !previewable(media)));
+
+const gallery = useTemplateRef('gallery');
 const pswpZIndex = claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
-const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 let lightbox: PhotoSwipeLightbox | null = null;
 
 let activeEl: HTMLElement | null = null;
 
-const popstateHandler = (): void => {
+const popstateHandler = () => {
 	if (lightbox?.pswp && lightbox.pswp.isOpen === true) {
 		lightbox.pswp.close();
 	}
@@ -69,9 +88,10 @@ const popstateHandler = (): void => {
 async function calcAspectRatio() {
 	if (!gallery.value) return;
 
-	const img = props.mediaList[0];
+	const img = previewableMediaList.value.at(0);
+	if (img == null) return;
 
-	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
+	if (previewableMediaList.value.length !== 1 || !(img.properties.width && img.properties.height)) {
 		gallery.value.style.aspectRatio = '';
 		return;
 	}
@@ -105,7 +125,7 @@ onMounted(() => {
 	calcAspectRatio();
 
 	lightbox = new PhotoSwipeLightbox({
-		dataSource: props.mediaList
+		dataSource: previewableMediaList.value
 			.filter(media => {
 				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
 				return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
@@ -123,7 +143,7 @@ onMounted(() => {
 				}
 				return item;
 			}),
-		gallery: gallery.value,
+		gallery: gallery.value ?? undefined,
 		mainClass: 'pswp',
 		children: '.image',
 		thumbSelector: '.image',
@@ -153,7 +173,7 @@ onMounted(() => {
 		const { element } = itemData;
 
 		const id = element?.dataset.id;
-		const file = props.mediaList.find(media => media.id === id);
+		const file = previewableMediaList.value.find(media => media.id === id);
 		if (!file) return itemData;
 
 		itemData.src = file.url;
@@ -216,16 +236,17 @@ onUnmounted(() => {
 	activeEl = null;
 });
 
-const previewable = (file: Misskey.entities.DriveFile): boolean => {
-	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
-	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
-};
-
-const openGallery = () => {
-	if (props.mediaList.filter(media => previewable(media)).length > 0) {
-		lightbox?.loadAndOpen(0);
+const openGallery = async () => {
+	if (lightbox == null) return;
+	if (previewableMediaList.value.length === 0) return;
+	if (previewableMediaList.value.at(0)?.isSensitive && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
 	}
+	lightbox.loadAndOpen(0);
 };
 
 defineExpose({
@@ -246,7 +267,7 @@ defineExpose({
 	margin-top: 4px;
 }
 
-.medias {
+.mediaList {
 	display: grid;
 	gap: 8px;
 	height: 100%;
@@ -328,7 +349,7 @@ defineExpose({
 }
 
 @container mediaList (max-width: 210px) {
-	.medias:not(.n1) {
+	.mediaList:not(.n1) {
 		aspect-ratio: unset !important;
 		grid-template-columns: 1fr !important;
 		grid-template-rows: unset !important;

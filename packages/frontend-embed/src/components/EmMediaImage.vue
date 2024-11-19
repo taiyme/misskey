@@ -4,80 +4,151 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible]" @click="onclick">
+<div :class="$style.cq">
 	<a
-		:title="image.name"
-		:class="$style.imageContainer"
-		:href="href ?? image.url"
+		:href="notePage(appearNote)"
+		:class="{
+			[$style.root]: true,
+			[$style.rootVisible]: !imageRef.isSensitive,
+		}"
 		target="_blank"
 		rel="noopener"
+		tabindex="0"
 	>
-		<ImgWithBlurhash
-			:hash="image.blurhash"
-			:src="hide ? null : url"
-			:forceBlurhash="hide"
-			:cover="hide || cover"
-			:alt="image.comment || image.name"
-			:title="image.comment || image.name"
-			:width="image.properties.width"
-			:height="image.properties.height"
-			:style="hide ? 'filter: brightness(0.7);' : null"
-		/>
-	</a>
-	<template v-if="hide">
-		<div :class="$style.hiddenText">
-			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}</b>
-				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ i18n.ts.image }}</b>
-				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
-			</div>
+		<div
+			:title="imageRef.name"
+			:class="$style.imageContainer"
+		>
+			<EmImgWithBlurhash
+				:hash="imageRef.blurhash"
+				:src="imageRef.isSensitive ? null : imageUrlRef"
+				:forceBlurhash="imageRef.isSensitive"
+				:cover="imageRef.isSensitive || props.cover"
+				:alt="imageRef.comment || imageRef.name"
+				:title="imageRef.comment || imageRef.name"
+				:width="imageRef.properties.width"
+				:height="imageRef.properties.height"
+				:style="imageRef.isSensitive ? 'filter: brightness(0.7);' : undefined"
+			/>
 		</div>
-	</template>
-	<div :class="$style.indicators">
-		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
-		<div v-if="image.comment" :class="$style.indicator">ALT</div>
-		<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--MI_THEME-warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
-	</div>
-	<i v-if="!hide" class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
+
+		<template v-if="imageRef.isSensitive">
+			<div :class="['_noSelect', $style.hideInfo]">
+				<div :class="$style.hideInfoItem">
+					<div :class="$style.hideInfoTitle">
+						<i class="ti ti-eye-exclamation"></i> {{ i18n.ts._tms.sensitiveImage }}
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template v-else>
+			<!-- <div :class="$style.controlsUpperRight">
+			</div> -->
+
+			<!-- <div :class="$style.controlsLowerRight">
+			</div> -->
+
+			<div :class="$style.controlsLowerLeft">
+				<button
+					v-if="imageRef.comment"
+					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+				>
+					<div :class="$style.controlButton"><span>ALT</span></div>
+				</button>
+			</div>
+
+			<div :class="$style.controlsUpperLeft">
+				<button
+					v-if="['image/gif', 'image/apng'].includes(imageRef.type)"
+					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+				>
+					<div :class="$style.controlButton"><span>GIF</span></div>
+				</button>
+				<button
+					v-if="imageRef.isSensitive"
+					:class="['_button', $style.controlItem]"
+					tabindex="-1"
+				>
+					<div :class="$style.controlButton"><span>NSFW</span></div>
+				</button>
+			</div>
+		</template>
+	</a>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import * as Misskey from 'misskey-js';
-import ImgWithBlurhash from '@/components/EmImgWithBlurhash.vue';
+import { computed, inject } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
+import EmImgWithBlurhash from '@/components/EmImgWithBlurhash.vue';
+import { DI } from '@/di.js';
+import { notePage } from '@/utils.js';
 
-const props = withDefaults(defineProps<{
+const appearNote = inject(DI.appearNote)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+
+const props = defineProps<{
 	image: Misskey.entities.DriveFile;
-	href?: string;
 	raw?: boolean;
 	cover?: boolean;
-}>(), {
-	cover: false,
-});
+}>();
 
-const hide = ref(props.image.isSensitive);
+const imageRef = computed(() => props.image);
 
-const url = computed(() => (props.raw)
-	? props.image.url
-	: props.image.thumbnailUrl,
-);
-
-async function onclick(ev: MouseEvent) {
-	if (hide.value) {
-		ev.stopPropagation();
-		hide.value = false;
+const imageUrlRef = computed(() => {
+	if (props.raw) {
+		return imageRef.value.url;
 	}
-}
+	return imageRef.value.thumbnailUrl;
+});
 </script>
 
 <style lang="scss" module>
-.hidden {
-	position: relative;
+.cq {
+	container: mediaImage / inline-size;
 }
 
-.hiddenText {
+.root {
+	--mediaImage-scale: 1;
+	box-sizing: border-box;
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	border-radius: var(--mediaList-radius, 8px);
+
+	&:focus-visible {
+		outline: none;
+	}
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.rootVisible {
+	background-color: var(--MI_THEME-bg);
+	background-image: repeating-linear-gradient(
+		135deg,
+		transparent 0px 10px,
+		var(--c) 6px 16px
+	);
+
+	&,
+	html[data-color-scheme=light] & {
+		--c: color-mix(in srgb, #000000 3.75%, var(--MI_THEME-bg));
+	}
+
+	html[data-color-scheme=dark] & {
+		--c: color-mix(in srgb, #ffffff 7.5%, var(--MI_THEME-bg));
+	}
+}
+
+.hideInfo {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -85,48 +156,31 @@ async function onclick(ev: MouseEvent) {
 	height: 100%;
 	z-index: 1;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+
+	> .hideInfoItem {
+		max-width: 100%;
+	}
 }
 
-.hide {
-	display: block;
-	position: absolute;
-	border-radius: 6px;
-	background-color: var(--MI_THEME-fg);
-	color: var(--MI_THEME-accentLighten);
-	font-size: 12px;
-	opacity: .5;
-	padding: 5px 8px;
-	text-align: center;
-	cursor: pointer;
-	top: 12px;
-	right: 12px;
-}
-
-.hiddenTextWrapper {
-	display: table-cell;
-	text-align: center;
-	font-size: 0.8em;
+%HideInfoText {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-size: clamp(6px, calc(12px * var(--mediaImage-scale)), 12px);
 	color: #fff;
 }
 
-.visible {
-	position: relative;
-	//box-shadow: 0 0 0 1px var(--MI_THEME-divider) inset;
-	background: var(--MI_THEME-bg);
-	background-size: 16px 16px;
+.hideInfoTitle {
+	@extend %HideInfoText;
+	font-weight: 700;
 }
 
-html[data-color-scheme=dark] .visible {
-	--c: rgb(255 255 255 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
-}
-
-html[data-color-scheme=light] .visible {
-	--c: rgb(0 0 0 / 2%);
-	background-image: linear-gradient(45deg, var(--c) 16.67%, var(--MI_THEME-bg) 16.67%, var(--MI_THEME-bg) 50%, var(--c) 50%, var(--c) 66.67%, var(--MI_THEME-bg) 66.67%, var(--MI_THEME-bg) 100%);
+.hideInfoText {
+	@extend %HideInfoText;
 }
 
 .imageContainer {
@@ -139,24 +193,153 @@ html[data-color-scheme=light] .visible {
 	background-repeat: no-repeat;
 }
 
-.indicators {
-	display: inline-flex;
+%Controls {
 	position: absolute;
-	top: 10px;
-	left: 10px;
-	pointer-events: none;
-	opacity: .5;
-	gap: 6px;
+	inset: auto;
+	display: flex;
+
+	&:empty {
+		display: none;
+	}
 }
 
-.indicator {
-	/* Hardcode to black because either --MI_THEME-bg or --MI_THEME-fg makes it hard to read in dark/light mode */
-	background-color: black;
-	border-radius: 6px;
-	color: var(--MI_THEME-accentLighten);
-	display: inline-block;
-	font-weight: bold;
-	font-size: 0.8em;
-	padding: 2px 5px;
+%ControlItem {
+	text-align: center;
+	font-size: clamp(6px, calc(12px * var(--mediaImage-scale)), 12px);
+	padding:
+		clamp(3px, calc(6px * var(--mediaImage-scale)), 6px)
+		clamp(2px, calc(4px * var(--mediaImage-scale)), 4px);
+
+	&:first-child {
+		padding-left: clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
+	}
+
+	&:last-child {
+		padding-right: clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
+	}
+
+	&:focus-visible {
+		outline: none;
+	}
+}
+
+// .controlsUpperRight {
+// 	@extend %Controls;
+// 	top: 0;
+// 	right: 0;
+
+// 	> .controlItem {
+// 		@extend %ControlItem;
+// 		padding-bottom: 0;
+
+// 		&:first-child {
+// 			padding-left: 0;
+// 		}
+// 	}
+// }
+
+// .controlsLowerRight {
+// 	@extend %Controls;
+// 	right: 0;
+// 	bottom: 0;
+
+// 	> .controlItem {
+// 		@extend %ControlItem;
+// 		padding-top: 0;
+
+// 		&:first-child {
+// 			padding-left: 0;
+// 		}
+// 	}
+// }
+
+.controlsLowerLeft {
+	@extend %Controls;
+	bottom: 0;
+	left: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-top: 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.controlsUpperLeft {
+	@extend %Controls;
+	top: 0;
+	left: 0;
+
+	> .controlItem {
+		@extend %ControlItem;
+		padding-bottom: 0;
+
+		&:last-child {
+			padding-right: 0;
+		}
+	}
+}
+
+.controlButton {
+	display: block;
+	border-radius: clamp(3px, calc(6px * var(--mediaImage-scale)), 6px);
+	padding:
+		clamp(3px, calc(6px * var(--mediaImage-scale)), 6px)
+		clamp(4px, calc(8px * var(--mediaImage-scale)), 8px);
+	background-color: rgb(0 0 0 / 50%);
+	color: #fff;
+}
+
+@container mediaImage (max-width: 250px) {
+	.root {
+		--mediaImage-scale: 0.90;
+	}
+}
+
+@container mediaImage (max-width: 200px) {
+	.root {
+		--mediaImage-scale: 0.85;
+	}
+}
+
+@container mediaImage (max-width: 150px) {
+	.root {
+		--mediaImage-scale: 0.80;
+	}
+}
+
+@container mediaImage (max-width: 130px) {
+	.root {
+		--mediaImage-scale: 0.75;
+	}
+}
+
+@container mediaImage (max-width: 120px) {
+	.root {
+		--mediaImage-scale: 0.70;
+	}
+}
+
+@container mediaImage (max-width: 110px) {
+	.root {
+		--mediaImage-scale: 0.65;
+	}
+}
+
+@container mediaImage (max-width: 100px) {
+	.root {
+		--mediaImage-scale: 0.60;
+	}
+
+	.controlsLowerLeft {
+		display: none;
+	}
+
+	.controlsUpperLeft {
+		display: none;
+	}
 }
 </style>

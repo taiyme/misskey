@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{
-	(ev: 'retry'): void;
+	retry: [];
 }>();
 </script>
 
@@ -22,7 +22,6 @@ const emit = defineEmits<{
 .root {
 	padding: 32px;
 	text-align: center;
-  align-items: center;
 }
 
 .text {
@@ -31,13 +30,5 @@ const emit = defineEmits<{
 
 .button {
 	margin: 0 auto;
-}
-
-.img {
-	vertical-align: bottom;
-  width: 128px;
-	height: 128px;
-	margin-bottom: 16px;
-	border-radius: 16px;
 }
 </style>

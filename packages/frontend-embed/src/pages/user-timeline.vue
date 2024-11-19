@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<EmTimelineContainer v-if="user && !prohibited" :showHeader="embedParams.header">
 		<template #header>
 			<div :class="$style.userHeader">
-				<a :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
+				<a :href="userPage(user)" target="_blank" rel="noopener noreferrer" :class="$style.avatarLink">
 					<EmAvatar :class="$style.avatar" :user="user"/>
 				</a>
 				<div :class="$style.headerTitle" @click="top">
 					<I18n :src="i18n.ts.noteOf" tag="div" class="_nowrap">
 						<template #user>
-							<a v-if="user != null" :href="`/@${user.username}`" target="_blank" rel="noopener noreferrer">
+							<a v-if="user != null" :href="userPage(user)" target="_blank" rel="noopener noreferrer">
 								<EmUserName :user="user"/>
 							</a>
 							<span v-else>{{ i18n.ts.user }}</span>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="serverMetadata.iconUrl || '/favicon.ico'"
+						:src="serverMetadata.iconUrl || `${url}/favicon.ico`"
 					/>
 				</a>
 			</div>
@@ -45,12 +45,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, inject, useTemplateRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, inject, ref, useTemplateRef } from 'vue';
 import { url, instanceName } from '@@/js/config.js';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { scrollToTop } from '@@/js/scroll.js';
 import { isLink } from '@@/js/is-link.js';
+import type * as Misskey from 'misskey-js';
 import type { Paging } from '@/components/EmPagination.vue';
 import EmNotes from '@/components/EmNotes.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
@@ -62,6 +62,7 @@ import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { assertServerContext } from '@/server-context.js';
 import { DI } from '@/di.js';
+import { userPage } from '@/utils.js';
 
 const props = defineProps<{
 	userId: string;
@@ -69,9 +70,9 @@ const props = defineProps<{
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 
-const serverMetadata = inject(DI.serverMetadata)!;
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
-const serverContext = inject(DI.serverContext)!;
+const serverContext = inject(DI.serverContext)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const user = ref<Misskey.entities.UserLite | null>();
 

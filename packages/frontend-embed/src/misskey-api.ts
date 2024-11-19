@@ -3,11 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { ref } from 'vue';
 import { apiUrl } from '@@/js/config.js';
-
-export const pendingApiRequestsCount = ref(0);
+import type * as Misskey from 'misskey-js';
 
 // Implements Misskey.api.ApiClient.request
 export function misskeyApi<
@@ -21,10 +18,8 @@ export function misskeyApi<
 	signal?: AbortSignal,
 ): Promise<_ResT> {
 	if (endpoint.includes('://')) throw new Error('invalid endpoint');
-	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
-		pendingApiRequestsCount.value--;
 	};
 
 	const promise = new Promise<_ResT>((resolve, reject) => {
@@ -66,10 +61,7 @@ export function misskeyApiGet<
 	endpoint: E,
 	data: P = {} as any,
 ): Promise<_ResT> {
-	pendingApiRequestsCount.value++;
-
 	const onFinally = () => {
-		pendingApiRequestsCount.value--;
 	};
 
 	const query = new URLSearchParams(data as any);

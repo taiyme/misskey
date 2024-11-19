@@ -5,7 +5,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <a
-	ref="rootEl"
 	:class="[$style.root, '_link']"
 	:href="url"
 	target="_blank"

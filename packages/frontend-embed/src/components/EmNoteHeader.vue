@@ -17,22 +17,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<EmA :to="notePage(note)">
 			<EmTime :time="note.createdAt" colored/>
 		</EmA>
-		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;">
+		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
-			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			<i v-else-if="note.visibility === 'specified'" class="ti ti-mail"></i>
 		</span>
-		<span v-if="note.localOnly" style="margin-left: 0.5em;"><i class="ti ti-rocket-off"></i></span>
+		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 	</div>
 </header>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import * as Misskey from 'misskey-js';
-import { notePage } from '@/utils.js';
-import { userPage } from '@/utils.js';
+import type * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import { notePage, userPage } from '@/utils.js';
 import EmA from '@/components/EmA.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import EmAcct from '@/components/EmAcct.vue';

@@ -12,13 +12,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-hash"></i>
 				</div>
 				<div :class="$style.headerTitle" @click="top">
-					<div class="_nowrap"><a :href="`/tags/${tag}`" target="_blank" rel="noopener">#{{ tag }}</a></div>
+					<div class="_nowrap"><a :href="`${url}/tags/${tag}`" target="_blank" rel="noopener">#{{ tag }}</a></div>
 					<div :class="$style.sub">{{ i18n.tsx.fromX({ x: instanceName }) }}</div>
 				</div>
 				<a :href="url" :class="$style.instanceIconLink" target="_blank" rel="noopener noreferrer">
 					<img
 						:class="$style.instanceIcon"
-						:src="serverMetadata.iconUrl || '/favicon.ico'"
+						:src="serverMetadata.iconUrl || `${url}/favicon.ico`"
 					/>
 				</a>
 			</div>
@@ -54,7 +54,7 @@ const props = defineProps<{
 	tag: string;
 }>();
 
-const serverMetadata = inject(DI.serverMetadata)!;
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 const embedParams = inject(DI.embedParams, defaultEmbedParams);
 

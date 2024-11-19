@@ -5,12 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-show="!isDeleted"
-	ref="rootEl"
 	:class="$style.root"
 >
 	<EmNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
-	<div v-if="isRenote" :class="$style.renote">
+	<div v-if="isRenoted" :class="$style.renote">
 		<EmAvatar :class="$style.renoteAvatar" :user="note.user" link/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<span :class="$style.renoteText">
@@ -23,20 +21,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</I18n>
 		</span>
 		<div :class="$style.renoteInfo">
-			<div class="$style.renoteTime">
+			<span :class="$style.renoteTime" class="_button">
 				<EmTime :time="note.createdAt"/>
-			</div>
+			</span>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
-				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+				<i v-else-if="note.visibility === 'specified'" class="ti ti-mail"></i>
 			</span>
 			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
 	<article :class="$style.note">
 		<header :class="$style.noteHeader">
-			<EmAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link/>
+			<EmAvatar :class="$style.noteHeaderAvatar" :user="appearNote.user" link/>
 			<div :class="$style.noteHeaderBody">
 				<div :class="$style.noteHeaderBodyUpper">
 					<div style="min-width: 0;">
@@ -50,21 +49,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div :class="$style.noteHeaderInfo">
 						<a :href="url" :class="$style.noteHeaderInstanceIconLink" target="_blank" rel="noopener noreferrer">
-							<img :src="serverMetadata.iconUrl || '/favicon.ico'" alt="" :class="$style.noteHeaderInstanceIcon"/>
+							<img :src="serverMetadata.iconUrl || `${url}/favicon.ico`" alt="" :class="$style.noteHeaderInstanceIcon"/>
 						</a>
 					</div>
 				</div>
-				<EmInstanceTicker v-if="appearNote.user.instance != null" :instance="appearNote.user.instance"/>
+				<EmInstanceTicker v-if="showTicker" :instance="appearNote.user.instance" :channel="appearNote.channel"/>
 			</div>
 		</header>
 		<div :class="[$style.noteContent, { [$style.contentCollapsed]: collapsed }]">
 			<p v-if="appearNote.cw != null" :class="$style.cw">
-				<EmMfm v-if="appearNote.cw !== ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :nyaize="'respect'"/>
+				<EmMfm
+					v-if="appearNote.cw !== ''"
+					:text="appearNote.cw"
+					:author="appearNote.user"
+					:nyaize="'respect'"
+				/>
 				<button style="display: block; width: 100%; margin: 4px 0;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
 			</p>
 			<div v-show="appearNote.cw == null || showContent">
-				<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
-				<EmA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></EmA>
+				<span v-if="appearNote.isHidden" style="opacity: 0.5;">({{ i18n.ts.private }})</span>
+				<EmA v-if="appearNote.replyId" :class="$style.noteReplyTarget" :to="notePage(appearNote.replyId)"><i class="ti ti-arrow-back-up"></i></EmA>
 				<EmMfm
 					v-if="appearNote.text"
 					:parsedNodes="parsed"
@@ -73,51 +77,61 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:nyaize="'respect'"
 					:emojiUrls="appearNote.emojis"
 				/>
-				<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
 				<div v-if="appearNote.files && appearNote.files.length > 0">
-					<EmMediaList :mediaList="appearNote.files" :originalEntityUrl="`${url}/notes/${appearNote.id}`"/>
+					<EmMediaList :mediaList="appearNote.files"/>
 				</div>
-				<EmPoll v-if="appearNote.poll" ref="pollViewer" :noteId="appearNote.id" :poll="appearNote.poll" :readOnly="true" :class="$style.poll"/>
+				<EmPoll v-if="appearNote.poll" :noteId="appearNote.id" :poll="appearNote.poll" :class="$style.poll"/>
 				<div v-if="appearNote.renote" :class="$style.quote"><EmNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
-				<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
-					<span :class="$style.collapsedLabel">{{ i18n.ts.showMore }}</span>
+				<button v-if="isLong && collapsed" :class="['_button', $style.showMoreFade]" @click="collapsed = false">
+					<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 				</button>
-				<button v-else-if="isLong && !collapsed" :class="$style.showLess" class="_button" @click="collapsed = true">
-					<span :class="$style.showLessLabel">{{ i18n.ts.showLess }}</span>
+				<button v-else-if="isLong && !collapsed" :class="['_button', $style.showLessFade]" @click="collapsed = true">
+					<span :class="$style.fadeLabel">{{ i18n.ts.showLess }}</span>
 				</button>
 			</div>
-			<EmA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</EmA>
+			<EmA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`${url}/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</EmA>
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
 				<span v-if="appearNote.visibility !== 'public'" style="display: inline-block; margin-right: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
 					<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 					<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
-					<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+					<i v-else-if="appearNote.visibility === 'specified'" class="ti ti-mail"></i>
 				</span>
 				<span v-if="appearNote.localOnly" style="display: inline-block; margin-right: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+				<span v-if="appearNote.channel" style="display: inline-block; margin-right: 0.5em;" :title="appearNote.channel.name"><i class="ti ti-device-tv"></i></span>
 				<EmA :to="notePage(appearNote)">
 					<EmTime :time="appearNote.createdAt" mode="detail" colored/>
 				</EmA>
 			</div>
-			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" ref="reactionsViewer" :maxNumber="16" :note="appearNote">
+			<EmReactionsViewer v-if="appearNote.reactionAcceptance !== 'likeOnly'" :note="appearNote" :maxNumber="16">
 				<template #more>
-					<EmA :to="`/notes/${appearNote.id}`" :class="[$style.reactionOmitted]">{{ i18n.ts.more }}</EmA>
+					<EmA :to="notePage(appearNote, 'reactions')" :class="$style.reactionOmitted">{{ i18n.ts.more }}</EmA>
 				</template>
 			</EmReactionsViewer>
-			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+			<a :href="notePage(appearNote)" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.noteFooterButtonLink]" class="_button">
 				<i class="ti ti-arrow-back-up"></i>
+				<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
 			</a>
-			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
-				<i class="ti ti-repeat"></i>
-				<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ (appearNote.renoteCount) }}</p>
+			<a :href="notePage(appearNote)" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.noteFooterButtonLink]" class="_button">
+				<template v-if="canRenote">
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.renoteCount) }}</p>
+				</template>
+				<template v-else>
+					<i class="ti ti-ban"></i>
+				</template>
 			</a>
-			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
-				<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-				<i v-else class="ti ti-plus"></i>
-				<p v-if="(appearNote.reactionAcceptance === 'likeOnly') && appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ (appearNote.reactionCount) }}</p>
+			<a :href="notePage(appearNote)" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.noteFooterButtonLink]" class="_button">
+				<template v-if="appearNote.reactionAcceptance === 'likeOnly'">
+					<i class="ti ti-heart"></i>
+					<p v-if="appearNote.reactionCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.reactionCount) }}</p>
+				</template>
+				<template v-else>
+					<i class="ti ti-plus"></i>
+				</template>
 			</a>
-			<a :href="`/notes/${appearNote.id}`" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.footerButtonLink]" class="_button">
+			<a :href="notePage(appearNote)" target="_blank" rel="noopener" :class="[$style.noteFooterButton, $style.noteFooterButtonLink]" class="_button">
 				<i class="ti ti-dots"></i>
 			</a>
 		</footer>
@@ -126,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref } from 'vue';
+import { type ComputedRef, computed, inject, provide, ref } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
@@ -143,37 +157,37 @@ import EmAvatar from '@/components/EmAvatar.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmUserName from '@/components/EmUserName.vue';
 import EmAcct from '@/components/EmAcct.vue';
-import { userPage } from '@/utils.js';
-import { notePage } from '@/utils.js';
+import { notePage, number, userPage } from '@/utils.js';
 import { i18n } from '@/i18n.js';
 import { DI } from '@/di.js';
 import EmMfm from '@/components/EmMfm.js';
+
+function getAppearNote(note: Misskey.entities.Note) {
+	return Misskey.note.isPureRenote(note) ? note.renote : note;
+}
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const serverMetadata = inject(DI.serverMetadata)!;
+const serverMetadata = inject(DI.serverMetadata)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
-const inChannel = inject('inChannel', null);
+const inChannel = inject<ComputedRef<boolean> | null>('inChannel', null);
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const note = ref(props.note);
 
-const isRenote = (
-	note.value.renote != null &&
-	note.value.reply == null &&
-	note.value.text == null &&
-	note.value.cw == null &&
-	note.value.fileIds && note.value.fileIds.length === 0 &&
-	note.value.poll == null
-);
+const isRenoted = Misskey.note.isPureRenote(note.value);
 
-const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
+const appearNote = computed(() => getAppearNote(note.value));
 const showContent = ref(false);
-const isDeleted = ref(false);
-const parsed = appearNote.value.text ? mfm.parse(appearNote.value.text) : null;
+const parsed = computed(() => appearNote.value.text ? mfm.parse(appearNote.value.text) : null);
 const isLong = shouldCollapsed(appearNote.value, []);
 const collapsed = ref(appearNote.value.cw == null && isLong);
+const showTicker = computed(() => appearNote.value.user.instance != null || appearNote.value.channel != null);
+const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility));
+
+provide(DI.appearNote, appearNote);
 </script>
 
 <style lang="scss" module>
@@ -322,6 +336,51 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 	overflow-wrap: break-word;
 }
 
+.contentCollapsed {
+	position: relative;
+	min-height: 64px; // .showMoreFade
+	max-height: 9em;
+	overflow: clip;
+}
+
+.showMoreFade {
+	display: block;
+	position: absolute;
+	z-index: 10;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 64px; // .contentCollapsed
+	background: linear-gradient(0deg, var(--MI_THEME-panel), rgb(from var(--MI_THEME-panel) r g b / 0));
+}
+
+.showLessFade {
+	display: block;
+	position: sticky;
+	z-index: 10;
+	bottom: var(--MI-stickyBottom, 0px);
+	width: 100%;
+	height: 64px;
+}
+
+.showMoreFade,
+.showLessFade {
+	&:hover {
+		> .fadeLabel {
+			background: var(--MI_THEME-panelHighlight);
+		}
+	}
+
+	> .fadeLabel {
+		display: inline-block;
+		background: var(--MI_THEME-panel);
+		padding: 6px 10px;
+		font-size: 0.8em;
+		border-radius: 999px;
+		box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+	}
+}
+
 .noteReplyTarget {
 	color: var(--MI_THEME-accent);
 	margin-right: 0.5em;
@@ -331,13 +390,6 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 	margin-left: 4px;
 	font-style: oblique;
 	color: var(--MI_THEME-renote);
-}
-
-.reactionOmitted {
-	display: inline-block;
-	margin-left: 8px;
-	opacity: .8;
-	font-size: 95%;
 }
 
 .poll {
@@ -360,52 +412,6 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 	font-size: 80%;
 }
 
-.showLess {
-	width: 100%;
-	margin-top: 14px;
-	position: sticky;
-	bottom: calc(var(--MI-stickyBottom, 0px) + 14px);
-}
-
-.showLessLabel {
-	display: inline-block;
-	background: var(--MI_THEME-popup);
-	padding: 6px 10px;
-	font-size: 0.8em;
-	border-radius: 999px;
-	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-}
-
-.contentCollapsed {
-	position: relative;
-	max-height: 9em;
-	overflow: clip;
-}
-
-.collapsed {
-	display: block;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	z-index: 2;
-	width: 100%;
-	height: 64px;
-	background: linear-gradient(0deg, var(--MI_THEME-panel), var(--MI_THEME-X15));
-
-	&:hover > .collapsedLabel {
-		background: var(--MI_THEME-panelHighlight);
-	}
-}
-
-.collapsedLabel {
-	display: inline-block;
-	background: var(--MI_THEME-panel);
-	padding: 6px 10px;
-	font-size: 0.8em;
-	border-radius: 999px;
-	box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
-}
-
 .noteFooterInfo {
 	margin: 16px 0;
 	opacity: 0.7;
@@ -426,20 +432,18 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 	}
 }
 
-.footerButtonLink:hover,
-.footerButtonLink:focus,
-.footerButtonLink:active {
-	text-decoration: none;
+.noteFooterButtonLink {
+	&:hover,
+	&:focus,
+	&:active {
+		text-decoration: none;
+	}
 }
 
 .noteFooterButtonCount {
 	display: inline;
 	margin: 0 0 0 8px;
 	opacity: 0.7;
-
-	&.reacted {
-		color: var(--MI_THEME-accent);
-	}
 }
 
 @container (max-width: 500px) {
@@ -486,5 +490,12 @@ const collapsed = ref(appearNote.value.cw == null && isLong);
 			margin-right: 12px;
 		}
 	}
+}
+
+.reactionOmitted {
+	display: inline-block;
+	margin-left: 8px;
+	opacity: .8;
+	font-size: 95%;
 }
 </style>

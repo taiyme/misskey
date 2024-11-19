@@ -4,40 +4,79 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkA :class="[$style.root]" :to="url" :style="{ background: bgCss }">
-	<span>
+<EmA
+	:class="$style.root"
+	:to="userPageUrlRef"
+>
+	<img :class="$style.icon" :src="avatarUrlRef" alt="">
+	<span :class="$style.acct">
 		<span>@{{ username }}</span>
-		<span v-if="(host != localHost)" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span v-if="showHostRef" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
-</MkA>
+</EmA>
 </template>
 
 <script lang="ts" setup>
-import { toUnicode } from 'punycode';
-import { } from 'vue';
-import tinycolor from 'tinycolor2';
-import { host as localHost } from '@@/js/config.js';
+import { toASCII, toUnicode } from 'punycode';
+import { computed } from 'vue';
+import { host as localHost, url } from '@@/js/config.js';
+import EmA from '@/components/EmA.vue';
 
 const props = defineProps<{
 	username: string;
 	host: string;
 }>();
 
-const canonical = props.host === localHost ? `@${props.username}` : `@${props.username}@${toUnicode(props.host)}`;
+const canonicalRef = computed(() => {
+	if (toASCII(props.host) === toASCII(localHost)) {
+		return `@${props.username}`;
+	}
+	return `@${props.username}@${toUnicode(props.host)}`;
+});
 
-const url = `/${canonical}`;
+const showHostRef = computed(() => {
+	return (toASCII(props.host) !== toASCII(localHost));
+});
 
-const bg = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-mention'));
-bg.setAlpha(0.1);
-const bgCss = bg.toRgbString();
+const userPageUrlRef = computed(() => {
+	return `${url}/${canonicalRef.value}`;
+});
+
+const avatarUrlRef = computed(() => {
+	return `${url}/avatar/@${props.username}@${toASCII(props.host)}`;
+});
 </script>
 
 <style lang="scss" module>
 .root {
-	display: inline-block;
+	box-sizing: border-box;
+	display: inline-flex;
+	max-width: 100%;
+	gap: 0.2em;
+	align-items: center;
+	vertical-align: middle;
 	padding: 4px 8px 4px 4px;
 	border-radius: 999px;
 	color: var(--MI_THEME-mention);
+	background: rgb(from var(--MI_THEME-mention) r g b / 0.1);
+
+	&.isMe {
+		color: var(--MI_THEME-mentionMe);
+		background: rgb(from var(--MI_THEME-mentionMe) r g b / 0.1);
+	}
+}
+
+.icon {
+	width: 1.5em;
+	height: 1.5em;
+	object-fit: cover;
+	border-radius: 100%;
+}
+
+.acct {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .host {

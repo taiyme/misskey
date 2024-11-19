@@ -4,7 +4,7 @@
  */
 
 import { shallowRef, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/misskey-api.js';
 
 function get(key: string) {
@@ -21,7 +21,7 @@ const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
 
 export const customEmojisMap = new Map<string, Misskey.entities.EmojiSimple>();
-watch(customEmojis, emojis => {
+watch(customEmojis, (emojis) => {
 	customEmojisMap.clear();
 	for (const emoji of emojis) {
 		customEmojisMap.set(emoji.name, emoji);

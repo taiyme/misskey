@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<EmAvatar :class="$style.avatar" :user="note.user" link preview/>
+		<EmAvatar :class="$style.avatar" :user="note.user" link/>
 		<div :class="$style.body">
 			<EmNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
@@ -31,8 +31,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, provide, ref } from 'vue';
+import type * as Misskey from 'misskey-js';
 import EmA from '@/components/EmA.vue';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
@@ -41,6 +41,7 @@ import { notePage } from '@/utils.js';
 import { misskeyApi } from '@/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import EmMfm from '@/components/EmMfm.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -55,11 +56,13 @@ const props = withDefaults(defineProps<{
 const showContent = ref(false);
 const replies = ref<Misskey.entities.Note[]>([]);
 
+provide(DI.appearNote, computed(() => props.note));
+
 if (props.detail) {
 	misskeyApi('notes/children', {
 		noteId: props.note.id,
 		limit: 5,
-	}).then(res => {
+	}).then((res) => {
 		replies.value = res;
 	});
 }
@@ -94,9 +97,9 @@ if (props.detail) {
 .avatar {
 	flex-shrink: 0;
 	display: block;
-	margin: 0 8px 0 0;
-	width: 38px;
-	height: 38px;
+	margin: 0 10px 0 0;
+	width: 48px;
+	height: 48px;
 	border-radius: 8px;
 }
 
@@ -131,21 +134,53 @@ if (props.detail) {
 	padding: 10px 0 0 16px;
 }
 
-@container (max-width: 450px) {
+@container (max-width: 580px) {
 	.root {
-		padding: 14px 16px;
+		padding: 16px 26px;
 
 		&.children {
-			padding: 10px 0 0 8px;
+			padding: 10px 0 0 14px;
+		}
+	}
+
+	.avatar {
+		width: 40px;
+		height: 40px;
+	}
+}
+
+@container (max-width: 500px) {
+	.root {
+		padding: 16px 22px;
+
+		&.children {
+			padding: 10px 0 0 12px;
 		}
 	}
 }
 
-.muted {
-	text-align: center;
-	padding: 8px !important;
-	border: 1px solid var(--MI_THEME-divider);
-	margin: 8px 8px 0 8px;
-	border-radius: 8px;
+@container (max-width: 480px) {
+	.root {
+		padding: 14px 16px;
+
+		&.children {
+			padding: 8px 0 0 8px;
+		}
+	}
+}
+
+@container (max-width: 450px) {
+	.avatar {
+		margin: 0 8px 0 0;
+		width: 36px;
+		height: 36px;
+	}
+}
+
+@container (max-width: 300px) {
+	.avatar {
+		width: 34px;
+		height: 34px;
+	}
 }
 </style>

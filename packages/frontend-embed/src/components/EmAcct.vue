@@ -12,8 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { toUnicode } from 'punycode';
-import * as Misskey from 'misskey-js';
 import { host as hostRaw } from '@@/js/config.js';
+import type * as Misskey from 'misskey-js';
 
 defineProps<{
 	user: Misskey.entities.UserLite;

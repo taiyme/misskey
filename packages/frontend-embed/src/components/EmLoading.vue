@@ -21,20 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
 	static?: boolean;
 	inline?: boolean;
 	colored?: boolean;
 	mini?: boolean;
 	em?: boolean;
 }>(), {
-	static: false,
-	inline: false,
 	colored: true,
-	mini: false,
-	em: false,
 });
 </script>
 

@@ -3,16 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h, SetupContext } from 'vue';
+import { type SetupContext, type VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { host, url } from '@@/js/config.js';
 import EmUrl from '@/components/EmUrl.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmLink from '@/components/EmLink.vue';
 import EmMention from '@/components/EmMention.vue';
 import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
+import EmCode from '@/components/EmCode.vue';
+import EmCodeInline from '@/components/EmCodeInline.vue';
 import EmA from '@/components/EmA.vue';
 import EmRjNumber from '@/components/EmRjNumber.vue';
 
@@ -75,7 +77,11 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	 * @param scale How times large the text is
 	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (
+		ast: mfm.MfmNode[],
+		scale: number,
+		disableNyaize = false,
+	) => ast.map((token): VNode | string | (VNode | string)[] => {
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
@@ -348,22 +354,23 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'hashtag': {
 				return [h(EmA, {
 					key: Math.random(),
-					to: isNote ? `/tags/${encodeURIComponent(token.props.hashtag)}` : `/user-tags/${encodeURIComponent(token.props.hashtag)}`,
+					to: isNote ? `${url}/tags/${encodeURIComponent(token.props.hashtag)}` : `${url}/user-tags/${encodeURIComponent(token.props.hashtag)}`,
 					style: 'color:var(--MI_THEME-hashtag);',
 				}, `#${token.props.hashtag}`)];
 			}
 
 			case 'blockCode': {
-				return [h('code', {
+				return [h(EmCode, {
 					key: Math.random(),
-					lang: token.props.lang ?? undefined,
-				}, token.props.code)];
+					code: token.props.code,
+				})];
 			}
 
 			case 'inlineCode': {
-				return [h('code', {
+				return [h(EmCodeInline, {
 					key: Math.random(),
-				}, token.props.code)];
+					code: token.props.code,
+				})];
 			}
 
 			case 'quote': {
@@ -421,17 +428,21 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			case 'mathInline': {
-				return [h('code', token.props.formula)];
+				return [h(EmCodeInline, {
+					key: Math.random(),
+					code: token.props.formula,
+				})];
 			}
 
 			case 'mathBlock': {
-				return [h('code', token.props.formula)];
+				return [h(EmCode, {
+					key: Math.random(),
+					code: token.props.formula,
+				})];
 			}
 
 			case 'search': {
-				return [h('div', {
-					key: Math.random(),
-				}, token.props.query)];
+				return [h('div', token.props.content)];
 			}
 
 			case 'plain': {

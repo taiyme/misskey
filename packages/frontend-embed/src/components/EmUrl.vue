@@ -5,8 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <component
-	:is="self ? EmA : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="self ? props.url.substring(local.length) : props.url" :rel="rel ?? 'nofollow noopener'" :target="target"
-	@contextmenu.stop="() => {}"
+	:is="self ? EmA : 'a'"
+	:class="$style.root"
+	class="_link"
+	:[attr]="self ? props.url.substring(local.length) : props.url"
+	:rel="rel ?? 'nofollow noopener'"
+	:target="target"
 >
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
@@ -25,9 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { toUnicode as decodePunycode } from 'punycode';
-import { ref } from 'vue';
 import { url as local } from '@@/js/config.js';
-import EmA from './EmA.vue';
+import EmA from '@/components/EmA.vue';
 
 function safeURIDecode(str: string): string {
 	try {
@@ -37,18 +40,14 @@ function safeURIDecode(str: string): string {
 	}
 }
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	url: string;
 	rel?: string;
-	showUrlPreview?: boolean;
-}>(), {
-	showUrlPreview: true,
-});
+}>();
 
 const self = props.url.startsWith(local);
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
-const el = ref();
 
 const schema = url.protocol;
 const hostname = decodePunycode(url.hostname);

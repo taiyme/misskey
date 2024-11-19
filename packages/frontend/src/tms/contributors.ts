@@ -45,4 +45,5 @@ export const patrons = [
 	'nanasina',
 	'すい',
 	'ポンの助',
+	'たまふぁいなる',
 ] satisfies Patron[] as Patron[];

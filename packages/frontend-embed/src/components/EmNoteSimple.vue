@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<EmAvatar :class="$style.avatar" :user="note.user" link preview/>
+	<EmAvatar :class="$style.avatar" :user="note.user" link/>
 	<div :class="$style.main">
 		<EmNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
@@ -22,19 +22,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, provide, ref } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import EmAvatar from '@/components/EmAvatar.vue';
 import EmNoteHeader from '@/components/EmNoteHeader.vue';
 import EmSubNoteContent from '@/components/EmSubNoteContent.vue';
 import EmMfm from '@/components/EmMfm.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
 const showContent = ref(false);
+
+provide(DI.appearNote, computed(() => props.note));
 </script>
 
 <style lang="scss" module>

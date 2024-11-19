@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.routerViewContainer"
 	>
 		<Suspense :timeout="0">
-			<EmNotePage v-if="page === 'notes'" :noteId="contentId"/>
-			<EmUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
-			<EmClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
-			<EmTagPage v-else-if="page === 'tags'" :tag="contentId"/>
+			<XNotePage v-if="page === 'notes'" :noteId="contentId"/>
+			<XUserTimelinePage v-else-if="page === 'user-timeline'" :userId="contentId"/>
+			<XClipPage v-else-if="page === 'clips'" :clipId="contentId"/>
+			<XTagPage v-else-if="page === 'tags'" :tag="contentId"/>
 			<XNotFound v-else/>
 			<template #fallback>
 				<EmLoading/>
@@ -33,14 +33,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, onUnmounted, inject } from 'vue';
+import { inject, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import { defaultEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow } from '@/post-message.js';
 import { DI } from '@/di.js';
-import EmNotePage from '@/pages/note.vue';
-import EmUserTimelinePage from '@/pages/user-timeline.vue';
-import EmClipPage from '@/pages/clip.vue';
-import EmTagPage from '@/pages/tag.vue';
+import XNotePage from '@/pages/note.vue';
+import XUserTimelinePage from '@/pages/user-timeline.vue';
+import XClipPage from '@/pages/clip.vue';
+import XTagPage from '@/pages/tag.vue';
 import XNotFound from '@/pages/not-found.vue';
 import EmLoading from '@/components/EmLoading.vue';
 
@@ -65,7 +65,7 @@ const maxHeight = ref(embedParams.maxHeight ?? 0);
 //#endregion
 
 //#region Embed Resizer
-const rootEl = shallowRef<HTMLElement | null>(null);
+const rootEl = useTemplateRef('rootEl');
 
 let previousHeight = 0;
 const resizeObserver = new ResizeObserver(async () => {

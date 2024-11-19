@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { WorkerMultiDispatch } from '@@/js/worker-multi-dispatch.js';
@@ -19,7 +19,7 @@ import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurha
 import DrawBlurhash from '@/workers/draw-blurhash.js?worker';
 import TestWebGL2 from '@/workers/test-webgl2.js?worker';
 
-const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
+const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>((resolve) => {
 	// テスト環境で Web Worker インスタンスは作成できない
 	if (import.meta.env.MODE === 'test') {
 		const canvas = document.createElement('canvas');
@@ -29,7 +29,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 		return;
 	}
 	const testWorker = new TestWebGL2();
-	testWorker.addEventListener('message', event => {
+	testWorker.addEventListener('message', (event) => {
 		if (event.data.result) {
 			const workers = new WorkerMultiDispatch(
 				() => new DrawBlurhash(),
@@ -45,7 +45,7 @@ const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resol
 			if (_DEV_) console.log('WebGL2 in worker is not supported...');
 		}
 		testWorker.terminate();
-	});
+	}, { passive: true });
 });
 </script>
 
@@ -55,13 +55,14 @@ const props = withDefaults(defineProps<{
 	hash?: string | null;
 	alt?: string | null;
 	title?: string | null;
-	height?: number;
-	width?: number;
+	height?: number | null;
+	width?: number | null;
 	cover?: boolean;
 	forceBlurhash?: boolean;
 	onlyAvgColor?: boolean; // 軽量化のためにBlurhashを使わずに平均色だけを描画
 }>(), {
 	src: null,
+	hash: null,
 	alt: '',
 	title: null,
 	height: 64,
@@ -72,9 +73,9 @@ const props = withDefaults(defineProps<{
 });
 
 const viewId = uuid();
-const canvas = shallowRef<HTMLCanvasElement>();
-const root = shallowRef<HTMLDivElement>();
-const img = shallowRef<HTMLImageElement>();
+const canvas = useTemplateRef('canvas');
+const root = useTemplateRef('root');
+const img = useTemplateRef('img');
 const loaded = ref(false);
 const canvasWidth = ref(64);
 const canvasHeight = ref(64);
@@ -89,7 +90,7 @@ function waitForDecode() {
 			.then(() => img.value?.decode())
 			.then(() => {
 				loaded.value = true;
-			}, error => {
+			}, (error) => {
 				console.log('Error occurred during decoding image', img.value, error);
 			});
 	} else {
@@ -98,6 +99,8 @@ function waitForDecode() {
 }
 
 watch([() => props.width, () => props.height, root], () => {
+	if (props.width == null || props.height == null) return;
+
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
 		canvasWidth.value = Math.round(64 * ratio);
@@ -175,7 +178,7 @@ function workerOnMessage(event: MessageEvent) {
 	drawImage(event.data.bitmap as ImageBitmap);
 }
 
-canvasPromise.then(work => {
+canvasPromise.then((work) => {
 	if (work instanceof WorkerMultiDispatch) {
 		work.addListener(workerOnMessage);
 	}
@@ -200,7 +203,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	canvasPromise.then(work => {
+	canvasPromise.then((work) => {
 		if (work instanceof WorkerMultiDispatch) {
 			work.removeListener(workerOnMessage);
 		}
