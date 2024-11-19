@@ -85,9 +85,10 @@ const {
 	reactiveIAmOwner: iAmOwnerRef,
 } = useReactiveDriveFile(() => props.media);
 
-const showMedia = async () => {
+const showMedia = async (ev: MouseEvent) => {
 	if (!hideRef.value) return;
 	if (sensitiveRef.value && defaultStore.state.confirmWhenRevealingSensitiveMedia) {
+		ev.stopPropagation();
 		const { canceled } = await confirm({
 			type: 'question',
 			text: i18n.ts.sensitiveMediaRevealConfirm,

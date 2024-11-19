@@ -167,7 +167,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { type ComputedRef, type Ref, computed, inject, onMounted, ref, shallowRef, watch, provide } from 'vue';
+import { type ComputedRef, type Ref, computed, inject, onMounted, ref, shallowRef, watch, provide, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -260,7 +260,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-const galleryEl = shallowRef<InstanceType<typeof MkMediaList>>();
+const galleryEl = useTemplateRef('galleryEl');
 const appearNote = computed(() => getAppearNote(note.value));
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);

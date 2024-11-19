@@ -5,18 +5,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.cq">
-	<template v-for="media in mediaList.filter(media => !previewable(media))">
+	<template v-for="media in notPreviewableMediaList">
 		<XAudio v-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :key="`audio:${media.id}`" :audio="media" :class="$style.banner"/>
 		<XBanner v-else :key="`banner:${media.id}`" :media="media" :class="$style.banner"/>
 	</template>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
+	<div v-if="previewableMediaList.length > 0" :class="$style.container">
 		<div
 			:class="[
-				$style.medias,
-				count === 1 ? [$style.n1] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
+				$style.mediaList,
+				previewableMediaList.length === 1
+					? $style.n1
+					: previewableMediaList.length === 2
+						? $style.n2
+						: previewableMediaList.length === 3
+							? $style.n3
+							: previewableMediaList.length === 4
+								? $style.n4
+								: $style.nMany,
 			]"
 		>
-			<template v-for="media in mediaList.filter(media => previewable(media))">
+			<template v-for="media in previewableMediaList">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :video="media" :class="$style.media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :image="media" :raw="raw" :class="$style.media"/>
 			</template>
@@ -41,13 +49,14 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
-const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
-
-const previewable = (file: Misskey.entities.DriveFile): boolean => {
+const previewable = (file: Misskey.entities.DriveFile) => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
+
+const previewableMediaList = computed(() => props.mediaList.filter(media => previewable(media)));
+const notPreviewableMediaList = computed(() => props.mediaList.filter(media => !previewable(media)));
 </script>
 
 <style lang="scss" module>
@@ -63,7 +72,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	margin-top: 4px;
 }
 
-.medias {
+.mediaList {
 	display: grid;
 	gap: 8px;
 	height: 100%;
@@ -71,32 +80,12 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 
 	&.n1 {
 		grid-template-rows: 1fr;
-
-		// default but fallback (expand)
 		min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
 		max-height: clamp(
 			v-bind("`${EXPANDED_MIN_HEIGHT}px`"),
 			50cqh,
 			min(360px, 50vh)
 		);
-
-		&.n116_9 {
-			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
-			max-height: unset;
-			aspect-ratio: 16 / 9; // fallback
-		}
-
-		&.n11_1{
-			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
-			max-height: unset;
-			aspect-ratio: 1 / 1; // fallback
-		}
-
-		&.n12_3 {
-			// min-height: v-bind("`${EXPANDED_MIN_HEIGHT}px`");
-			max-height: unset;
-			aspect-ratio: 2 / 3; // fallback
-		}
 	}
 
 	&.n2 {
@@ -145,7 +134,7 @@ const previewable = (file: Misskey.entities.DriveFile): boolean => {
 }
 
 @container mediaList (max-width: 210px) {
-	.medias:not(.n1) {
+	.mediaList:not(.n1) {
 		aspect-ratio: unset !important;
 		grid-template-columns: 1fr !important;
 		grid-template-rows: unset !important;
