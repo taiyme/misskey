@@ -5023,6 +5023,7 @@ export type components = {
       feedbackUrl: string | null;
       defaultDarkTheme: string | null;
       defaultLightTheme: string | null;
+      taiymeServerCustomCss: string | null;
       disableRegistration: boolean;
       emailRequiredForSignup: boolean;
       enableHcaptcha: boolean;
@@ -8323,6 +8324,7 @@ export type operations = {
             deeplIsPro: boolean;
             defaultDarkTheme: string | null;
             defaultLightTheme: string | null;
+            taiymeServerCustomCss: string | null;
             description: string | null;
             disableRegistration: boolean;
             impressumUrl: string | null;
@@ -10595,6 +10597,7 @@ export type operations = {
           description?: string | null;
           defaultLightTheme?: string | null;
           defaultDarkTheme?: string | null;
+          taiymeServerCustomCss?: string | null;
           cacheRemoteFiles?: boolean;
           cacheRemoteSensitiveFiles?: boolean;
           emailRequiredForSignup?: boolean;

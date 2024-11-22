@@ -10958,6 +10958,10 @@ export interface Locale extends ILocale {
          */
         readonly "aboutTaiyme": string;
         /**
+         * taiyme限定
+         */
+        readonly "taiymeOnly": string;
+        /**
          * taiyme限定機能
          */
         readonly "taiymeFeatures": string;
@@ -11150,6 +11154,60 @@ export interface Locale extends ILocale {
                  */
                 readonly "caption": string;
             };
+        };
+        readonly "_customCss": {
+            /**
+             * サーバーカスタムCSS
+             */
+            readonly "serverCustomCss": string;
+            /**
+             * サーバーカスタムCSSをプレビュー中
+             */
+            readonly "serverCustomCssPreviewing": string;
+            /**
+             * この設定は必ず知識のある方が行ってください。不適切な設定を行うと、管理者を含むすべてのユーザーのクライアントが正常に使用できなくなる恐れがあります。
+             */
+            readonly "serverCustomCssWarn": string;
+            /**
+             * カスタムCSSの適用を一時的に無効にするには、URLの末尾に「?customcss=false」と付けてアクセスしてください。
+             */
+            readonly "serverCustomCssInfo": string;
+            /**
+             * ユーザーカスタムCSS
+             */
+            readonly "userCustomCss": string;
+            /**
+             * ユーザーカスタムCSSをプレビュー中
+             */
+            readonly "userCustomCssPreviewing": string;
+            /**
+             * この設定は必ず知識のある方が行ってください。不適切な設定を行うとクライアントが正常に使用できなくなる恐れがあります。
+             */
+            readonly "userCustomCssWarn": string;
+            /**
+             * カスタムCSSの適用を一時的に無効にするには、URLの末尾に「?customcss=false」と付けてアクセスしてください。
+             */
+            readonly "userCustomCssInfo": string;
+            /**
+             * カスタムCSSを適用するにはリロードが必要です。実行しますか？
+             */
+            readonly "reloadRequiredToApplyCustomCss": string;
+            /**
+             * カスタムCSSを保存するには、リロード後トップページからこのページまで移動して、再度保存ボタンを押す必要があります。実行しますか？
+             */
+            readonly "previewRequiredToApplyCustomCss": string;
+            /**
+             * 現在プレビュー中のカスタムCSSを破棄して、変更前に戻しますか？
+             */
+            readonly "discardAndRevertConfirm": string;
+            /**
+             * プレビュー中、画面は正常に表示されていましたか？あとは保存するだけです。
+             */
+            readonly "displayCorrectlyDuringPreview": string;
+            /**
+             * 即時保存する (非推奨)
+             */
+            readonly "immediateSave": string;
         };
         readonly "_admin": {
             /**

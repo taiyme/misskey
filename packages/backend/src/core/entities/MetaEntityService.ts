@@ -110,6 +110,7 @@ export class MetaEntityService {
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 			defaultLightTheme,
 			defaultDarkTheme,
+			taiymeServerCustomCss: instance.taiymeServerCustomCss,
 			ads: ads.map(ad => ({
 				id: ad.id,
 				url: ad.url,

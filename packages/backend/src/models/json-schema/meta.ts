@@ -71,6 +71,10 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		taiymeServerCustomCss: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		disableRegistration: {
 			type: 'boolean',
 			optional: false, nullable: false,
