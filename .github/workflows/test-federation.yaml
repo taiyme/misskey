@@ -18,6 +18,9 @@ on:
       - packages/backend/**/*
       - packages/misskey-js/**/*
 
+permissions:
+  contents: read
+
 jobs:
   pre-checkout:
     name: Pre checkout
@@ -30,7 +33,7 @@ jobs:
       - pre-checkout
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v4.2.2
         with:
           persist-credentials: false
           ref: ${{ needs.pre-checkout.outputs.sha }}
@@ -42,7 +45,7 @@ jobs:
           corepack enable
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.0.4
+        uses: actions/setup-node@v4.1.0
         with:
           node-version-file: .node-version
           cache: pnpm
