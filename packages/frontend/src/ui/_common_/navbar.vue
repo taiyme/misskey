@@ -187,7 +187,6 @@ function toggleIconOnly() {
 		top: 0;
 		z-index: 1;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
@@ -200,7 +199,6 @@ function toggleIconOnly() {
 		bottom: 0;
 		padding-top: 20px;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
@@ -353,7 +351,6 @@ function toggleIconOnly() {
 		top: 0;
 		z-index: 1;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 
@@ -366,7 +363,6 @@ function toggleIconOnly() {
 		bottom: 0;
 		padding-top: 20px;
 		background: var(--nav-bg-transparent);
-		-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 		backdrop-filter: var(--MI-blur, blur(8px));
 	}
 

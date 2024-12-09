@@ -45,7 +45,6 @@ html {
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
-	-webkit-text-size-adjust: 100%;
 
 	&, * {
 		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
@@ -90,7 +89,6 @@ a {
 	text-decoration: none;
 	cursor: pointer;
 	color: inherit;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
 
@@ -137,7 +135,6 @@ rt {
 
 ._noSelect {
 	user-select: none;
-	-webkit-user-select: none;
 	-webkit-touch-callout: none;
 }
 
@@ -164,7 +161,6 @@ rt {
 	cursor: pointer;
 	color: inherit;
 	touch-action: manipulation;
-	tap-highlight-color: transparent;
 	-webkit-tap-highlight-color: transparent;
 	font-size: 1em;
 	font-family: inherit;
@@ -307,7 +303,6 @@ rt {
 
 ._acrylic {
 	background: var(--MI_THEME-acrylicPanel);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }
 
@@ -412,7 +407,6 @@ rt {
 		rgb(0 0 255) 83%,
 		rgb(255 0 255) 100%
 	);
-	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
 }

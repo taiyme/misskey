@@ -120,7 +120,6 @@ const tickerStateRef = computed(() => getTickerState(props));
 //#region 透かし
 .watermarkRoot {
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 	position: absolute;
 	z-index: -1;

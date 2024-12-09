@@ -171,7 +171,6 @@ defineExpose({
 
 .textarea {
 	appearance: none;
-	-webkit-appearance: none;
 	display: block;
 	width: 100%;
 	min-width: 100%;

@@ -234,7 +234,6 @@ definePageMetadata(() => ({
 }
 
 .footer {
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	border-top: solid 0.5px var(--MI_THEME-divider);
 }

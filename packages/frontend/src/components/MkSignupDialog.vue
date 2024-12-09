@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
-	<div :style="{ 'overflow-x': ['hidden', 'clip'] as any }">
+	<div style="overflow-x: clip;">
 		<Transition
 			mode="out-in"
 			:enterActiveClass="$style.transition_x_enterActive"

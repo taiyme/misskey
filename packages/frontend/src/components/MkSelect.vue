@@ -244,7 +244,6 @@ function show() {
 
 .inputCore {
 	appearance: none;
-	-webkit-appearance: none;
 	display: flex;
 	align-items: center;
 	height: v-bind("height + 'px'");

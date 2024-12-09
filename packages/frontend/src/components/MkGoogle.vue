@@ -41,7 +41,7 @@ const search = () => {
 	font-size: 16px;
 	border: solid 1px var(--MI_THEME-divider);
 	border-radius: 4px 0 0 4px;
-	-webkit-appearance: textfield;
+	appearance: textfield;
 }
 
 .button {

@@ -41,12 +41,10 @@ const serverRef = computed(() => {
 	background-position: center center;
 
 	&.onOverlay {
-		-webkit-backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
 		backdrop-filter: var(--MI-blur, blur(0px)); // https://stackoverflow.com/questions/36378512
 
 		.bannerInner {
 			background-color: #00000040;
-			-webkit-backdrop-filter: var(--MI-blur, blur(2px));
 			backdrop-filter: var(--MI-blur, blur(2px));
 		}
 

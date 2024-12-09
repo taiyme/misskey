@@ -99,7 +99,6 @@ function more() {
 	top: 0;
 	z-index: 1;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 	backdrop-filter: var(--MI-blur, blur(8px));
 }
 
@@ -112,7 +111,6 @@ function more() {
 	bottom: 0;
 	padding-top: 20px;
 	background: var(--nav-bg-transparent);
-	-webkit-backdrop-filter: var(--MI-blur, blur(8px));
 	backdrop-filter: var(--MI-blur, blur(8px));
 }
 

@@ -184,7 +184,6 @@ function signup() {
 			aspect-ratio: 1.5;
 			background-position: center;
 			background-size: cover;
-			-webkit-mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
 			mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
 		}
 

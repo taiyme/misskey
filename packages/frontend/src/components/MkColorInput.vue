@@ -89,7 +89,6 @@ const onInput = () => {
 
 .inputCore {
 	appearance: none;
-	-webkit-appearance: none;
 	display: block;
 	height: 42px;
 	width: 100%;

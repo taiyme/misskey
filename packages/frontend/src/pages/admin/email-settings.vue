@@ -139,7 +139,6 @@ definePageMetadata(() => ({
 
 <style lang="scss" module>
 .footer {
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }
 </style>

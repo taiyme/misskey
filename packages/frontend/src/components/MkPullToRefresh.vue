@@ -248,7 +248,6 @@ defineExpose({
 	min-height: var(--frame-min-height, 0px);
 
 	mask-image: linear-gradient(90deg, #000 0%, #000 80%, transparent);
-	-webkit-mask-image: -webkit-linear-gradient(90deg, #000 0%, #000 80%, transparent);
 
 	pointer-events: none;
 }

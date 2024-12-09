@@ -100,7 +100,6 @@ defineExpose({
 	line-height: 1.5;
 	font-size: 85%;
 	pointer-events: none;
-	-webkit-user-select: none;
 	user-select: none;
 }
 

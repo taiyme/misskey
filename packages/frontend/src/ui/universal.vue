@@ -403,7 +403,6 @@ $widgets-hide-threshold: 1090px;
 	gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--MI-blur, blur(24px));
 	backdrop-filter: var(--MI-blur, blur(24px));
 	background-color: var(--MI_THEME-header);
 	border-top: solid 0.5px var(--MI_THEME-divider);

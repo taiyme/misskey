@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
-	<div :style="{ 'overflow-x': ['hidden', 'clip'] as any }">
+	<div style="overflow-x: clip;">
 		<div :class="$style.progressBar">
 			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
 		</div>
@@ -252,7 +252,6 @@ async function later(later: boolean) {
 	flex-shrink: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--MI_THEME-divider);
-	-webkit-backdrop-filter: blur(15px);
 	backdrop-filter: blur(15px);
 }
 </style>

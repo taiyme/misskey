@@ -232,7 +232,6 @@ defineExpose({
 
 .inputCore {
 	appearance: none;
-	-webkit-appearance: none;
 	display: block;
 	height: v-bind("height + 'px'");
 	width: 100%;

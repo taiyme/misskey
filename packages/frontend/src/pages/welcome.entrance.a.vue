@@ -84,7 +84,6 @@ misskeyApiGet('federation/instances', {
 		width: 500px;
 		height: calc(100% - 256px);
 		overflow: hidden;
-		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 
 		@media (max-width: 1200px) {
@@ -165,7 +164,6 @@ misskeyApiGet('federation/instances', {
 		right: 0;
 		margin: auto;
 		background: var(--MI_THEME-acrylicPanel);
-		-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 		backdrop-filter: var(--MI-blur, blur(15px));
 		border-radius: 999px;
 		overflow: clip;

@@ -69,7 +69,6 @@ const rangeRef = computed({
 
 .seek {
 	position: relative;
-	-webkit-appearance: none;
 	appearance: none;
 	background: transparent;
 	border: 0;
@@ -104,7 +103,6 @@ const rangeRef = computed({
 	}
 
 	&::-webkit-slider-thumb {
-		-webkit-appearance: none;
 		appearance: none;
 		background: #fff;
 		border: 0;

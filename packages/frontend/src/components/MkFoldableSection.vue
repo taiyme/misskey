@@ -108,7 +108,6 @@ onMounted(() => {
 	z-index: 10;
 	position: sticky;
 	top: var(--MI-stickyTop, 0px);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	background-color: rgb(from v-bind("parentBg ?? 'var(--MI_THEME-bg)'") r g b / 0.85);
 }

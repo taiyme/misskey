@@ -141,7 +141,6 @@ onMounted(() => {
 	box-sizing: border-box;
 	padding: 10px 14px;
 	background: var(--MI_THEME-folderHeaderBg);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	border-radius: 6px;
 	font-size: 0.9em;
@@ -226,7 +225,6 @@ onMounted(() => {
 	left: 0;
 	padding: 12px;
 	background: var(--MI_THEME-acrylicBg);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 	border-radius: 0 0 6px 6px;
 	background-image: repeating-linear-gradient(
