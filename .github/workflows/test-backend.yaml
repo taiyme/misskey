@@ -1,4 +1,4 @@
-name: Test (frontend)
+name: Test (backend)
 
 on:
   push:
@@ -6,10 +6,7 @@ on:
       - taiyme
       - release
     paths:
-      - .github/workflows/test-frontend.yaml
-      - packages/frontend/**/*
-      - packages/frontend-embed/**/*
-      - packages/frontend-shared/**/*
+      - .github/workflows/test-backend.yaml
       - packages/backend/**/*
       - packages/misskey-js/**/*
 
@@ -18,9 +15,6 @@ on:
       - taiyme
       - release
     paths:
-      - packages/frontend/**/*
-      - packages/frontend-embed/**/*
-      - packages/frontend-shared/**/*
       - packages/backend/**/*
       - packages/misskey-js/**/*
 
@@ -39,53 +33,6 @@ jobs:
       - pre-checkout
     strategy:
       fail-fast: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-        with:
-          persist-credentials: false
-          ref: ${{ needs.pre-checkout.outputs.sha }}
-          fetch-depth: 1
-          submodules: true
-
-      - name: Enable corepack
-        run: |
-          corepack enable
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-
-      - name: Install dependencies
-        run: |
-          pnpm i --frozen-lockfile
-
-      - name: Copy config
-        run: |
-          cp .github/misskey/test.yml .config
-
-      - name: Build
-        run: |
-          pnpm build
-
-      - name: Test
-        run: |
-          pnpm --filter frontend test
-
-      # TODO: カバレッジレポートはまた今度
-
-  e2e-testing:
-    name: E2E testing
-    runs-on: ubuntu-22.04
-    needs:
-      - pre-checkout
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
     services:
       postgres:
         image: postgres:15
@@ -107,15 +54,6 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      # https://github.com/cypress-io/cypress-docker-images/issues/150
-      # - name: Install mplayer for FireFox
-      #   if: ${{ matrix.browser == 'firefox' }}
-      #   run: |
-      #     sudo apt install mplayer -y
-
-      # - uses: browser-actions/setup-firefox@955a5d42b5f068a8917c6a4ff1656a2235c66dfb # v1.5.2
-      #   if: ${{ matrix.browser == 'firefox' }}
-
       - name: Enable corepack
         run: |
           corepack enable
@@ -125,6 +63,9 @@ jobs:
         with:
           node-version-file: .node-version
           cache: pnpm
+
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@37062fbf7149fc5578d6c57e08aed62458b375d6 # v3.1
 
       - name: Install dependencies
         run: |
@@ -138,35 +79,67 @@ jobs:
         run: |
           pnpm build
 
-      # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
-      - name: ALSA Env
+      - name: Test
         run: |
-          echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
+          pnpm --filter backend test
 
-      # XXX: This tries reinstalling Cypress if the binary is not cached
-      # Remove this when the cache issue is fixed
-      - name: Cypress install
+      # TODO: カバレッジレポートはまた今度
+
+  e2e-testing:
+    name: E2E testing
+    runs-on: ubuntu-22.04
+    needs:
+      - pre-checkout
+    strategy:
+      fail-fast: false
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7
+        ports:
+          - 56312:6379
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Enable corepack
         run: |
-          pnpm exec cypress install
+          corepack enable
 
-      - name: Cypress run
-        uses: cypress-io/github-action@57b70560982e6a11d23d4b8bec7f8a487cdbb71b # v6.7.8
-        timeout-minutes: 15
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.1.0
         with:
-          install: false
-          start: pnpm start:test
-          wait-on: 'http://localhost:61812'
-          headed: true
-          browser: ${{ matrix.browser }}
+          node-version-file: .node-version
+          cache: pnpm
 
-      - uses: actions/upload-artifact@v4.5.0
-        if: failure()
-        with:
-          name: ${{ matrix.browser }}-cypress-screenshots
-          path: cypress/screenshots
+      - name: Setup FFmpeg
+        uses: federicocarboni/setup-ffmpeg@37062fbf7149fc5578d6c57e08aed62458b375d6 # v3.1
 
-      - uses: actions/upload-artifact@v4.5.0
-        if: always()
-        with:
-          name: ${{ matrix.browser }}-cypress-videos
-          path: cypress/videos
+      - name: Install dependencies
+        run: |
+          pnpm i --frozen-lockfile
+
+      - name: Copy config
+        run: |
+          cp .github/misskey/test.yml .config
+
+      - name: Build
+        run: |
+          pnpm build
+
+      - name: Test
+        run: |
+          pnpm --filter backend test:e2e
+
+      # TODO: カバレッジレポートはまた今度
