@@ -3182,7 +3182,7 @@ export type paths = {
   '/reset-db': {
     /**
      * reset-db
-     * @description Only available when running with <code>NODE_ENV=testing</code>. Reset the database and flush Redis.
+     * @description Only available when running with <code>NODE_ENV=test</code>. Reset the database and flush Redis.
      *
      * **Credential required**: *No*
      */
@@ -24848,7 +24848,7 @@ export type operations = {
   };
   /**
    * reset-db
-   * @description Only available when running with <code>NODE_ENV=testing</code>. Reset the database and flush Redis.
+   * @description Only available when running with <code>NODE_ENV=test</code>. Reset the database and flush Redis.
    *
    * **Credential required**: *No*
    */

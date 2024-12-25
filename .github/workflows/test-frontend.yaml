@@ -39,6 +39,8 @@ jobs:
       - pre-checkout
     strategy:
       fail-fast: false
+    env:
+      MISSKEY_CONFIG_YML: ci_config.yaml
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -64,7 +66,7 @@ jobs:
 
       - name: Copy config
         run: |
-          cp .github/misskey/test.yml .config
+          cp .github/misskey/test.yml ".config/${MISSKEY_CONFIG_YML}"
 
       - name: Build
         run: |
@@ -98,6 +100,8 @@ jobs:
         image: redis:7
         ports:
           - 56312:6379
+    env:
+      MISSKEY_CONFIG_YML: ci_config.yaml
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -132,7 +136,7 @@ jobs:
 
       - name: Copy config
         run: |
-          cp .github/misskey/test.yml .config
+          cp .github/misskey/test.yml ".config/${MISSKEY_CONFIG_YML}"
 
       - name: Build
         run: |

@@ -3693,7 +3693,7 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
-     * Only available when running with <code>NODE_ENV=testing</code>. Reset the database and flush Redis.
+     * Only available when running with <code>NODE_ENV=test</code>. Reset the database and flush Redis.
      * 
      * **Credential required**: *No*
      */
