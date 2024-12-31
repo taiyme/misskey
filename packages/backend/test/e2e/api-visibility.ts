@@ -5,56 +5,56 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { UserToken, api, post, signup } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import * as assert from 'node:assert';
+import { type UserToken, api, post, signup } from '../utils.js';
+import type * as Misskey from 'misskey-js';
 
 describe('API visibility', () => {
 	describe('Note visibility', () => {
 		//#region vars
 		/** ヒロイン */
-		let alice: misskey.entities.SignupResponse;
+		let alice: Misskey.entities.SignupResponse;
 		/** フォロワー */
-		let follower: misskey.entities.SignupResponse;
+		let follower: Misskey.entities.SignupResponse;
 		/** 非フォロワー */
-		let other: misskey.entities.SignupResponse;
+		let other: Misskey.entities.SignupResponse;
 		/** 非フォロワーでもリプライやメンションをされた人 */
-		let target: misskey.entities.SignupResponse;
+		let target: Misskey.entities.SignupResponse;
 		/** specified mentionでmentionを飛ばされる人 */
-		let target2: misskey.entities.SignupResponse;
+		let target2: Misskey.entities.SignupResponse;
 
 		/** public-post */
-		let pub: misskey.entities.Note;
+		let pub: Misskey.entities.Note;
 		/** home-post */
-		let home: misskey.entities.Note;
+		let home: Misskey.entities.Note;
 		/** followers-post */
-		let fol: misskey.entities.Note;
+		let fol: Misskey.entities.Note;
 		/** specified-post */
-		let spe: misskey.entities.Note;
+		let spe: Misskey.entities.Note;
 
 		/** public-reply to target's post */
-		let pubR: misskey.entities.Note;
+		let pubR: Misskey.entities.Note;
 		/** home-reply to target's post */
-		let homeR: misskey.entities.Note;
+		let homeR: Misskey.entities.Note;
 		/** followers-reply to target's post */
-		let folR: misskey.entities.Note;
+		let folR: Misskey.entities.Note;
 		/** specified-reply to target's post */
-		let speR: misskey.entities.Note;
+		let speR: Misskey.entities.Note;
 
 		/** public-mention to target */
-		let pubM: misskey.entities.Note;
+		let pubM: Misskey.entities.Note;
 		/** home-mention to target */
-		let homeM: misskey.entities.Note;
+		let homeM: Misskey.entities.Note;
 		/** followers-mention to target */
-		let folM: misskey.entities.Note;
+		let folM: Misskey.entities.Note;
 		/** specified-mention to target */
-		let speM: misskey.entities.Note;
+		let speM: Misskey.entities.Note;
 
 		/** reply target post */
-		let tgt: misskey.entities.Note;
+		let tgt: Misskey.entities.Note;
 		//#endregion
 
-		const show = async (noteId: misskey.entities.Note['id'], by?: UserToken) => {
+		const show = async (noteId: Misskey.entities.Note['id'], by?: UserToken) => {
 			return await api('notes/show', {
 				noteId,
 			}, by);

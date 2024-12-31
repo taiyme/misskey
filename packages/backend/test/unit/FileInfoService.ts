@@ -5,7 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';

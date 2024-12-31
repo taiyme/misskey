@@ -5,19 +5,19 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { MiUser } from '@/models/_.js';
 import { api, castAsError, initTestDb, post, signup, simpleGet, uploadFile } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
+import { MiUser } from '@/models/_.js';
 
 describe('Endpoints', () => {
-	let alice: misskey.entities.SignupResponse;
-	let bob: misskey.entities.SignupResponse;
-	let carol: misskey.entities.SignupResponse;
-	let dave: misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
+	let carol: Misskey.entities.SignupResponse;
+	let dave: Misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
@@ -632,7 +632,7 @@ describe('Endpoints', () => {
 		for (const type of ['webp', 'avif']) {
 			const mediaType = `image/${type}`;
 
-			const getWebpublicType = async (user: misskey.entities.SignupResponse, fileId: string): Promise<string> => {
+			const getWebpublicType = async (user: Misskey.entities.SignupResponse, fileId: string): Promise<string> => {
 				// drive/files/create does not expose webpublicType directly, so get it by posting it
 				const res = await post(user, {
 					text: mediaType,
@@ -1064,7 +1064,7 @@ describe('Endpoints', () => {
 				userId: bob.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string }).memo, memo);
 		});
 
 		test('自分に関するメモを更新できる', async () => {
@@ -1079,7 +1079,7 @@ describe('Endpoints', () => {
 				userId: alice.id,
 			}, alice);
 			assert.strictEqual(res1.status, 204);
-			assert.strictEqual((res2.body as unknown as { memo: string })?.memo, memo);
+			assert.strictEqual((res2.body as unknown as { memo: string }).memo, memo);
 		});
 
 		test('メモを削除できる', async () => {

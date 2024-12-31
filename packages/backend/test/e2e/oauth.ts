@@ -10,19 +10,19 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import {
-	AuthorizationCode,
 	type AuthorizationTokenConfig,
+	type ModuleOptions,
+	AuthorizationCode,
 	ClientCredentials,
-	ModuleOptions,
 	ResourceOwnerPassword,
 } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 const host = `http://127.0.0.1:${port}`;
 
@@ -80,7 +80,7 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function fetchDecision(transactionId: string, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+function fetchDecision(transactionId: string, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
@@ -95,14 +95,14 @@ function fetchDecision(transactionId: string, user: misskey.entities.SignupRespo
 	});
 }
 
-async function fetchDecisionFromResponse(response: Response, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+async function fetchDecisionFromResponse(response: Response, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	const { transactionId } = getMeta(await response.text());
 	assert.ok(transactionId);
 
 	return await fetchDecision(transactionId, user, { cancel });
 }
 
-async function fetchAuthorizationCode(user: misskey.entities.SignupResponse, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
+async function fetchAuthorizationCode(user: Misskey.entities.SignupResponse, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
 	const client = new AuthorizationCode(clientConfig);
 
 	const response = await fetch(client.authorizeURL({
@@ -154,8 +154,8 @@ async function assertDirectError(response: Response, status: number, error: stri
 describe('OAuth', () => {
 	let fastify: FastifyInstance;
 
-	let alice: misskey.entities.SignupResponse;
-	let bob: misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
 
 	let sender: (reply: FastifyReply) => void;
 
@@ -236,7 +236,7 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(createResult.status, 200);
 
-		const createResultBody = createResult.body as misskey.Endpoints['notes/create']['res'];
+		const createResultBody = createResult.body as Misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResultBody.createdNote.text, 'test');
 	});
 
@@ -307,10 +307,10 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(createResultAlice.status, 200);
 
-		const createResultBodyAlice = await createResultAlice.body as misskey.Endpoints['notes/create']['res'];
+		const createResultBodyAlice = await createResultAlice.body as Misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResultBodyAlice.createdNote.user.username, 'alice');
 
-		const createResultBodyBob = await createResultBob.body as misskey.Endpoints['notes/create']['res'];
+		const createResultBodyBob = await createResultBob.body as Misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResultBodyBob.createdNote.user.username, 'bob');
 	});
 

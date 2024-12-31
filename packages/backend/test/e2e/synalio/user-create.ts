@@ -4,25 +4,25 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
-import { entities } from 'misskey-js';
 import { beforeEach, describe, test } from '@jest/globals';
 import {
+	type UserToken,
 	api,
 	captureWebhook,
 	randomString,
 	role,
 	signup,
 	startJobQueue,
-	UserToken,
 	WEBHOOK_HOST,
 } from '../../utils.js';
+import type * as Misskey from 'misskey-js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('[シナリオ] ユーザ作成', () => {
 	let queue: INestApplicationContext;
-	let admin: entities.SignupResponse;
+	let admin: Misskey.entities.SignupResponse;
 
-	async function createSystemWebhook(args?: Partial<entities.AdminSystemWebhookCreateRequest>, credential?: UserToken): Promise<entities.AdminSystemWebhookCreateResponse> {
+	async function createSystemWebhook(args?: Partial<Misskey.entities.AdminSystemWebhookCreateRequest>, credential?: UserToken): Promise<Misskey.entities.AdminSystemWebhookCreateResponse> {
 		const res = await api(
 			'admin/system-webhook/create',
 			{
@@ -81,7 +81,7 @@ describe('[シナリオ] ユーザ作成', () => {
 			expect(webhookBody.hookId).toBe(webhook.id);
 			expect(webhookBody.type).toBe('userCreated');
 
-			const body = webhookBody.body as entities.UserLite;
+			const body = webhookBody.body as Misskey.entities.UserLite;
 			expect(alice.id).toBe(body.id);
 			expect(alice.name).toBe(body.name);
 			expect(alice.username).toBe(body.username);

@@ -5,16 +5,16 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { setTimeout } from 'node:timers/promises';
 import { api, post, signup, waitFire } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 describe('Renote Mute', () => {
 	// alice mutes carol
-	let alice: misskey.entities.SignupResponse;
-	let bob: misskey.entities.SignupResponse;
-	let carol: misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
+	let carol: Misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });

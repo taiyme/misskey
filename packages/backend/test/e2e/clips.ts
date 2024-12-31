@@ -5,10 +5,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { api, ApiRequest, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
+import * as assert from 'node:assert';
+import { type ApiRequest, api, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
 import type * as Misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
