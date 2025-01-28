@@ -5,10 +5,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { channel, clip, cookie, galleryPost, page, play, post, signup, simpleGet, uploadFile } from '../utils.js';
 import type { SimpleGetResponse } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -22,16 +22,16 @@ const HTML = 'text/html; charset=utf-8';
 const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Webリソース', () => {
-	let alice: misskey.entities.SignupResponse;
-	let aliceUploadedFile: misskey.entities.DriveFile | null;
-	let alicesPost: misskey.entities.Note;
-	let alicePage: misskey.entities.Page;
-	let alicePlay: misskey.entities.Flash;
-	let aliceClip: misskey.entities.Clip;
-	let aliceGalleryPost: misskey.entities.GalleryPost;
-	let aliceChannel: misskey.entities.Channel;
+	let alice: Misskey.entities.SignupResponse;
+	let aliceUploadedFile: Misskey.entities.DriveFile | null;
+	let alicesPost: Misskey.entities.Note;
+	let alicePage: Misskey.entities.Page;
+	let alicePlay: Misskey.entities.Flash;
+	let aliceClip: Misskey.entities.Clip;
+	let aliceGalleryPost: Misskey.entities.GalleryPost;
+	let aliceChannel: Misskey.entities.Channel;
 
-	let bob: misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
 
 	type Request = {
 		path: string,
@@ -156,20 +156,20 @@ describe('Webリソース', () => {
 
 		describe(' has entry such ', () => {
 			beforeEach(() => {
-				post(alice, { text: "**a**" })
+				post(alice, { text: '**a**' });
 			});
 
 			test('MFMを含まない。', async () => {
-				const content = await simpleGet(path(alice.username), "*/*", undefined, res => res.text());
+				const content = await simpleGet(path(alice.username), '*/*', undefined, res => res.text());
 				const _body: unknown = content.body;
 				// JSONフィードのときは改めて文字列化する
-				const body: string = typeof (_body) === "object" ? JSON.stringify(_body) : _body as string;
+				const body: string = typeof (_body) === 'object' ? JSON.stringify(_body) : _body as string;
 
-				if (body.includes("**a**")) {
-					throw new Error("MFM shouldn't be included");
+				if (body.includes('**a**')) {
+					throw new Error('MFM shouldn\'t be included');
 				}
 			});
-		})
+		});
 	});
 
 	describe.each([{ path: '/api/foo' }])('$path', ({ path }) => {

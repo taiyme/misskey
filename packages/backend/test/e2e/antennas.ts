@@ -5,8 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import * as assert from 'node:assert';
 import {
 	api,
 	failedApiCall,
@@ -18,7 +17,8 @@ import {
 	uploadFile,
 	userList,
 } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -28,9 +28,9 @@ describe('アンテナ', () => {
 	// エンティティとしてのアンテナを主眼においたテストを記述する
 	// (Antennaを返すエンドポイント、Antennaエンティティを書き換えるエンドポイント、Antennaからノートを取得するエンドポイントをテストする)
 
-	type Antenna = misskey.entities.Antenna;
-	type User = misskey.entities.SignupResponse;
-	type Note = misskey.entities.Note;
+	type Antenna = Misskey.entities.Antenna;
+	type User = Misskey.entities.SignupResponse;
+	type Note = Misskey.entities.Note;
 
 	// アンテナを作成できる最小のパラメタ
 	const defaultParam = {
@@ -52,9 +52,9 @@ describe('アンテナ', () => {
 	let carol: User;
 
 	let alicePost: Note;
-	let aliceList: misskey.entities.UserList;
-	let bobFile: misskey.entities.DriveFile;
-	let bobList: misskey.entities.UserList;
+	let aliceList: Misskey.entities.UserList;
+	let bobFile: Misskey.entities.DriveFile;
+	let bobList: Misskey.entities.UserList;
 
 	let userNotExplorable: User;
 	let userLocking: User;
@@ -232,12 +232,12 @@ describe('アンテナ', () => {
 		await failedApiCall({
 			endpoint: 'antennas/create',
 			parameters: { ...defaultParam, keywords: [[]], excludeKeywords: [[]] },
-			user: alice
+			user: alice,
 		}, {
 			status: 400,
 			code: 'EMPTY_KEYWORD',
-			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a'
-		})
+			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
+		});
 	});
 	//#endregion
 	//#region 更新(antennas/update)
@@ -271,12 +271,12 @@ describe('アンテナ', () => {
 		await failedApiCall({
 			endpoint: 'antennas/update',
 			parameters: { ...defaultParam, antennaId: antenna.id, keywords: [[]], excludeKeywords: [[]] },
-			user: alice
+			user: alice,
 		}, {
 			status: 400,
 			code: 'EMPTY_KEYWORD',
-			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4'
-		})
+			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4',
+		});
 	});
 
 	//#endregion

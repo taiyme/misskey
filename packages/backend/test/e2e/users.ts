@@ -5,10 +5,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { inspect } from 'node:util';
 import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 describe('ユーザー', () => {
@@ -24,12 +24,12 @@ describe('ユーザー', () => {
 			}, {});
 	};
 
-	const show = async (id: string, me = root): Promise<misskey.entities.UserDetailed> => {
+	const show = async (id: string, me = root): Promise<Misskey.entities.UserDetailed> => {
 		return successfulApiCall({ endpoint: 'users/show', parameters: { userId: id }, user: me });
 	};
 
 	// UserLiteのキーが過不足なく入っている？
-	const userLite = (user: misskey.entities.UserLite): Partial<misskey.entities.UserLite> => {
+	const userLite = (user: Misskey.entities.UserLite): Partial<Misskey.entities.UserLite> => {
 		return stripUndefined({
 			id: user.id,
 			name: user.name,
@@ -52,7 +52,7 @@ describe('ユーザー', () => {
 	};
 
 	// UserDetailedNotMeのキーが過不足なく入っている？
-	const userDetailedNotMe = (user: misskey.entities.SignupResponse): Partial<misskey.entities.UserDetailedNotMe> => {
+	const userDetailedNotMe = (user: Misskey.entities.SignupResponse): Partial<Misskey.entities.UserDetailedNotMe> => {
 		return stripUndefined({
 			...userLite(user),
 			url: user.url,
@@ -89,7 +89,7 @@ describe('ユーザー', () => {
 	};
 
 	// Relations関連のキーが過不足なく入っている？
-	const userDetailedNotMeWithRelations = (user: misskey.entities.SignupResponse): Partial<misskey.entities.UserDetailedNotMe> => {
+	const userDetailedNotMeWithRelations = (user: Misskey.entities.SignupResponse): Partial<Misskey.entities.UserDetailedNotMe> => {
 		return stripUndefined({
 			...userDetailedNotMe(user),
 			isFollowing: user.isFollowing ?? false,
@@ -107,7 +107,7 @@ describe('ユーザー', () => {
 	};
 
 	// MeDetailedのキーが過不足なく入っている？
-	const meDetailed = (user: misskey.entities.SignupResponse, security = false): Partial<misskey.entities.MeDetailed> => {
+	const meDetailed = (user: Misskey.entities.SignupResponse, security = false): Partial<Misskey.entities.MeDetailed> => {
 		return stripUndefined({
 			...userDetailedNotMe(user),
 			avatarId: user.avatarId,
@@ -157,45 +157,45 @@ describe('ユーザー', () => {
 		});
 	};
 
-	let root: misskey.entities.SignupResponse;
-	let alice: misskey.entities.SignupResponse;
-	let aliceNote: misskey.entities.Note;
+	let root: Misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let aliceNote: Misskey.entities.Note;
 
-	let bob: misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
 
 	// NOTE: これがないと落ちる（bob の updatedAt が null になってしまうため？）
-	let bobNote: misskey.entities.Note; // eslint-disable-line @typescript-eslint/no-unused-vars
+	let bobNote: Misskey.entities.Note; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-	let carol: misskey.entities.SignupResponse;
+	let carol: Misskey.entities.SignupResponse;
 
-	let usersReplying: misskey.entities.SignupResponse[];
+	let usersReplying: Misskey.entities.SignupResponse[];
 
-	let userNoNote: misskey.entities.SignupResponse;
-	let userNotExplorable: misskey.entities.SignupResponse;
-	let userLocking: misskey.entities.SignupResponse;
-	let userAdmin: misskey.entities.SignupResponse;
-	let roleAdmin: misskey.entities.Role;
-	let userModerator: misskey.entities.SignupResponse;
-	let roleModerator: misskey.entities.Role;
-	let userRolePublic: misskey.entities.SignupResponse;
-	let rolePublic: misskey.entities.Role;
-	let userRoleBadge: misskey.entities.SignupResponse;
-	let roleBadge: misskey.entities.Role;
-	let userSilenced: misskey.entities.SignupResponse;
-	let roleSilenced: misskey.entities.Role;
-	let userSuspended: misskey.entities.SignupResponse;
-	let userDeletedBySelf: misskey.entities.SignupResponse;
-	let userDeletedByAdmin: misskey.entities.SignupResponse;
-	let userFollowingAlice: misskey.entities.SignupResponse;
-	let userFollowedByAlice: misskey.entities.SignupResponse;
-	let userBlockingAlice: misskey.entities.SignupResponse;
-	let userBlockedByAlice: misskey.entities.SignupResponse;
-	let userMutingAlice: misskey.entities.SignupResponse;
-	let userMutedByAlice: misskey.entities.SignupResponse;
-	let userRnMutingAlice: misskey.entities.SignupResponse;
-	let userRnMutedByAlice: misskey.entities.SignupResponse;
-	let userFollowRequesting: misskey.entities.SignupResponse;
-	let userFollowRequested: misskey.entities.SignupResponse;
+	let userNoNote: Misskey.entities.SignupResponse;
+	let userNotExplorable: Misskey.entities.SignupResponse;
+	let userLocking: Misskey.entities.SignupResponse;
+	let userAdmin: Misskey.entities.SignupResponse;
+	let roleAdmin: Misskey.entities.Role;
+	let userModerator: Misskey.entities.SignupResponse;
+	let roleModerator: Misskey.entities.Role;
+	let userRolePublic: Misskey.entities.SignupResponse;
+	let rolePublic: Misskey.entities.Role;
+	let userRoleBadge: Misskey.entities.SignupResponse;
+	let roleBadge: Misskey.entities.Role;
+	let userSilenced: Misskey.entities.SignupResponse;
+	let roleSilenced: Misskey.entities.Role;
+	let userSuspended: Misskey.entities.SignupResponse;
+	let userDeletedBySelf: Misskey.entities.SignupResponse;
+	let userDeletedByAdmin: Misskey.entities.SignupResponse;
+	let userFollowingAlice: Misskey.entities.SignupResponse;
+	let userFollowedByAlice: Misskey.entities.SignupResponse;
+	let userBlockingAlice: Misskey.entities.SignupResponse;
+	let userBlockedByAlice: Misskey.entities.SignupResponse;
+	let userMutingAlice: Misskey.entities.SignupResponse;
+	let userMutedByAlice: Misskey.entities.SignupResponse;
+	let userRnMutingAlice: Misskey.entities.SignupResponse;
+	let userRnMutedByAlice: Misskey.entities.SignupResponse;
+	let userFollowRequesting: Misskey.entities.SignupResponse;
+	let userFollowRequested: Misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
@@ -214,7 +214,7 @@ describe('ユーザー', () => {
 			}
 
 			return (await acc).concat(u);
-		}, Promise.resolve([] as misskey.entities.SignupResponse[]));
+		}, Promise.resolve([] as Misskey.entities.SignupResponse[]));
 
 		userNoNote = await signup({ username: 'userNoNote' });
 		userNotExplorable = await signup({ username: 'userNotExplorable' });
@@ -295,7 +295,7 @@ describe('ユーザー', () => {
 			endpoint: 'signup',
 			parameters: { username: 'zoe', password: 'password' },
 			user: undefined,
-		}) as unknown as misskey.entities.SignupResponse; // BUG MeDetailedに足りないキーがある
+		}) as unknown as Misskey.entities.SignupResponse; // BUG MeDetailedに足りないキーがある
 
 		// signupの時はtokenが含まれる特別なMeDetailedが返ってくる
 		assert.match(response.token, /[a-zA-Z0-9]{16}/);
@@ -559,13 +559,13 @@ describe('ユーザー', () => {
 	//#region ユーザー(users)
 
 	test.each([
-		{ label: 'ID昇順', parameters: { limit: 5 }, selector: (u: misskey.entities.UserLite): string => u.id },
-		{ label: 'フォロワー昇順', parameters: { sort: '+follower' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
-		{ label: 'フォロワー降順', parameters: { sort: '-follower' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
-		{ label: '登録日時昇順', parameters: { sort: '+createdAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => u.createdAt },
-		{ label: '登録日時降順', parameters: { sort: '-createdAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => u.createdAt },
-		{ label: '投稿日時昇順', parameters: { sort: '+updatedAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
-		{ label: '投稿日時降順', parameters: { sort: '-updatedAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
+		{ label: 'ID昇順', parameters: { limit: 5 }, selector: (u: Misskey.entities.UserLite): string => u.id },
+		{ label: 'フォロワー昇順', parameters: { sort: '+follower' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
+		{ label: 'フォロワー降順', parameters: { sort: '-follower' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
+		{ label: '登録日時昇順', parameters: { sort: '+createdAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => u.createdAt },
+		{ label: '登録日時降順', parameters: { sort: '-createdAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => u.createdAt },
+		{ label: '投稿日時昇順', parameters: { sort: '+updatedAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
+		{ label: '投稿日時降順', parameters: { sort: '-updatedAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
 	] as const)('をリスト形式で取得することができる（$label）', async ({ parameters, selector }) => {
 		const response = await successfulApiCall({ endpoint: 'users', parameters, user: alice });
 
@@ -612,32 +612,32 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response, expected);
 	});
 	test.each([
-		{ label: 'Administratorになっている', user: () => userAdmin, me: () => userAdmin, selector: (user: misskey.entities.MeDetailed) => user.isAdmin },
+		{ label: 'Administratorになっている', user: () => userAdmin, me: () => userAdmin, selector: (user: Misskey.entities.MeDetailed) => user.isAdmin },
 		// @ts-expect-error UserDetailedNotMe doesn't include isAdmin
-		{ label: '自分以外から見たときはAdministratorか判定できない', user: () => userAdmin, selector: (user: misskey.entities.UserDetailedNotMe) => user.isAdmin, expected: () => undefined },
-		{ label: 'Moderatorになっている', user: () => userModerator, me: () => userModerator, selector: (user: misskey.entities.MeDetailed) => user.isModerator },
+		{ label: '自分以外から見たときはAdministratorか判定できない', user: () => userAdmin, selector: (user: Misskey.entities.UserDetailedNotMe) => user.isAdmin, expected: () => undefined },
+		{ label: 'Moderatorになっている', user: () => userModerator, me: () => userModerator, selector: (user: Misskey.entities.MeDetailed) => user.isModerator },
 		// @ts-expect-error UserDetailedNotMe doesn't include isModerator
-		{ label: '自分以外から見たときはModeratorか判定できない', user: () => userModerator, selector: (user: misskey.entities.UserDetailedNotMe) => user.isModerator, expected: () => undefined },
-		{ label: '自分から見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => alice, selector: (user: misskey.entities.MeDetailed) => user.twoFactorEnabled, expected: () => false },
-		{ label: '自分以外から見た場合に二要素認証関連のプロパティがセットされていない', user: () => alice, me: () => bob, selector: (user: misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => undefined },
-		{ label: 'モデレーターから見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => userModerator, selector: (user: misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => false },
-		{ label: 'サイレンスになっている', user: () => userSilenced, selector: (user: misskey.entities.UserDetailed) => user.isSilenced },
+		{ label: '自分以外から見たときはModeratorか判定できない', user: () => userModerator, selector: (user: Misskey.entities.UserDetailedNotMe) => user.isModerator, expected: () => undefined },
+		{ label: '自分から見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => alice, selector: (user: Misskey.entities.MeDetailed) => user.twoFactorEnabled, expected: () => false },
+		{ label: '自分以外から見た場合に二要素認証関連のプロパティがセットされていない', user: () => alice, me: () => bob, selector: (user: Misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => undefined },
+		{ label: 'モデレーターから見た場合に二要素認証関連のプロパティがセットされている', user: () => alice, me: () => userModerator, selector: (user: Misskey.entities.UserDetailedNotMe) => user.twoFactorEnabled, expected: () => false },
+		{ label: 'サイレンスになっている', user: () => userSilenced, selector: (user: Misskey.entities.UserDetailed) => user.isSilenced },
 		// FIXME: 落ちる
-		//{ label: 'サスペンドになっている', user: () => userSuspended, selector: (user: misskey.entities.UserDetailed) => user.isSuspended },
-		{ label: '削除済みになっている', user: () => userDeletedBySelf, me: () => userDeletedBySelf, selector: (user: misskey.entities.MeDetailed) => user.isDeleted },
+		//{ label: 'サスペンドになっている', user: () => userSuspended, selector: (user: Misskey.entities.UserDetailed) => user.isSuspended },
+		{ label: '削除済みになっている', user: () => userDeletedBySelf, me: () => userDeletedBySelf, selector: (user: Misskey.entities.MeDetailed) => user.isDeleted },
 		// @ts-expect-error UserDetailedNotMe doesn't include isDeleted
-		{ label: '自分以外から見たときは削除済みか判定できない', user: () => userDeletedBySelf, selector: (user: misskey.entities.UserDetailedNotMe) => user.isDeleted, expected: () => undefined },
-		{ label: '削除済み(byAdmin)になっている', user: () => userDeletedByAdmin, me: () => userDeletedByAdmin, selector: (user: misskey.entities.MeDetailed) => user.isDeleted },
+		{ label: '自分以外から見たときは削除済みか判定できない', user: () => userDeletedBySelf, selector: (user: Misskey.entities.UserDetailedNotMe) => user.isDeleted, expected: () => undefined },
+		{ label: '削除済み(byAdmin)になっている', user: () => userDeletedByAdmin, me: () => userDeletedByAdmin, selector: (user: Misskey.entities.MeDetailed) => user.isDeleted },
 		// @ts-expect-error UserDetailedNotMe doesn't include isDeleted
-		{ label: '自分以外から見たときは削除済み(byAdmin)か判定できない', user: () => userDeletedByAdmin, selector: (user: misskey.entities.UserDetailedNotMe) => user.isDeleted, expected: () => undefined },
-		{ label: 'フォロー中になっている', user: () => userFollowedByAlice, selector: (user: misskey.entities.UserDetailed) => user.isFollowing },
-		{ label: 'フォローされている', user: () => userFollowingAlice, selector: (user: misskey.entities.UserDetailed) => user.isFollowed },
-		{ label: 'ブロック中になっている', user: () => userBlockedByAlice, selector: (user: misskey.entities.UserDetailed) => user.isBlocking },
-		{ label: 'ブロックされている', user: () => userBlockingAlice, selector: (user: misskey.entities.UserDetailed) => user.isBlocked },
-		{ label: 'ミュート中になっている', user: () => userMutedByAlice, selector: (user: misskey.entities.UserDetailed) => user.isMuted },
-		{ label: 'リノートミュート中になっている', user: () => userRnMutedByAlice, selector: (user: misskey.entities.UserDetailed) => user.isRenoteMuted },
-		{ label: 'フォローリクエスト中になっている', user: () => userFollowRequested, me: () => userFollowRequesting, selector: (user: misskey.entities.UserDetailed) => user.hasPendingFollowRequestFromYou },
-		{ label: 'フォローリクエストされている', user: () => userFollowRequesting, me: () => userFollowRequested, selector: (user: misskey.entities.UserDetailed) => user.hasPendingFollowRequestToYou },
+		{ label: '自分以外から見たときは削除済み(byAdmin)か判定できない', user: () => userDeletedByAdmin, selector: (user: Misskey.entities.UserDetailedNotMe) => user.isDeleted, expected: () => undefined },
+		{ label: 'フォロー中になっている', user: () => userFollowedByAlice, selector: (user: Misskey.entities.UserDetailed) => user.isFollowing },
+		{ label: 'フォローされている', user: () => userFollowingAlice, selector: (user: Misskey.entities.UserDetailed) => user.isFollowed },
+		{ label: 'ブロック中になっている', user: () => userBlockedByAlice, selector: (user: Misskey.entities.UserDetailed) => user.isBlocking },
+		{ label: 'ブロックされている', user: () => userBlockingAlice, selector: (user: Misskey.entities.UserDetailed) => user.isBlocked },
+		{ label: 'ミュート中になっている', user: () => userMutedByAlice, selector: (user: Misskey.entities.UserDetailed) => user.isMuted },
+		{ label: 'リノートミュート中になっている', user: () => userRnMutedByAlice, selector: (user: Misskey.entities.UserDetailed) => user.isRenoteMuted },
+		{ label: 'フォローリクエスト中になっている', user: () => userFollowRequested, me: () => userFollowRequesting, selector: (user: Misskey.entities.UserDetailed) => user.hasPendingFollowRequestFromYou },
+		{ label: 'フォローリクエストされている', user: () => userFollowRequesting, me: () => userFollowRequested, selector: (user: Misskey.entities.UserDetailed) => user.hasPendingFollowRequestToYou },
 	] as const)('を取得することができ、$labelこと', async ({ user, me, selector, expected }) => {
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters: { userId: user().id }, user: me?.() ?? alice });
 		assert.strictEqual(selector(response as any), (expected ?? ((): true => true))());
@@ -816,12 +816,12 @@ describe('ユーザー', () => {
 	//#region ハッシュタグ(hashtags/users)
 
 	test.each([
-		{ label: 'フォロワー昇順', sort: { sort: '+follower' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
-		{ label: 'フォロワー降順', sort: { sort: '-follower' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
-		{ label: '登録日時昇順', sort: { sort: '+createdAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => u.createdAt },
-		{ label: '登録日時降順', sort: { sort: '-createdAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => u.createdAt },
-		{ label: '投稿日時昇順', sort: { sort: '+updatedAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
-		{ label: '投稿日時降順', sort: { sort: '-updatedAt' }, selector: (u: misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
+		{ label: 'フォロワー昇順', sort: { sort: '+follower' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
+		{ label: 'フォロワー降順', sort: { sort: '-follower' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.followersCount) },
+		{ label: '登録日時昇順', sort: { sort: '+createdAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => u.createdAt },
+		{ label: '登録日時降順', sort: { sort: '-createdAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => u.createdAt },
+		{ label: '投稿日時昇順', sort: { sort: '+updatedAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
+		{ label: '投稿日時降順', sort: { sort: '-updatedAt' }, selector: (u: Misskey.entities.UserDetailedNotMe): string => String(u.updatedAt) },
 	] as const)('をハッシュタグ指定で取得することができる($label)', async ({ sort, selector }) => {
 		const hashtag = 'test_hashtag';
 		await successfulApiCall({ endpoint: 'i/update', parameters: { description: `#${hashtag}` }, user: alice });

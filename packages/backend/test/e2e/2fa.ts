@@ -5,11 +5,10 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import * as crypto from 'node:crypto';
 import cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
-import { loadConfig } from '@/config.js';
 import { api, signup } from '../utils.js';
 import type {
 	AuthenticationResponseJSON,
@@ -19,10 +18,11 @@ import type {
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
+import { loadConfig } from '@/config.js';
 
 describe('2要素認証', () => {
-	let alice: misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
 
 	const config = loadConfig();
 	const password = 'test';
@@ -96,10 +96,10 @@ describe('2要素認証', () => {
 			password,
 			token: param.token,
 			name: param.keyName,
-			credential: <RegistrationResponseJSON>{
+			credential: {
 				id: param.credentialId.toString('base64url'),
 				rawId: param.credentialId.toString('base64url'),
-				response: <AuthenticatorAttestationResponseJSON>{
+				response: {
 					clientDataJSON: Buffer.from(JSON.stringify({
 						type: 'webauthn.create',
 						challenge: param.creationOptions.challenge,
@@ -111,10 +111,10 @@ describe('2要素認証', () => {
 						attStmt: {},
 						authData,
 					}).toString('base64url'),
-				},
+				} satisfies AuthenticatorAttestationResponseJSON,
 				clientExtensionResults: {},
 				type: 'public-key',
-			},
+			} satisfies RegistrationResponseJSON,
 		};
 	};
 
@@ -136,7 +136,7 @@ describe('2要素認証', () => {
 		keyName: string,
 		credentialId: Buffer,
 		requestOptions: PublicKeyCredentialRequestOptionsJSON,
-	}): misskey.entities.SigninFlowRequest => {
+	}): Misskey.entities.SigninFlowRequest => {
 		// AuthenticatorAssertionResponse.authenticatorData
 		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData
 		const authenticatorData = Buffer.concat([
@@ -160,17 +160,17 @@ describe('2要素認証', () => {
 		return {
 			username,
 			password,
-			credential: <AuthenticationResponseJSON>{
+			credential: {
 				id: param.credentialId.toString('base64url'),
 				rawId: param.credentialId.toString('base64url'),
-				response: <AuthenticatorAssertionResponseJSON>{
+				response: {
 					clientDataJSON: clientDataJSONBuffer.toString('base64url'),
 					authenticatorData: authenticatorData.toString('base64url'),
 					signature: signature.toString('base64url'),
-				},
+				} satisfies AuthenticatorAssertionResponseJSON,
 				clientExtensionResults: {},
 				type: 'public-key',
-			},
+			} satisfies AuthenticationResponseJSON,
 			'g-recaptcha-response': null,
 			'hcaptcha-response': null,
 		};

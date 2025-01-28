@@ -5,12 +5,12 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { host, origin, relativeFetch, signup } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 describe('.well-known', () => {
-	let alice: misskey.entities.User;
+	let alice: Misskey.entities.User;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });

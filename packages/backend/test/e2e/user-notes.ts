@@ -5,20 +5,20 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { api, post, signup, uploadUrl } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 describe('users/notes', () => {
-	let alice: misskey.entities.SignupResponse;
-	let jpgNote: misskey.entities.Note;
-	let pngNote: misskey.entities.Note;
-	let jpgPngNote: misskey.entities.Note;
+	let alice: Misskey.entities.SignupResponse;
+	let jpgNote: Misskey.entities.Note;
+	let pngNote: Misskey.entities.Note;
+	let jpgPngNote: Misskey.entities.Note;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
-		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/192.jpg');
-		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/192.png');
+		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/taiyme/misskey/taiyme/packages/backend/test/resources/192.jpg');
+		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/taiyme/misskey/taiyme/packages/backend/test/resources/192.png');
 		jpgNote = await post(alice, {
 			fileIds: [jpg.id],
 		});

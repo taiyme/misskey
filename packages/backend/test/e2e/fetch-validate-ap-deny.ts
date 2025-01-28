@@ -5,12 +5,12 @@
 
 process.env.NODE_ENV = 'test';
 
-import { validateContentTypeSetAsActivityPub, validateContentTypeSetAsJsonLD } from '@/core/activitypub/misc/validator.js';
 import { signup, uploadFile, relativeFetch } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
+import { validateContentTypeSetAsActivityPub, validateContentTypeSetAsJsonLD } from '@/core/activitypub/misc/validator.js';
 
 describe('validateContentTypeSetAsActivityPub/JsonLD (deny case)', () => {
-	let alice: misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
 	let aliceUploadedFile: any;
 
 	beforeAll(async () => {

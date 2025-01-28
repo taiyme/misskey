@@ -5,11 +5,11 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { WebSocket } from 'ws';
-import { MiFollowing } from '@/models/Following.js';
 import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
-import type * as misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
+import { MiFollowing } from '@/models/Following.js';
 
 describe('Streaming', () => {
 	let Followings: any;
@@ -30,20 +30,20 @@ describe('Streaming', () => {
 
 	describe('Streaming', () => {
 		// Local users
-		let ayano: misskey.entities.SignupResponse;
-		let kyoko: misskey.entities.SignupResponse;
-		let chitose: misskey.entities.SignupResponse;
-		let kanako: misskey.entities.SignupResponse;
-		let erin: misskey.entities.SignupResponse;
+		let ayano: Misskey.entities.SignupResponse;
+		let kyoko: Misskey.entities.SignupResponse;
+		let chitose: Misskey.entities.SignupResponse;
+		let kanako: Misskey.entities.SignupResponse;
+		let erin: Misskey.entities.SignupResponse;
 
 		// Remote users
-		let akari: misskey.entities.SignupResponse;
-		let chinatsu: misskey.entities.SignupResponse;
-		let takumi: misskey.entities.SignupResponse;
+		let akari: Misskey.entities.SignupResponse;
+		let chinatsu: Misskey.entities.SignupResponse;
+		let takumi: Misskey.entities.SignupResponse;
 
-		let kyokoNote: misskey.entities.Note;
-		let kanakoNote: misskey.entities.Note;
-		let takumiNote: misskey.entities.Note;
+		let kyokoNote: Misskey.entities.Note;
+		let kanakoNote: Misskey.entities.Note;
+		let takumiNote: Misskey.entities.Note;
 		let list: any;
 
 		beforeAll(async () => {

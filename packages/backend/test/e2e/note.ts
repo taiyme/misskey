@@ -3,23 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Repository } from "typeorm";
-
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
+import type { Repository } from 'typeorm';
+import type * as Misskey from 'misskey-js';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
 	let Notes: Repository<MiNote>;
 
-	let root: misskey.entities.SignupResponse;
-	let alice: misskey.entities.SignupResponse;
-	let bob: misskey.entities.SignupResponse;
-	let tom: misskey.entities.SignupResponse;
+	let root: Misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
+	let tom: Misskey.entities.SignupResponse;
 
 	beforeAll(async () => {
 		const connection = await initTestDb(true);
@@ -43,7 +42,7 @@ describe('Note', () => {
 	});
 
 	test('ファイルを添付できる', async () => {
-		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/192.jpg');
+		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/taiyme/misskey/taiyme/packages/backend/test/resources/192.jpg');
 
 		const res = await api('notes/create', {
 			fileIds: [file.id],
@@ -55,7 +54,7 @@ describe('Note', () => {
 	}, 1000 * 10);
 
 	test('他人のファイルで怒られる', async () => {
-		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/192.jpg');
+		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/taiyme/misskey/taiyme/packages/backend/test/resources/192.jpg');
 
 		const res = await api('notes/create', {
 			text: 'test',
@@ -982,7 +981,7 @@ describe('Note', () => {
 
 	describe('notes/translate', () => {
 		describe('翻訳機能の利用が許可されていない場合', () => {
-			let cannotTranslateRole: misskey.entities.Role;
+			let cannotTranslateRole: Misskey.entities.Role;
 
 			beforeAll(async () => {
 				cannotTranslateRole = await role(root, {}, { canUseTranslator: false });

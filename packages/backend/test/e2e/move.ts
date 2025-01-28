@@ -3,30 +3,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { INestApplicationContext } from '@nestjs/common';
-
 process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import { api, castAsError, initTestDb, signup, successfulApiCall, uploadFile } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
+import type * as Misskey from 'misskey-js';
 import { loadConfig } from '@/config.js';
 import { MiRepository, MiUser, UsersRepository, miRepository } from '@/models/_.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { jobQueue } from '@/boot/common.js';
-import { api, castAsError, initTestDb, signup, successfulApiCall, uploadFile } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('Account Move', () => {
 	let jq: INestApplicationContext;
 	let url: URL;
 
-	let root: misskey.entities.SignupResponse;
-	let alice: misskey.entities.SignupResponse;
-	let bob: misskey.entities.SignupResponse;
-	let carol: misskey.entities.SignupResponse;
-	let dave: misskey.entities.SignupResponse;
-	let eve: misskey.entities.SignupResponse;
-	let frank: misskey.entities.SignupResponse;
+	let root: Misskey.entities.SignupResponse;
+	let alice: Misskey.entities.SignupResponse;
+	let bob: Misskey.entities.SignupResponse;
+	let carol: Misskey.entities.SignupResponse;
+	let dave: Misskey.entities.SignupResponse;
+	let eve: Misskey.entities.SignupResponse;
+	let frank: Misskey.entities.SignupResponse;
 
 	let Users: UsersRepository;
 
