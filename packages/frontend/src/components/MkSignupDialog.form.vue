@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toUnicode } from 'punycode';
+import { toUnicode } from 'punycode.js';
 import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';

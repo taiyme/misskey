@@ -229,7 +229,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" module>
-
 .filePreviewRoot {
 	background: var(--MI_THEME-panel);
 	border-radius: var(--MI-radius);

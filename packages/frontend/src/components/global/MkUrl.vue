@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toUnicode as decodePunycode } from 'punycode';
+import { toUnicode as decodePunycode } from 'punycode.js';
 import { computed, defineAsyncComponent, shallowRef } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { popup } from '@/os.js';

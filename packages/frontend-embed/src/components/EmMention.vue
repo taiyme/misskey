@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toASCII, toUnicode } from 'punycode';
+import { toASCII, toUnicode } from 'punycode.js';
 import { computed } from 'vue';
 import { host as localHost, url } from '@@/js/config.js';
 import EmA from '@/components/EmA.vue';

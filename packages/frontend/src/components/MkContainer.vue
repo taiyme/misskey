@@ -50,6 +50,7 @@ const props = withDefaults(defineProps<{
 	thin?: boolean;
 	naked?: boolean;
 	foldable?: boolean;
+	onUnfold?: () => boolean; // return false to prevent unfolding
 	scrollable?: boolean;
 	expanded?: boolean;
 	maxHeight?: number | null;
@@ -57,6 +58,7 @@ const props = withDefaults(defineProps<{
 	expanded: true,
 	showHeader: true,
 	maxHeight: null,
+	onUnfold: undefined,
 });
 
 const rootEl = shallowRef<HTMLElement>();
@@ -93,6 +95,8 @@ function afterLeave(el: Element) {
 }
 
 const showMore = () => {
+	if (props.onUnfold && !props.onUnfold()) return;
+
 	manuallyOperated.value = true;
 	omitted.value = false;
 };

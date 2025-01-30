@@ -7,6 +7,7 @@ on:
       - release
     paths:
       - .github/workflows/check-misskey-js-autogen.yaml
+      - .github/misskey/test.yml
       - packages/backend/**/*
 
   pull_request_target:
@@ -14,6 +15,7 @@ on:
       - taiyme
       - release
     paths:
+      - .github/misskey/test.yml
       - packages/backend/**/*
 
 permissions:

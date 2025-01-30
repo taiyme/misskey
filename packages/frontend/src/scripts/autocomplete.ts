@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode.js';
 import { nextTick, Ref, ref, defineAsyncComponent } from 'vue';
 import getCaretCoordinates from 'textarea-caret';
 import { popup } from '@/os.js';

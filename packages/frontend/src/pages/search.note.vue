@@ -19,11 +19,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #header>{{ i18n.ts.options }}</template>
 
 			<div class="_gaps_m">
-				<MkRadios v-model="searchScope">
-					<option v-if="noteSearchableScope === 'global'" value="all">{{ i18n.ts._tms._search.searchScopeAll }}</option>
-					<option value="local">{{ i18n.ts._tms._search.searchScopeLocal }}</option>
-					<option v-if="noteSearchableScope === 'global'" value="server">{{ i18n.ts._tms._search.searchScopeServer }}</option>
-					<option value="user">{{ i18n.ts._tms._search.searchScopeUser }}</option>
+				<MkRadios
+					v-if="availableSearchScopes.length > 0"
+					v-model="searchScope"
+				>
+					<template v-for="scope in availableSearchScopes" :key="scope">
+						<option :value="scope">
+							<template v-if="scope === 'all'">{{ i18n.ts._tms._search.searchScopeAll }}</template>
+							<template v-else-if="scope === 'local'">{{ i18n.ts._tms._search.searchScopeLocal }}</template>
+							<template v-else-if="scope === 'server'">{{ i18n.ts._tms._search.searchScopeServer }}</template>
+							<template v-else-if="scope === 'user'">{{ i18n.ts._tms._search.searchScopeUser }}</template>
+						</option>
+					</template>
 				</MkRadios>
 
 				<MkInput
@@ -149,9 +156,6 @@ const hostInput = ref(toRef(props, 'host').value);
 
 const user = shallowRef<Misskey.entities.UserDetailed | null>(null);
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const noteSearchableScope = instance.noteSearchableScope ?? 'local';
-
 //#region set user
 let fetchedUser: Misskey.entities.UserDetailed | null = null;
 
@@ -169,17 +173,32 @@ if (props.username && fetchedUser == null) {
 }
 
 if (fetchedUser != null) {
-	if (!(noteSearchableScope === 'local' && fetchedUser.host != null)) {
+	const localOnly = instance.federation === 'none' || instance.noteSearchableScope === 'local';
+	if (fetchedUser.host == null || !localOnly) {
 		user.value = fetchedUser;
 	}
 }
 //#endregion
 
-const searchScope = ref<'all' | 'local' | 'server' | 'user'>((() => {
-	if (user.value != null) return 'user';
-	if (noteSearchableScope === 'local') return 'local';
-	if (hostInput.value) return 'server';
-	return 'all';
+type SearchScope = 'all' | 'local' | 'server' | 'user';
+
+const availableSearchScopes = ((): SearchScope[] => {
+	const localOnly = instance.federation === 'none' || instance.noteSearchableScope === 'local';
+	if (localOnly) return ['local', 'user'];
+	return ['all', 'local', 'server', 'user'];
+})();
+
+const searchScope = ref<SearchScope>((() => {
+	if (user.value != null && availableSearchScopes.includes('user')) {
+		return 'user';
+	}
+	if (hostInput.value && availableSearchScopes.includes('server')) {
+		return 'server';
+	}
+	if (availableSearchScopes.includes('all')) {
+		return 'all';
+	}
+	return 'local';
 })());
 
 type SearchParams = {
@@ -233,9 +252,10 @@ const searchParams = computed(() => {
 });
 
 function selectUser() {
+	const localOnly = instance.federation === 'none' || instance.noteSearchableScope === 'local';
 	os.selectUser({
 		includeSelf: true,
-		localOnly: instance.noteSearchableScope === 'local',
+		localOnly,
 	}).then(_user => {
 		user.value = _user;
 	});

@@ -37,6 +37,12 @@ export default function(app: App) {
 	app.component('WidgetBirthdayFollowings', defineAsyncComponent(() => import('./WidgetBirthdayFollowings.vue')));
 }
 
+// 連合関連のウィジェット（連合無効時に隠す）
+export const federationWidgets = [
+	'federation',
+	'instanceCloud',
+];
+
 export const widgets = [
 	'profile',
 	'instanceInfo',
@@ -52,8 +58,6 @@ export const widgets = [
 	'photos',
 	'digitalClock',
 	'unixClock',
-	'federation',
-	'instanceCloud',
 	'postForm',
 	'slideshow',
 	'serverMetric',
@@ -66,4 +70,6 @@ export const widgets = [
 	'userList',
 	'clicker',
 	'birthdayFollowings',
+
+	...federationWidgets,
 ];

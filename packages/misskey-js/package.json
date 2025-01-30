@@ -31,7 +31,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git",
+		"url": "https://github.com/taiyme/misskey.git",
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {

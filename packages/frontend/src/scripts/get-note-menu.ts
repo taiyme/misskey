@@ -20,9 +20,9 @@ import { getUserMenu } from '@/scripts/get-user-menu.js';
 import { clipsCache, favoritedChannelsCache } from '@/cache.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { isSupportShare } from '@/scripts/navigator.js';
+import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { genEmbedCode } from '@/scripts/get-embed-code.js';
 import { parseErrorMessage } from '@/scripts/tms/error.js';
-import { getAppearNote } from '@/scripts/get-appear-note.js';
 import { tooltipFromElement } from '@/scripts/tms/tooltip-from-element.js';
 import { smallerVisibility } from '@/scripts/tms/visibility.js';
 
@@ -198,7 +198,7 @@ export function getNoteMenu(props: {
 				noteId: appearNote.id,
 			});
 
-			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i?.id) {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
@@ -218,7 +218,7 @@ export function getNoteMenu(props: {
 
 			os.post({ initialNote: appearNote, renote: appearNote.renote, reply: appearNote.reply, channel: appearNote.channel });
 
-			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60) {
+			if (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 60 && appearNote.userId === $i?.id) {
 				claimAchievement('noteDeletedWithin1min');
 			}
 		});
@@ -239,11 +239,6 @@ export function getNoteMenu(props: {
 
 	function copyContent(): void {
 		copyText(appearNote.text);
-		os.success();
-	}
-
-	function copyLink(): void {
-		copyText(`${url}/notes/${appearNote.id}`);
 		os.success();
 	}
 
@@ -327,6 +322,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.url || appearNote.uri) {
 			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyText(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
@@ -479,6 +481,13 @@ export function getNoteMenu(props: {
 
 		if (appearNote.url || appearNote.uri) {
 			menuItems.push({
+				icon: 'ti ti-link',
+				text: i18n.ts.copyRemoteLink,
+				action: () => {
+					copyText(appearNote.url ?? appearNote.uri);
+					os.success();
+				},
+			}, {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {

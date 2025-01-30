@@ -171,7 +171,7 @@ provide(DI.appearNote, appearNote);
 	overflow: clip;
 	contain: content;
 	content-visibility: auto;
-  contain-intrinsic-size: 0 150px;
+	contain-intrinsic-size: 0 150px;
 
 	.footer {
 		position: relative;
