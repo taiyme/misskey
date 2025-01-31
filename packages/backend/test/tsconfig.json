@@ -25,21 +25,21 @@
 		"isolatedModules": true,
 		"baseUrl": "./",
 		"paths": {
-			"@/*": ["../src/*"]
+			"@/*": ["../src/*"],
 		},
 		"typeRoots": [
 			"../node_modules/@types",
-			"../src/@types"
+			"../src/@types",
 		],
 		"lib": [
-			"esnext"
+			"ESNext",
 		],
-		"types": ["jest", "node"]
+		"types": ["jest", "node"],
 	},
 	"compileOnSave": false,
 	"include": [
 		"./**/*.ts",
 		"../src/**/*.test.ts",
-		"../src/@types/**/*.ts"
-	]
+		"../src/@types/**/*.ts",
+	],
 }

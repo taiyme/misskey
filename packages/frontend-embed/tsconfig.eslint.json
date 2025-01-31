@@ -1,0 +1,16 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"allowJs": true,
+		"checkJs": true,
+		"skipLibCheck": true,
+	},
+	"include": [
+		"./src/**/*.ts",
+		"./src/**/*.vue",
+		"./@types/**/*.ts",
+		"./*",
+	],
+	"exclude": [],
+}

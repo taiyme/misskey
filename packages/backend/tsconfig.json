@@ -26,26 +26,26 @@
 		"rootDir": "./src",
 		"baseUrl": "./",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
 		},
 		"outDir": "./built",
 		"types": [
-			"node"
+			"node",
 		],
 		"typeRoots": [
 			"./src/@types",
 			"./node_modules/@types",
-			"./node_modules"
+			"./node_modules",
 		],
 		"lib": [
-			"esnext"
-		]
+			"ESNext",
+		],
 	},
 	"compileOnSave": false,
 	"include": [
-		"./src/**/*.ts"
+		"./src/**/*.ts",
 	],
 	"exclude": [
-		"./src/**/*.test.ts"
-	]
+		"./src/**/*.test.ts",
+	],
 }

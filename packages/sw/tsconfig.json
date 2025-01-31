@@ -19,22 +19,23 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@@/*": ["../frontend-shared/*"]
+			"@@/*": ["../frontend-shared/*"],
 		},
 		"typeRoots": [
 			"./node_modules/@types",
-			"./src/@types"
+			"./src/@types",
 		],
 		"lib": [
-			"esnext",
-			"webworker"
-		]
+			"ESNext",
+			"WebWorker",
+		],
 	},
 	"compileOnSave": false,
 	"include": [
-		"./**/*.ts"
-	]
+		"./src/**/*.ts",
+	],
+	"exclude": [],
 }

@@ -11,7 +11,7 @@
 		"sourceMap": false,
 		"target": "ES2022",
 		"module": "ES2022",
-		"moduleResolution": "Bundler",
+		"moduleResolution": "bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -21,27 +21,27 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@@/*": ["../frontend-shared/*"]
+			"@@/*": ["../frontend-shared/*"],
 		},
 		"typeRoots": [
 			"./@types",
 			"./node_modules/@types",
 			"./node_modules/@vue-macros",
-			"./node_modules"
+			"./node_modules",
 		],
 		"types": [
 			"vite/client",
 			"vitest/importMeta",
 		],
 		"lib": [
-			"esnext",
-			"dom",
-			"dom.iterable"
+			"ESNext",
+			"DOM",
+			"DOM.Iterable",
 		],
-		"jsx": "preserve"
+		"jsx": "preserve",
 	},
 	"compileOnSave": false,
 	"include": [
@@ -49,9 +49,9 @@
 		"./src/**/*.vue",
 		"./test/**/*.ts",
 		"./test/**/*.vue",
-		"./@types/**/*.ts"
+		"./@types/**/*.ts",
 	],
 	"exclude": [
-		".storybook/**/*"
-	]
+		"./.storybook/**/*",
+	],
 }

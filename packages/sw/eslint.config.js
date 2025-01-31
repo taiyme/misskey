@@ -21,11 +21,13 @@ export default [
 		},
 	},
 	{
-		files: ['**/*.ts', '**/*.tsx'],
+		files: ['**/*.ts'],
 		languageOptions: {
 			parserOptions: {
 				parser: tsParser,
-				project: ['./tsconfig.json'],
+				project: [
+					'./tsconfig.eslint.json',
+				],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},
