@@ -46,14 +46,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
 					<template v-else>{{ submitText }}</template>
-					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renote ? 'ti ti-quote' : 'ti ti-send'"></i>
+					<i style="margin-left: 6px;" :class="posted ? 'ti ti-check' : reply ? 'ti ti-arrow-back-up' : renoteTargetNote ? 'ti ti-quote' : 'ti ti-send'"></i>
 				</div>
 			</button>
 		</div>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
-	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
-	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<MkNoteSimple v-if="renoteTargetNote" :class="$style.targetNote" :note="renoteTargetNote"/>
+	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null; renoteTargetNote = null;"><i class="ti ti-x"></i></button></div>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
-	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :renote="renote" :quoteId="quoteId" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
+	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :renote="renoteTargetNote" :quoteId="quoteId" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
 	<footer :class="$style.footer">
@@ -100,7 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toASCII } from 'punycode';
+import { toASCII } from 'punycode.js';
 import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -190,12 +190,13 @@ const recentHashtags = ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'
 const imeText = ref('');
 const showingOptions = ref(false);
 const textAreaReadOnly = ref(false);
+const renoteTargetNote = shallowRef(props.renote ?? null);
 
 const draftKey = computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
 
-	if (props.renote) {
-		key += `renote:${props.renote.id}`;
+	if (renoteTargetNote.value) {
+		key += `renote:${renoteTargetNote.value.id}`;
 	} else if (props.reply) {
 		key += `reply:${props.reply.id}`;
 	} else {
@@ -206,7 +207,7 @@ const draftKey = computed((): string => {
 });
 
 const placeholder = computed((): string => {
-	if (props.renote) {
+	if (renoteTargetNote.value) {
 		return i18n.ts._postForm.quotePlaceholder;
 	} else if (props.reply) {
 		return i18n.ts._postForm.replyPlaceholder;
@@ -226,7 +227,7 @@ const placeholder = computed((): string => {
 });
 
 const submitText = computed((): string => {
-	return props.renote
+	return renoteTargetNote.value
 		? i18n.ts.quote
 		: props.reply
 			? i18n.ts.reply
@@ -247,10 +248,11 @@ const canPost = computed((): boolean => {
 			1 <= textLength.value ||
 			1 <= files.value.length ||
 			poll.value != null ||
-			props.renote != null ||
+			renoteTargetNote.value != null ||
 			quoteId.value != null
 		) &&
 		(textLength.value <= maxTextLength.value) &&
+		(files.value.length <= 16) &&
 		(!poll.value || poll.value.choices.length >= 2);
 });
 
@@ -603,7 +605,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!props.renote && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -782,7 +784,7 @@ async function post(ev?: MouseEvent) {
 		text: text.value === '' ? null : text.value,
 		fileIds: files.value.length > 0 ? files.value.map(f => f.id) : undefined,
 		replyId: props.reply ? props.reply.id : undefined,
-		renoteId: props.renote ? props.renote.id : quoteId.value ? quoteId.value : undefined,
+		renoteId: renoteTargetNote.value ? renoteTargetNote.value.id : quoteId.value ? quoteId.value : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		poll: poll.value,
 		cw: useCw.value ? cw.value ?? '' : null,
@@ -870,7 +872,7 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('brainDiver');
 			}
 
-			if (props.renote && (props.renote.userId === $i.id) && text.length > 0) {
+			if (renoteTargetNote.value && (renoteTargetNote.value.userId === $i.id) && text.length > 0) {
 				claimAchievement('selfQuote');
 			}
 
@@ -1041,7 +1043,7 @@ onMounted(() => {
 					users.forEach(u => pushVisibleUser(u));
 				});
 			}
-			quoteId.value = init.renote ? init.renote.id : null;
+			quoteId.value = renoteTargetNote.value ? renoteTargetNote.value.id : null;
 			reactionAcceptance.value = init.reactionAcceptance;
 		}
 
@@ -1427,6 +1429,5 @@ defineExpose({
 	.headerRight {
 		gap: 0;
 	}
-
 }
 </style>

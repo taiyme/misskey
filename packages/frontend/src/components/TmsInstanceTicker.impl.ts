@@ -9,6 +9,7 @@ import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 import { type HEX, hexToRgb } from '@/scripts/tms/color.js';
 
 export type TmsInstanceTickerProps = {
+	readonly host?: string | null;
 	readonly instance?: {
 		readonly name?: string | null;
 		// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
@@ -42,12 +43,12 @@ export const getTickerInfo = (props: TmsInstanceTickerProps) => {
 			themeColor: props.channel.color,
 		} as const satisfies ITickerInfo;
 	}
-	if (props.instance != null) {
+	if (props.instance != null || props.host != null) {
 		return {
-			name: props.instance.name ?? '',
+			name: props.instance?.name ?? props.host ?? '',
 			// NOTE: リモートサーバーにおいてiconUrlを参照すると意図した画像にならない https://github.com/taiyme/misskey/issues/210
-			iconUrl: getProxiedImageUrlNullable(props.instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png',
-			themeColor: props.instance.themeColor ?? TICKER_BG_COLOR_DEFAULT,
+			iconUrl: getProxiedImageUrlNullable(props.instance?.faviconUrl, 'preview') ?? '/client-assets/dummy.png',
+			themeColor: props.instance?.themeColor ?? TICKER_BG_COLOR_DEFAULT,
 		} as const satisfies ITickerInfo;
 	}
 	return {

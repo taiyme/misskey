@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div :class="[$style.navInfoList, '_gaps_s']">
 							<MkInfo v-if="thereIsUnresolvedAbuseReport" warn>{{ i18n.ts.thereIsUnresolvedAbuseReportWarning }} <MkA to="/admin/abuses" class="_link">{{ i18n.ts.check }}</MkA></MkInfo>
 							<MkInfo v-if="noMaintainerInformation" warn>{{ i18n.ts.noMaintainerInformationWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-							<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/moderation" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
+							<MkInfo v-if="noInquiryUrl" warn>{{ i18n.ts.noInquiryUrlWarning }} <MkA to="/admin/settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 							<MkInfo v-if="noBotProtection" warn>{{ i18n.ts.noBotProtectionWarning }} <MkA to="/admin/security" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 							<MkInfo v-if="noEmailServer" warn>{{ i18n.ts.noEmailServerWarning }} <MkA to="/admin/email-settings" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						</div>
@@ -208,6 +208,11 @@ const menuDef = computed<ISuperMenuDefinitions>(() => [{
 		text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage.value?.route.name === 'emojis',
+	}, {
+		icon: 'ti ti-icons',
+		text: i18n.ts.customEmojis + '(beta)',
+		to: '/admin/emojis2',
+		active: currentPage.value?.route.name === 'emojis2',
 	}, {
 		icon: 'ti ti-sparkles',
 		text: i18n.ts.avatarDecorations,

@@ -33,4 +33,11 @@ export default [
 			'@typescript-eslint/no-var-requires': 'off',
 		},
 	},
+	{
+		rules: {
+			'no-restricted-imports': ['error', {
+				paths: [{ name: 'punycode' }],
+			}],
+		},
+	},
 ];

@@ -37,6 +37,10 @@ export interface Locale extends ILocale {
      */
     readonly "search": string;
     /**
+     * リセット
+     */
+    readonly "reset": string;
+    /**
      * 通知
      */
     readonly "notifications": string;
@@ -210,6 +214,10 @@ export interface Locale extends ILocale {
      * リンクをコピー
      */
     readonly "copyLink": string;
+    /**
+     * リモートのリンクをコピー
+     */
+    readonly "copyRemoteLink": string;
     /**
      * リノートのリンクをコピー
      */
@@ -2755,9 +2763,21 @@ export interface Locale extends ILocale {
      */
     readonly "wordMute": string;
     /**
+     * 指定した語句を含むノートを最小化します。最小化されたノートをクリックすることで表示することができます。
+     */
+    readonly "wordMuteDescription": string;
+    /**
      * ハードワードミュート
      */
     readonly "hardWordMute": string;
+    /**
+     * ミュートされたワードを表示
+     */
+    readonly "showMutedWord": string;
+    /**
+     * 指定した語句を含むノートを隠します。ワードミュートとは異なり、ノートは完全に表示されなくなります。
+     */
+    readonly "hardWordMuteDescription": string;
     /**
      * 正規表現エラー
      */
@@ -2774,6 +2794,10 @@ export interface Locale extends ILocale {
      * {name}が何かを言いました
      */
     readonly "userSaysSomething": ParameterizedString<"name">;
+    /**
+     * {name}が「{word}」について何かを言いました
+     */
+    readonly "userSaysSomethingAbout": ParameterizedString<"name" | "word">;
     /**
      * アクティブにする
      */
@@ -5222,6 +5246,14 @@ export interface Locale extends ILocale {
      * 注意事項を理解した上でオンにします。
      */
     readonly "acknowledgeNotesAndEnable": string;
+    /**
+     * このサーバーはホワイトリスト連合で運用されています。管理者が指定したサーバー以外とやり取りすることはできません。
+     */
+    readonly "federationSpecified": string;
+    /**
+     * このサーバーは連合が無効化されています。他のサーバーのユーザーとやり取りすることはできません。
+     */
+    readonly "federationDisabled": string;
     readonly "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -10515,6 +10547,227 @@ export interface Locale extends ILocale {
          */
         readonly "native": string;
     };
+    readonly "_gridComponent": {
+        readonly "_error": {
+            /**
+             * この値は必須項目です
+             */
+            readonly "requiredValue": string;
+            /**
+             * 正規表現によるバリデーションはtype:textのカラムのみサポートします。
+             */
+            readonly "columnTypeNotSupport": string;
+            /**
+             * この値は{pattern}のパターンに一致しません
+             */
+            readonly "patternNotMatch": ParameterizedString<"pattern">;
+            /**
+             * この値は一意である必要があります
+             */
+            readonly "notUnique": string;
+        };
+    };
+    readonly "_roleSelectDialog": {
+        /**
+         * 選択されていません
+         */
+        readonly "notSelected": string;
+    };
+    readonly "_customEmojisManager": {
+        readonly "_gridCommon": {
+            /**
+             * 選択行をコピー
+             */
+            readonly "copySelectionRows": string;
+            /**
+             * 選択範囲をコピー
+             */
+            readonly "copySelectionRanges": string;
+            /**
+             * 選択行を削除
+             */
+            readonly "deleteSelectionRows": string;
+            /**
+             * 選択範囲の値をクリア
+             */
+            readonly "deleteSelectionRanges": string;
+            /**
+             * 検索設定
+             */
+            readonly "searchSettings": string;
+            /**
+             * 検索条件を詳細に設定します。
+             */
+            readonly "searchSettingCaption": string;
+            /**
+             * 表示件数
+             */
+            readonly "searchLimit": string;
+            /**
+             * 並び順
+             */
+            readonly "sortOrder": string;
+            /**
+             * 登録ログ
+             */
+            readonly "registrationLogs": string;
+            /**
+             * 絵文字更新・削除時のログが表示されます。更新・削除操作を行ったり、ページを遷移・リロードすると消えます。
+             */
+            readonly "registrationLogsCaption": string;
+            /**
+             * 絵文字の更新・削除に失敗しました。詳細は登録ログをご確認ください。
+             */
+            readonly "alertEmojisRegisterFailedDescription": string;
+        };
+        readonly "_logs": {
+            /**
+             * 成功ログを表示
+             */
+            readonly "showSuccessLogSwitch": string;
+            /**
+             * 失敗ログはありません。
+             */
+            readonly "failureLogNothing": string;
+            /**
+             * ログはありません。
+             */
+            readonly "logNothing": string;
+        };
+        readonly "_remote": {
+            /**
+             * 選択行の詳細
+             */
+            readonly "selectionRowDetail": string;
+            /**
+             * 選択行をインポート
+             */
+            readonly "importSelectionRows": string;
+            /**
+             * 選択範囲の行をインポート
+             */
+            readonly "importSelectionRangesRows": string;
+            /**
+             * チェックされた絵文字をインポート
+             */
+            readonly "importEmojisButton": string;
+            /**
+             * 絵文字のインポート
+             */
+            readonly "confirmImportEmojisTitle": string;
+            /**
+             * リモートから受信した{count}個の絵文字のインポートを行います。絵文字のライセンスに十分な注意を払ってください。実行しますか？
+             */
+            readonly "confirmImportEmojisDescription": ParameterizedString<"count">;
+        };
+        readonly "_local": {
+            /**
+             * 登録済み絵文字一覧
+             */
+            readonly "tabTitleList": string;
+            /**
+             * 絵文字の登録
+             */
+            readonly "tabTitleRegister": string;
+            readonly "_list": {
+                /**
+                 * 登録された絵文字はありません。
+                 */
+                readonly "emojisNothing": string;
+                /**
+                 * 選択行を削除対象にする
+                 */
+                readonly "markAsDeleteTargetRows": string;
+                /**
+                 * 選択範囲の行を削除対象にする
+                 */
+                readonly "markAsDeleteTargetRanges": string;
+                /**
+                 * 変更された絵文字はありません。
+                 */
+                readonly "alertUpdateEmojisNothingDescription": string;
+                /**
+                 * 削除対象の絵文字はありません。
+                 */
+                readonly "alertDeleteEmojisNothingDescription": string;
+                /**
+                 * ページを移動しますか？
+                 */
+                readonly "confirmMovePage": string;
+                /**
+                 * 表示を変更しますか？
+                 */
+                readonly "confirmChangeView": string;
+                /**
+                 * {count}個の絵文字を更新します。実行しますか？
+                 */
+                readonly "confirmUpdateEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * チェックがつけられた{count}個の絵文字を削除します。実行しますか？
+                 */
+                readonly "confirmDeleteEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 今までに加えた変更がすべてリセットされます。
+                 */
+                readonly "confirmResetDescription": string;
+                /**
+                 * このページの絵文字に変更が加えられています。
+                 * 保存せずにこのままページを移動すると、このページで加えた変更はすべて破棄されます。
+                 */
+                readonly "confirmMovePageDesciption": string;
+                /**
+                 * 絵文字に設定されたロールで検索
+                 */
+                readonly "dialogSelectRoleTitle": string;
+            };
+            readonly "_register": {
+                /**
+                 * アップロード設定
+                 */
+                readonly "uploadSettingTitle": string;
+                /**
+                 * この画面で絵文字アップロードを行う際の動作を設定できます。
+                 */
+                readonly "uploadSettingDescription": string;
+                /**
+                 * ディレクトリ名を"category"に入力する
+                 */
+                readonly "directoryToCategoryLabel": string;
+                /**
+                 * ディレクトリをドラッグ・ドロップした時に、ディレクトリ名を"category"に入力します。
+                 */
+                readonly "directoryToCategoryCaption": string;
+                /**
+                 * いずれかの方法で登録する絵文字を選択してください。
+                 */
+                readonly "emojiInputAreaCaption": string;
+                /**
+                 * この枠に画像ファイルまたはディレクトリをドラッグ＆ドロップ
+                 */
+                readonly "emojiInputAreaList1": string;
+                /**
+                 * このリンクをクリックしてPCから選択する
+                 */
+                readonly "emojiInputAreaList2": string;
+                /**
+                 * このリンクをクリックしてドライブから選択する
+                 */
+                readonly "emojiInputAreaList3": string;
+                /**
+                 * リストに表示されている絵文字を新たなカスタム絵文字として登録します。よろしいですか？（負荷を避けるため、一度の操作で登録可能な絵文字は{count}件までです）
+                 */
+                readonly "confirmRegisterEmojisDescription": ParameterizedString<"count">;
+                /**
+                 * 編集内容を破棄し、リストに表示されている絵文字をクリアします。よろしいですか？
+                 */
+                readonly "confirmClearEmojisDescription": string;
+                /**
+                 * ドラッグ＆ドロップされた{count}個のファイルをドライブにアップロードします。実行しますか？
+                 */
+                readonly "confirmUploadEmojisDescription": ParameterizedString<"count">;
+            };
+        };
+    };
     readonly "_embedCodeGen": {
         /**
          * 埋め込みコードをカスタマイズ
@@ -10600,6 +10853,108 @@ export interface Locale extends ILocale {
          * 送った申請
          */
         readonly "sent": string;
+    };
+    readonly "_remoteLookupErrors": {
+        readonly "_federationNotAllowed": {
+            /**
+             * このサーバーとは通信できません
+             */
+            readonly "title": string;
+            /**
+             * このサーバーとの通信が無効化されているか、このサーバーをブロックしている・ブロックされている可能性があります。
+             * サーバー管理者にお問い合わせください。
+             */
+            readonly "description": string;
+        };
+        readonly "_uriInvalid": {
+            /**
+             * URIが不正です
+             */
+            readonly "title": string;
+            /**
+             * 入力されたURIに問題があります。URIに使用できない文字を入力していないか確認してください。
+             */
+            readonly "description": string;
+        };
+        readonly "_requestFailed": {
+            /**
+             * リクエストに失敗しました
+             */
+            readonly "title": string;
+            /**
+             * このサーバーとの通信に失敗しました。相手サーバーがダウンしている可能性があります。また、不正なURIや存在しないURIを入力していないか確認してください。
+             */
+            readonly "description": string;
+        };
+        readonly "_responseInvalid": {
+            /**
+             * レスポンスが不正です
+             */
+            readonly "title": string;
+            /**
+             * このサーバーと通信することはできましたが、得られたデータが不正なものでした。
+             */
+            readonly "description": string;
+        };
+        readonly "_responseInvalidIdHostNotMatch": {
+            /**
+             * 入力されたURIのドメインと最終的に得られたURIのドメインとが異なります。第三者のサーバーを介してリモートのコンテンツを照会している場合は、発信元のサーバーで取得できるURIを使用して照会し直してください。
+             */
+            readonly "description": string;
+        };
+        readonly "_noSuchObject": {
+            /**
+             * 見つかりません
+             */
+            readonly "title": string;
+            /**
+             * 要求されたリソースは見つかりませんでした。URIをもう一度お確かめください。
+             */
+            readonly "description": string;
+        };
+    };
+    readonly "_captcha": {
+        /**
+         * CAPTCHAを通過してください
+         */
+        readonly "verify": string;
+        /**
+         * サイトキーとシークレットキーにテスト用の値を入力することでプレビューを確認できます。
+         * 詳細は下記ページをご確認ください。
+         */
+        readonly "testSiteKeyMessage": string;
+        readonly "_error": {
+            readonly "_requestFailed": {
+                /**
+                 * CAPTCHAのリクエストに失敗しました
+                 */
+                readonly "title": string;
+                /**
+                 * しばらく後に実行するか、設定をもう一度ご確認ください。
+                 */
+                readonly "text": string;
+            };
+            readonly "_verificationFailed": {
+                /**
+                 * CAPTCHAの検証に失敗しました
+                 */
+                readonly "title": string;
+                /**
+                 * 設定が正しいかどうかもう一度確認ください。
+                 */
+                readonly "text": string;
+            };
+            readonly "_unknown": {
+                /**
+                 * CAPTCHAエラー
+                 */
+                readonly "title": string;
+                /**
+                 * 想定外のエラーが発生しました。
+                 */
+                readonly "text": string;
+            };
+        };
     };
     readonly "_tms": {
         /**

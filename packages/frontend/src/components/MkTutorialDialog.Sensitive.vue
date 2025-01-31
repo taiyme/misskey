@@ -128,7 +128,6 @@ const exampleNote = reactive<Misskey.entities.Note>({
 		border-radius: 999px;
 		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
-
 }
 
 .postIcon {

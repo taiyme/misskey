@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</details>
 	<details v-if="note.poll">
 		<summary>{{ i18n.ts.poll }}</summary>
-		<MkPoll :noteId="note.id" :poll="note.poll" :class="$style.poll"/>
+		<MkPoll :noteId="note.id" :poll="note.poll" :author="note.user" :emojiUrls="note.emojis" :class="$style.poll"/>
 	</details>
 	<button v-if="isLong && collapsed" :class="['_button', $style.showMoreFade]" @click="collapsed = false">
 		<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>

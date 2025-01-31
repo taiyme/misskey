@@ -7,6 +7,7 @@ on:
       - release
     paths:
       - .github/workflows/test-frontend.yaml
+      - .github/misskey/test.yml
       - packages/frontend/**/*
       - packages/frontend-embed/**/*
       - packages/frontend-shared/**/*
@@ -18,6 +19,7 @@ on:
       - taiyme
       - release
     paths:
+      - .github/misskey/test.yml
       - packages/frontend/**/*
       - packages/frontend-embed/**/*
       - packages/frontend-shared/**/*

@@ -69,7 +69,6 @@ import { basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
 		border-radius: 999px;
 		background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	}
-
 }
 
 .postIcon {

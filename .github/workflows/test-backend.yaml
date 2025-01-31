@@ -7,6 +7,7 @@ on:
       - release
     paths:
       - .github/workflows/test-backend.yaml
+      - .github/misskey/test.yml
       - packages/backend/**/*
       - packages/misskey-js/**/*
 
@@ -15,6 +16,7 @@ on:
       - taiyme
       - release
     paths:
+      - .github/misskey/test.yml
       - packages/backend/**/*
       - packages/misskey-js/**/*
 

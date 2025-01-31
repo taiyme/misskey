@@ -5,14 +5,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-if="show" ref="el" :class="[$style.root]">
-	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
+	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thinRef }]">
+		<div v-if="!thinRef && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
 			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
-		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
+		<div v-else-if="!thinRef && narrow && !hideTitleRef" :class="$style.buttonsLeft"/>
 
 		<template v-if="pageMetadata">
-			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
+			<div v-if="!hideTitleRef" :class="$style.titleContainer" @click="top">
 				<div v-if="pageMetadata.avatar" :class="$style.titleAvatarContainer">
 					<MkAvatar :class="$style.titleAvatar" :user="pageMetadata.avatar" indicator/>
 				</div>
@@ -26,9 +26,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
+			<XTabs v-if="!narrow || hideTitleRef" :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
 		</template>
-		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
+		<div v-if="(!thinRef && narrow && !hideTitleRef) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
 				<MkButton
 					v-if="action.asFullButton"
@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 	</div>
-	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
+	<div v-if="(narrow && !hideTitleRef) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thinRef }]">
 		<XTabs :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
 	</div>
 </div>
@@ -67,17 +67,20 @@ import { onMounted, onUnmounted, ref, inject, shallowRef, computed } from 'vue';
 import { scrollToTop } from '@@/js/scroll.js';
 import XTabs, { Tab } from './MkPageHeader.tabs.vue';
 import type { PageHeaderItem } from '@/types/page-header.js';
-import { injectReactiveMetadata } from '@/scripts/page-metadata.js';
+import { injectReactiveMetadata, type PageMetadata } from '@/scripts/page-metadata.js';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
+	overridePageMetadata?: PageMetadata | null;
 	tabs?: Tab[];
 	tab?: string;
 	actions?: PageHeaderItem[] | null;
+	hideTitle?: boolean;
 	thin?: boolean;
 	displayMyAvatar?: boolean;
 }>(), {
+	overridePageMetadata: null,
 	tabs: () => [],
 	tab: undefined,
 	actions: null,
@@ -87,17 +90,21 @@ const emit = defineEmits<{
 	(ev: 'update:tab', key: string): void;
 }>();
 
-const pageMetadata = injectReactiveMetadata();
+const injectedPageMetadata = injectReactiveMetadata();
+const pageMetadata = computed(() => props.overridePageMetadata ?? injectedPageMetadata.value);
 
-const hideTitle = inject<boolean>('shouldOmitHeaderTitle', false);
-const thin_ = props.thin || inject<boolean>('shouldHeaderThin', false);
+const injectedShouldOmitHeaderTitle = inject<boolean>('shouldOmitHeaderTitle', false);
+const injectedShouldHeaderThin = inject<boolean>('shouldHeaderThin', false);
+
+const hideTitleRef = computed(() => injectedShouldOmitHeaderTitle || props.hideTitle);
+const thinRef = computed(() => injectedShouldHeaderThin || props.thin);
 
 const el = shallowRef<HTMLElement | undefined>(undefined);
 const narrow = ref(false);
 const hasTabs = computed(() => props.tabs.length > 0);
 const hasActions = computed(() => props.actions && props.actions.length > 0);
 const show = computed(() => {
-	return !hideTitle || hasTabs.value || hasActions.value;
+	return !hideTitleRef.value || hasTabs.value || hasActions.value;
 });
 
 const top = () => {
