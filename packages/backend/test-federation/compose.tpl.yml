@@ -12,7 +12,7 @@ services:
       retries: 20
 
   misskey:
-    image: node:20
+    image: node:22-bookworm
     env_file:
       - ./.config/docker.env
     environment:
@@ -85,7 +85,7 @@ services:
     working_dir: /misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm@9.6.0
         pnpm -F backend migrate
         pnpm -F backend start
       "

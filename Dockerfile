@@ -1,24 +1,11 @@
-# syntax = docker/dockerfile:1.4
+# syntax=docker/dockerfile:1
 
 ARG NODE_VERSION=22.11.0-bookworm
 
 
-# download submodules
+# [native-base]: setup pnpm, fetch dependencies
 
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS submodule
-
-WORKDIR /misskey
-
-COPY ./.git/ ./.git/
-
-RUN git submodule update --init --recursive
-
-
-# build assets & compile TypeScript
-
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
-
-ENV NODE_ENV=production
+FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-slim AS native-base
 
 WORKDIR /misskey
 
@@ -26,13 +13,60 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
 	rm -f /etc/apt/apt.conf.d/docker-clean && \
 	echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
-	apt-get update && \
-	apt-get install -yqq --no-install-recommends \
-	build-essential
-
-RUN corepack enable
+	apt-get update && apt-get install -yqq --no-install-recommends \
+	build-essential \
+	git
 
 COPY --link ./patches/ ./patches/
+COPY --link ./.npmrc ./.node-version ./
+COPY --link ./pnpm-lock.yaml ./
+
+RUN npm install -g pnpm@9.6.0
+
+RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
+	pnpm config set -g store-dir /.pnpm-store && \
+	pnpm fetch --ignore-scripts
+
+
+# [target-base]: setup pnpm, fetch dependencies
+
+FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS target-base
+
+WORKDIR /misskey
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt,sharing=locked \
+	rm -f /etc/apt/apt.conf.d/docker-clean && \
+	echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
+	apt-get update && apt-get install -yqq --no-install-recommends \
+	build-essential \
+	git
+
+COPY --link ./patches/ ./patches/
+COPY --link ./.npmrc ./.node-version ./
+COPY --link ./pnpm-lock.yaml ./
+
+RUN npm install -g pnpm@9.6.0
+
+RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
+	pnpm config set -g store-dir /.pnpm-store && \
+	pnpm fetch --ignore-scripts
+
+
+# [native-submodule]: init git submodules
+
+FROM native-base AS native-submodule
+
+COPY --link ./.gitmodules ./
+COPY --link ./.git/ ./.git/
+
+RUN git submodule update --init --recursive
+
+
+# [native-builder]: install dependencies, build
+
+FROM native-base AS native-builder
+
 COPY --link ./packages/sw/package.json ./packages/sw/
 COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
@@ -41,10 +75,10 @@ COPY --link ./packages/backend/package.json ./packages/backend/
 COPY --link ./packages/frontend-shared/package.json ./packages/frontend-shared/
 COPY --link ./packages/frontend/package.json ./packages/frontend/
 COPY --link ./packages/frontend-embed/package.json ./packages/frontend-embed/
-COPY --link ./pnpm-lock.yaml ./pnpm-workspace.yaml ./package.json ./
+COPY --link ./pnpm-workspace.yaml ./package.json ./
 
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
+RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
+	pnpm rebuild --recursive --aggregate-output
 
 COPY --link ./scripts/ ./scripts/
 COPY --link ./packages/sw/build.js ./packages/sw/tsconfig.json ./packages/sw/
@@ -74,50 +108,39 @@ COPY --link ./packages/frontend/.storybook/.gitignore ./packages/frontend/.story
 COPY --link ./packages/frontend/.gitignore ./packages/frontend/
 COPY --link ./packages/frontend-embed/.gitignore ./packages/frontend-embed/
 COPY --link ./.gitignore ./
+COPY --link --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
 COPY --link ./.git/ ./.git/
-COPY --link --from=submodule /misskey/fluent-emojis/ ./fluent-emojis/
 
-RUN pnpm build
+RUN NODE_ENV=production pnpm build
 
 
-# build native dependencies for target platform
+# [target-builder]: install dependencies
 
-FROM --platform=$TARGETPLATFORM node:${NODE_VERSION} AS target-builder
+FROM target-base AS target-builder
 
-ENV NODE_ENV=production
-
-RUN apt-get update && \
-	apt-get install -yqq --no-install-recommends \
-	build-essential
-
-RUN corepack enable
-
-WORKDIR /misskey
-
-COPY --link ./patches/ ./patches/
 COPY --link ./scripts/ ./scripts/
 COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
 COPY --link ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --link ./packages/backend/package.json ./packages/backend/
-COPY --link ./pnpm-lock.yaml ./pnpm-workspace.yaml ./package.json ./
+COPY --link ./pnpm-workspace.yaml ./package.json ./
 
-RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm i --frozen-lockfile --aggregate-output
+RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
+	pnpm rebuild --recursive --aggregate-output
 
 
-# build final image
+# [runner]: build final image
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
+
+WORKDIR /misskey
 
 ARG UID="991"
 ARG GID="991"
 
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -yqq --no-install-recommends \
 	ffmpeg tini curl libjemalloc-dev libjemalloc2 && \
 	ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
-	corepack enable && \
 	groupadd -g "${GID}" misskey && \
 	useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey && \
 	find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /u+s -ignore_readdir_race -exec chmod u-s {} \; && \
@@ -125,23 +148,21 @@ RUN apt-get update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists
 
-USER misskey
-WORKDIR /misskey
-
-COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
-COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
-COPY --chown=misskey:misskey ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
-COPY --chown=misskey:misskey ./packages/misskey-js/package.json ./packages/misskey-js/
-COPY --chown=misskey:misskey ./packages/backend/package.json ./packages/backend/ormconfig.js ./packages/backend/
-COPY --chown=misskey:misskey ./packages/backend/assets/ ./packages/backend/assets/
-COPY --chown=misskey:misskey ./packages/backend/scripts/ ./packages/backend/scripts/
-COPY --chown=misskey:misskey ./packages/backend/nsfw-model/ ./packages/backend/nsfw-model/
-COPY --chown=misskey:misskey ./packages/backend/migration/ ./packages/backend/migration/
-COPY --chown=misskey:misskey ./packages/frontend/assets/ ./packages/frontend/assets/
-COPY --chown=misskey:misskey ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
-COPY --chown=misskey:misskey ./.node-version ./package.json ./pnpm-workspace.yaml ./
-COPY --chown=misskey:misskey ./healthcheck.sh ./
-COPY --chown=misskey:misskey --from=submodule /misskey/fluent-emojis/ ./fluent-emojis/
+COPY --chown=misskey:misskey --link ./packages/sw/package.json ./packages/sw/
+COPY --chown=misskey:misskey --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
+COPY --chown=misskey:misskey --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
+COPY --chown=misskey:misskey --link ./packages/misskey-js/package.json ./packages/misskey-js/
+COPY --chown=misskey:misskey --link ./packages/backend/package.json ./packages/backend/ormconfig.js ./packages/backend/
+COPY --chown=misskey:misskey --link ./packages/backend/assets/ ./packages/backend/assets/
+COPY --chown=misskey:misskey --link ./packages/backend/scripts/ ./packages/backend/scripts/
+COPY --chown=misskey:misskey --link ./packages/backend/nsfw-model/ ./packages/backend/nsfw-model/
+COPY --chown=misskey:misskey --link ./packages/backend/migration/ ./packages/backend/migration/
+COPY --chown=misskey:misskey --link ./packages/frontend/assets/ ./packages/frontend/assets/
+COPY --chown=misskey:misskey --link ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
+COPY --chown=misskey:misskey --link ./.npmrc ./.node-version ./
+COPY --chown=misskey:misskey --link ./pnpm-workspace.yaml ./package.json ./
+COPY --chown=misskey:misskey --link ./healthcheck.sh ./
+COPY --chown=misskey:misskey --link --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ ./packages/misskey-bubble-game/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built/ ./packages/misskey-reversi/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built/ ./packages/misskey-js/built/
@@ -153,7 +174,9 @@ COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules/ ./packages/backend/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules/ ./node_modules/
 
-RUN corepack install
+RUN npm install -g pnpm@9.6.0
+
+USER misskey
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production

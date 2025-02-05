@@ -52,9 +52,10 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      - name: Enable corepack
-        run: |
-          corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.1.0
@@ -122,9 +123,10 @@ jobs:
       # - uses: browser-actions/setup-firefox@955a5d42b5f068a8917c6a4ff1656a2235c66dfb # v1.5.2
       #   if: ${{ matrix.browser == 'firefox' }}
 
-      - name: Enable corepack
-        run: |
-          corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        with:
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.1.0
