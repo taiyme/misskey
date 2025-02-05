@@ -17,11 +17,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	build-essential \
 	git
 
+RUN npm install -g pnpm@9.6.0
+
 COPY --link ./patches/ ./patches/
 COPY --link ./.npmrc ./.node-version ./
 COPY --link ./pnpm-lock.yaml ./
-
-RUN npm install -g pnpm@9.6.0
 
 RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
 	pnpm config set -g store-dir /.pnpm-store && \
@@ -42,11 +42,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	build-essential \
 	git
 
+RUN npm install -g pnpm@9.6.0
+
 COPY --link ./patches/ ./patches/
 COPY --link ./.npmrc ./.node-version ./
 COPY --link ./pnpm-lock.yaml ./
-
-RUN npm install -g pnpm@9.6.0
 
 RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
 	pnpm config set -g store-dir /.pnpm-store && \
@@ -148,6 +148,8 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists
 
+RUN npm install -g pnpm@9.6.0
+
 COPY --chown=misskey:misskey --link ./packages/sw/package.json ./packages/sw/
 COPY --chown=misskey:misskey --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --chown=misskey:misskey --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
@@ -173,8 +175,6 @@ COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-rev
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules/ ./packages/misskey-js/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules/ ./packages/backend/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules/ ./node_modules/
-
-RUN npm install -g pnpm@9.6.0
 
 USER misskey
 
