@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script setup lang="ts" generic="T extends string">
+<script lang="ts" setup generic="T extends string">
 import { toRefs } from 'vue';
 import MkTagItem from '@/components/MkTagItem.vue';
 import MkButton from '@/components/MkButton.vue';

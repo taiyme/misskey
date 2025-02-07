@@ -124,7 +124,6 @@ async function done() {
 	padding: 12px;
 	border-top: solid 0.5px var(--MI_THEME-divider);
 	background: var(--MI_THEME-acrylicBg);
-	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
 }
 </style>
