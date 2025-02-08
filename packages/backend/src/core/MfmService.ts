@@ -177,13 +177,13 @@ export class MfmService {
 						if (child.nodeName === 'rp') {
 							continue;
 						}
-						if (treeAdapter.isTextNode(child) && !/\s|\[|\]/.test(child.value)) {
+						if (treeAdapter.isTextNode(child) && !(/\s|\[|\]/).test(child.value)) {
 							ruby.push([child.value, '']);
 							continue;
 						}
 						if (child.nodeName === 'rt' && ruby.length > 0) {
 							const rt = getText(child);
-							if (/\s|\[|\]/.test(rt)) {
+							if ((/\s|\[|\]/).test(rt)) {
 								// If any space is included in rt, it is treated as a normal text
 								ruby = [];
 								appendChildren(node.childNodes);
@@ -446,7 +446,7 @@ export class MfmService {
 			mention: (node) => {
 				const a = doc.createElement('a');
 				const { username, host, acct } = node.props;
-				const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username.toLowerCase() === username.toLowerCase() && remoteUser.host?.toLowerCase() === host?.toLowerCase());
+				const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username.toLowerCase() === username.toLowerCase() && remoteUser.host.toLowerCase() === host?.toLowerCase());
 				a.setAttribute('href', remoteUserInfo
 					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
 					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`);

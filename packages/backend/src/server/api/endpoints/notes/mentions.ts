@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			if (ps.following) {
-				query.andWhere(`((note.userId IN (${ followingQuery.getQuery() })) OR (note.userId = :meId))`, { meId: me.id });
+				query.andWhere(`((note.userId IN (${followingQuery.getQuery()})) OR (note.userId = :meId))`, { meId: me.id });
 				query.setParameters(followingQuery.getParameters());
 			}
 

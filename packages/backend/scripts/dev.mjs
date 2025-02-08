@@ -13,7 +13,7 @@ async function execBuildAssets() {
 		cwd: '../../',
 		stdout: process.stdout,
 		stderr: process.stderr,
-	})
+	});
 }
 
 function execStart() {
@@ -23,7 +23,7 @@ function execStart() {
 		stdout: process.stdout,
 		stderr: process.stderr,
 		env: {
-			'NODE_ENV': 'development',
+			NODE_ENV: 'development',
 		},
 	});
 }
@@ -59,5 +59,5 @@ async function killProc() {
 				await execBuildAssets();
 				execStart();
 			}
-		})
+		});
 })();

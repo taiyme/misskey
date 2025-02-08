@@ -41,10 +41,10 @@ export function correctFilename(filename: string, ext: string | null) {
 		filenameExt === dotExt ||
 
 		// jpeg, tiffを同一視
-		dotExt === '.jpg' && filenameExt === '.jpeg' ||
-		dotExt === '.tif' && filenameExt === '.tiff' ||
+		(dotExt === '.jpg' && filenameExt === '.jpeg') ||
+		(dotExt === '.tif' && filenameExt === '.tiff') ||
 		// dllもexeもportable executableなので判定が正しく行われない
-		dotExt === '.exe' && filenameExt === '.dll' ||
+		(dotExt === '.exe' && filenameExt === '.dll') ||
 
 		// 圧縮形式っぽければ下手に拡張子を変えない
 		// https://github.com/misskey-dev/misskey/issues/11482

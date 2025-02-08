@@ -29,9 +29,9 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiRenoteMuting['id'] | MiRenoteMuting,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hints?: {
-			packedMutee?: Packed<'UserDetailedNotMe'>
+			packedMutee?: Packed<'UserDetailedNotMe'>;
 		},
 	): Promise<Packed<'RenoteMuting'>> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
@@ -49,7 +49,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public async packMany(
 		mutings: MiRenoteMuting[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		const _users = mutings.map(({ mutee, muteeId }) => mutee ?? muteeId);
 		const _userMap = await this.userEntityService.packMany(_users, me, { schema: 'UserDetailedNotMe' })

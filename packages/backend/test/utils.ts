@@ -14,12 +14,12 @@ import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
 import { type Response } from 'node-fetch';
 import Fastify from 'fastify';
-import { entities } from '../src/postgres.js';
-import { loadConfig } from '../src/config.js';
-import type * as Misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { ApiError } from '@/server/api/error.js';
+import { entities } from '../src/postgres.js';
+import { loadConfig } from '../src/config.js';
+import type * as Misskey from 'misskey-js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -35,7 +35,7 @@ export type SystemWebhookPayload = {
 	createdAt: string;
 	type: string;
 	body: any;
-}
+};
 
 const config = loadConfig();
 export const port = config.port;
@@ -50,13 +50,13 @@ export const cookie = (me: UserToken): string => {
 };
 
 export type ApiRequest<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']> = {
-	endpoint: E,
-	parameters: P,
-	user: UserToken | undefined,
+	endpoint: E;
+	parameters: P;
+	user: UserToken | undefined;
 };
 
 export const successfulApiCall = async <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
-	status?: number,
+	status?: number;
 } = {}): Promise<Misskey.api.SwitchCaseResponseType<E, P>> => {
 	const { endpoint, parameters, user } = request;
 	const res = await api(endpoint, parameters, user);
@@ -67,9 +67,9 @@ export const successfulApiCall = async <E extends keyof Misskey.Endpoints, P ext
 };
 
 export const failedApiCall = async <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(request: ApiRequest<E, P>, assertion: {
-	status: number,
-	code: string,
-	id: string
+	status: number;
+	code: string;
+	id: string;
 }): Promise<void> => {
 	const { endpoint, parameters, user } = request;
 	const { status, code, id } = assertion;
@@ -81,9 +81,9 @@ export const failedApiCall = async <E extends keyof Misskey.Endpoints, P extends
 };
 
 export const api = async <E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req']>(path: E, params: P, me?: UserToken): Promise<{
-	status: number,
-	headers: Headers,
-	body: Misskey.api.SwitchCaseResponseType<E, P>
+	status: number;
+	headers: Headers;
+	body: Misskey.api.SwitchCaseResponseType<E, P>;
 }> => {
 	const bodyAuth: Record<string, string> = {};
 	const headers: Record<string, string> = {
@@ -309,9 +309,9 @@ interface UploadOptions {
  * @param user User
  */
 export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{
-	status: number,
-	headers: Headers,
-	body: Misskey.entities.DriveFile | null
+	status: number;
+	headers: Headers;
+	body: Misskey.entities.DriveFile | null;
 }> => {
 	const absPath = path == null
 		? new URL('resources/192.jpg', import.meta.url)
@@ -467,10 +467,10 @@ export function makeStreamCatcher<T>(
 }
 
 export type SimpleGetResponse = {
-	status: number,
-	body: any | JSDOM | null,
-	type: string | null,
-	location: string | null
+	status: number;
+	body: any | JSDOM | null;
+	type: string | null;
+	location: string | null;
 };
 export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined, bodyExtractor: (res: Response) => Promise<string | null> = _ => Promise.resolve(null)): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
@@ -518,19 +518,19 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
  * @param offsetBy 何をキーとしてPaginationするか。
  * @param ordering 昇順・降順
  */
-export async function testPaginationConsistency<Entity extends { id: string, createdAt?: string }>(
+export async function testPaginationConsistency<Entity extends { id: string; createdAt?: string; }>(
 	expected: Entity[],
 	fetchEntities: (paginationParam: {
-		limit?: number,
-		offset?: number,
-		sinceId?: string,
-		untilId?: string,
-		sinceDate?: number,
-		untilDate?: number,
+		limit?: number;
+		offset?: number;
+		sinceId?: string;
+		untilId?: string;
+		sinceDate?: number;
+		untilDate?: number;
 	}) => Promise<Entity[]>,
 	offsetBy: 'offset' | 'id' | 'createdAt' = 'id',
 	ordering: 'desc' | 'asc' = 'desc'): Promise<void> {
-	const rangeToParam = (p: { limit?: number, until?: Entity, since?: Entity }): object => {
+	const rangeToParam = (p: { limit?: number; until?: Entity; since?: Entity; }): object => {
 		if (offsetBy === 'id') {
 			return { limit: p.limit, sinceId: p.since?.id, untilId: p.until?.id };
 		} else {
@@ -622,7 +622,7 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	return db;
 }
 
-export async function sendEnvUpdateRequest(params: { key: string, value?: string }) {
+export async function sendEnvUpdateRequest(params: { key: string; value?: string; }) {
 	const res = await fetch(
 		`http://localhost:${port + 1000}/env`,
 		{
@@ -655,8 +655,8 @@ export async function sendEnvResetRequest() {
 
 // 与えられた値を強制的にエラーとみなす。この関数は型安全性を破壊するため、異常系のアサーション以外で用いられるべきではない。
 // FIXME(misskey-js): misskey-jsがエラー情報を公開するようになったらこの関数を廃止する
-export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
-	return obj as { error: ApiError };
+export function castAsError(obj: Record<string, unknown>): { error: ApiError; } {
+	return obj as { error: ApiError; };
 }
 
 export async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>, port = WEBHOOK_PORT): Promise<T> {

@@ -6,9 +6,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { type ApiRequest, api, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
 import type * as Misskey from 'misskey-js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
@@ -24,7 +24,7 @@ describe('クリップ', () => {
 	let bobFollowersNote: Misskey.entities.Note;
 	let bobSpecifiedNote: Misskey.entities.Note;
 
-	const compareBy = <T extends { id: string }, >(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
+	const compareBy = <T extends { id: string; } >(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 		return selector(a).localeCompare(selector(b));
 	};
 
@@ -70,7 +70,7 @@ describe('クリップ', () => {
 		});
 
 		// 入力が結果として入っていること。clipIdはidになるので消しておく
-		delete (parameters as { clipId?: string }).clipId;
+		delete (parameters as { clipId?: string; }).clipId;
 		assert.deepStrictEqual(clip, {
 			...clip,
 			...parameters,
@@ -225,14 +225,18 @@ describe('クリップ', () => {
 
 	test.each([
 		{ label: 'clipIdがnull', parameters: { clipId: null } },
-		{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
-			code: 'NO_SUCH_CLIP',
-			id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
-		} },
-		{ label: '他人のクリップ', user: () => bob, assertion: {
-			code: 'NO_SUCH_CLIP',
-			id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
-		} },
+		{
+			label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
+				code: 'NO_SUCH_CLIP',
+				id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
+			},
+		},
+		{
+			label: '他人のクリップ', user: () => bob, assertion: {
+				code: 'NO_SUCH_CLIP',
+				id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
+			},
+		},
 		...createClipDenyPattern as any,
 	])('の更新は$labelならできない', async ({ parameters, user, assertion }) => failedApiCall({
 		endpoint: 'clips/update',
@@ -258,14 +262,18 @@ describe('クリップ', () => {
 
 	test.each([
 		{ label: 'clipIdがnull', parameters: { clipId: null } },
-		{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
-			code: 'NO_SUCH_CLIP',
-			id: '70ca08ba-6865-4630-b6fb-8494759aa754',
-		} },
-		{ label: '他人のクリップ', user: () => bob, assertion: {
-			code: 'NO_SUCH_CLIP',
-			id: '70ca08ba-6865-4630-b6fb-8494759aa754',
-		} },
+		{
+			label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
+				code: 'NO_SUCH_CLIP',
+				id: '70ca08ba-6865-4630-b6fb-8494759aa754',
+			},
+		},
+		{
+			label: '他人のクリップ', user: () => bob, assertion: {
+				code: 'NO_SUCH_CLIP',
+				id: '70ca08ba-6865-4630-b6fb-8494759aa754',
+			},
+		},
 	])('の削除は$labelならできない', async ({ parameters, user, assertion }) => failedApiCall({
 		endpoint: 'clips/delete',
 		parameters: {
@@ -288,7 +296,7 @@ describe('クリップ', () => {
 	});
 
 	test('のID指定取得は他人のPrivateなクリップは取得できない', async () => {
-		const clip = await create({ isPublic: false }, { user: bob } );
+		const clip = await create({ isPublic: false }, { user: bob });
 		failedApiCall({
 			endpoint: 'clips/show',
 			parameters: { clipId: clip.id },
@@ -302,10 +310,12 @@ describe('クリップ', () => {
 
 	test.each([
 		{ label: 'clipId未指定', parameters: { clipId: undefined } },
-		{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
-			code: 'NO_SUCH_CLIP',
-			id: 'c3c5fe33-d62c-44d2-9ea5-d997703f5c20',
-		} },
+		{
+			label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
+				code: 'NO_SUCH_CLIP',
+				id: 'c3c5fe33-d62c-44d2-9ea5-d997703f5c20',
+			},
+		},
 	])('のID指定取得は$labelならできない', async ({ parameters, assetion }) => failedApiCall({
 		endpoint: 'clips/show',
 		// @ts-expect-error clipId must not be undefined
@@ -557,14 +567,18 @@ describe('クリップ', () => {
 
 		test.each([
 			{ label: 'clipIdがnull', parameters: { clipId: null } },
-			{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '4c2aaeae-80d8-4250-9606-26cb1fdb77a5',
-			} },
-			{ label: '他人のクリップ', user: () => bob, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '4c2aaeae-80d8-4250-9606-26cb1fdb77a5',
-			} },
+			{
+				label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '4c2aaeae-80d8-4250-9606-26cb1fdb77a5',
+				},
+			},
+			{
+				label: '他人のクリップ', user: () => bob, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '4c2aaeae-80d8-4250-9606-26cb1fdb77a5',
+				},
+			},
 		])('の設定は$labelならできない', async ({ parameters, user, assertion }) => failedApiCall({
 			endpoint: 'clips/favorite',
 			parameters: {
@@ -591,18 +605,24 @@ describe('クリップ', () => {
 
 		test.each([
 			{ label: 'clipIdがnull', parameters: { clipId: null } },
-			{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '2603966e-b865-426c-94a7-af4a01241dc1',
-			} },
-			{ label: '他人のクリップ', user: () => bob, assertion: {
-				code: 'NOT_FAVORITED',
-				id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
-			} },
-			{ label: 'お気に入りしていないクリップ', assertion: {
-				code: 'NOT_FAVORITED',
-				id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
-			} },
+			{
+				label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '2603966e-b865-426c-94a7-af4a01241dc1',
+				},
+			},
+			{
+				label: '他人のクリップ', user: () => bob, assertion: {
+					code: 'NOT_FAVORITED',
+					id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
+				},
+			},
+			{
+				label: 'お気に入りしていないクリップ', assertion: {
+					code: 'NOT_FAVORITED',
+					id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
+				},
+			},
 		])('の設定解除は$labelならできない', async ({ parameters, user, assertion }) => failedApiCall({
 			endpoint: 'clips/unfavorite',
 			parameters: {
@@ -740,18 +760,24 @@ describe('クリップ', () => {
 		test.each([
 			{ label: 'clipId未指定', parameters: { clipId: undefined } },
 			{ label: 'noteId未指定', parameters: { noteId: undefined } },
-			{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
-				code: 'NO_SUCH_CLIP',
-				id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf',
-			} },
-			{ label: '存在しないノート', parameters: { noteId: 'xxxxxx' }, assetion: {
-				code: 'NO_SUCH_NOTE',
-				id: 'fc8c0b49-c7a3-4664-a0a6-b418d386bb8b',
-			} },
-			{ label: '他人のクリップ', user: () => bob, assetion: {
-				code: 'NO_SUCH_CLIP',
-				id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf',
-			} },
+			{
+				label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
+					code: 'NO_SUCH_CLIP',
+					id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf',
+				},
+			},
+			{
+				label: '存在しないノート', parameters: { noteId: 'xxxxxx' }, assetion: {
+					code: 'NO_SUCH_NOTE',
+					id: 'fc8c0b49-c7a3-4664-a0a6-b418d386bb8b',
+				},
+			},
+			{
+				label: '他人のクリップ', user: () => bob, assetion: {
+					code: 'NO_SUCH_CLIP',
+					id: 'd6e76cc0-a1b5-4c7c-a287-73fa9c716dcf',
+				},
+			},
 		])('の追加は$labelだとできない', async ({ parameters, user, assetion }) => failedApiCall({
 			endpoint: 'clips/add-note',
 			parameters: {
@@ -778,18 +804,24 @@ describe('クリップ', () => {
 		test.each([
 			{ label: 'clipId未指定', parameters: { clipId: undefined } },
 			{ label: 'noteId未指定', parameters: { noteId: undefined } },
-			{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
-				code: 'NO_SUCH_CLIP',
-				id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52', // add-noteと異なる
-			} },
-			{ label: '存在しないノート', parameters: { noteId: 'xxxxxx' }, assetion: {
-				code: 'NO_SUCH_NOTE',
-				id: 'aff017de-190e-434b-893e-33a9ff5049d8', // add-noteと異なる
-			} },
-			{ label: '他人のクリップ', user: () => bob, assetion: {
-				code: 'NO_SUCH_CLIP',
-				id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52', // add-noteと異なる
-			} },
+			{
+				label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assetion: {
+					code: 'NO_SUCH_CLIP',
+					id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52', // add-noteと異なる
+				},
+			},
+			{
+				label: '存在しないノート', parameters: { noteId: 'xxxxxx' }, assetion: {
+					code: 'NO_SUCH_NOTE',
+					id: 'aff017de-190e-434b-893e-33a9ff5049d8', // add-noteと異なる
+				},
+			},
+			{
+				label: '他人のクリップ', user: () => bob, assetion: {
+					code: 'NO_SUCH_CLIP',
+					id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52', // add-noteと異なる
+				},
+			},
 		])('の削除は$labelだとできない', async ({ parameters, user, assetion }) => failedApiCall({
 			endpoint: 'clips/remove-note',
 			parameters: {
@@ -869,7 +901,7 @@ describe('クリップ', () => {
 		test.todo('Remoteのノートもクリップできる。どうテストしよう？');
 
 		test('は他人のPublicなクリップからも取得できる。', async () => {
-			const bobClip = await create({ isPublic: true }, { user: bob } );
+			const bobClip = await create({ isPublic: true }, { user: bob });
 			await addNote({ clipId: bobClip.id, noteId: aliceNote.id }, { user: bob });
 			const res = await notes({ clipId: bobClip.id });
 			assert.deepStrictEqual(res.map(x => x.id), [aliceNote.id]);
@@ -899,18 +931,24 @@ describe('クリップ', () => {
 			{ label: 'clipId未指定', parameters: { clipId: undefined } },
 			{ label: 'limitゼロ', parameters: { limit: 0 } },
 			{ label: 'limit最大+1', parameters: { limit: 101 } },
-			{ label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
-			} },
-			{ label: '他人のPrivateなクリップから', user: () => bob, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
-			} },
-			{ label: '未認証でPrivateなクリップから', user: () => undefined, assertion: {
-				code: 'NO_SUCH_CLIP',
-				id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
-			} },
+			{
+				label: '存在しないクリップ', parameters: { clipId: 'xxxxxx' }, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
+				},
+			},
+			{
+				label: '他人のPrivateなクリップから', user: () => bob, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
+				},
+			},
+			{
+				label: '未認証でPrivateなクリップから', user: () => undefined, assertion: {
+					code: 'NO_SUCH_CLIP',
+					id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
+				},
+			},
 		])('は$labelだと取得できない', async ({ parameters, user, assertion }) => failedApiCall({
 			endpoint: 'clips/notes',
 			parameters: {

@@ -42,9 +42,11 @@ export const paramDef = {
 		postId: { type: 'string', format: 'misskey:id' },
 		title: { type: 'string', minLength: 1 },
 		description: { type: 'string', nullable: true },
-		fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
-			type: 'string', format: 'misskey:id',
-		} },
+		fileIds: {
+			type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+				type: 'string', format: 'misskey:id',
+			},
+		},
 		isSensitive: { type: 'boolean', default: false },
 	},
 	required: ['postId'],

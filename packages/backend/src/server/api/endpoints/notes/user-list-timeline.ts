@@ -144,14 +144,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async getFromDb(list: MiUserList, ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		includeMyRenotes: boolean,
-		includeRenotedMyNotes: boolean,
-		includeLocalRenotes: boolean,
-		withFiles: boolean,
-		withRenotes: boolean,
+		untilId: string | null;
+		sinceId: string | null;
+		limit: number;
+		includeMyRenotes: boolean;
+		includeRenotedMyNotes: boolean;
+		includeLocalRenotes: boolean;
+		withFiles: boolean;
+		withRenotes: boolean;
 	}, me: MiLocalUser) {
 		//#region Construct query
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)

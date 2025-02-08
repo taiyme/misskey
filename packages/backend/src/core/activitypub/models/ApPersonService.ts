@@ -180,7 +180,7 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
+		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && (/^\w([\w-.]*\w)?$/).test(x.preferredUsername))) {
 			throw new Error('invalid Actor: wrong username');
 		}
 
@@ -284,12 +284,12 @@ export class ApPersonService implements OnModuleInit {
 			returns the special {id:null}&c value, and we return those
 		*/
 		return {
-			...( avatar ? {
+			...(avatar ? {
 				avatarId: avatar.id,
 				avatarUrl: avatar.url ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
 				avatarBlurhash: avatar.blurhash,
 			} : {}),
-			...( banner ? {
+			...(banner ? {
 				bannerId: banner.id,
 				bannerUrl: banner.url ? this.driveFileEntityService.getPublicUrl(banner) : null,
 				bannerBlurhash: banner.blurhash,
@@ -645,7 +645,7 @@ export class ApPersonService implements OnModuleInit {
 			exist.movedAt == null ||
 			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
-			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+			exist.movedAt.getTime() + (1000 * 60 * 60 * 24 * 14) < updated.movedAt.getTime()
 		)) {
 			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
 			return this.processRemoteMove(updated, movePreventUris)

@@ -73,14 +73,14 @@ export class FollowingEntityService {
 	@bindThis
 	public async pack(
 		src: MiFollowing['id'] | MiFollowing,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		},
 		hint?: {
-			packedFollowee?: Packed<'UserDetailedNotMe'>,
-			packedFollower?: Packed<'UserDetailedNotMe'>,
+			packedFollowee?: Packed<'UserDetailedNotMe'>;
+			packedFollower?: Packed<'UserDetailedNotMe'>;
 		},
 	): Promise<Packed<'Following'>> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
@@ -104,7 +104,7 @@ export class FollowingEntityService {
 	@bindThis
 	public async packMany(
 		followings: MiFollowing[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;

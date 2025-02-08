@@ -41,7 +41,7 @@ export default class PerUserReactionsChart extends Chart<typeof schema> { // esl
 	}
 
 	@bindThis
-	public async update(user: { id: MiUser['id'], host: MiUser['host'] }, note: MiNote): Promise<void> {
+	public async update(user: { id: MiUser['id']; host: MiUser['host']; }, note: MiNote): Promise<void> {
 		const prefix = this.userEntityService.isLocalUser(user) ? 'local' : 'remote';
 		this.commit({
 			[`${prefix}.count`]: 1,

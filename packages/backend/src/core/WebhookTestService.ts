@@ -46,9 +46,9 @@ function generateAbuseReport(override?: Partial<MiAbuseUserReport>): AbuseReport
 function generateDummyUser(override?: Partial<MiUser>): MiUser {
 	return {
 		id: 'dummy-user-1',
-		updatedAt: new Date(Date.now() - oneDayMillis * 7),
-		lastFetchedAt: new Date(Date.now() - oneDayMillis * 5),
-		lastActiveDate: new Date(Date.now() - oneDayMillis * 3),
+		updatedAt: new Date(Date.now() - (oneDayMillis * 7)),
+		lastFetchedAt: new Date(Date.now() - (oneDayMillis * 5)),
+		lastActiveDate: new Date(Date.now() - (oneDayMillis * 3)),
 		hideOnlineStatus: false,
 		username: 'dummy1',
 		usernameLower: 'dummy1',
@@ -256,7 +256,7 @@ function toPackedUserDetailedNotMe(user: MiUser, override?: Packed<'UserDetailed
 const dummyUser1 = generateDummyUser();
 const dummyUser2 = generateDummyUser({
 	id: 'dummy-user-2',
-	updatedAt: new Date(Date.now() - oneDayMillis * 30),
+	updatedAt: new Date(Date.now() - (oneDayMillis * 30)),
 	lastFetchedAt: new Date(Date.now() - oneDayMillis),
 	lastActiveDate: new Date(Date.now() - oneDayMillis),
 	username: 'dummy2',
@@ -268,9 +268,9 @@ const dummyUser2 = generateDummyUser({
 });
 const dummyUser3 = generateDummyUser({
 	id: 'dummy-user-3',
-	updatedAt: new Date(Date.now() - oneDayMillis * 15),
-	lastFetchedAt: new Date(Date.now() - oneDayMillis * 2),
-	lastActiveDate: new Date(Date.now() - oneDayMillis * 2),
+	updatedAt: new Date(Date.now() - (oneDayMillis * 15)),
+	lastFetchedAt: new Date(Date.now() - (oneDayMillis * 2)),
+	lastActiveDate: new Date(Date.now() - (oneDayMillis * 2)),
 	username: 'dummy3',
 	usernameLower: 'dummy3',
 	name: 'DummyUser3',
@@ -302,9 +302,9 @@ export class WebhookTestService {
 	@bindThis
 	public async testUserWebhook<T extends WebhookEventTypes>(
 		params: {
-			webhookId: MiWebhook['id'],
-			type: T,
-			override?: Partial<Omit<MiWebhook, 'id'>>,
+			webhookId: MiWebhook['id'];
+			type: T;
+			override?: Partial<Omit<MiWebhook, 'id'>>;
 		},
 		sender: MiUser | null,
 	) {
@@ -404,9 +404,9 @@ export class WebhookTestService {
 	@bindThis
 	public async testSystemWebhook<T extends SystemWebhookEventType>(
 		params: {
-			webhookId: MiSystemWebhook['id'],
-			type: T,
-			override?: Partial<Omit<MiSystemWebhook, 'id'>>,
+			webhookId: MiSystemWebhook['id'];
+			type: T;
+			override?: Partial<Omit<MiSystemWebhook, 'id'>>;
 		},
 	) {
 		const webhooks = await this.systemWebhookService.fetchSystemWebhooks({ ids: [params.webhookId] });

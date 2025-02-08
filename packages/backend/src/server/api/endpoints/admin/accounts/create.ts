@@ -99,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const res = await this.userEntityService.pack(account, account, {
 				schema: 'MeDetailed',
 				includeSecrets: true,
-			}) as Packed<'MeDetailed'> & { token: string };
+			}) as Packed<'MeDetailed'> & { token: string; };
 
 			res.token = secret;
 

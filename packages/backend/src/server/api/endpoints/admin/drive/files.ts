@@ -35,7 +35,7 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id', nullable: true },
-		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
+		type: { type: 'string', nullable: true, pattern: (/^[a-zA-Z0-9\/\-*]+$/).toString().slice(1, -1) },
 		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 		hostname: {
 			type: 'string',

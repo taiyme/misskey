@@ -35,7 +35,7 @@ const logger = new Logger('following/create');
 type Local = MiLocalUser | {
 	id: MiLocalUser['id'];
 	host: MiLocalUser['host'];
-	uri: MiLocalUser['uri']
+	uri: MiLocalUser['uri'];
 };
 type Remote = MiRemoteUser | {
 	id: MiRemoteUser['id'];
@@ -104,9 +104,9 @@ export class UserFollowingService implements OnModuleInit {
 		_follower: ThinUser,
 		_followee: ThinUser,
 		{ requestId, silent = false, withReplies }: {
-			requestId?: string,
-			silent?: boolean,
-			withReplies?: boolean,
+			requestId?: string;
+			silent?: boolean;
+			withReplies?: boolean;
 		} = {},
 	): Promise<void> {
 		/**
@@ -227,10 +227,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async insertFollowingDoc(
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
 		withReplies?: boolean,
@@ -544,10 +544,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async cancelFollowRequest(
 		followee: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox'];
 		},
 		follower: {
-			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host'];
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {

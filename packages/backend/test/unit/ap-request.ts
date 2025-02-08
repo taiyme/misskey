@@ -27,7 +27,7 @@ export const buildParsedSignature = (signingString: string, signature: string, a
 describe('ap-request', () => {
 	test('createSignedPost with verify', async () => {
 		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const key = { keyId: 'x', privateKeyPem: keypair.privateKey };
 		const url = 'https://example.com/inbox';
 		const activity = { a: 1 };
 		const body = JSON.stringify(activity);
@@ -45,7 +45,7 @@ describe('ap-request', () => {
 
 	test('createSignedGet with verify', async () => {
 		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const key = { keyId: 'x', privateKeyPem: keypair.privateKey };
 		const url = 'https://example.com/outbox';
 		const headers = {
 			'User-Agent': 'UA',

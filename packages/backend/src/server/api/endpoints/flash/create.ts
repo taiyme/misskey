@@ -41,9 +41,11 @@ export const paramDef = {
 		title: { type: 'string' },
 		summary: { type: 'string' },
 		script: { type: 'string' },
-		permissions: { type: 'array', items: {
-			type: 'string',
-		} },
+		permissions: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		visibility: { type: 'string', enum: ['public', 'private'], default: 'public' },
 	},
 	required: ['title', 'summary', 'script', 'permissions'],

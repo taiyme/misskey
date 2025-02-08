@@ -118,7 +118,7 @@ describe('MfmService', () => {
 			assert.deepStrictEqual(mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp> b</ruby> c</p>'), 'a Misskey(ミス キー) b c');
 			assert.deepStrictEqual(
 				mfmService.fromHtml('<p>a <ruby>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミス キー</rt><rp>)</rp>Misskey<rp>(</rp><rt>ミスキー</rt><rp>)</rp></ruby> b</p>'),
-				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b'
+				'a Misskey(ミスキー)Misskey(ミス キー)Misskey(ミスキー) b',
 			);
 		});
 

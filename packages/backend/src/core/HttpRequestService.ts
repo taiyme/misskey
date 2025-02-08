@@ -270,12 +270,12 @@ export class HttpRequestService {
 	public async send(
 		url: string,
 		args: {
-			method?: string,
-			body?: string,
-			headers?: Record<string, string>,
-			timeout?: number,
-			size?: number,
-			isLocalAddressAllowed?: boolean,
+			method?: string;
+			body?: string;
+			headers?: Record<string, string>;
+			timeout?: number;
+			size?: number;
+			isLocalAddressAllowed?: boolean;
 		} = {},
 		extra: HttpRequestSendOptions = {
 			throwErrorWhenResponseNotOk: true,

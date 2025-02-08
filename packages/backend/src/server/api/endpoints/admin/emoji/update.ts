@@ -47,15 +47,19 @@ export const paramDef = {
 			nullable: true,
 			description: 'Use `null` to reset the category.',
 		},
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
+		aliases: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		license: { type: 'string', nullable: true },
 		isSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
-		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-			type: 'string',
-		} },
+		roleIdsThatCanBeUsedThisEmojiAsReaction: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 	},
 	anyOf: [
 		{ required: ['id'] },
@@ -80,8 +84,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// JSON schemeのanyOfの型変換がうまくいっていないらしい
 			const required = { id: ps.id, name: ps.name } as
-				| { id: MiEmoji['id']; name?: string }
-				| { id?: MiEmoji['id']; name: string };
+				| { id: MiEmoji['id']; name?: string; }
+				| { id?: MiEmoji['id']; name: string; };
 
 			const error = await this.customEmojiService.update({
 				...required,

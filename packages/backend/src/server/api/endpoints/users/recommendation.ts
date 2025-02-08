@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('following.followerId = :followerId', { followerId: me.id });
 
 			query
-				.andWhere(`user.id NOT IN (${ followingQuery.getQuery() })`);
+				.andWhere(`user.id NOT IN (${followingQuery.getQuery()})`);
 
 			query.setParameters(followingQuery.getParameters());
 

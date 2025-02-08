@@ -137,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					birthdayUserQuery.select('user_profile.userId')
 						.where(`SUBSTR(user_profile.birthday, 6, 5) = '${birthday}'`);
 
-					query.andWhere(`following.followeeId IN (${ birthdayUserQuery.getQuery() })`);
+					query.andWhere(`following.followeeId IN (${birthdayUserQuery.getQuery()})`);
 				} catch (err) {
 					throw new ApiError(meta.errors.birthdayInvalid);
 				}

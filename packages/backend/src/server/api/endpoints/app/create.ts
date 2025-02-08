@@ -29,9 +29,11 @@ export const paramDef = {
 	properties: {
 		name: { type: 'string' },
 		description: { type: 'string' },
-		permission: { type: 'array', uniqueItems: true, items: {
-			type: 'string',
-		} },
+		permission: {
+			type: 'array', uniqueItems: true, items: {
+				type: 'string',
+			},
+		},
 		callbackUrl: { type: 'string', nullable: true },
 	},
 	required: ['name', 'description', 'permission'],

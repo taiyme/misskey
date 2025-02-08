@@ -29,7 +29,7 @@ export class ModerationLogEntityService {
 	public async pack(
 		src: MiModerationLog['id'] | MiModerationLog,
 		hint?: {
-			packedUser?: Packed<'UserDetailedNotMe'>,
+			packedUser?: Packed<'UserDetailedNotMe'>;
 		},
 	) {
 		const log = typeof src === 'object' ? src : await this.moderationLogsRepository.findOneByOrFail({ id: src });

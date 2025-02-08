@@ -89,7 +89,7 @@ export class ExportFavoritesProcessorService {
 						id: 1,
 					},
 					relations: ['note', 'note.user'],
-				}) as (MiNoteFavorite & { note: MiNote & { user: MiUser } })[];
+				}) as (MiNoteFavorite & { note: MiNote & { user: MiUser; }; })[];
 
 				if (favorites.length === 0) {
 					job.updateProgress(100);
@@ -135,7 +135,7 @@ export class ExportFavoritesProcessorService {
 		}
 	}
 
-	private serialize(favorite: MiNoteFavorite & { note: MiNote & { user: MiUser } }, poll: MiPoll | null = null): Record<string, unknown> {
+	private serialize(favorite: MiNoteFavorite & { note: MiNote & { user: MiUser; }; }, poll: MiPoll | null = null): Record<string, unknown> {
 		return {
 			id: favorite.id,
 			createdAt: this.idService.parse(favorite.id).date.toISOString(),

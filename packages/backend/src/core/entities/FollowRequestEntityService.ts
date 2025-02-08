@@ -26,10 +26,10 @@ export class FollowRequestEntityService {
 	@bindThis
 	public async pack(
 		src: MiFollowRequest['id'] | MiFollowRequest,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hint?: {
-			packedFollower?: Packed<'UserLite'>,
-			packedFollowee?: Packed<'UserLite'>,
+			packedFollower?: Packed<'UserLite'>;
+			packedFollowee?: Packed<'UserLite'>;
 		},
 	) {
 		const request = typeof src === 'object' ? src : await this.followRequestsRepository.findOneByOrFail({ id: src });
@@ -44,7 +44,7 @@ export class FollowRequestEntityService {
 	@bindThis
 	public async packMany(
 		requests: MiFollowRequest[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
 		const _followers = requests.map(({ follower, followerId }) => follower ?? followerId);
 		const _followees = requests.map(({ followee, followeeId }) => followee ?? followeeId);

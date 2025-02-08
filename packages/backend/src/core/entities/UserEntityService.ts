@@ -56,29 +56,29 @@ const Ajv = _Ajv.default;
 const ajv = new Ajv();
 
 function isLocalUser(user: MiUser): user is MiLocalUser;
-function isLocalUser<T extends { host: MiUser['host'] }>(user: T): user is (T & { host: null; });
-function isLocalUser(user: MiUser | { host: MiUser['host'] }): boolean {
+function isLocalUser<T extends { host: MiUser['host']; }>(user: T): user is (T & { host: null; });
+function isLocalUser(user: MiUser | { host: MiUser['host']; }): boolean {
 	return user.host == null;
 }
 
 function isRemoteUser(user: MiUser): user is MiRemoteUser;
-function isRemoteUser<T extends { host: MiUser['host'] }>(user: T): user is (T & { host: string; });
-function isRemoteUser(user: MiUser | { host: MiUser['host'] }): boolean {
+function isRemoteUser<T extends { host: MiUser['host']; }>(user: T): user is (T & { host: string; });
+function isRemoteUser(user: MiUser | { host: MiUser['host']; }): boolean {
 	return !isLocalUser(user);
 }
 
 export type UserRelation = {
-	id: MiUser['id']
-	following: MiFollowing | null,
-	isFollowing: boolean
-	isFollowed: boolean
-	hasPendingFollowRequestFromYou: boolean
-	hasPendingFollowRequestToYou: boolean
-	isBlocking: boolean
-	isBlocked: boolean
-	isMuted: boolean
-	isRenoteMuted: boolean
-}
+	id: MiUser['id'];
+	following: MiFollowing | null;
+	isFollowing: boolean;
+	isFollowed: boolean;
+	hasPendingFollowRequestFromYou: boolean;
+	hasPendingFollowRequestToYou: boolean;
+	isBlocking: boolean;
+	isBlocked: boolean;
+	isMuted: boolean;
+	isRenoteMuted: boolean;
+};
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
@@ -251,37 +251,37 @@ export class UserEntityService implements OnModuleInit {
 			this.followingsRepository.createQueryBuilder('f')
 				.select('f.followerId')
 				.where('f.followeeId = :me', { me })
-				.getRawMany<{ f_followerId: string }>()
+				.getRawMany<{ f_followerId: string; }>()
 				.then(it => it.map(it => it.f_followerId)),
 			this.followRequestsRepository.createQueryBuilder('f')
 				.select('f.followeeId')
 				.where('f.followerId = :me', { me })
-				.getRawMany<{ f_followeeId: string }>()
+				.getRawMany<{ f_followeeId: string; }>()
 				.then(it => it.map(it => it.f_followeeId)),
 			this.followRequestsRepository.createQueryBuilder('f')
 				.select('f.followerId')
 				.where('f.followeeId = :me', { me })
-				.getRawMany<{ f_followerId: string }>()
+				.getRawMany<{ f_followerId: string; }>()
 				.then(it => it.map(it => it.f_followerId)),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockeeId')
 				.where('b.blockerId = :me', { me })
-				.getRawMany<{ b_blockeeId: string }>()
+				.getRawMany<{ b_blockeeId: string; }>()
 				.then(it => it.map(it => it.b_blockeeId)),
 			this.blockingsRepository.createQueryBuilder('b')
 				.select('b.blockerId')
 				.where('b.blockeeId = :me', { me })
-				.getRawMany<{ b_blockerId: string }>()
+				.getRawMany<{ b_blockerId: string; }>()
 				.then(it => it.map(it => it.b_blockerId)),
 			this.mutingsRepository.createQueryBuilder('m')
 				.select('m.muteeId')
 				.where('m.muterId = :me', { me })
-				.getRawMany<{ m_muteeId: string }>()
+				.getRawMany<{ m_muteeId: string; }>()
 				.then(it => it.map(it => it.m_muteeId)),
 			this.renoteMutingsRepository.createQueryBuilder('m')
 				.select('m.muteeId')
 				.where('m.muterId = :me', { me })
-				.getRawMany<{ m_muteeId: string }>()
+				.getRawMany<{ m_muteeId: string; }>()
 				.then(it => it.map(it => it.m_muteeId)),
 		]);
 
@@ -397,12 +397,12 @@ export class UserEntityService implements OnModuleInit {
 		src: MiUser['id'] | MiUser,
 		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
-			schema?: S,
-			includeSecrets?: boolean,
-			userProfile?: MiUserProfile,
-			userRelations?: Map<MiUser['id'], UserRelation>,
-			userMemos?: Map<MiUser['id'], string | null>,
-			pinNotes?: Map<MiUser['id'], MiUserNotePining[]>,
+			schema?: S;
+			includeSecrets?: boolean;
+			userProfile?: MiUserProfile;
+			userRelations?: Map<MiUser['id'], UserRelation>;
+			userMemos?: Map<MiUser['id'], string | null>;
+			pinNotes?: Map<MiUser['id'], MiUserNotePining[]>;
 		},
 	): Promise<Packed<S>> {
 		const opts = Object.assign({
@@ -651,10 +651,10 @@ export class UserEntityService implements OnModuleInit {
 
 	public async packMany<S extends 'MeDetailed' | 'UserDetailedNotMe' | 'UserDetailed' | 'UserLite' = 'UserLite'>(
 		users: (MiUser['id'] | MiUser)[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
-			schema?: S,
-			includeSecrets?: boolean,
+			schema?: S;
+			includeSecrets?: boolean;
 		},
 	): Promise<Packed<S>[]> {
 		// -- IDのみの要素を補完して完全なエンティティ一覧を作る

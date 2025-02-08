@@ -9,8 +9,10 @@ import { assertNotificationReceived, createAccount, type LoginUser, resolveRemot
 
 describe('Block', () => {
 	describe('Check follow', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -91,8 +93,10 @@ describe('Block', () => {
 	});
 
 	describe('Check reply', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -134,8 +138,10 @@ describe('Block', () => {
 	});
 
 	describe('Check reaction', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -197,8 +203,10 @@ describe('Block', () => {
 	});
 
 	describe('Check mention', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([

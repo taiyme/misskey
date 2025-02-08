@@ -5,13 +5,13 @@
 
 // TODO: sharedに置いてフロントエンドのと統合したい
 export const langmap = {
-	'ach': {
+	ach: {
 		nativeName: 'Lwo',
 	},
-	'ady': {
+	ady: {
 		nativeName: 'Адыгэбзэ',
 	},
-	'af': {
+	af: {
 		nativeName: 'Afrikaans',
 	},
 	'af-NA': {
@@ -20,10 +20,10 @@ export const langmap = {
 	'af-ZA': {
 		nativeName: 'Afrikaans (South Africa)',
 	},
-	'ak': {
+	ak: {
 		nativeName: 'Tɕɥi',
 	},
-	'ar': {
+	ar: {
 		nativeName: 'العربية',
 	},
 	'ar-AR': {
@@ -38,7 +38,7 @@ export const langmap = {
 	'ay-BO': {
 		nativeName: 'Aymar aru',
 	},
-	'az': {
+	az: {
 		nativeName: 'Azərbaycan dili',
 	},
 	'az-AZ': {
@@ -47,13 +47,13 @@ export const langmap = {
 	'be-BY': {
 		nativeName: 'Беларуская',
 	},
-	'bg': {
+	bg: {
 		nativeName: 'Български',
 	},
 	'bg-BG': {
 		nativeName: 'Български',
 	},
-	'bn': {
+	bn: {
 		nativeName: 'বাংলা',
 	},
 	'bn-IN': {
@@ -62,43 +62,43 @@ export const langmap = {
 	'bn-BD': {
 		nativeName: 'বাংলা(বাংলাদেশ)',
 	},
-	'br': {
+	br: {
 		nativeName: 'Brezhoneg',
 	},
 	'bs-BA': {
 		nativeName: 'Bosanski',
 	},
-	'ca': {
+	ca: {
 		nativeName: 'Català',
 	},
 	'ca-ES': {
 		nativeName: 'Català',
 	},
-	'cak': {
+	cak: {
 		nativeName: 'Maya Kaqchikel',
 	},
 	'ck-US': {
 		nativeName: 'ᏣᎳᎩ (tsalagi)',
 	},
-	'cs': {
+	cs: {
 		nativeName: 'Čeština',
 	},
 	'cs-CZ': {
 		nativeName: 'Čeština',
 	},
-	'cy': {
+	cy: {
 		nativeName: 'Cymraeg',
 	},
 	'cy-GB': {
 		nativeName: 'Cymraeg',
 	},
-	'da': {
+	da: {
 		nativeName: 'Dansk',
 	},
 	'da-DK': {
 		nativeName: 'Dansk',
 	},
-	'de': {
+	de: {
 		nativeName: 'Deutsch',
 	},
 	'de-AT': {
@@ -110,16 +110,16 @@ export const langmap = {
 	'de-CH': {
 		nativeName: 'Deutsch (Schweiz)',
 	},
-	'dsb': {
+	dsb: {
 		nativeName: 'Dolnoserbšćina',
 	},
-	'el': {
+	el: {
 		nativeName: 'Ελληνικά',
 	},
 	'el-GR': {
 		nativeName: 'Ελληνικά',
 	},
-	'en': {
+	en: {
 		nativeName: 'English',
 	},
 	'en-GB': {
@@ -155,13 +155,13 @@ export const langmap = {
 	'en@pirate': {
 		nativeName: 'English (Pirate)',
 	},
-	'eo': {
+	eo: {
 		nativeName: 'Esperanto',
 	},
 	'eo-EO': {
 		nativeName: 'Esperanto',
 	},
-	'es': {
+	es: {
 		nativeName: 'Español',
 	},
 	'es-AR': {
@@ -197,19 +197,19 @@ export const langmap = {
 	'es-VE': {
 		nativeName: 'Español (Venezuela)',
 	},
-	'et': {
+	et: {
 		nativeName: 'eesti keel',
 	},
 	'et-EE': {
 		nativeName: 'Eesti (Estonia)',
 	},
-	'eu': {
+	eu: {
 		nativeName: 'Euskara',
 	},
 	'eu-ES': {
 		nativeName: 'Euskara',
 	},
-	'fa': {
+	fa: {
 		nativeName: 'فارسی',
 	},
 	'fa-IR': {
@@ -218,22 +218,22 @@ export const langmap = {
 	'fb-LT': {
 		nativeName: 'Leet Speak',
 	},
-	'ff': {
+	ff: {
 		nativeName: 'Fulah',
 	},
-	'fi': {
+	fi: {
 		nativeName: 'Suomi',
 	},
 	'fi-FI': {
 		nativeName: 'Suomi',
 	},
-	'fo': {
+	fo: {
 		nativeName: 'Føroyskt',
 	},
 	'fo-FO': {
 		nativeName: 'Føroyskt (Færeyjar)',
 	},
-	'fr': {
+	fr: {
 		nativeName: 'Français',
 	},
 	'fr-CA': {
@@ -251,16 +251,16 @@ export const langmap = {
 	'fy-NL': {
 		nativeName: 'Frysk',
 	},
-	'ga': {
+	ga: {
 		nativeName: 'Gaeilge',
 	},
 	'ga-IE': {
 		nativeName: 'Gaeilge',
 	},
-	'gd': {
+	gd: {
 		nativeName: 'Gàidhlig',
 	},
-	'gl': {
+	gl: {
 		nativeName: 'Galego',
 	},
 	'gl-ES': {
@@ -272,67 +272,67 @@ export const langmap = {
 	'gu-IN': {
 		nativeName: 'ગુજરાતી',
 	},
-	'gv': {
+	gv: {
 		nativeName: 'Gaelg',
 	},
 	'gx-GR': {
 		nativeName: 'Ἑλληνική ἀρχαία',
 	},
-	'he': {
+	he: {
 		nativeName: 'עברית‏',
 	},
 	'he-IL': {
 		nativeName: 'עברית‏',
 	},
-	'hi': {
+	hi: {
 		nativeName: 'हिन्दी',
 	},
 	'hi-IN': {
 		nativeName: 'हिन्दी',
 	},
-	'hr': {
+	hr: {
 		nativeName: 'Hrvatski',
 	},
 	'hr-HR': {
 		nativeName: 'Hrvatski',
 	},
-	'hsb': {
+	hsb: {
 		nativeName: 'Hornjoserbšćina',
 	},
-	'ht': {
+	ht: {
 		nativeName: 'Kreyòl',
 	},
-	'hu': {
+	hu: {
 		nativeName: 'Magyar',
 	},
 	'hu-HU': {
 		nativeName: 'Magyar',
 	},
-	'hy': {
+	hy: {
 		nativeName: 'Հայերեն',
 	},
 	'hy-AM': {
 		nativeName: 'Հայերեն (Հայաստան)',
 	},
-	'id': {
+	id: {
 		nativeName: 'Bahasa Indonesia',
 	},
 	'id-ID': {
 		nativeName: 'Bahasa Indonesia',
 	},
-	'is': {
+	is: {
 		nativeName: 'Íslenska',
 	},
 	'is-IS': {
 		nativeName: 'Íslenska (Iceland)',
 	},
-	'it': {
+	it: {
 		nativeName: 'Italiano',
 	},
 	'it-IT': {
 		nativeName: 'Italiano',
 	},
-	'ja': {
+	ja: {
 		nativeName: '日本語',
 	},
 	'ja-JP': {
@@ -347,25 +347,25 @@ export const langmap = {
 	'kk-KZ': {
 		nativeName: 'Қазақша',
 	},
-	'km': {
+	km: {
 		nativeName: 'ភាសាខ្មែរ',
 	},
-	'kl': {
+	kl: {
 		nativeName: 'kalaallisut',
 	},
 	'km-KH': {
 		nativeName: 'ភាសាខ្មែរ',
 	},
-	'kab': {
+	kab: {
 		nativeName: 'Taqbaylit',
 	},
-	'kn': {
+	kn: {
 		nativeName: 'ಕನ್ನಡ',
 	},
 	'kn-IN': {
 		nativeName: 'ಕನ್ನಡ (India)',
 	},
-	'ko': {
+	ko: {
 		nativeName: '한국어',
 	},
 	'ko-KR': {
@@ -374,46 +374,46 @@ export const langmap = {
 	'ku-TR': {
 		nativeName: 'Kurdî',
 	},
-	'kw': {
+	kw: {
 		nativeName: 'Kernewek',
 	},
-	'la': {
+	la: {
 		nativeName: 'Latin',
 	},
 	'la-VA': {
 		nativeName: 'Latin',
 	},
-	'lb': {
+	lb: {
 		nativeName: 'Lëtzebuergesch',
 	},
 	'li-NL': {
 		nativeName: 'Lèmbörgs',
 	},
-	'lt': {
+	lt: {
 		nativeName: 'Lietuvių',
 	},
 	'lt-LT': {
 		nativeName: 'Lietuvių',
 	},
-	'lv': {
+	lv: {
 		nativeName: 'Latviešu',
 	},
 	'lv-LV': {
 		nativeName: 'Latviešu',
 	},
-	'mai': {
+	mai: {
 		nativeName: 'मैथिली, মৈথিলী',
 	},
 	'mg-MG': {
 		nativeName: 'Malagasy',
 	},
-	'mk': {
+	mk: {
 		nativeName: 'Македонски',
 	},
 	'mk-MK': {
 		nativeName: 'Македонски (Македонски)',
 	},
-	'ml': {
+	ml: {
 		nativeName: 'മലയാളം',
 	},
 	'ml-IN': {
@@ -422,43 +422,43 @@ export const langmap = {
 	'mn-MN': {
 		nativeName: 'Монгол',
 	},
-	'mr': {
+	mr: {
 		nativeName: 'मराठी',
 	},
 	'mr-IN': {
 		nativeName: 'मराठी',
 	},
-	'ms': {
+	ms: {
 		nativeName: 'Bahasa Melayu',
 	},
 	'ms-MY': {
 		nativeName: 'Bahasa Melayu',
 	},
-	'mt': {
+	mt: {
 		nativeName: 'Malti',
 	},
 	'mt-MT': {
 		nativeName: 'Malti',
 	},
-	'my': {
+	my: {
 		nativeName: 'ဗမာစကာ',
 	},
-	'no': {
+	no: {
 		nativeName: 'Norsk',
 	},
-	'nb': {
+	nb: {
 		nativeName: 'Norsk (bokmål)',
 	},
 	'nb-NO': {
 		nativeName: 'Norsk (bokmål)',
 	},
-	'ne': {
+	ne: {
 		nativeName: 'नेपाली',
 	},
 	'ne-NP': {
 		nativeName: 'नेपाली',
 	},
-	'nl': {
+	nl: {
 		nativeName: 'Nederlands',
 	},
 	'nl-BE': {
@@ -470,19 +470,19 @@ export const langmap = {
 	'nn-NO': {
 		nativeName: 'Norsk (nynorsk)',
 	},
-	'oc': {
+	oc: {
 		nativeName: 'Occitan',
 	},
 	'or-IN': {
 		nativeName: 'ଓଡ଼ିଆ',
 	},
-	'pa': {
+	pa: {
 		nativeName: 'ਪੰਜਾਬੀ',
 	},
 	'pa-IN': {
 		nativeName: 'ਪੰਜਾਬੀ (ਭਾਰਤ ਨੂੰ)',
 	},
-	'pl': {
+	pl: {
 		nativeName: 'Polski',
 	},
 	'pl-PL': {
@@ -491,7 +491,7 @@ export const langmap = {
 	'ps-AF': {
 		nativeName: 'پښتو',
 	},
-	'pt': {
+	pt: {
 		nativeName: 'Português',
 	},
 	'pt-BR': {
@@ -506,13 +506,13 @@ export const langmap = {
 	'rm-CH': {
 		nativeName: 'Rumantsch',
 	},
-	'ro': {
+	ro: {
 		nativeName: 'Română',
 	},
 	'ro-RO': {
 		nativeName: 'Română',
 	},
-	'ru': {
+	ru: {
 		nativeName: 'Русский',
 	},
 	'ru-RU': {
@@ -524,19 +524,19 @@ export const langmap = {
 	'se-NO': {
 		nativeName: 'Davvisámegiella',
 	},
-	'sh': {
+	sh: {
 		nativeName: 'српскохрватски',
 	},
 	'si-LK': {
 		nativeName: 'සිංහල',
 	},
-	'sk': {
+	sk: {
 		nativeName: 'Slovenčina',
 	},
 	'sk-SK': {
 		nativeName: 'Slovenčina (Slovakia)',
 	},
-	'sl': {
+	sl: {
 		nativeName: 'Slovenščina',
 	},
 	'sl-SI': {
@@ -545,64 +545,64 @@ export const langmap = {
 	'so-SO': {
 		nativeName: 'Soomaaliga',
 	},
-	'sq': {
+	sq: {
 		nativeName: 'Shqip',
 	},
 	'sq-AL': {
 		nativeName: 'Shqip',
 	},
-	'sr': {
+	sr: {
 		nativeName: 'Српски',
 	},
 	'sr-RS': {
 		nativeName: 'Српски (Serbia)',
 	},
-	'su': {
+	su: {
 		nativeName: 'Basa Sunda',
 	},
-	'sv': {
+	sv: {
 		nativeName: 'Svenska',
 	},
 	'sv-SE': {
 		nativeName: 'Svenska',
 	},
-	'sw': {
+	sw: {
 		nativeName: 'Kiswahili',
 	},
 	'sw-KE': {
 		nativeName: 'Kiswahili',
 	},
-	'ta': {
+	ta: {
 		nativeName: 'தமிழ்',
 	},
 	'ta-IN': {
 		nativeName: 'தமிழ்',
 	},
-	'te': {
+	te: {
 		nativeName: 'తెలుగు',
 	},
 	'te-IN': {
 		nativeName: 'తెలుగు',
 	},
-	'tg': {
+	tg: {
 		nativeName: 'забо́ни тоҷикӣ́',
 	},
 	'tg-TJ': {
 		nativeName: 'тоҷикӣ',
 	},
-	'th': {
+	th: {
 		nativeName: 'ภาษาไทย',
 	},
 	'th-TH': {
 		nativeName: 'ภาษาไทย (ประเทศไทย)',
 	},
-	'fil': {
+	fil: {
 		nativeName: 'Filipino',
 	},
-	'tlh': {
+	tlh: {
 		nativeName: 'tlhIngan-Hol',
 	},
-	'tr': {
+	tr: {
 		nativeName: 'Türkçe',
 	},
 	'tr-TR': {
@@ -611,25 +611,25 @@ export const langmap = {
 	'tt-RU': {
 		nativeName: 'татарча',
 	},
-	'uk': {
+	uk: {
 		nativeName: 'Українська',
 	},
 	'uk-UA': {
 		nativeName: 'Українська',
 	},
-	'ur': {
+	ur: {
 		nativeName: 'اردو',
 	},
 	'ur-PK': {
 		nativeName: 'اردو',
 	},
-	'uz': {
+	uz: {
 		nativeName: 'O\'zbek',
 	},
 	'uz-UZ': {
 		nativeName: 'O\'zbek',
 	},
-	'vi': {
+	vi: {
 		nativeName: 'Tiếng Việt',
 	},
 	'vi-VN': {
@@ -638,13 +638,13 @@ export const langmap = {
 	'xh-ZA': {
 		nativeName: 'isiXhosa',
 	},
-	'yi': {
+	yi: {
 		nativeName: 'ייִדיש',
 	},
 	'yi-DE': {
 		nativeName: 'ייִדיש (German)',
 	},
-	'zh': {
+	zh: {
 		nativeName: '中文',
 	},
 	'zh-Hans': {

@@ -192,13 +192,13 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	@bindThis
 	public async fetchRecipients(
 		params?: {
-			ids?: MiAbuseReportNotificationRecipient['id'][],
-			method?: RecipientMethod[],
+			ids?: MiAbuseReportNotificationRecipient['id'][];
+			method?: RecipientMethod[];
 		},
 		opts?: {
-			removeUnauthorized?: boolean,
-			joinUser?: boolean,
-			joinSystemWebhook?: boolean,
+			removeUnauthorized?: boolean;
+			joinUser?: boolean;
+			joinSystemWebhook?: boolean;
 		},
 	): Promise<MiAbuseReportNotificationRecipient[]> {
 		const query = this.abuseReportNotificationRecipientRepository.createQueryBuilder('recipient');
@@ -248,7 +248,7 @@ export class AbuseReportNotificationService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async fetchEMailRecipients(opts?: {
-		removeUnauthorized?: boolean
+		removeUnauthorized?: boolean;
 	}): Promise<MiAbuseReportNotificationRecipient[]> {
 		return this.fetchRecipients({ method: ['email'] }, { joinUser: true, ...opts });
 	}

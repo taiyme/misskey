@@ -6,6 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import {
 	api,
 	failedApiCall,
@@ -18,9 +19,8 @@ import {
 	userList,
 } from '../utils.js';
 import type * as Misskey from 'misskey-js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
-const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
+const compareBy = <T extends { id: string; }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
 };
 

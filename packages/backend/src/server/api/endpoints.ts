@@ -108,21 +108,21 @@ interface IEndpointMetaBase {
 }
 
 export type IEndpointMeta = (Omit<IEndpointMetaBase, 'requireCrential' | 'requireModerator' | 'requireAdmin'> & {
-	requireCredential?: false,
-	requireAdmin?: false,
-	requireModerator?: false,
+	requireCredential?: false;
+	requireAdmin?: false;
+	requireModerator?: false;
 }) | (Omit<IEndpointMetaBase, 'secure'> & {
-	secure: true,
+	secure: true;
 }) | (Omit<IEndpointMetaBase, 'requireCredential' | 'kind'> & {
-	requireCredential: true,
-	kind: (typeof permissions)[number],
+	requireCredential: true;
+	kind: (typeof permissions)[number];
 }) | (Omit<IEndpointMetaBase, 'requireModerator' | 'kind'> & {
-	requireModerator: true,
-	kind: (typeof permissions)[number],
+	requireModerator: true;
+	kind: (typeof permissions)[number];
 }) | (Omit<IEndpointMetaBase, 'requireAdmin' | 'kind'> & {
-	requireAdmin: true,
-	kind: (typeof permissions)[number],
-})
+	requireAdmin: true;
+	kind: (typeof permissions)[number];
+});
 
 export interface IEndpoint {
 	name: string;

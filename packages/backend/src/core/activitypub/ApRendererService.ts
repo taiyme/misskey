@@ -65,7 +65,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: string | IObject, user: { id: MiUser['id']; host: null }): IAccept {
+	public renderAccept(object: string | IObject, user: { id: MiUser['id']; host: null; }): IAccept {
 		return {
 			type: 'Accept',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -150,7 +150,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderDelete(object: IObject | string, user: { id: MiUser['id']; host: null }): IDelete {
+	public renderDelete(object: IObject | string, user: { id: MiUser['id']; host: null; }): IDelete {
 		return {
 			type: 'Delete',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -267,7 +267,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderLike(noteReaction: MiNoteReaction, note: { uri: string | null }): Promise<ILike> {
+	public async renderLike(noteReaction: MiNoteReaction, note: { uri: string | null; }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
 		const object: ILike = {
@@ -531,7 +531,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderQuestion(user: { id: MiUser['id'] }, note: MiNote, poll: MiPoll): IQuestion {
+	public renderQuestion(user: { id: MiUser['id']; }, note: MiNote, poll: MiPoll): IQuestion {
 		return {
 			type: 'Question',
 			id: `${this.config.url}/questions/${note.id}`,
@@ -549,7 +549,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderReject(object: string | IObject, user: { id: MiUser['id'] }): IReject {
+	public renderReject(object: string | IObject, user: { id: MiUser['id']; }): IReject {
 		return {
 			type: 'Reject',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -558,7 +558,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: MiUser['id'] }, target: string | IObject | undefined, object: string | IObject): IRemove {
+	public renderRemove(user: { id: MiUser['id']; }, target: string | IObject | undefined, object: string | IObject): IRemove {
 		return {
 			type: 'Remove',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -576,7 +576,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: string | IObject, user: { id: MiUser['id'] }): IUndo {
+	public renderUndo(object: string | IObject, user: { id: MiUser['id']; }): IUndo {
 		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
@@ -589,7 +589,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: string | IObject, user: { id: MiUser['id'] }): IUpdate {
+	public renderUpdate(object: string | IObject, user: { id: MiUser['id']; }): IUpdate {
 		return {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -601,7 +601,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderVote(user: { id: MiUser['id'] }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: MiRemoteUser): ICreate {
+	public renderVote(user: { id: MiUser['id']; }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: MiRemoteUser): ICreate {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -625,7 +625,7 @@ export class ApRendererService {
 			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
-		return Object.assign({ '@context': CONTEXT }, x as T & { id: string });
+		return Object.assign({ '@context': CONTEXT }, x as T & { id: string; });
 	}
 
 	@bindThis

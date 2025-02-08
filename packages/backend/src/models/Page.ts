@@ -119,4 +119,4 @@ export class MiPage {
 	}
 }
 
-export const pageNameSchema = { type: 'string', pattern: /^[^\s:\/?#\[\]@!$&'()*+,;=\\%\x00-\x20]{1,256}$/.source } as const;
+export const pageNameSchema = { type: 'string', pattern: (/^[^\s:\/?#\[\]@!$&'()*+,;=\\%\x00-\x20]{1,256}$/).source } as const;

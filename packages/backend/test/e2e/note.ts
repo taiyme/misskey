@@ -6,11 +6,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
+import { MiNote } from '@/models/Note.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
 import type { Repository } from 'typeorm';
 import type * as Misskey from 'misskey-js';
-import { MiNote } from '@/models/Note.js';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 
 describe('Note', () => {
 	let Notes: Repository<MiNote>;
@@ -395,7 +395,7 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			const myNote = res.body.find((note: { id: string; }) => note.id === renoted.body.createdNote.id);
 			assert.ok(myNote);
 			assert.ok(myNote.renote);
 			assert.ok(myNote.renote.files);
@@ -423,7 +423,7 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			const myNote = res.body.find((note: { id: string }) => note.id === reply.body.createdNote.id);
+			const myNote = res.body.find((note: { id: string; }) => note.id === reply.body.createdNote.id);
 			assert.ok(myNote);
 			assert.ok(myNote.reply);
 			assert.ok(myNote.reply.files);
@@ -456,7 +456,7 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
-			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			const myNote = res.body.find((note: { id: string; }) => note.id === renoted.body.createdNote.id);
 			assert.ok(myNote);
 			assert.ok(myNote.renote);
 			assert.ok(myNote.renote.reply);

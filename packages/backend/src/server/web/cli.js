@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* global window, document, localStorage, location */
-
 'use strict';
 
 window.onload = async () => {

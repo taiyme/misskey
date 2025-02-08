@@ -106,10 +106,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async getFromDb(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		channelId: string
+		untilId: string | null;
+		sinceId: string | null;
+		limit: number;
+		channelId: string;
 	}, me: MiLocalUser | null) {
 		//#region fallback to database
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)

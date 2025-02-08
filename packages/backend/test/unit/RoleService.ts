@@ -10,8 +10,6 @@ import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import {
@@ -33,6 +31,8 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { RoleCondFormulaValue } from '@/models/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { MockFunctionMetadata } from 'jest-mock';
+import type { TestingModule } from '@nestjs/testing';
 
 const moduleMocker = new ModuleMocker(global);
 

@@ -38,7 +38,7 @@ export type RelationshipJobData = {
 	silent?: boolean;
 	requestId?: string;
 	withReplies?: boolean;
-}
+};
 
 export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
 
@@ -61,11 +61,11 @@ export type DbJobMap = {
 	importUserLists: DbUserImportJobData;
 	importCustomEmojis: DbUserImportJobData;
 	deleteAccount: DbUserDeleteJobData;
-}
+};
 
 export type DbJobDataWithUser = {
 	user: ThinUser;
-}
+};
 
 export type DbExportFollowingData = {
 	user: ThinUser;
@@ -74,8 +74,8 @@ export type DbExportFollowingData = {
 };
 
 export type DBExportAntennasData = {
-	user: ThinUser
-}
+	user: ThinUser;
+};
 
 export type DbUserDeleteJobData = {
 	user: ThinUser;
@@ -89,9 +89,9 @@ export type DbUserImportJobData = {
 };
 
 export type DBAntennaImportJobData = {
-	user: ThinUser,
-	antenna: Antenna
-}
+	user: ThinUser;
+	antenna: Antenna;
+};
 
 export type DbUserImportToDbJobData = {
 	user: ThinUser;

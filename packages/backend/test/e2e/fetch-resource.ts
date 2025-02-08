@@ -34,13 +34,13 @@ describe('Webリソース', () => {
 	let bob: Misskey.entities.SignupResponse;
 
 	type Request = {
-		path: string,
-		accept?: string,
-		cookie?: string,
+		path: string;
+		accept?: string;
+		cookie?: string;
 	};
 	const ok = async (param: Request & {
-		type?: string,
-	}):Promise<SimpleGetResponse> => {
+		type?: string;
+	}): Promise<SimpleGetResponse> => {
 		const { path, accept, cookie, type } = param;
 		const res = await simpleGet(path, accept, cookie);
 		assert.strictEqual(res.status, 200);
@@ -49,8 +49,8 @@ describe('Webリソース', () => {
 	};
 
 	const notOk = async (param: Request & {
-		status?: number,
-		code?: string,
+		status?: number;
+		code?: string;
 	}): Promise<SimpleGetResponse> => {
 		const { path, accept, cookie, status, code } = param;
 		const res = await simpleGet(path, accept, cookie);
@@ -163,7 +163,7 @@ describe('Webリソース', () => {
 				const content = await simpleGet(path(alice.username), '*/*', undefined, res => res.text());
 				const _body: unknown = content.body;
 				// JSONフィードのときは改めて文字列化する
-				const body: string = typeof (_body) === 'object' ? JSON.stringify(_body) : _body as string;
+				const body: string = typeof _body === 'object' ? JSON.stringify(_body) : _body as string;
 
 				if (body.includes('**a**')) {
 					throw new Error('MFM shouldn\'t be included');

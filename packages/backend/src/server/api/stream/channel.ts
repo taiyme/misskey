@@ -82,12 +82,12 @@ export default abstract class Channel {
 		this.connection = connection;
 	}
 
-	public send(payload: { type: string, body: JsonValue }): void
-	public send(type: string, payload: JsonValue): void
+	public send(payload: { type: string; body: JsonValue; }): void;
+	public send(type: string, payload: JsonValue): void;
 	@bindThis
-	public send(typeOrPayload: { type: string, body: JsonValue } | string, payload?: JsonValue) {
-		const type = payload === undefined ? (typeOrPayload as { type: string, body: JsonValue }).type : (typeOrPayload as string);
-		const body = payload === undefined ? (typeOrPayload as { type: string, body: JsonValue }).body : payload;
+	public send(typeOrPayload: { type: string; body: JsonValue; } | string, payload?: JsonValue) {
+		const type = payload === undefined ? (typeOrPayload as { type: string; body: JsonValue; }).type : (typeOrPayload as string);
+		const body = payload === undefined ? (typeOrPayload as { type: string; body: JsonValue; }).body : payload;
 
 		this.connection.sendMessageToWs('channel', {
 			id: this.id,
@@ -108,4 +108,4 @@ export type MiChannelService<T extends boolean> = {
 	requireCredential: T;
 	kind: T extends true ? string : string | null | undefined;
 	create: (id: string, connection: Connection) => Channel;
-}
+};

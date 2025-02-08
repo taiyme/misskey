@@ -29,9 +29,9 @@ export class MutingEntityService {
 	@bindThis
 	public async pack(
 		src: MiMuting['id'] | MiMuting,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hints?: {
-			packedMutee?: Packed<'UserDetailedNotMe'>,
+			packedMutee?: Packed<'UserDetailedNotMe'>;
 		},
 	): Promise<Packed<'Muting'>> {
 		const muting = typeof src === 'object' ? src : await this.mutingsRepository.findOneByOrFail({ id: src });
@@ -50,7 +50,7 @@ export class MutingEntityService {
 	@bindThis
 	public async packMany(
 		mutings: MiMuting[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		const _mutees = mutings.map(({ mutee, muteeId }) => mutee ?? muteeId);
 		const _userMap = await this.userEntityService.packMany(_mutees, me, { schema: 'UserDetailedNotMe' })

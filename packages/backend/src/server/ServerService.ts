@@ -113,7 +113,7 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
 		fastify.register(this.healthServerService.createServer, { prefix: '/healthz' });
 
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string; }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			reply.header('Cache-Control', 'public, max-age=86400');
@@ -171,7 +171,7 @@ export class ServerService implements OnApplicationShutdown {
 			);
 		});
 
-		fastify.get<{ Params: { acct: string } }>('/avatar/@:acct', async (request, reply) => {
+		fastify.get<{ Params: { acct: string; }; }>('/avatar/@:acct', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.acct);
 			const user = await this.usersRepository.findOne({
 				where: {
@@ -190,7 +190,7 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
+		fastify.get<{ Params: { x: string; }; }>('/identicon/:x', async (request, reply) => {
 			reply.header('Content-Type', 'image/png');
 			reply.header('Cache-Control', 'public, max-age=86400');
 
@@ -201,7 +201,7 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
+		fastify.get<{ Params: { code: string; }; }>('/verify-email/:code', async (request, reply) => {
 			const profile = await this.userProfilesRepository.findOneBy({
 				emailVerifyCode: request.params.code,
 			});

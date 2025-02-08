@@ -58,6 +58,7 @@ export class MiAd {
 		default: 0, nullable: false,
 	})
 	public dayOfWeek: number;
+
 	constructor(data: Partial<MiAd>) {
 		if (data == null) return;
 

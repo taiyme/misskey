@@ -46,9 +46,11 @@ export const paramDef = {
 		title: { type: 'string' },
 		summary: { type: 'string' },
 		script: { type: 'string' },
-		permissions: { type: 'array', items: {
-			type: 'string',
-		} },
+		permissions: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 		visibility: { type: 'string', enum: ['public', 'private'] },
 	},
 	required: ['flashId'],
@@ -73,8 +75,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				updatedAt: new Date(),
 				...Object.fromEntries(
 					Object.entries(ps).filter(
-						([key, val]) => (key !== 'flashId') && Object.hasOwn(paramDef.properties, key)
-					)
+						([key, val]) => (key !== 'flashId') && Object.hasOwn(paramDef.properties, key),
+					),
 				),
 			});
 		});

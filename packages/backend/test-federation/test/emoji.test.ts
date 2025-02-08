@@ -8,8 +8,10 @@ import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, type LoginUser, resolveRemoteUser, sleep } from './utils.js';
 
 describe('Emoji', () => {
-	let alice: LoginUser, bob: LoginUser;
-	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+	let alice: LoginUser;
+	let bob: LoginUser;
+	let bobInA: Misskey.entities.UserDetailedNotMe;
+	let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([

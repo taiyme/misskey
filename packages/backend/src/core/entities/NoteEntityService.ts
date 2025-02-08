@@ -23,7 +23,7 @@ import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 
 // is-renote.tsとよしなにリンク
-function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
+function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote; } {
 	return (
 		note.renote != null &&
 		note.reply == null &&
@@ -346,16 +346,16 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;
 			withReactionAndUserPairCache?: boolean;
 			_hint_?: {
-				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
+				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[]; }> | null;
 				myReactions: Map<MiNote['id'], string | null>;
 				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>;
 			};
 		},
 	): Promise<Packed<'Note'>> {
@@ -472,7 +472,7 @@ export class NoteEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		notes: MiNote[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			detail?: boolean;
 			skipHide?: boolean;

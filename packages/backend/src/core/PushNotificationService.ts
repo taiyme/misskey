@@ -16,12 +16,12 @@ import { RedisKVCache } from '@/misc/cache.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {
-	'notification': Packed<'Notification'>;
-	'unreadAntennaNote': {
-		antenna: { id: string, name: string };
+	notification: Packed<'Notification'>;
+	unreadAntennaNote: {
+		antenna: { id: string; name: string; };
 		note: Packed<'Note'>;
 	};
-	'readAllNotifications': undefined;
+	readAllNotifications: undefined;
 };
 
 // Reduce length because push message servers have character limits

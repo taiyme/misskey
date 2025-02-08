@@ -26,8 +26,8 @@ export class AbuseReportNotificationRecipientEntityService {
 	public async pack(
 		src: MiAbuseReportNotificationRecipient['id'] | MiAbuseReportNotificationRecipient,
 		opts?: {
-			users: Map<string, Packed<'UserLite'>>,
-			webhooks: Map<string, Packed<'SystemWebhook'>>,
+			users: Map<string, Packed<'UserLite'>>;
+			webhooks: Map<string, Packed<'SystemWebhook'>>;
 		},
 	): Promise<Packed<'AbuseReportNotificationRecipient'>> {
 		const recipient = typeof src === 'object'

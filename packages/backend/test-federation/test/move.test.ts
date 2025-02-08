@@ -19,7 +19,9 @@ describe('Move', () => {
 
 	/** @see https://github.com/misskey-dev/misskey/issues/11320 */
 	describe('Following relation is transferred after move', () => {
-		let alice: LoginUser, bob: LoginUser, carol: LoginUser;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let carol: LoginUser;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([

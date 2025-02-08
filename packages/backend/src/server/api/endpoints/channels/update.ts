@@ -93,7 +93,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			// eslint:disable-next-line:no-unnecessary-initializer
 			let banner = undefined;
 			if (ps.bannerId != null) {
 				banner = await this.driveFilesRepository.findOneBy({

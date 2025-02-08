@@ -102,7 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				const query = this.usersRepository.createQueryBuilder('user')
-					.where(`user.id IN (${ profQuery.getQuery() })`)
+					.where(`user.id IN (${profQuery.getQuery()})`)
 					.andWhere(new Brackets(qb => {
 						qb
 							.where('user.updatedAt IS NULL')

@@ -28,10 +28,10 @@ export class FlashEntityService {
 	@bindThis
 	public async pack(
 		src: MiFlash['id'] | MiFlash,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hint?: {
-			packedUser?: Packed<'UserLite'>,
-			likedFlashIds?: MiFlash['id'][],
+			packedUser?: Packed<'UserLite'>;
+			likedFlashIds?: MiFlash['id'][];
 		},
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
@@ -65,7 +65,7 @@ export class FlashEntityService {
 	@bindThis
 	public async packMany(
 		flashes: MiFlash[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
 		const _users = flashes.map(({ user, userId }) => user ?? userId);
 		const _userMap = await this.userEntityService.packMany(_users, me)
@@ -74,7 +74,7 @@ export class FlashEntityService {
 			? await this.flashLikesRepository.createQueryBuilder('flashLike')
 				.select('flashLike.flashId')
 				.where('flashLike.userId = :userId', { userId: me.id })
-				.getRawMany<{ flashLike_flashId: string }>()
+				.getRawMany<{ flashLike_flashId: string; }>()
 				.then(likes => [...new Set(likes.map(like => like.flashLike_flashId))])
 			: [];
 		return Promise.all(

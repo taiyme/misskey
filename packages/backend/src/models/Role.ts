@@ -154,7 +154,7 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
-export type RoleCondFormulaValue = { id: string } & (
+export type RoleCondFormulaValue = { id: string; } & (
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
 	CondFormulaValueNot |

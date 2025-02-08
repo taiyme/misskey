@@ -28,9 +28,9 @@ export class BlockingEntityService {
 	@bindThis
 	public async pack(
 		src: MiBlocking['id'] | MiBlocking,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hint?: {
-			blockee?: Packed<'UserDetailedNotMe'>,
+			blockee?: Packed<'UserDetailedNotMe'>;
 		},
 	): Promise<Packed<'Blocking'>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
@@ -48,7 +48,7 @@ export class BlockingEntityService {
 	@bindThis
 	public async packMany(
 		blockings: MiBlocking[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		const _blockees = blockings.map(({ blockee, blockeeId }) => blockee ?? blockeeId);
 		const _userMap = await this.userEntityService.packMany(_blockees, me, { schema: 'UserDetailedNotMe' })

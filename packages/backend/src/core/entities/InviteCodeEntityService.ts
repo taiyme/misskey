@@ -28,10 +28,10 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async pack(
 		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		hints?: {
-			packedCreatedBy?: Packed<'UserLite'>,
-			packedUsedBy?: Packed<'UserLite'>,
+			packedCreatedBy?: Packed<'UserLite'>;
+			packedUsedBy?: Packed<'UserLite'>;
 		},
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
@@ -56,7 +56,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async packMany(
 		tickets: MiRegistrationTicket[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		const _createdBys = tickets.map(({ createdBy, createdById }) => createdBy ?? createdById).filter(x => x != null);
 		const _usedBys = tickets.map(({ usedBy, usedById }) => usedBy ?? usedById).filter(x => x != null);

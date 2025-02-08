@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* global window, document, localStorage, navigator, console, LANGS, CLIENT_ENTRY */
+/* global LANGS, CLIENT_ENTRY */
 
 'use strict';
 

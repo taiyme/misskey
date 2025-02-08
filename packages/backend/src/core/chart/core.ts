@@ -90,7 +90,7 @@ type ToJsonSchema<S> = {
 	type: 'object';
 	properties: {
 		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
-	},
+	};
 	required: (keyof S)[];
 };
 
@@ -207,8 +207,8 @@ export default abstract class Chart<T extends Schema> {
 	}
 
 	public static schemaToEntity(name: string, schema: Schema, grouped = false): {
-		hour: EntitySchema,
-		day: EntitySchema,
+		hour: EntitySchema;
+		day: EntitySchema;
 	} {
 		const createEntity = (span: 'hour' | 'day'): EntitySchema => new EntitySchema({
 			name:

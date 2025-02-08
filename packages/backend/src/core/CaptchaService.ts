@@ -29,21 +29,21 @@ export type CaptchaSetting = {
 	hcaptcha: {
 		siteKey: string | null;
 		secretKey: string | null;
-	}
+	};
 	mcaptcha: {
 		siteKey: string | null;
 		secretKey: string | null;
 		instanceUrl: string | null;
-	}
+	};
 	recaptcha: {
 		siteKey: string | null;
 		secretKey: string | null;
-	}
+	};
 	turnstile: {
 		siteKey: string | null;
 		secretKey: string | null;
-	}
-}
+	};
+};
 
 export class CaptchaError extends Error {
 	public readonly code: CaptchaErrorCode;
@@ -59,11 +59,11 @@ export class CaptchaError extends Error {
 
 export type CaptchaSaveSuccess = {
 	success: true;
-}
+};
 export type CaptchaSaveFailure = {
 	success: false;
 	error: CaptchaError;
-}
+};
 export type CaptchaSaveResult = CaptchaSaveSuccess | CaptchaSaveFailure;
 
 type CaptchaResponse = {
@@ -161,7 +161,7 @@ export class CaptchaService {
 			throw new CaptchaError(captchaErrorCodes.requestFailed, 'mcaptcha-failed: mcaptcha didn\'t return 200 OK');
 		}
 
-		const resp = (await result.json()) as { valid: boolean };
+		const resp = (await result.json()) as { valid: boolean; };
 
 		if (!resp.valid) {
 			throw new CaptchaError(captchaErrorCodes.verificationFailed, 'mcaptcha-request-failed');

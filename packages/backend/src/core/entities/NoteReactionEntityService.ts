@@ -48,12 +48,12 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNoteReaction['id'] | MiNoteReaction,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			withNote: boolean;
 		},
 		hints?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: Packed<'UserLite'>;
 		},
 	): Promise<Packed<'NoteReaction'>> {
 		const opts = Object.assign({
@@ -76,7 +76,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		reactions: MiNoteReaction[],
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			withNote: boolean;
 		},

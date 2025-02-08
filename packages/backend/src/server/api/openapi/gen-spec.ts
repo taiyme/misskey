@@ -119,7 +119,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 			} : {}),
 			responses: {
 				...(endpoint.meta.res ? {
-					'200': {
+					200: {
 						description: 'OK (with results)',
 						content: {
 							'application/json': {
@@ -128,16 +128,16 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						},
 					},
 				} : {
-					'204': {
+					204: {
 						description: 'OK (without any results)',
 					},
 				}),
 				...(endpoint.meta.res?.optional === true || endpoint.meta.res?.nullable === true ? {
-					'204': {
+					204: {
 						description: 'OK (without any results)',
 					},
 				} : {}),
-				'400': {
+				400: {
 					description: 'Client error',
 					content: {
 						'application/json': {
@@ -148,7 +148,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						},
 					},
 				},
-				'401': {
+				401: {
 					description: 'Authentication error',
 					content: {
 						'application/json': {
@@ -159,7 +159,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						},
 					},
 				},
-				'403': {
+				403: {
 					description: 'Forbidden error',
 					content: {
 						'application/json': {
@@ -170,7 +170,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						},
 					},
 				},
-				'418': {
+				418: {
 					description: 'I\'m Ai',
 					content: {
 						'application/json': {
@@ -182,7 +182,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 					},
 				},
 				...(endpoint.meta.limit ? {
-					'429': {
+					429: {
 						description: 'Too many requests',
 						content: {
 							'application/json': {
@@ -194,7 +194,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 						},
 					},
 				} : {}),
-				'500': {
+				500: {
 					description: 'Internal server error',
 					content: {
 						'application/json': {

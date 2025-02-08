@@ -7,9 +7,9 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
 import { WebSocket } from 'ws';
+import { MiFollowing } from '@/models/Following.js';
 import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
 import type * as Misskey from 'misskey-js';
-import { MiFollowing } from '@/models/Following.js';
 
 describe('Streaming', () => {
 	let Followings: any;
@@ -148,7 +148,7 @@ describe('Streaming', () => {
 
 			test('フォローしているユーザーの投稿が流れる', async () => {
 				const fired = await waitFire(
-					ayano, 'homeTimeline',		// ayano:home
+					ayano, 'homeTimeline', // ayano:home
 					() => api('notes/create', { text: 'foo' }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
@@ -158,7 +158,7 @@ describe('Streaming', () => {
 
 			test('フォローしているユーザーの visibility: followers な投稿が流れる', async () => {
 				const fired = await waitFire(
-					ayano, 'homeTimeline',		// ayano:home
+					ayano, 'homeTimeline', // ayano:home
 					() => api('notes/create', { text: 'foo', visibility: 'followers' }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);
@@ -170,7 +170,7 @@ describe('Streaming', () => {
 				const note = await post(kyoko, { text: 'foo', visibility: 'followers' });
 
 				const fired = await waitFire(
-					ayano, 'homeTimeline',		// ayano:home
+					ayano, 'homeTimeline', // ayano:home
 					() => api('notes/create', { text: 'bar', visibility: 'followers', replyId: note.id }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.reply.text === 'foo',
 				);
@@ -574,7 +574,7 @@ describe('Streaming', () => {
 
 			test('withReplies = falseでフォローしてる人によるリプライが流れてくる', async () => {
 				const fired = await waitFire(
-					ayano, 'globalTimeline',		// ayano:Global
+					ayano, 'globalTimeline', // ayano:Global
 					() => api('notes/create', { text: 'foo', replyId: kanakoNote.id }, kyoko),	// kyoko posts
 					msg => msg.type === 'note' && msg.body.userId === kyoko.id,	// wait kyoko
 				);

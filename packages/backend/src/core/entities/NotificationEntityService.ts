@@ -56,7 +56,7 @@ export class NotificationEntityService implements OnModuleInit {
 	/**
 	 * 通知をパックする共通処理
 	*/
-	async #packInternal <T extends MiNotification | MiGroupedNotification> (
+	async #packInternal <T extends MiNotification | MiGroupedNotification>(
 		src: T,
 		meId: MiUser['id'],
 		options: {
@@ -176,7 +176,7 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 	}
 
-	async #packManyInternal <T extends MiNotification | MiGroupedNotification>	(
+	async #packManyInternal <T extends MiNotification | MiGroupedNotification>(
 		notifications: T[],
 		meId: MiUser['id'],
 	): Promise<T[]> {
@@ -266,7 +266,7 @@ export class NotificationEntityService implements OnModuleInit {
 	/**
 	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを確認するvalidator
 	 */
-	#validateNotifier <T extends MiNotification | MiGroupedNotification> (
+	#validateNotifier <T extends MiNotification | MiGroupedNotification>(
 		notification: T,
 		userIdsWhoMeMuting: Set<MiUser['id']>,
 		userMutedInstances: Set<string>,
@@ -298,7 +298,7 @@ export class NotificationEntityService implements OnModuleInit {
 	/**
 	 * notifierが存在するか、ミュートされていないか、サスペンドされていないかを実際に複数確認する
 	 */
-	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification> (
+	async #filterValidNotifier <T extends MiNotification | MiGroupedNotification>(
 		notifications: T[],
 		meId: MiUser['id'],
 	): Promise<T[]> {
@@ -318,7 +318,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const filteredNotifications = ((await Promise.all(notifications.map(async (notification) => {
 			const isValid = this.#validateNotifier(notification, userIdsWhoMeMuting, userMutedInstances, notifiers);
 			return isValid ? notification : null;
-		}))) as [T | null] ).filter(x => x != null);
+		}))) as [T | null]).filter(x => x != null);
 
 		return filteredNotifications;
 	}

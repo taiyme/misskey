@@ -29,8 +29,8 @@ export class ReversiGameEntityService {
 	public async packDetail(
 		src: MiReversiGame['id'] | MiReversiGame,
 		hint?: {
-			packedUser1?: Packed<'UserLite'>,
-			packedUser2?: Packed<'UserLite'>,
+			packedUser1?: Packed<'UserLite'>;
+			packedUser2?: Packed<'UserLite'>;
 		},
 	): Promise<Packed<'ReversiGameDetailed'>> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });
@@ -91,8 +91,8 @@ export class ReversiGameEntityService {
 	public async packLite(
 		src: MiReversiGame['id'] | MiReversiGame,
 		hint?: {
-			packedUser1?: Packed<'UserLite'>,
-			packedUser2?: Packed<'UserLite'>,
+			packedUser1?: Packed<'UserLite'>;
+			packedUser2?: Packed<'UserLite'>;
 		},
 	): Promise<Packed<'ReversiGameLite'>> {
 		const game = typeof src === 'object' ? src : await this.reversiGamesRepository.findOneByOrFail({ id: src });

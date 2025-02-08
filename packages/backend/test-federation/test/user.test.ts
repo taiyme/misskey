@@ -54,8 +54,10 @@ describe('User', () => {
 		});
 
 		describe('ffVisibility is federated', () => {
-			let alice: LoginUser, bob: LoginUser;
-			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+			let alice: LoginUser;
+			let bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -121,8 +123,10 @@ describe('User', () => {
 		});
 
 		describe('isCat is federated', () => {
-			let alice: LoginUser, bob: LoginUser;
-			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+			let alice: LoginUser;
+			let bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -153,7 +157,8 @@ describe('User', () => {
 		});
 
 		describe('Pinning Notes', () => {
-			let alice: LoginUser, bob: LoginUser;
+			let alice: LoginUser;
+			let bob: LoginUser;
 			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
@@ -208,8 +213,10 @@ describe('User', () => {
 	});
 
 	describe('Follow / Unfollow', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -271,8 +278,10 @@ describe('User', () => {
 	});
 
 	describe('Follow requests', () => {
-		let alice: LoginUser, bob: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([
@@ -361,8 +370,10 @@ describe('User', () => {
 
 	describe('Deletion', () => {
 		describe('Check Delete consistency', () => {
-			let alice: LoginUser, bob: LoginUser;
-			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+			let alice: LoginUser;
+			let bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -400,8 +411,10 @@ describe('User', () => {
 		});
 
 		describe('Deletion of remote user for moderation', () => {
-			let alice: LoginUser, bob: LoginUser;
-			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+			let alice: LoginUser;
+			let bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([
@@ -459,8 +472,10 @@ describe('User', () => {
 
 	describe('Suspension', () => {
 		describe('Check suspend/unsuspend consistency', () => {
-			let alice: LoginUser, bob: LoginUser;
-			let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+			let alice: LoginUser;
+			let bob: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+			let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 			beforeAll(async () => {
 				[alice, bob] = await Promise.all([

@@ -149,7 +149,7 @@ export class ExportClipsProcessorService {
 					id: 1,
 				},
 				relations: ['note', 'note.user'],
-			}) as (MiClipNote & { note: MiNote & { user: MiUser } })[];
+			}) as (MiClipNote & { note: MiNote & { user: MiUser; }; })[];
 
 			if (clipNotes.length === 0) {
 				break;
@@ -181,7 +181,7 @@ export class ExportClipsProcessorService {
 		};
 	}
 
-	private serializeClipNote(clip: MiClipNote & { note: MiNote & { user: MiUser } }, poll: MiPoll | undefined): Record<string, unknown> {
+	private serializeClipNote(clip: MiClipNote & { note: MiNote & { user: MiUser; }; }, poll: MiPoll | undefined): Record<string, unknown> {
 		return {
 			id: clip.id,
 			createdAt: this.idService.parse(clip.id).date.toISOString(),

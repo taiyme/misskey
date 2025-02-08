@@ -406,19 +406,19 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async isModerator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isModerator(user: { id: MiUser['id']; isRoot: MiUser['isRoot']; } | null): Promise<boolean> {
 		if (user == null) return false;
 		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
 	}
 
 	@bindThis
-	public async isAdministrator(user: { id: MiUser['id']; isRoot: MiUser['isRoot'] } | null): Promise<boolean> {
+	public async isAdministrator(user: { id: MiUser['id']; isRoot: MiUser['isRoot']; } | null): Promise<boolean> {
 		if (user == null) return false;
 		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: MiRole['id'] } | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id']; } | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
@@ -434,9 +434,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	 */
 	@bindThis
 	public async getModeratorIds(opts?: {
-		includeAdmins?: boolean,
-		includeRoot?: boolean,
-		excludeExpire?: boolean,
+		includeAdmins?: boolean;
+		includeRoot?: boolean;
+		excludeExpire?: boolean;
 	}): Promise<MiUser['id'][]> {
 		const includeAdmins = opts?.includeAdmins ?? true;
 		const includeRoot = opts?.includeRoot ?? false;
@@ -468,7 +468,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				const it = await this.usersRepository.createQueryBuilder('users')
 					.select('id')
 					.where({ isRoot: true })
-					.getRawOne<{ id: string }>();
+					.getRawOne<{ id: string; }>();
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				return it!.id;
 			});
@@ -480,9 +480,9 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async getModerators(opts?: {
-		includeAdmins?: boolean,
-		includeRoot?: boolean,
-		excludeExpire?: boolean,
+		includeAdmins?: boolean;
+		includeRoot?: boolean;
+		excludeExpire?: boolean;
 	}): Promise<MiUser[]> {
 		const ids = await this.getModeratorIds(opts);
 		return ids.length > 0

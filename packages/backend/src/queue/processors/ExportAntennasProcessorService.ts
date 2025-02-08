@@ -23,7 +23,7 @@ import type * as Bull from 'bullmq';
 export class ExportAntennasProcessorService {
 	private logger: Logger;
 
-	constructor (
+	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

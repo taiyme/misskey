@@ -46,7 +46,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
-	user: { id: MiUser['id']; host: MiUser['host'] } | null;
+	user: { id: MiUser['id']; host: MiUser['host']; } | null;
 	/** File path */
 	path: string;
 	/** Name */
@@ -74,7 +74,7 @@ type AddFileArgs = {
 
 type UploadFromUrlArgs = {
 	url: string;
-	user: { id: MiUser['id']; host: MiUser['host'] } | null;
+	user: { id: MiUser['id']; host: MiUser['host']; } | null;
 	folderId?: MiDriveFolder['id'] | null;
 	uri?: string | null;
 	sensitive?: boolean;
@@ -170,11 +170,11 @@ export class DriveService {
 			}
 
 			const baseUrl = this.meta.objectStorageBaseUrl
-				?? `${ this.meta.objectStorageUseSSL ? 'https' : 'http' }://${ this.meta.objectStorageEndpoint }${ this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : '' }/${ this.meta.objectStorageBucket }`;
+				?? `${this.meta.objectStorageUseSSL ? 'https' : 'http'}://${this.meta.objectStorageEndpoint}${this.meta.objectStoragePort ? `:${this.meta.objectStoragePort}` : ''}/${this.meta.objectStorageBucket}`;
 
 			// for original
 			const key = `${this.meta.objectStoragePrefix}/${randomUUID()}${ext}`;
-			const url = `${ baseUrl }/${ key }`;
+			const url = `${baseUrl}/${key}`;
 
 			// for alts
 			let webpublicKey: string | null = null;
@@ -191,7 +191,7 @@ export class DriveService {
 
 			if (alts.webpublic) {
 				webpublicKey = `${this.meta.objectStoragePrefix}/webpublic-${randomUUID()}.${alts.webpublic.ext}`;
-				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
+				webpublicUrl = `${baseUrl}/${webpublicKey}`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
 				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
@@ -199,7 +199,7 @@ export class DriveService {
 
 			if (alts.thumbnail) {
 				thumbnailKey = `${this.meta.objectStoragePrefix}/thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
-				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
+				thumbnailUrl = `${baseUrl}/${thumbnailKey}`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
 				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext, `${name}.thumbnail`));

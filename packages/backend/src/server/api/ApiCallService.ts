@@ -68,12 +68,12 @@ export class ApiCallService implements OnApplicationShutdown {
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
 			const info: unknown = err.info;
 			const unixEpochInSeconds = Date.now();
-			if (typeof(info) === 'object' && info && 'resetMs' in info && typeof(info.resetMs) === 'number') {
+			if (typeof info === 'object' && info && 'resetMs' in info && typeof info.resetMs === 'number') {
 				const cooldownInSeconds = Math.ceil((info.resetMs - unixEpochInSeconds) / 1000);
 				// もしかするとマイナスになる可能性がなくはないのでマイナスだったら0にしておく
 				reply.header('Retry-After', Math.max(cooldownInSeconds, 0).toString(10));
 			} else {
-				this.logger.warn(`rate limit information has unexpected type ${typeof(err.info?.reset)}`);
+				this.logger.warn(`rate limit information has unexpected type ${typeof err.info?.reset}`);
 			}
 		} else if (err.kind === 'client') {
 			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
@@ -151,8 +151,8 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public handleRequest(
-		endpoint: IEndpoint & { exec: any },
-		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
+		endpoint: IEndpoint & { exec: any; },
+		request: FastifyRequest<{ Body: Record<string, unknown> | undefined; Querystring: Record<string, unknown>; }>,
 		reply: FastifyReply,
 	): void {
 		const body = request.method === 'GET'
@@ -187,8 +187,8 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public async handleMultipartRequest(
-		endpoint: IEndpoint & { exec: any },
-		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
+		endpoint: IEndpoint & { exec: any; },
+		request: FastifyRequest<{ Body: Record<string, unknown>; Querystring: Record<string, unknown>; }>,
 		reply: FastifyReply,
 	): Promise<void> {
 		const multipartData = await request.file().catch(() => {
@@ -290,7 +290,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	private async call(
-		ep: IEndpoint & { exec: any },
+		ep: IEndpoint & { exec: any; },
 		user: MiLocalUser | null | undefined,
 		token: MiAccessToken | null | undefined,
 		data: any,
@@ -298,7 +298,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			name: string;
 			path: string;
 		} | null,
-		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
+		request: FastifyRequest<{ Body: Record<string, unknown> | undefined; Querystring: Record<string, unknown>; }>,
 	) {
 		const isSecure = user != null && token == null;
 
@@ -326,7 +326,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 			if (factor > 0) {
 				// Rate limit
-				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
+				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string>; }, limitActor, factor).catch(err => {
 					if ('info' in err) {
 						// errはLimiter.LimiterInfoであることが期待される
 						throw new ApiError({

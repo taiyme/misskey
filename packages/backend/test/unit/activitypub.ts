@@ -9,7 +9,6 @@ import * as assert from 'node:assert';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
 
-import { MockResolver } from '../misc/mock-resolver.js';
 import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
@@ -27,11 +26,12 @@ import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { genAidx } from '@/misc/id/aidx.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 
-type NonTransientIActor = IActor & { id: string };
-type NonTransientIPost = IPost & { id: string };
+type NonTransientIActor = IActor & { id: string; };
+type NonTransientIPost = IPost & { id: string; };
 
 function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
@@ -120,7 +120,7 @@ describe('ActivityPub', () => {
 			imports: [GlobalModule, CoreModule],
 		})
 			.overrideProvider(DownloadService).useValue({
-				async downloadUrl(): Promise<{ filename: string }> {
+				async downloadUrl(): Promise<{ filename: string; }> {
 					return {
 						filename: 'dummy.tmp',
 					};

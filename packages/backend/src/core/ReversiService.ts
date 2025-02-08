@@ -100,8 +100,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			// 既にマッチしている対局が無いか探す(3分以内)
 			const games = await this.reversiGamesRepository.find({
 				where: [
-					{ id: MoreThan(this.idService.gen(Date.now() - 1000 * 60 * 3)), user1Id: me.id, user2Id: targetUser.id, isStarted: false },
-					{ id: MoreThan(this.idService.gen(Date.now() - 1000 * 60 * 3)), user1Id: targetUser.id, user2Id: me.id, isStarted: false },
+					{ id: MoreThan(this.idService.gen(Date.now() - (1000 * 60 * 3))), user1Id: me.id, user2Id: targetUser.id, isStarted: false },
+					{ id: MoreThan(this.idService.gen(Date.now() - (1000 * 60 * 3))), user1Id: targetUser.id, user2Id: me.id, isStarted: false },
 				],
 				relations: ['user1', 'user2'],
 				order: { id: 'DESC' },
@@ -142,13 +142,13 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async matchAnyUser(me: MiUser, options: { noIrregularRules: boolean }, multiple = false): Promise<MiReversiGame | null> {
+	public async matchAnyUser(me: MiUser, options: { noIrregularRules: boolean; }, multiple = false): Promise<MiReversiGame | null> {
 		if (!multiple) {
 			// 既にマッチしている対局が無いか探す(3分以内)
 			const games = await this.reversiGamesRepository.find({
 				where: [
-					{ id: MoreThan(this.idService.gen(Date.now() - 1000 * 60 * 3)), user1Id: me.id, isStarted: false },
-					{ id: MoreThan(this.idService.gen(Date.now() - 1000 * 60 * 3)), user2Id: me.id, isStarted: false },
+					{ id: MoreThan(this.idService.gen(Date.now() - (1000 * 60 * 3))), user1Id: me.id, isStarted: false },
+					{ id: MoreThan(this.idService.gen(Date.now() - (1000 * 60 * 3))), user2Id: me.id, isStarted: false },
 				],
 				relations: ['user1', 'user2'],
 				order: { id: 'DESC' },
@@ -225,7 +225,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async cleanOutdatedGames() {
 		await this.reversiGamesRepository.delete({
-			id: LessThan(this.idService.gen(Date.now() - 1000 * 60 * 10)),
+			id: LessThan(this.idService.gen(Date.now() - (1000 * 60 * 10))),
 			isStarted: false,
 		});
 	}

@@ -29,19 +29,25 @@ const validate = new Ajv().compile({
 			},
 			nullable: true,
 		},
-		keywords: { type: 'array', items: {
+		keywords: {
+			type: 'array', items: {
+				type: 'array', items: {
+					type: 'string',
+				},
+			},
+		},
+		excludeKeywords: {
+			type: 'array', items: {
+				type: 'array', items: {
+					type: 'string',
+				},
+			},
+		},
+		users: {
 			type: 'array', items: {
 				type: 'string',
 			},
-		} },
-		excludeKeywords: { type: 'array', items: {
-			type: 'array', items: {
-				type: 'string',
-			},
-		} },
-		users: { type: 'array', items: {
-			type: 'string',
-		} },
+		},
 		caseSensitive: { type: 'boolean' },
 		localOnly: { type: 'boolean' },
 		excludeBots: { type: 'boolean' },
@@ -55,7 +61,7 @@ const validate = new Ajv().compile({
 export class ImportAntennasProcessorService {
 	private logger: Logger;
 
-	constructor (
+	constructor(
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 

@@ -39,7 +39,7 @@ type PrivateKey = {
 };
 
 export class ApRequestCreator {
-	static createSignedPost(args: { key: PrivateKey, url: string, body: string, digest?: string, additionalHeaders: Record<string, string> }): Signed {
+	static createSignedPost(args: { key: PrivateKey; url: string; body: string; digest?: string; additionalHeaders: Record<string, string>; }): Signed {
 		const u = new URL(args.url);
 		const digestHeader = args.digest ?? this.createDigest(args.body);
 
@@ -47,10 +47,10 @@ export class ApRequestCreator {
 			url: u.href,
 			method: 'POST',
 			headers: this.#objectAssignWithLcKey({
-				'Date': new Date().toUTCString(),
-				'Host': u.host,
+				Date: new Date().toUTCString(),
+				Host: u.host,
 				'Content-Type': 'application/activity+json',
-				'Digest': digestHeader,
+				Digest: digestHeader,
 			}, args.additionalHeaders),
 		};
 
@@ -68,16 +68,16 @@ export class ApRequestCreator {
 		return `SHA-256=${crypto.createHash('sha256').update(body).digest('base64')}`;
 	}
 
-	static createSignedGet(args: { key: PrivateKey, url: string, additionalHeaders: Record<string, string> }): Signed {
+	static createSignedGet(args: { key: PrivateKey; url: string; additionalHeaders: Record<string, string>; }): Signed {
 		const u = new URL(args.url);
 
 		const request: Request = {
 			url: u.href,
 			method: 'GET',
 			headers: this.#objectAssignWithLcKey({
-				'Accept': 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-				'Date': new Date().toUTCString(),
-				'Host': new URL(args.url).host,
+				Accept: 'application/activity+json, application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+				Date: new Date().toUTCString(),
+				Host: new URL(args.url).host,
 			}, args.additionalHeaders),
 		};
 
@@ -155,7 +155,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: MiUser['id'] }, url: string, object: unknown, digest?: string): Promise<void> {
+	public async signedPost(user: { id: MiUser['id']; }, url: string, object: unknown, digest?: string): Promise<void> {
 		const body = typeof object === 'string' ? object : JSON.stringify(object);
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
@@ -185,7 +185,7 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: MiUser['id'] }, followAlternate?: boolean): Promise<unknown> {
+	public async signedGet(url: string, user: { id: MiUser['id']; }, followAlternate?: boolean): Promise<unknown> {
 		const _followAlternate = followAlternate ?? true;
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 

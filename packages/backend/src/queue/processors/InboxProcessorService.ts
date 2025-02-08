@@ -33,8 +33,8 @@ import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { InboxJobData } from '../types.js';
 
 type UpdateInstanceJob = {
-	latestRequestReceivedAt: Date,
-	shouldUnsuspend: boolean,
+	latestRequestReceivedAt: Date;
+	shouldUnsuspend: boolean;
 };
 
 @Injectable()

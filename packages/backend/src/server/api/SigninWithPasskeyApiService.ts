@@ -29,6 +29,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 @Injectable()
 export class SigninWithPasskeyApiService {
 	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -67,12 +68,12 @@ export class SigninWithPasskeyApiService {
 		const body = request.body;
 		const credential = body['credential'];
 
-		function error(status: number, error: { id: string }) {
+		function error(status: number, error: { id: string; }) {
 			reply.code(status);
 			return { error };
 		}
 
-		const fail = async (userId: MiUser['id'], status?: number, failure?: { id: string }) => {
+		const fail = async (userId: MiUser['id'], status?: number, failure?: { id: string; }) => {
 			// Append signin history
 			await this.signinsRepository.insert({
 				id: this.idService.gen(),

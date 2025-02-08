@@ -25,7 +25,7 @@ export class FlashLikeEntityService {
 	@bindThis
 	public async pack(
 		src: MiFlashLike['id'] | MiFlashLike,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
 		const like = typeof src === 'object' ? src : await this.flashLikesRepository.findOneByOrFail({ id: src });
 
@@ -38,7 +38,7 @@ export class FlashLikeEntityService {
 	@bindThis
 	public packMany(
 		likes: any[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		return Promise.all(likes.map(x => this.pack(x, me)));
 	}

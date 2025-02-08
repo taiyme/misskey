@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('vote.userId = :meId', { meId: me.id });
 
 			query
-				.andWhere(`poll.noteId NOT IN (${ votedQuery.getQuery() })`);
+				.andWhere(`poll.noteId NOT IN (${votedQuery.getQuery()})`);
 
 			query.setParameters(votedQuery.getParameters());
 			//#endregion
@@ -82,7 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.where('muting.muterId = :muterId', { muterId: me.id });
 
 			query
-				.andWhere(`poll.userId NOT IN (${ mutingQuery.getQuery() })`);
+				.andWhere(`poll.userId NOT IN (${mutingQuery.getQuery()})`);
 
 			query.setParameters(mutingQuery.getParameters());
 			//#endregion

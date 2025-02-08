@@ -58,7 +58,7 @@ export class AnnouncementService {
 				qb.orWhere('announcement.forExistingUsers = false');
 				qb.orWhere('announcement.id > :userId', { userId: user.id });
 			}))
-			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
+			.andWhere(`announcement.id NOT IN (${readsQuery.getQuery()})`);
 
 		q.setParameters(readsQuery.getParameters());
 
@@ -66,7 +66,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
+	public async create(values: Partial<MiAnnouncement>, moderator?: MiUser): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'>; }> {
 		const announcement = await this.announcementsRepository.insertOne({
 			id: this.idService.gen(),
 			updatedAt: null,

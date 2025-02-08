@@ -120,9 +120,9 @@ export class StreamingApiServerService {
 		});
 
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
-			stream: MainStreamConnection,
+			stream: MainStreamConnection;
 			user: MiLocalUser | null;
-			app: MiAccessToken | null
+			app: MiAccessToken | null;
 		}) => {
 			const { stream, user, app } = ctx;
 

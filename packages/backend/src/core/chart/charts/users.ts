@@ -52,7 +52,7 @@ export default class UsersChart extends Chart<typeof schema> { // eslint-disable
 	}
 
 	@bindThis
-	public async update(user: { id: MiUser['id'], host: MiUser['host'] }, isAdditional: boolean): Promise<void> {
+	public async update(user: { id: MiUser['id']; host: MiUser['host']; }, isAdditional: boolean): Promise<void> {
 		const prefix = this.userEntityService.isLocalUser(user) ? 'local' : 'remote';
 
 		await this.commit({

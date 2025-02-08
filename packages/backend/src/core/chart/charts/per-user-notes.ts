@@ -49,11 +49,11 @@ export default class PerUserNotesChart extends Chart<typeof schema> { // eslint-
 	}
 
 	@bindThis
-	public update(user: { id: MiUser['id'] }, note: MiNote, isAdditional: boolean): void {
+	public update(user: { id: MiUser['id']; }, note: MiNote, isAdditional: boolean): void {
 		this.commit({
-			'total': isAdditional ? 1 : -1,
-			'inc': isAdditional ? 1 : 0,
-			'dec': isAdditional ? 0 : 1,
+			total: isAdditional ? 1 : -1,
+			inc: isAdditional ? 1 : 0,
+			dec: isAdditional ? 0 : 1,
 			'diffs.normal': note.replyId == null && note.renoteId == null ? (isAdditional ? 1 : -1) : 0,
 			'diffs.renote': note.renoteId != null ? (isAdditional ? 1 : -1) : 0,
 			'diffs.reply': note.replyId != null ? (isAdditional ? 1 : -1) : 0,

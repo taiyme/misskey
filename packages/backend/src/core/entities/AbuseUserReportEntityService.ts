@@ -30,9 +30,9 @@ export class AbuseUserReportEntityService {
 		src: MiAbuseUserReport['id'] | MiAbuseUserReport,
 		me?: { id: MiUser['id']; } | null | undefined,
 		hint?: {
-			packedReporter?: Packed<'UserDetailedNotMe'>,
-			packedTargetUser?: Packed<'UserDetailedNotMe'>,
-			packedAssignee?: Packed<'UserDetailedNotMe'>,
+			packedReporter?: Packed<'UserDetailedNotMe'>;
+			packedTargetUser?: Packed<'UserDetailedNotMe'>;
+			packedAssignee?: Packed<'UserDetailedNotMe'>;
 		},
 	) {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
