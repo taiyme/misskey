@@ -16,7 +16,7 @@ export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise
 
 export async function api<
 	E extends keyof Misskey.Endpoints,
-	P extends Misskey.Endpoints[E]['req']
+	P extends Misskey.Endpoints[E]['req'],
 >(endpoint: E, userId?: string, params?: P): Promise<Misskey.api.SwitchCaseResponseType<E, P> | undefined> {
 	let account: Pick<Misskey.entities.SignupResponse, 'id' | 'token'> | undefined;
 
@@ -61,7 +61,7 @@ export function openAntenna(antennaId: string, loginId: string): ReturnType<type
 }
 
 // post-formのオプションから投稿フォームを開く
-export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note }, loginId?: string): ReturnType<typeof openClient> {
+export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note; }, loginId?: string): ReturnType<typeof openClient> {
 	// クエリを作成しておく
 	const url = '/share';
 	const query = new URLSearchParams();

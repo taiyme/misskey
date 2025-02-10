@@ -19,7 +19,7 @@ export type SwMessage = {
 type PushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadAntennaNote: {
-		antenna: { id: string; name: string };
+		antenna: { id: string; name: string; };
 		note: Misskey.entities.Note;
 	};
 	readAllNotifications: undefined;
