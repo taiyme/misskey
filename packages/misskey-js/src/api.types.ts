@@ -21,7 +21,7 @@ type Overwrite<T, U extends { [Key in keyof T]?: unknown }> = Omit<
 
 type SwitchCase<Condition = unknown, Result = unknown> = {
 	$switch: {
-		$cases: [Condition, Result][],
+		$cases: [Condition, Result][];
 		$default: Result;
 	};
 };
@@ -33,13 +33,13 @@ type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C e
 	Endpoints[E]['res'] extends SwitchCase
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false
-		: false
+		: false;
 
 type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1]
-		: never
+		: never;
 
 export type SwitchCaseResponseType<E extends keyof Endpoints, P extends Endpoints[E]['req']> = Endpoints[E]['res'] extends SwitchCase
 	? IsCaseMatched<E, P, 0> extends true ? GetCaseResult<E, P, 0> :
@@ -69,22 +69,22 @@ export type Endpoints = Overwrite<
 					$default: UserDetailed;
 				};
 			};
-		},
+		};
 		// api.jsonには載せないものなのでここで定義
-		'signup': {
+		signup: {
 			req: SignupRequest;
 			res: SignupResponse;
-		},
+		};
 		// api.jsonには載せないものなのでここで定義
 		'signup-pending': {
 			req: SignupPendingRequest;
 			res: SignupPendingResponse;
-		},
+		};
 		// api.jsonには載せないものなのでここで定義
 		'signin-flow': {
 			req: SigninFlowRequest;
 			res: SigninFlowResponse;
-		},
+		};
 		'signin-with-passkey': {
 			req: SigninWithPasskeyRequest;
 			res: {
@@ -98,12 +98,12 @@ export type Endpoints = Overwrite<
 						],
 					];
 					$default: SigninWithPasskeyInitResponse;
-				},
-			},
-		},
+				};
+			};
+		};
 		'admin/roles/create': {
-			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride }>;
+			req: Overwrite<AdminRolesCreateRequest, { policies: PartialRolePolicyOverride; }>;
 			res: AdminRolesCreateResponse;
-		}
+		};
 	}
->
+>;

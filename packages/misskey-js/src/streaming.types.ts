@@ -204,7 +204,7 @@ export type Channels = {
 				targetUserId: string;
 				reporterId: string;
 				comment: string;
-			}
+			};
 		};
 		receives: null;
 	};
@@ -229,11 +229,11 @@ export type Channels = {
 			cancel: null | Record<string, never>;
 			updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
 			claimTimeIsUp: null | Record<string, never>;
-		}
-	}
+		};
+	};
 };
 
-export type NoteUpdatedEvent = { id: Note['id'] } & ({
+export type NoteUpdatedEvent = { id: Note['id']; } & ({
 	type: 'reacted';
 	body: {
 		reaction: string;
