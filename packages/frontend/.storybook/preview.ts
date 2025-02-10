@@ -97,15 +97,14 @@ const preview = {
 			} else {
 				lastStory = context.id;
 				const channel = addons.getChannel();
-				const resetIndexedDBPromise = globalThis.indexedDB?.databases
+				const resetIndexedDBPromise = globalThis.indexedDB.databases
 					? indexedDB.databases().then((r) => {
-							for (var i = 0; i < r.length; i++) {
-								indexedDB.deleteDatabase(r[i].name!);
-							}
-						}).catch(() => {})
+						for (let i = 0; i < r.length; i++) {
+							indexedDB.deleteDatabase(r[i].name!);
+						}
+					}).catch(() => {})
 					: Promise.resolve();
 				const resetDefaultStorePromise = import('../src/store.js').then(({ defaultStore }) => {
-					// @ts-expect-error
 					defaultStore.init();
 				}).catch(() => {});
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {

@@ -6,7 +6,7 @@
 import { Ref, ref, watch, onUnmounted } from 'vue';
 
 export function useTooltip(
-	elRef: Ref<HTMLElement | { $el: HTMLElement } | null | undefined>,
+	elRef: Ref<HTMLElement | { $el: HTMLElement; } | null | undefined>,
 	onShow: (showing: Ref<boolean>) => void,
 	delay = 300,
 ): void {

@@ -120,9 +120,9 @@ type GridItem = {
 	license: string;
 	isSensitive: boolean;
 	localOnly: boolean;
-	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
+	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string; name: string; }[];
 	type: string | null;
-}
+};
 
 function setupGrid(): GridSetting {
 	const $style = useCssModule();
@@ -325,7 +325,7 @@ async function onDrop(ev: DragEvent) {
 		return;
 	}
 
-	const uploadedItems = Array.of<{ droppedFile: DroppedFile, driveFile: Misskey.entities.DriveFile }>();
+	const uploadedItems = Array.of<{ droppedFile: DroppedFile; driveFile: Misskey.entities.DriveFile; }>();
 	try {
 		uploadedItems.push(
 			...await os.promiseDialog(

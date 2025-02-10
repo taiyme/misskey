@@ -155,7 +155,7 @@ const keymap = {
 		allowRepeat: true,
 		callback: () => focusDown(),
 	},
-	'esc': {
+	esc: {
 		allowRepeat: true,
 		callback: () => close(false),
 	},
@@ -279,7 +279,7 @@ function close(actioned = false) {
 	});
 }
 
-function switchItem(item: MenuSwitch & { ref: any }) {
+function switchItem(item: MenuSwitch & { ref: any; }) {
 	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
 	item.ref = !item.ref;
 }

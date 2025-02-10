@@ -82,13 +82,13 @@ import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
 
 const emit = defineEmits<{
-	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
+	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true; }): void;
 }>();
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
-	message?: string,
-	openOnRemote?: OpenOnRemoteOptions,
+	message?: string;
+	openOnRemote?: OpenOnRemoteOptions;
 }>(), {
 	autoSet: false,
 	message: '',
@@ -277,7 +277,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 	});
 }
 
-async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
+async function onLoginSucceeded(res: Misskey.entities.SigninFlowResponse & { finished: true; }) {
 	if (props.autoSet) {
 		await login(res.i);
 	}

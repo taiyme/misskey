@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const defaultLocaleStringFormats: {[index: string]: string} = {
-	'weekday': 'narrow',
-	'era': 'narrow',
-	'year': 'numeric',
-	'month': 'numeric',
-	'day': 'numeric',
-	'hour': 'numeric',
-	'minute': 'numeric',
-	'second': 'numeric',
-	'timeZoneName': 'short',
+const defaultLocaleStringFormats: { [index: string]: string; } = {
+	weekday: 'narrow',
+	era: 'narrow',
+	year: 'numeric',
+	month: 'numeric',
+	day: 'numeric',
+	hour: 'numeric',
+	minute: 'numeric',
+	second: 'numeric',
+	timeZoneName: 'short',
 };
 
 function formatLocaleString(date: Date, format: string): string {

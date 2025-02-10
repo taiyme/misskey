@@ -150,7 +150,7 @@ export type AsUiPostForm = AsUiComponentBase & {
 export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton | AsUiPostForm;
 
 type Options<T extends AsUiComponent> = T extends AsUiButtons
-	? Omit<T, 'id' | 'type' | 'buttons'> & { 'buttons'?: Options<AsUiButton>[] }
+	? Omit<T, 'id' | 'type' | 'buttons'> & { buttons?: Options<AsUiButton>[]; }
 	: Omit<T, 'id' | 'type'>;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {

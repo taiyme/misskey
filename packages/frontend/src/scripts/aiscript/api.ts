@@ -32,7 +32,7 @@ export function aiScriptReadline(q: string): Promise<string> {
 	});
 }
 
-export function createAiScriptEnv(opts: { storageKey: string, token?: string }) {
+export function createAiScriptEnv(opts: { storageKey: string; token?: string; }) {
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i?.name ? values.STR($i.name) : values.NULL,
@@ -76,7 +76,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
-			const actualToken: string|null = token?.value ?? opts.token ?? null;
+			const actualToken: string | null = token?.value ?? opts.token ?? null;
 			if (param == null) {
 				throw new errors.AiScriptRuntimeError('expected param');
 			}

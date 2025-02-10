@@ -31,14 +31,14 @@ type Action = {
 
 //#region consts
 const KEY_ALIASES = {
-	'esc': 'Escape',
-	'enter': 'Enter',
-	'space': ' ',
-	'up': 'ArrowUp',
-	'down': 'ArrowDown',
-	'left': 'ArrowLeft',
-	'right': 'ArrowRight',
-	'plus': ['+', ';'],
+	esc: 'Escape',
+	enter: 'Enter',
+	space: ' ',
+	up: 'ArrowUp',
+	down: 'ArrowDown',
+	left: 'ArrowLeft',
+	right: 'ArrowRight',
+	plus: ['+', ';'],
 };
 
 const MODIFIER_KEYS = ['ctrl', 'alt', 'shift'];
@@ -47,7 +47,7 @@ const IGNORE_ELEMENTS = ['input', 'textarea'];
 //#endregion
 
 //#region store
-let latestHotkey: Pattern & { callback: CallbackFunction } | null = null;
+let latestHotkey: Pattern & { callback: CallbackFunction; } | null = null;
 //#endregion
 
 //#region impl

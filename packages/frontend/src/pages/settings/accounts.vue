@@ -45,7 +45,7 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { MenuItem } from '@/types/menu';
 
-const storedAccounts = ref<{ id: string, token: string; }[] | null>(null);
+const storedAccounts = ref<{ id: string; token: string; }[] | null>(null);
 const accounts = ref(new Map<string, Misskey.entities.UserDetailed | null>());
 
 const init = async () => {

@@ -67,8 +67,8 @@ import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
 
 const props = withDefaults(defineProps<{
-	message?: string,
-	openOnRemote?: OpenOnRemoteOptions,
+	message?: string;
+	openOnRemote?: OpenOnRemoteOptions;
 }>(), {
 	message: '',
 	openOnRemote: undefined,

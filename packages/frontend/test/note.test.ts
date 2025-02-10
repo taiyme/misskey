@@ -6,11 +6,11 @@
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init.js';
+import { sleep } from './utils.js';
 import type * as Misskey from 'misskey-js';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
 import MkMediaImage from '@/components/MkMediaImage.vue';
-import { sleep } from './utils.js';
 
 describe('MkMediaImage', () => {
 	const renderMediaImage = (image: Partial<Misskey.entities.DriveFile>): RenderResult => {

@@ -5,8 +5,8 @@
 
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
-import { defaultStoreState } from './init.js';
 import { getEmojiName } from '../../frontend-shared/js/emojilist.js';
+import { defaultStoreState } from './init.js';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
 import MkEmoji from '@/components/global/MkEmoji.vue';

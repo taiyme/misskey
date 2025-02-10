@@ -29,8 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type * as Misskey from 'misskey-js';
 import { computed, toRefs } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 
 const emit = defineEmits<{

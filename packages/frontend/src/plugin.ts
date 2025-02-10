@@ -47,7 +47,7 @@ export async function install(plugin: Plugin): Promise<void> {
 	);
 }
 
-function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
+function createPluginEnv(opts: { plugin: Plugin; storageKey: string; }): Record<string, values.Value> {
 	const config = new Map<string, values.Value>();
 	for (const [k, v] of Object.entries(opts.plugin.config ?? {})) {
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));

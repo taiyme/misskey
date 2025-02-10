@@ -177,7 +177,7 @@ const props = withDefaults(defineProps<{
 	full: false,
 });
 
-type ExportCompletedNotification = Misskey.entities.Notification & { type: 'exportCompleted' };
+type ExportCompletedNotification = Misskey.entities.Notification & { type: 'exportCompleted'; };
 
 const exportEntityName = {
 	antenna: i18n.ts.antennas,

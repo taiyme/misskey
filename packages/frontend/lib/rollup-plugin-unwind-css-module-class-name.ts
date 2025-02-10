@@ -474,7 +474,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
-		renderChunk(code): { code: string } {
+		renderChunk(code): { code: string; } {
 			const ast = this.parse(code) as unknown as estree.Node;
 			unwindCssModuleClassName(ast);
 			return { code: generate(ast) };

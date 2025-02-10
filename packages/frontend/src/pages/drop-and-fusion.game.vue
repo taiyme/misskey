@@ -622,7 +622,7 @@ function loadMonoTextures() {
 		if (renderer.textures[mono.img]) return;
 
 		let src = mono.img;
-		 
+
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -647,7 +647,7 @@ function loadMonoTextures() {
 
 function getTextureImageUrl(mono: Mono) {
 	const def = monoDefinitions.value.find(x => x.id === mono.id)!;
-	 
+
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
 

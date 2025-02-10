@@ -62,7 +62,7 @@ const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 
 const onDriveFileCreated = (file) => {
-	if (/^image\/.+$/.test(file.type)) {
+	if ((/^image\/.+$/).test(file.type)) {
 		images.value.unshift(file);
 		if (images.value.length > 9) images.value.pop();
 	}

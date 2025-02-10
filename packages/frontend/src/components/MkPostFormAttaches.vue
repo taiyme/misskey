@@ -171,7 +171,7 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		menuItems.push({
 			text: i18n.ts.cropImage,
 			icon: 'ti ti-crop',
-			action: () : void => { crop(file); },
+			action: (): void => { crop(file); },
 		});
 	}
 

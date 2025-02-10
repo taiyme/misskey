@@ -62,7 +62,7 @@ function draw(): void {
 
 	polylinePoints.value = _polylinePoints.map(xy => `${xy[0]},${xy[1]}`).join(' ');
 
-	polygonPoints.value = `0,${ viewBoxY } ${ polylinePoints.value } ${ viewBoxX },${ viewBoxY }`;
+	polygonPoints.value = `0,${viewBoxY} ${polylinePoints.value} ${viewBoxX},${viewBoxY}`;
 
 	headX.value = _polylinePoints.at(-1)![0];
 	headY.value = _polylinePoints.at(-1)![1];

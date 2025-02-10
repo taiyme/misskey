@@ -111,11 +111,11 @@ async function renderChart() {
 				},
 				width(c) {
 					const a = c.chart.chartArea ?? {};
-					return (a.right - a.left) / maxDays - marginEachCell;
+					return ((a.right - a.left) / maxDays) - marginEachCell;
 				},
 				height(c) {
 					const a = c.chart.chartArea ?? {};
-					return (a.bottom - a.top) / maxDays - (marginEachCell / 1.5);
+					return ((a.bottom - a.top) / maxDays) - (marginEachCell / 1.5);
 				},
 			}],
 		},

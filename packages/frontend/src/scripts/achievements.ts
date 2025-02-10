@@ -88,392 +88,392 @@ export const ACHIEVEMENT_TYPES = [
 ] as const;
 
 export const ACHIEVEMENT_BADGES = {
-	'notes1': {
+	notes1: {
 		img: '/fluent-emoji/1f4dd.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'notes10': {
+	notes10: {
 		img: '/fluent-emoji/1f4d1.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'notes100': {
+	notes100: {
 		img: '/fluent-emoji/1f4d2.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'notes500': {
+	notes500: {
 		img: '/fluent-emoji/1f4da.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'notes1000': {
+	notes1000: {
 		img: '/fluent-emoji/1f5c3.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'notes5000': {
+	notes5000: {
 		img: '/fluent-emoji/1f304.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'notes10000': {
+	notes10000: {
 		img: '/fluent-emoji/1f3d9.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'silver',
 	},
-	'notes20000': {
+	notes20000: {
 		img: '/fluent-emoji/1f307.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'silver',
 	},
-	'notes30000': {
+	notes30000: {
 		img: '/fluent-emoji/1f306.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'silver',
 	},
-	'notes40000': {
+	notes40000: {
 		img: '/fluent-emoji/1f303.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'silver',
 	},
-	'notes50000': {
+	notes50000: {
 		img: '/fluent-emoji/1fa90.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'gold',
 	},
-	'notes60000': {
+	notes60000: {
 		img: '/fluent-emoji/2604.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'gold',
 	},
-	'notes70000': {
+	notes70000: {
 		img: '/fluent-emoji/1f30c.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'gold',
 	},
-	'notes80000': {
+	notes80000: {
 		img: '/fluent-emoji/1f30c.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'gold',
 	},
-	'notes90000': {
+	notes90000: {
 		img: '/fluent-emoji/1f30c.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
 		frame: 'gold',
 	},
-	'notes100000': {
+	notes100000: {
 		img: '/fluent-emoji/267e.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
 		frame: 'platinum',
 	},
-	'login3': {
+	login3: {
 		img: '/fluent-emoji/1f331.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'login7': {
+	login7: {
 		img: '/fluent-emoji/1f331.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'login15': {
+	login15: {
 		img: '/fluent-emoji/1f331.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'bronze',
 	},
-	'login30': {
+	login30: {
 		img: '/fluent-emoji/1fab4.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'login60': {
+	login60: {
 		img: '/fluent-emoji/1fab4.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'login100': {
+	login100: {
 		img: '/fluent-emoji/1fab4.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'silver',
 	},
-	'login200': {
+	login200: {
 		img: '/fluent-emoji/1f333.png',
 		bg: null,
 		frame: 'silver',
 	},
-	'login300': {
+	login300: {
 		img: '/fluent-emoji/1f333.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'silver',
 	},
-	'login400': {
+	login400: {
 		img: '/fluent-emoji/1f333.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'silver',
 	},
-	'login500': {
+	login500: {
 		img: '/fluent-emoji/1f304.png',
 		bg: null,
 		frame: 'silver',
 	},
-	'login600': {
+	login600: {
 		img: '/fluent-emoji/1f304.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'gold',
 	},
-	'login700': {
+	login700: {
 		img: '/fluent-emoji/1f304.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'gold',
 	},
-	'login800': {
+	login800: {
 		img: '/fluent-emoji/1f307.png',
 		bg: null,
 		frame: 'gold',
 	},
-	'login900': {
+	login900: {
 		img: '/fluent-emoji/1f307.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'gold',
 	},
-	'login1000': {
+	login1000: {
 		img: '/fluent-emoji/1f307.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'platinum',
 	},
-	'noteClipped1': {
+	noteClipped1: {
 		img: '/fluent-emoji/1f587.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'noteFavorited1': {
+	noteFavorited1: {
 		img: '/fluent-emoji/1f31f.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'myNoteFavorited1': {
+	myNoteFavorited1: {
 		img: '/fluent-emoji/1f320.png',
 		bg: null,
 		frame: 'silver',
 	},
-	'profileFilled': {
+	profileFilled: {
 		img: '/fluent-emoji/1f44c.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'markedAsCat': {
+	markedAsCat: {
 		img: '/fluent-emoji/1f408.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'following1': {
+	following1: {
 		img: '/fluent-emoji/2618.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'following10': {
+	following10: {
 		img: '/fluent-emoji/1f6b8.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'following50': {
+	following50: {
 		img: '/fluent-emoji/1f91d.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'following100': {
+	following100: {
 		img: '/fluent-emoji/1f4af.png',
 		bg: 'linear-gradient(0deg, rgb(255 53 184), rgb(255 206 69))',
 		frame: 'silver',
 	},
-	'following300': {
+	following300: {
 		img: '/fluent-emoji/1f970.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'silver',
 	},
-	'followers1': {
+	followers1: {
 		img: '/fluent-emoji/2618.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'followers10': {
+	followers10: {
 		img: '/fluent-emoji/1f44b.png',
 		bg: 'linear-gradient(0deg, rgb(59 187 116), rgb(199 211 102))',
 		frame: 'bronze',
 	},
-	'followers50': {
+	followers50: {
 		img: '/fluent-emoji/1f411.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
-	'followers100': {
+	followers100: {
 		img: '/fluent-emoji/1f60e.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'silver',
 	},
-	'followers300': {
+	followers300: {
 		img: '/fluent-emoji/1f3c6.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'silver',
 	},
-	'followers500': {
+	followers500: {
 		img: '/fluent-emoji/1f4e1.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'gold',
 	},
-	'followers1000': {
+	followers1000: {
 		img: '/fluent-emoji/1f451.png',
 		bg: 'linear-gradient(0deg, rgb(255 232 119), rgb(255 140 41))',
 		frame: 'platinum',
 	},
-	'collectAchievements30': {
+	collectAchievements30: {
 		img: '/fluent-emoji/1f3c5.png',
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',
 	},
-	'viewAchievements3min': {
+	viewAchievements3min: {
 		img: '/fluent-emoji/1f3c5.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
-	'iLoveMisskey': {
+	iLoveMisskey: {
 		img: '/fluent-emoji/2764.png',
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',
 	},
-	'foundTreasure': {
+	foundTreasure: {
 		img: '/fluent-emoji/1f3c6.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'gold',
 	},
-	'client30min': {
+	client30min: {
 		img: '/fluent-emoji/1f552.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
-	'client60min': {
+	client60min: {
 		img: '/fluent-emoji/1f552.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'silver',
 	},
-	'noteDeletedWithin1min': {
+	noteDeletedWithin1min: {
 		img: '/fluent-emoji/1f5d1.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
-	'postedAtLateNight': {
+	postedAtLateNight: {
 		img: '/fluent-emoji/1f319.png',
 		bg: 'linear-gradient(0deg, rgb(197 69 192), rgb(2 112 155))',
 		frame: 'bronze',
 	},
-	'postedAt0min0sec': {
+	postedAt0min0sec: {
 		img: '/fluent-emoji/1f55b.png',
 		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
 		frame: 'bronze',
 	},
-	'selfQuote': {
+	selfQuote: {
 		img: '/fluent-emoji/1f4dd.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'htl20npm': {
+	htl20npm: {
 		img: '/fluent-emoji/1f30a.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
-	'viewInstanceChart': {
+	viewInstanceChart: {
 		img: '/fluent-emoji/1f4ca.png',
 		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
 		frame: 'bronze',
 	},
-	'outputHelloWorldOnScratchpad': {
+	outputHelloWorldOnScratchpad: {
 		img: '/fluent-emoji/1f530.png',
 		bg: 'linear-gradient(0deg, rgb(58 231 198), rgb(37 194 255))',
 		frame: 'bronze',
 	},
-	'open3windows': {
+	open3windows: {
 		img: '/fluent-emoji/1f5a5.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
-	'driveFolderCircularReference': {
+	driveFolderCircularReference: {
 		img: '/fluent-emoji/1f4c2.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
-	'reactWithoutRead': {
+	reactWithoutRead: {
 		img: '/fluent-emoji/2753.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
-	'clickedClickHere': {
+	clickedClickHere: {
 		img: '/fluent-emoji/2757.png',
 		bg: 'linear-gradient(0deg, rgb(144 224 255), rgb(255 168 252))',
 		frame: 'bronze',
 	},
-	'justPlainLucky': {
+	justPlainLucky: {
 		img: '/fluent-emoji/1f340.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'silver',
 	},
-	'setNameToSyuilo': {
+	setNameToSyuilo: {
 		img: '/fluent-emoji/1f36e.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'passedSinceAccountCreated1': {
+	passedSinceAccountCreated1: {
 		img: '/fluent-emoji/0031-20e3.png',
 		bg: null,
 		frame: 'bronze',
 	},
-	'passedSinceAccountCreated2': {
+	passedSinceAccountCreated2: {
 		img: '/fluent-emoji/0032-20e3.png',
 		bg: null,
 		frame: 'silver',
 	},
-	'passedSinceAccountCreated3': {
+	passedSinceAccountCreated3: {
 		img: '/fluent-emoji/0033-20e3.png',
 		bg: null,
 		frame: 'gold',
 	},
-	'loggedInOnBirthday': {
+	loggedInOnBirthday: {
 		img: '/fluent-emoji/1f382.png',
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',
 	},
-	'loggedInOnNewYearsDay': {
+	loggedInOnNewYearsDay: {
 		img: '/fluent-emoji/1f38d.png',
 		bg: 'linear-gradient(0deg, rgb(255 144 144), rgb(255 232 168))',
 		frame: 'silver',
 	},
-	'cookieClicked': {
+	cookieClicked: {
 		img: '/fluent-emoji/1f36a.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'brainDiver': {
+	brainDiver: {
 		img: '/fluent-emoji/1f9e0.png',
 		bg: 'linear-gradient(0deg, rgb(144, 224, 255), rgb(255, 168, 252))',
 		frame: 'bronze',
 	},
-	'smashTestNotificationButton': {
+	smashTestNotificationButton: {
 		img: '/fluent-emoji/1f514.png',
 		bg: 'linear-gradient(0deg, rgb(187 183 59), rgb(255 143 77))',
 		frame: 'bronze',
 	},
-	'tutorialCompleted': {
+	tutorialCompleted: {
 		img: '/fluent-emoji/1f393.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
-	'bubbleGameExplodingHead': {
+	bubbleGameExplodingHead: {
 		img: '/fluent-emoji/1f92f.png',
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'bronze',
 	},
-	'bubbleGameDoubleExplodingHead': {
+	bubbleGameDoubleExplodingHead: {
 		img: '/fluent-emoji/1f92f.png',
 		bg: 'linear-gradient(0deg, rgb(255 77 77), rgb(247 155 214))',
 		frame: 'silver',

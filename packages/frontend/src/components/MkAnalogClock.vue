@@ -87,7 +87,7 @@ import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
 const angleDiff = (a: number, b: number) => {
 	const x = Math.abs(a - b);
-	return Math.abs((x + Math.PI) % (Math.PI * 2) - Math.PI);
+	return Math.abs(((x + Math.PI) % (Math.PI * 2)) - Math.PI);
 };
 
 const graduationsPadding = 0.5;
@@ -166,8 +166,8 @@ function tick() {
 	if (previousS === s.value && previousM === m.value && previousH === h.value) {
 		return;
 	}
-	hAngle.value = Math.PI * (h.value % (props.twentyfour ? 24 : 12) + (m.value + s.value / 60) / 60) / (props.twentyfour ? 12 : 6);
-	mAngle.value = Math.PI * (m.value + s.value / 60) / 30;
+	hAngle.value = Math.PI * ((h.value % (props.twentyfour ? 24 : 12)) + ((m.value + (s.value / 60)) / 60)) / (props.twentyfour ? 12 : 6);
+	mAngle.value = Math.PI * (m.value + (s.value / 60)) / 30;
 	if (sOneRound && sLine.value) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
 		sAngle.value = Math.PI * 60 / 30;
 		defaultIdlingRenderScheduler.delete(tick);

@@ -60,7 +60,7 @@ const change = () => {
 	if (images.value.length === 0) return;
 
 	const index = Math.floor(Math.random() * images.value.length);
-	const img = `url(${ images.value[index].url })`;
+	const img = `url(${images.value[index].url})`;
 
 	slideB.value.style.backgroundImage = img;
 

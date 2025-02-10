@@ -96,33 +96,45 @@ const tagUsers = computed(() => ({
 }));
 
 const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
-const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	state: 'alive',
-	origin: 'local',
-	sort: '+follower',
-} };
-const recentlyUpdatedUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	origin: 'local',
-	sort: '+updatedAt',
-} };
-const recentlyRegisteredUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	origin: 'local',
-	state: 'alive',
-	sort: '+createdAt',
-} };
-const popularUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	state: 'alive',
-	origin: 'remote',
-	sort: '+follower',
-} };
-const recentlyUpdatedUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	origin: 'combined',
-	sort: '+updatedAt',
-} };
-const recentlyRegisteredUsersF = { endpoint: 'users', limit: 10, noPaging: true, params: {
-	origin: 'combined',
-	sort: '+createdAt',
-} };
+const popularUsers = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		state: 'alive',
+		origin: 'local',
+		sort: '+follower',
+	},
+};
+const recentlyUpdatedUsers = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		origin: 'local',
+		sort: '+updatedAt',
+	},
+};
+const recentlyRegisteredUsers = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		origin: 'local',
+		state: 'alive',
+		sort: '+createdAt',
+	},
+};
+const popularUsersF = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		state: 'alive',
+		origin: 'remote',
+		sort: '+follower',
+	},
+};
+const recentlyUpdatedUsersF = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		origin: 'combined',
+		sort: '+updatedAt',
+	},
+};
+const recentlyRegisteredUsersF = {
+	endpoint: 'users', limit: 10, noPaging: true, params: {
+		origin: 'combined',
+		sort: '+createdAt',
+	},
+};
 
 misskeyApi('hashtags/list', {
 	sort: '+attachedLocalUsers',

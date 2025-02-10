@@ -33,7 +33,7 @@ import { getPageBlockList } from '@/pages/page-editor/common.js';
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
 const props = defineProps<{
-	modelValue: Misskey.entities.PageBlock & { type: 'section'; },
+	modelValue: Misskey.entities.PageBlock & { type: 'section'; };
 }>();
 
 const emit = defineEmits<{

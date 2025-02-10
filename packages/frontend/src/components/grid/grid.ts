@@ -44,6 +44,6 @@ export type AdditionalStyle = {
 };
 
 export class GridEventEmitter extends EventEmitter<{
-	'forceRefreshContentSize': void;
+	forceRefreshContentSize: void;
 }> {
 }

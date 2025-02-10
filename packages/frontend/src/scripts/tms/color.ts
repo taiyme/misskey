@@ -49,7 +49,7 @@ export const rgbToHex = (rgb: RGB): HEX => {
 
 const validHex = (hex: unknown): hex is string => {
 	if (typeof hex !== 'string') return false;
-	return /^[0-9a-f]+$/i.test(hex);
+	return (/^[0-9a-f]+$/i).test(hex);
 };
 
 const validRgb = (rgb: unknown): rgb is RGB => {

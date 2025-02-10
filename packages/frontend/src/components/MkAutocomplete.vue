@@ -134,7 +134,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(event: 'done', value: { type: string; value: any }): void;
+	(event: 'done', value: { type: string; value: any; }): void;
 	(event: 'closed'): void;
 }>();
 

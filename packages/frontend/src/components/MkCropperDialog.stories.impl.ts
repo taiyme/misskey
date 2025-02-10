@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
 import { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { action } from '@storybook/addon-actions';
@@ -30,9 +28,9 @@ export const Default = {
 				},
 				events() {
 					return {
-						'ok': action('ok'),
-						'cancel': action('cancel'),
-						'closed': action('closed'),
+						ok: action('ok'),
+						cancel: action('cancel'),
+						closed: action('closed'),
 					};
 				},
 			},

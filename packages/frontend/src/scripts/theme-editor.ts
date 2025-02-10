@@ -19,7 +19,7 @@ export type ThemeValue = Color | Func | RefProp | RefConst | Css | Default;
 
 export type ThemeViewModel = [ string, ThemeValue ][];
 
-export const fromThemeString = (str?: string) : ThemeValue => {
+export const fromThemeString = (str?: string): ThemeValue => {
 	if (!str) return null;
 	if (str.startsWith(':')) {
 		const parts = str.slice(1).split('<');
@@ -58,7 +58,7 @@ export const toThemeString = (value: Color | Func | RefProp | RefConst | Css) =>
 };
 
 export const convertToMisskeyTheme = (vm: ThemeViewModel, name: string, desc: string, author: string, base: 'dark' | 'light'): Theme => {
-	const props = { } as { [key: string]: string };
+	const props = { } as { [key: string]: string; };
 	for (const [key, value] of vm) {
 		if (value === null) continue;
 		props[key] = toThemeString(value);
