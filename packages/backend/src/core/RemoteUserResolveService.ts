@@ -145,8 +145,8 @@ export class RemoteUserResolveService {
 	private async resolveSelf(acctLower: string): Promise<ILink> {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {
-			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ err.statusCode ?? err.message }`);
-			throw new Error(`Failed to WebFinger for ${acctLower}: ${ err.statusCode ?? err.message }`);
+			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${err.statusCode ?? err.message}`);
+			throw new Error(`Failed to WebFinger for ${acctLower}: ${err.statusCode ?? err.message}`);
 		});
 		const self = finger.links.find(link => link.rel != null && link.rel.toLowerCase() === 'self');
 		if (!self) {

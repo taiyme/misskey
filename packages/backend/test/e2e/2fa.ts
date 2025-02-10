@@ -9,6 +9,7 @@ import * as assert from 'node:assert';
 import * as crypto from 'node:crypto';
 import cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
+import { loadConfig } from '@/config.js';
 import { api, signup } from '../utils.js';
 import type {
 	AuthenticationResponseJSON,
@@ -19,7 +20,6 @@ import type {
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
 import type * as Misskey from 'misskey-js';
-import { loadConfig } from '@/config.js';
 
 describe('2要素認証', () => {
 	let alice: Misskey.entities.SignupResponse;
@@ -58,15 +58,15 @@ describe('2要素認証', () => {
 	};
 
 	const keyDoneParam = (param: {
-		token: string,
-		keyName: string,
-		credentialId: Buffer,
-		creationOptions: PublicKeyCredentialCreationOptionsJSON,
+		token: string;
+		keyName: string;
+		credentialId: Buffer;
+		creationOptions: PublicKeyCredentialCreationOptionsJSON;
 	}): {
-		token: string,
-		password: string,
-		name: string,
-		credential: RegistrationResponseJSON,
+		token: string;
+		password: string;
+		name: string;
+		credential: RegistrationResponseJSON;
 	} => {
 		// A COSE encoded public key
 		const credentialPublicKey = cbor.encode(new Map<number, unknown>([
@@ -119,10 +119,10 @@ describe('2要素認証', () => {
 	};
 
 	const signinParam = (): {
-		username: string,
-		password: string,
-		'g-recaptcha-response'?: string | null,
-		'hcaptcha-response'?: string | null,
+		username: string;
+		password: string;
+		'g-recaptcha-response'?: string | null;
+		'hcaptcha-response'?: string | null;
 	} => {
 		return {
 			username,
@@ -133,9 +133,9 @@ describe('2要素認証', () => {
 	};
 
 	const signinWithSecurityKeyParam = (param: {
-		keyName: string,
-		credentialId: Buffer,
-		requestOptions: PublicKeyCredentialRequestOptionsJSON,
+		keyName: string;
+		credentialId: Buffer;
+		requestOptions: PublicKeyCredentialRequestOptionsJSON;
 	}): Misskey.entities.SigninFlowRequest => {
 		// AuthenticatorAssertionResponse.authenticatorData
 		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData

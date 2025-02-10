@@ -30,7 +30,7 @@ export class RoleEntityService {
 	@bindThis
 	public async pack(
 		src: MiRole['id'] | MiRole,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
@@ -77,7 +77,7 @@ export class RoleEntityService {
 	@bindThis
 	public packMany(
 		roles: any[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}

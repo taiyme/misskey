@@ -7,11 +7,11 @@ import { portToPid } from 'pid-port';
 import fkill from 'fkill';
 import Fastify from 'fastify';
 import { NestFactory } from '@nestjs/core';
+import { INestApplicationContext } from '@nestjs/common';
 import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { loadConfig } from '@/config.js';
 import { NestLogger } from '@/NestLogger.js';
-import { INestApplicationContext } from '@nestjs/common';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
@@ -65,7 +65,7 @@ async function killTestServer() {
 async function startControllerEndpoints(port = config.port + 1000) {
 	const fastify = Fastify();
 
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env', async (req, res) => {
+	fastify.post<{ Body: { key?: string; value?: string; }; }>('/env', async (req, res) => {
 		console.log(req.body);
 		const key = req.body['key'];
 		if (!key) {
@@ -78,7 +78,7 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		res.code(200).send({ success: true });
 	});
 
-	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
+	fastify.post<{ Body: { key?: string; value?: string; }; }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
 
 		await serverService.dispose();

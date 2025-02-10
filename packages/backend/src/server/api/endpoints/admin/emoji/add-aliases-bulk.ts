@@ -18,12 +18,16 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		ids: { type: 'array', items: {
-			type: 'string', format: 'misskey:id',
-		} },
-		aliases: { type: 'array', items: {
-			type: 'string',
-		} },
+		ids: {
+			type: 'array', items: {
+				type: 'string', format: 'misskey:id',
+			},
+		},
+		aliases: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 	},
 	required: ['ids', 'aliases'],
 } as const;

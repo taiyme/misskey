@@ -16,9 +16,9 @@ import type { Resolver } from './ApResolverService.js';
 type Visibility = 'public' | 'home' | 'followers' | 'specified';
 
 type AudienceInfo = {
-	visibility: Visibility,
-	mentionedUsers: MiUser[],
-	visibleUsers: MiUser[],
+	visibility: Visibility;
+	mentionedUsers: MiUser[];
+	visibleUsers: MiUser[];
 };
 
 type GroupedAudience = Record<'public' | 'followers' | 'other', string[]>;

@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('user.isSuspended = FALSE');
 
 			switch (ps.state) {
-				case 'alive': query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
+				case 'alive': query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - (1000 * 60 * 60 * 24 * 5)) }); break;
 			}
 
 			switch (ps.origin) {

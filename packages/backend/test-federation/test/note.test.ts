@@ -8,8 +8,10 @@ import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
-	let alice: LoginUser, bob: LoginUser;
-	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+	let alice: LoginUser;
+	let bob: LoginUser;
+	let bobInA: Misskey.entities.UserDetailedNotMe;
+	let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([
@@ -286,7 +288,8 @@ describe('Note', () => {
 		});
 
 		describe('Local user\'s vote is delivered to the author\'s remote followers', () => {
-			let bobRemoteFollower: LoginUser, localVoter: LoginUser;
+			let bobRemoteFollower: LoginUser;
+			let localVoter: LoginUser;
 
 			beforeAll(async () => {
 				[

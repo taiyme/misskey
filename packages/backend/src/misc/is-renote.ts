@@ -10,19 +10,19 @@ import type { Packed } from '@/misc/json-schema.js';
 
 type Renote =
 	MiNote & {
-		renoteId: NonNullable<MiNote['renoteId']>
+		renoteId: NonNullable<MiNote['renoteId']>;
 	};
 
 type Quote =
 	Renote & ({
-		text: NonNullable<MiNote['text']>
+		text: NonNullable<MiNote['text']>;
 	} | {
-		cw: NonNullable<MiNote['cw']>
+		cw: NonNullable<MiNote['cw']>;
 	} | {
-		replyId: NonNullable<MiNote['replyId']>
-		reply: NonNullable<MiNote['reply']>
+		replyId: NonNullable<MiNote['replyId']>;
+		reply: NonNullable<MiNote['reply']>;
 	} | {
-		hasPoll: true
+		hasPoll: true;
 	});
 
 export function isRenote(note: MiNote): note is Renote {
@@ -40,20 +40,20 @@ export function isQuote(note: Renote): note is Quote {
 
 type PackedRenote =
 	Packed<'Note'> & {
-		renoteId: NonNullable<Packed<'Note'>['renoteId']>
+		renoteId: NonNullable<Packed<'Note'>['renoteId']>;
 	};
 
 type PackedQuote =
 	PackedRenote & ({
-		text: NonNullable<Packed<'Note'>['text']>
+		text: NonNullable<Packed<'Note'>['text']>;
 	} | {
-		cw: NonNullable<Packed<'Note'>['cw']>
+		cw: NonNullable<Packed<'Note'>['cw']>;
 	} | {
-		replyId: NonNullable<Packed<'Note'>['replyId']>
+		replyId: NonNullable<Packed<'Note'>['replyId']>;
 	} | {
-		poll: NonNullable<Packed<'Note'>['poll']>
+		poll: NonNullable<Packed<'Note'>['poll']>;
 	} | {
-		fileIds: NonNullable<Packed<'Note'>['fileIds']>
+		fileIds: NonNullable<Packed<'Note'>['fileIds']>;
 	});
 
 export function isRenotePacked(note: Packed<'Note'>): note is PackedRenote {

@@ -74,12 +74,12 @@ export class ImportCustomEmojisProcessorService {
 
 			for (const record of meta.emojis) {
 				if (!record.downloaded) continue;
-				if (!/^[a-zA-Z0-9_]+?([a-zA-Z0-9\.]+)?$/.test(record.fileName)) {
+				if (!(/^[a-zA-Z0-9_]+?([a-zA-Z0-9\.]+)?$/).test(record.fileName)) {
 					this.logger.error(`invalid filename: ${record.fileName}`);
 					continue;
 				}
 				const emojiInfo = record.emoji;
-				if (!/^[a-zA-Z0-9_]+$/.test(emojiInfo.name)) {
+				if (!(/^[a-zA-Z0-9_]+$/).test(emojiInfo.name)) {
 					this.logger.error(`invalid emojiname: ${emojiInfo.name}`);
 					continue;
 				}

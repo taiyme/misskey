@@ -108,7 +108,7 @@ describe('ReactionService', () => {
 		});
 
 		test('文字列によるレガシーなリアクションを変換する', () => {
-			const input = { 'like': 1, 'pudding': 2 };
+			const input = { like: 1, pudding: 2 };
 			const output = { '👍': 1, '🍮': 2 };
 			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
 		});
@@ -120,7 +120,7 @@ describe('ReactionService', () => {
 		});
 
 		test('「0個のリアクション」情報を削除する', () => {
-			const input = { 'angry': 0 };
+			const input = { angry: 0 };
 			const output = {};
 			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
 		});

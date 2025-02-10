@@ -19,21 +19,21 @@ import { isReply } from '@/misc/is-reply.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 
 type TimelineOptions = {
-	untilId: string | null,
-	sinceId: string | null,
-	limit: number,
-	allowPartial: boolean,
-	me?: { id: MiUser['id'] } | undefined | null,
-	useDbFallback: boolean,
-	redisTimelines: FanoutTimelineName[],
-	noteFilter?: (note: MiNote) => boolean,
+	untilId: string | null;
+	sinceId: string | null;
+	limit: number;
+	allowPartial: boolean;
+	me?: { id: MiUser['id']; } | undefined | null;
+	useDbFallback: boolean;
+	redisTimelines: FanoutTimelineName[];
+	noteFilter?: (note: MiNote) => boolean;
 	alwaysIncludeMyNotes?: boolean;
 	ignoreAuthorFromBlock?: boolean;
 	ignoreAuthorFromMute?: boolean;
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
-	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
+	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>;
 };
 
 @Injectable()
@@ -68,7 +68,7 @@ export class FanoutTimelineEndpointService {
 
 		let noteIds = redisResultIds.slice(0, ps.limit);
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
-		const shouldFallbackToDb = noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
+		const shouldFallbackToDb = noteIds.length === 0 || (ps.sinceId != null && ps.sinceId < oldestNoteId);
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true);

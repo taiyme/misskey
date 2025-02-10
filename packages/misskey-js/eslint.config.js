@@ -6,21 +6,22 @@ export default [
 	...sharedConfig,
 	{
 		ignores: [
-			'**/node_modules',
-			'built',
-			'coverage',
-			'jest.config.ts',
-			'test',
-			'test-d',
-			'generator',
+			'built/',
+			'coverage/',
+			'generator/',
+			'test/',
+			'test-d/',
+			'src/autogen/',
 		],
 	},
 	{
-		files: ['**/*.ts', '**/*.tsx'],
+		files: ['**/*.ts'],
 		languageOptions: {
 			parserOptions: {
 				parser: tsParser,
-				project: ['./tsconfig.json'],
+				project: [
+					'./tsconfig.eslint.json',
+				],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},

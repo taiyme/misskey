@@ -22,17 +22,17 @@ import type { Index, MeiliSearch } from 'meilisearch';
 type K = string;
 type V = string | number | boolean;
 type Q =
-	{ op: '=', k: K, v: V } |
-	{ op: '!=', k: K, v: V } |
-	{ op: '>', k: K, v: number } |
-	{ op: '<', k: K, v: number } |
-	{ op: '>=', k: K, v: number } |
-	{ op: '<=', k: K, v: number } |
-	{ op: 'is null', k: K } |
-	{ op: 'is not null', k: K } |
-	{ op: 'and', qs: Q[] } |
-	{ op: 'or', qs: Q[] } |
-	{ op: 'not', q: Q };
+	{ op: '='; k: K; v: V; } |
+	{ op: '!='; k: K; v: V; } |
+	{ op: '>'; k: K; v: number; } |
+	{ op: '<'; k: K; v: number; } |
+	{ op: '>='; k: K; v: number; } |
+	{ op: '<='; k: K; v: number; } |
+	{ op: 'is null'; k: K; } |
+	{ op: 'is not null'; k: K; } |
+	{ op: 'and'; qs: Q[]; } |
+	{ op: 'or'; qs: Q[]; } |
+	{ op: 'not'; q: Q; };
 
 export type SearchOpts = {
 	userId?: MiNote['userId'] | null;
@@ -65,8 +65,8 @@ function compileQuery(q: Q): string {
 		case '<': return `(${q.k} < ${compileValue(q.v)})`;
 		case '>=': return `(${q.k} >= ${compileValue(q.v)})`;
 		case '<=': return `(${q.k} <= ${compileValue(q.v)})`;
-		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
-		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
+		case 'and': return q.qs.length === 0 ? '' : `(${q.qs.map(_q => compileQuery(_q)).join(' AND ')})`;
+		case 'or': return q.qs.length === 0 ? '' : `(${q.qs.map(_q => compileQuery(_q)).join(' OR ')})`;
 		case 'is null': return `(${q.k} IS NULL)`;
 		case 'is not null': return `(${q.k} IS NOT NULL)`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
@@ -222,7 +222,7 @@ export class SearchService {
 		if (this.config.fulltextSearch?.provider === 'sqlPgroonga') {
 			query.andWhere('note.text &@ :q', { q });
 		} else {
-			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${ sqlLikeEscape(q.toLowerCase()) }%` });
+			query.andWhere('LOWER(note.text) LIKE :q', { q: `%${sqlLikeEscape(q.toLowerCase())}%` });
 		}
 
 		if (opts.host) {

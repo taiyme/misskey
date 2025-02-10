@@ -22,16 +22,18 @@ export const meta = {
 
 	res: {
 		type: 'object',
-	}
+	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
 		key: { type: 'string' },
-		scope: { type: 'array', default: [], items: {
-			type: 'string', pattern: /^[a-zA-Z0-9_]+$/.toString().slice(1, -1),
-		} },
+		scope: {
+			type: 'array', default: [], items: {
+				type: 'string', pattern: (/^[a-zA-Z0-9_]+$/).toString().slice(1, -1),
+			},
+		},
 		domain: { type: 'string', nullable: true },
 	},
 	required: ['key', 'scope'],

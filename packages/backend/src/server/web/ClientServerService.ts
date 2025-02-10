@@ -152,44 +152,44 @@ export class ClientServerService {
 		let manifest = {
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'short_name': this.meta.shortName || this.meta.name || this.config.host,
+			short_name: this.meta.shortName || this.meta.name || this.config.host,
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'name': this.meta.name || this.config.host,
-			'start_url': '/',
-			'display': 'standalone',
-			'background_color': '#313a42',
+			name: this.meta.name || this.config.host,
+			start_url: '/',
+			display: 'standalone',
+			background_color: '#313a42',
 			// 空文字列の場合右辺を使いたいため
 			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-			'theme_color': this.meta.themeColor || '#86b300',
-			'icons': [{
+			theme_color: this.meta.themeColor || '#86b300',
+			icons: [{
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-				'src': this.meta.app192IconUrl || '/static-assets/icons/192.png',
-				'sizes': '192x192',
-				'type': 'image/png',
-				'purpose': 'maskable',
+				src: this.meta.app192IconUrl || '/static-assets/icons/192.png',
+				sizes: '192x192',
+				type: 'image/png',
+				purpose: 'maskable',
 			}, {
 				// 空文字列の場合右辺を使いたいため
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-				'src': this.meta.app512IconUrl || '/static-assets/icons/512.png',
-				'sizes': '512x512',
-				'type': 'image/png',
-				'purpose': 'maskable',
+				src: this.meta.app512IconUrl || '/static-assets/icons/512.png',
+				sizes: '512x512',
+				type: 'image/png',
+				purpose: 'maskable',
 			}, {
-				'src': '/static-assets/splash.png',
-				'sizes': '300x300',
-				'type': 'image/png',
-				'purpose': 'any',
+				src: '/static-assets/splash.png',
+				sizes: '300x300',
+				type: 'image/png',
+				purpose: 'any',
 			}],
-			'share_target': {
-				'action': '/share/',
-				'method': 'GET',
-				'enctype': 'application/x-www-form-urlencoded',
-				'params': {
-					'title': 'title',
-					'text': 'text',
-					'url': 'url',
+			share_target: {
+				action: '/share/',
+				method: 'GET',
+				enctype: 'application/x-www-form-urlencoded',
+				params: {
+					title: 'title',
+					text: 'text',
+					url: 'url',
 				},
 			},
 		};
@@ -379,7 +379,7 @@ export class ClientServerService {
 			return reply.sendFile('/apple-touch-icon.png', staticAssets);
 		});
 
-		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string; }; }>('/fluent-emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			if (!path.match(/^[0-9a-f-]+\.png$/)) {
@@ -394,7 +394,7 @@ export class ClientServerService {
 			});
 		});
 
-		fastify.get<{ Params: { path: string } }>('/twemoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string; }; }>('/twemoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			if (!path.match(/^[0-9a-f-]+\.svg$/)) {
@@ -409,7 +409,7 @@ export class ClientServerService {
 			});
 		});
 
-		fastify.get<{ Params: { path: string } }>('/twemoji-badge/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string; }; }>('/twemoji-badge/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			if (!path.match(/^[0-9a-f-]+\.png$/)) {
@@ -491,7 +491,7 @@ export class ClientServerService {
 
 		//#endregion
 
-		const renderBase = async (reply: FastifyReply, data: { [key: string]: any } = {}) => {
+		const renderBase = async (reply: FastifyReply, data: { [key: string]: any; } = {}) => {
 			reply.header('Cache-Control', 'public, max-age=30');
 			return await reply.view('base', {
 				img: this.meta.bannerUrl,
@@ -504,7 +504,7 @@ export class ClientServerService {
 		};
 
 		// URL preview endpoint
-		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
+		fastify.get<{ Querystring: { url: string; lang: string; }; }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
 		const getFeed = async (acct: string) => {
 			const { username, host } = Acct.parse(acct);
@@ -519,7 +519,7 @@ export class ClientServerService {
 		};
 
 		// Atom
-		fastify.get<{ Params: { user?: string; } }>('/@:user.atom', async (request, reply) => {
+		fastify.get<{ Params: { user?: string; }; }>('/@:user.atom', async (request, reply) => {
 			if (request.params.user == null) return await renderBase(reply);
 
 			const feed = await getFeed(request.params.user);
@@ -534,7 +534,7 @@ export class ClientServerService {
 		});
 
 		// RSS
-		fastify.get<{ Params: { user?: string; } }>('/@:user.rss', async (request, reply) => {
+		fastify.get<{ Params: { user?: string; }; }>('/@:user.rss', async (request, reply) => {
 			if (request.params.user == null) return await renderBase(reply);
 
 			const feed = await getFeed(request.params.user);
@@ -549,7 +549,7 @@ export class ClientServerService {
 		});
 
 		// JSON
-		fastify.get<{ Params: { user?: string; } }>('/@:user.json', async (request, reply) => {
+		fastify.get<{ Params: { user?: string; }; }>('/@:user.json', async (request, reply) => {
 			if (request.params.user == null) return await renderBase(reply);
 
 			const feed = await getFeed(request.params.user);
@@ -565,7 +565,7 @@ export class ClientServerService {
 
 		//#region SSR
 		// User
-		fastify.get<{ Params: { user: string; sub?: string; } }>('/@:user/:sub?', async (request, reply) => {
+		fastify.get<{ Params: { user: string; sub?: string; }; }>('/@:user/:sub?', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
@@ -610,7 +610,7 @@ export class ClientServerService {
 			}
 		});
 
-		fastify.get<{ Params: { user: string; } }>('/users/:user', async (request, reply) => {
+		fastify.get<{ Params: { user: string; }; }>('/users/:user', async (request, reply) => {
 			const user = await this.usersRepository.findOneBy({
 				id: request.params.user,
 				host: IsNull(),
@@ -624,11 +624,11 @@ export class ClientServerService {
 
 			vary(reply.raw, 'Accept');
 
-			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+			reply.redirect(`/@${user.username}${user.host == null ? '' : '@' + user.host}`);
 		});
 
 		// Note
-		fastify.get<{ Params: { note: string; } }>('/notes/:note', async (request, reply) => {
+		fastify.get<{ Params: { note: string; }; }>('/notes/:note', async (request, reply) => {
 			vary(reply.raw, 'Accept');
 
 			const note = await this.notesRepository.findOne({
@@ -664,7 +664,7 @@ export class ClientServerService {
 		});
 
 		// Page
-		fastify.get<{ Params: { user: string; page: string; } }>('/@:user/pages/:page', async (request, reply) => {
+		fastify.get<{ Params: { user: string; page: string; }; }>('/@:user/pages/:page', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: username.toLowerCase(),
@@ -702,7 +702,7 @@ export class ClientServerService {
 		});
 
 		// Flash
-		fastify.get<{ Params: { id: string; } }>('/play/:id', async (request, reply) => {
+		fastify.get<{ Params: { id: string; }; }>('/play/:id', async (request, reply) => {
 			const flash = await this.flashsRepository.findOneBy({
 				id: request.params.id,
 			});
@@ -727,7 +727,7 @@ export class ClientServerService {
 		});
 
 		// Clip
-		fastify.get<{ Params: { clip: string; } }>('/clips/:clip', async (request, reply) => {
+		fastify.get<{ Params: { clip: string; }; }>('/clips/:clip', async (request, reply) => {
 			const clip = await this.clipsRepository.findOneBy({
 				id: request.params.clip,
 			});
@@ -755,7 +755,7 @@ export class ClientServerService {
 		});
 
 		// Gallery post
-		fastify.get<{ Params: { post: string; } }>('/gallery/:post', async (request, reply) => {
+		fastify.get<{ Params: { post: string; }; }>('/gallery/:post', async (request, reply) => {
 			const post = await this.galleryPostsRepository.findOneBy({ id: request.params.post });
 
 			if (post) {
@@ -778,7 +778,7 @@ export class ClientServerService {
 		});
 
 		// Channel
-		fastify.get<{ Params: { channel: string; } }>('/channels/:channel', async (request, reply) => {
+		fastify.get<{ Params: { channel: string; }; }>('/channels/:channel', async (request, reply) => {
 			const channel = await this.channelsRepository.findOneBy({
 				id: request.params.channel,
 			});
@@ -796,7 +796,7 @@ export class ClientServerService {
 		});
 
 		// Reversi game
-		fastify.get<{ Params: { game: string; } }>('/reversi/g/:game', async (request, reply) => {
+		fastify.get<{ Params: { game: string; }; }>('/reversi/g/:game', async (request, reply) => {
 			const game = await this.reversiGamesRepository.findOneBy({
 				id: request.params.game,
 			});
@@ -814,7 +814,7 @@ export class ClientServerService {
 		});
 
 		// 個別お知らせページ
-		fastify.get<{ Params: { announcementId: string; } }>('/announcements/:announcementId', async (request, reply) => {
+		fastify.get<{ Params: { announcementId: string; }; }>('/announcements/:announcementId', async (request, reply) => {
 			const announcement = await this.announcementsRepository.findOneBy({
 				id: request.params.announcementId,
 				userId: IsNull(),
@@ -835,18 +835,18 @@ export class ClientServerService {
 
 		//#region noindex pages
 		// Tags
-		fastify.get<{ Params: { clip: string; } }>('/tags/:tag', async (request, reply) => {
+		fastify.get<{ Params: { clip: string; }; }>('/tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
 		});
 
 		// User with Tags
-		fastify.get<{ Params: { clip: string; } }>('/user-tags/:tag', async (request, reply) => {
+		fastify.get<{ Params: { clip: string; }; }>('/user-tags/:tag', async (request, reply) => {
 			return await renderBase(reply, { noindex: true });
 		});
 		//#endregion
 
 		//#region embed pages
-		fastify.get<{ Params: { user: string; } }>('/embed/user-timeline/:user', async (request, reply) => {
+		fastify.get<{ Params: { user: string; }; }>('/embed/user-timeline/:user', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
 			const user = await this.usersRepository.findOneBy({
@@ -868,7 +868,7 @@ export class ClientServerService {
 			});
 		});
 
-		fastify.get<{ Params: { note: string; } }>('/embed/notes/:note', async (request, reply) => {
+		fastify.get<{ Params: { note: string; }; }>('/embed/notes/:note', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
 			const note = await this.notesRepository.findOneBy({
@@ -891,7 +891,7 @@ export class ClientServerService {
 			});
 		});
 
-		fastify.get<{ Params: { clip: string; } }>('/embed/clips/:clip', async (request, reply) => {
+		fastify.get<{ Params: { clip: string; }; }>('/embed/clips/:clip', async (request, reply) => {
 			reply.removeHeader('X-Frame-Options');
 
 			const clip = await this.clipsRepository.findOneBy({

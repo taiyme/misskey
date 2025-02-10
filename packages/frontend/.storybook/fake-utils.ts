@@ -12,7 +12,7 @@ export const firstNameDict = [
 	'Ethan', 'Olivia', 'Jackson', 'Emma', 'Liam', 'Ava', 'Aiden', 'Sophia', 'Mason', 'Isabella',
 	'Noah', 'Mia', 'Lucas', 'Harper', 'Caleb', 'Abigail', 'Samuel', 'Emily', 'Logan',
 	'Madison', 'Benjamin', 'Chloe', 'Elijah', 'Grace', 'Alexander', 'Scarlett', 'William', 'Zoey', 'James', 'Lily',
-]
+];
 
 /**
  * AIで生成した無作為なラストネーム
@@ -21,7 +21,7 @@ export const lastNameDict = [
 	'Anderson', 'Johnson', 'Thompson', 'Davis', 'Rodriguez', 'Smith', 'Patel', 'Williams', 'Lee', 'Brown',
 	'Garcia', 'Jackson', 'Martinez', 'Taylor', 'Harris', 'Nguyen', 'Miller', 'Jones', 'Wilson',
 	'White', 'Thomas', 'Garcia', 'Martinez', 'Robinson', 'Turner', 'Lewis', 'Hall', 'King', 'Baker', 'Cooper',
-]
+];
 
 /**
  * AIで生成した無作為な国名
@@ -30,10 +30,10 @@ export const countryDict = [
 	'Japan', 'Canada', 'Brazil', 'Australia', 'Italy', 'SouthAfrica', 'Mexico', 'Sweden', 'Russia', 'India',
 	'Germany', 'Argentina', 'South Korea', 'France', 'Nigeria', 'Turkey', 'Spain', 'Egypt', 'Thailand',
 	'Vietnam', 'Kenya', 'Saudi Arabia', 'Netherlands', 'Colombia', 'Poland', 'Chile', 'Malaysia', 'Ukraine', 'New Zealand', 'Peru',
-]
+];
 
-export function text(length: number = 10, seed?: string): string {
-	let result = "";
+export function text(length = 10, seed?: string): string {
+	let result = '';
 
 	// シード値を使う場合、同じ数値が羅列されるが、ランダム文字列という意味では満たせていると思うのでこのまま使っておく
 	const rand = seed ? seedrandom(seed)() : Math.random();
@@ -44,26 +44,26 @@ export function text(length: number = 10, seed?: string): string {
 	return result.substring(0, length);
 }
 
-export function integer(min: number = 0, max: number = 9999, seed?: string): number {
+export function integer(min = 0, max = 9999, seed?: string): number {
 	const rand = seed ? seedrandom(seed)() : Math.random();
 	return Math.floor(rand * (max - min)) + min;
 }
 
 export function date(params?: {
-	yearMin?: number,
-	yearMax?: number,
-	monthMin?: number,
-	monthMax?: number,
-	dayMin?: number,
-	dayMax?: number,
-	hourMin?: number,
-	hourMax?: number,
-	minuteMin?: number,
-	minuteMax?: number,
-	secondMin?: number,
-	secondMax?: number,
-	millisecondMin?: number,
-	millisecondMax?: number,
+	yearMin?: number;
+	yearMax?: number;
+	monthMin?: number;
+	monthMax?: number;
+	dayMin?: number;
+	dayMax?: number;
+	hourMin?: number;
+	hourMax?: number;
+	minuteMin?: number;
+	minuteMax?: number;
+	secondMin?: number;
+	secondMax?: number;
+	millisecondMin?: number;
+	millisecondMax?: number;
 }, seed?: string): Date {
 	const year = integer(params?.yearMin ?? 1970, params?.yearMax ?? (new Date()).getFullYear(), seed);
 	const month = integer(params?.monthMin ?? 1, params?.monthMax ?? 12, seed);
@@ -121,15 +121,15 @@ export function fakeId(seed?: string): string {
 
 export function imageDataUrl(options?: {
 	size?: {
-		width?: number,
-		height?: number,
-	},
+		width?: number;
+		height?: number;
+	};
 	color?: {
-		red?: number,
-		green?: number,
-		blue?: number,
-		alpha?: number,
-	}
+		red?: number;
+		green?: number;
+		blue?: number;
+		alpha?: number;
+	};
 }, seed?: string): string {
 	const canvas = document.createElement('canvas');
 	canvas.width = options?.size?.width ?? 100;
@@ -140,7 +140,7 @@ export function imageDataUrl(options?: {
 		throw new Error('Failed to get 2d context');
 	}
 
-	ctx.beginPath()
+	ctx.beginPath();
 
 	const red = options?.color?.red ?? integer(0, 255, seed);
 	const green = options?.color?.green ?? integer(0, 255, seed);

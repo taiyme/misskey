@@ -9,8 +9,6 @@ import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import type { RelaysRepository } from '@/models/_.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -19,6 +17,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import type { MockFunctionMetadata } from 'jest-mock';
+import type { TestingModule } from '@nestjs/testing';
 
 const moduleMocker = new ModuleMocker(global);
 

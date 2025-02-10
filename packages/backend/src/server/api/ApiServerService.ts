@@ -75,9 +75,9 @@ export class ApiServerService {
 
 			if (endpoint.meta.requireFile) {
 				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
+					Params: { endpoint: string; };
+					Body: Record<string, unknown>;
+					Querystring: Record<string, unknown>;
 				}>('/' + endpoint.name, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
@@ -91,9 +91,9 @@ export class ApiServerService {
 				});
 			} else {
 				fastify.all<{
-					Params: { endpoint: string; },
-					Body: Record<string, unknown>,
-					Querystring: Record<string, unknown>,
+					Params: { endpoint: string; };
+					Body: Record<string, unknown>;
+					Querystring: Record<string, unknown>;
 				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
@@ -120,7 +120,7 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
-			}
+			};
 		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
 
 		fastify.post<{
@@ -144,7 +144,7 @@ export class ApiServerService {
 			};
 		}>('/signin-with-passkey', (request, reply) => this.signinWithPasskeyApiService.signin(request, reply));
 
-		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
+		fastify.post<{ Body: { code: string; }; }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
 
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
@@ -157,7 +157,7 @@ export class ApiServerService {
 			return instances.map(instance => instance.host);
 		});
 
-		fastify.post<{ Params: { session: string; } }>('/miauth/:session/check', async (request, reply) => {
+		fastify.post<{ Params: { session: string; }; }>('/miauth/:session/check', async (request, reply) => {
 			const token = await this.accessTokensRepository.findOneBy({
 				session: request.params.session,
 			});

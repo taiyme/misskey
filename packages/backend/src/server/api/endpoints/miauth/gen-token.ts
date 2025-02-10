@@ -36,9 +36,11 @@ export const paramDef = {
 		name: { type: 'string', nullable: true },
 		description: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
-		permission: { type: 'array', uniqueItems: true, items: {
-			type: 'string',
-		} },
+		permission: {
+			type: 'array', uniqueItems: true, items: {
+				type: 'string',
+			},
+		},
 	},
 	required: ['session', 'permission'],
 } as const;

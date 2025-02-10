@@ -15,14 +15,14 @@ import { QueueService } from '@/core/QueueService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type UserWebhookPayload<T extends WebhookEventTypes> =
-	T extends 'note' | 'reply' | 'renote' |'mention' ? {
-		note: Packed<'Note'>,
+	T extends 'note' | 'reply' | 'renote' | 'mention' ? {
+		note: Packed<'Note'>;
 	} :
 	T extends 'follow' | 'unfollow' ? {
-		user: Packed<'UserDetailedNotMe'>,
+		user: Packed<'UserDetailedNotMe'>;
 	} :
 	T extends 'followed' ? {
-		user: Packed<'UserLite'>,
+		user: Packed<'UserLite'>;
 	} : never;
 
 @Injectable()

@@ -46,7 +46,7 @@ export const meta = {
 		bothWithRepliesAndWithFiles: {
 			message: 'Specifying both withReplies and withFiles is not supported',
 			code: 'BOTH_WITH_REPLIES_AND_WITH_FILES',
-			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f'
+			id: 'dfaa3eb7-8002-4cb7-bcc4-1095df46656f',
 		},
 	},
 } as const;
@@ -186,14 +186,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async getFromDb(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		includeMyRenotes: boolean,
-		includeRenotedMyNotes: boolean,
-		includeLocalRenotes: boolean,
-		withFiles: boolean,
-		withReplies: boolean,
+		untilId: string | null;
+		sinceId: string | null;
+		limit: number;
+		includeMyRenotes: boolean;
+		includeRenotedMyNotes: boolean;
+		includeLocalRenotes: boolean;
+		withFiles: boolean;
+		withReplies: boolean;
 	}, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
 		const followingChannels = await this.channelFollowingsRepository.find({

@@ -30,7 +30,7 @@ export class DriveFolderEntityService {
 	public async pack(
 		src: MiDriveFolder['id'] | MiDriveFolder,
 		options?: {
-			detail: boolean
+			detail: boolean;
 		},
 	): Promise<Packed<'DriveFolder'>> {
 		const opts = Object.assign({

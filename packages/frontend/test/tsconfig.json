@@ -24,20 +24,20 @@
 		"isolatedModules": true,
 		"baseUrl": "./",
 		"paths": {
-			"@/*": ["../src/*"]
+			"@/*": ["../src/*"],
 		},
 		"typeRoots": [
-			"../node_modules/@types"
+			"../node_modules/@types",
 		],
 		"lib": [
-			"esnext",
-			"dom"
+			"ESNext",
+			"DOM",
 		],
-		"types": ["node"]
+		"types": ["node"],
 	},
 	"compileOnSave": false,
 	"include": [
 		"./**/*.ts",
-		"../src/**/*.vue"
-	]
+		"../src/**/*.vue",
+	],
 }

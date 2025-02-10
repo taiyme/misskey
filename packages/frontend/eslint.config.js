@@ -1,6 +1,6 @@
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
-import parser from 'vue-eslint-parser';
+import vueParser from 'vue-eslint-parser';
 import pluginVue from 'eslint-plugin-vue';
 import pluginMisskey from '@misskey-dev/eslint-plugin';
 import sharedConfig from '../shared/eslint.config.js';
@@ -9,12 +9,22 @@ import sharedConfig from '../shared/eslint.config.js';
 export default [
 	...sharedConfig,
 	{
-		files: ['src/**/*.vue'],
+		ignores: [
+			'.storybook/*.js',
+			'.storybook/locale.ts',
+			'.storybook/themes.ts',
+			'assets/',
+			'public/',
+			'storybook-static/',
+		],
+	},
+	{
 		...pluginMisskey.configs.typescript,
+		files: ['**/*.{ts,tsx,vue}'],
 	},
 	...pluginVue.configs['flat/recommended'],
 	{
-		files: ['src/**/*.{ts,vue}'],
+		files: ['**/*.{ts,tsx,vue}'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
@@ -36,11 +46,14 @@ export default [
 				_DATA_TRANSFER_DRIVE_FOLDER_: false,
 				_DATA_TRANSFER_DECK_COLUMN_: false,
 			},
-			parser,
+			parser: vueParser,
 			parserOptions: {
 				extraFileExtensions: ['.vue'],
 				parser: tsParser,
-				project: ['./tsconfig.json'],
+				project: [
+					'./tsconfig.eslint.json',
+					'./.storybook/tsconfig.eslint.json',
+				],
 				sourceType: 'module',
 				tsconfigRootDir: import.meta.dirname,
 			},

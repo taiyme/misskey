@@ -129,8 +129,8 @@ export function physics(container: HTMLElement) {
 			const obj = objs.find(obj => obj.id.toString() === objEl.id.toString());
 			if (obj == null) continue;
 
-			const x = (obj.position.x - objEl.offsetWidth / 2);
-			const y = (obj.position.y - objEl.offsetHeight / 2);
+			const x = (obj.position.x - (objEl.offsetWidth / 2));
+			const y = (obj.position.y - (objEl.offsetHeight / 2));
 			const angle = obj.angle;
 			objEl.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
 		}

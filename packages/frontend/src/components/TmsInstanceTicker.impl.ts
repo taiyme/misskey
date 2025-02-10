@@ -77,7 +77,7 @@ export const getTickerColors = (info: ITickerInfo) => {
 	if (cachedTickerColors != null) return cachedTickerColors;
 
 	const { r, g, b } = hexToRgb(bgHex);
-	const yuv = 0.299 * r + 0.587 * g + 0.114 * b;
+	const yuv = (0.299 * r) + (0.587 * g) + (0.114 * b);
 	const fgHex = yuv > TICKER_YUV_THRESHOLD ? TICKER_FG_COLOR_DARK : TICKER_FG_COLOR_LIGHT;
 
 	const tickerColors = {

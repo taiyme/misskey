@@ -25,11 +25,11 @@ export class AppEntityService {
 	@bindThis
 	public async pack(
 		src: MiApp['id'] | MiApp,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
-			detail?: boolean,
-			includeSecret?: boolean,
-			includeProfileImageIds?: boolean
+			detail?: boolean;
+			includeSecret?: boolean;
+			includeProfileImageIds?: boolean;
 		},
 	): Promise<Packed<'App'>> {
 		const opts = Object.assign({

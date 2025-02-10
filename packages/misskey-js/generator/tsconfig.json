@@ -1,5 +1,4 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
@@ -9,12 +8,12 @@
 		"strictNullChecks": true,
 		"esModuleInterop": true,
 		"lib": [
-			"esnext",
-		]
+			"ESNext",
+		],
 	},
 	"include": [
-		"src/**/*.ts",
-		"built/**/*.ts"
+		"./src/**/*.ts",
+		"./built/**/*.ts",
 	],
-	"exclude": []
+	"exclude": [],
 }

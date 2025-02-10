@@ -142,7 +142,7 @@ const transitionDuration = computed((() =>
 let releaseFocusTrap: (() => void) | null = null;
 let contentClicking = false;
 
-function close(opts: { useSendAnimation?: boolean } = {}) {
+function close(opts: { useSendAnimation?: boolean; } = {}) {
 	if (opts.useSendAnimation) {
 		useSendAnime.value = true;
 	}
@@ -163,7 +163,7 @@ if (type.value === 'drawer') {
 }
 
 const keymap = {
-	'esc': {
+	esc: {
 		allowRepeat: true,
 		callback: () => emit('esc'),
 	},

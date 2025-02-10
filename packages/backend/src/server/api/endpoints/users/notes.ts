@@ -155,13 +155,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	}
 
 	private async getFromDb(ps: {
-		untilId: string | null,
-		sinceId: string | null,
-		limit: number,
-		userId: string,
-		withChannelNotes: boolean,
-		withFiles: boolean,
-		withRenotes: boolean,
+		untilId: string | null;
+		sinceId: string | null;
+		limit: number;
+		userId: string;
+		withChannelNotes: boolean;
+		withFiles: boolean;
+		withRenotes: boolean;
 	}, me: MiLocalUser | null) {
 		const isSelf = me && (me.id === ps.userId);
 

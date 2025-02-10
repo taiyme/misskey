@@ -19,7 +19,6 @@ export default function json5(options: RollupJsonOptions = {}): Plugin {
 	return {
 		name: 'json5',
 
-		// eslint-disable-next-line no-shadow
 		transform(json, id) {
 			if (id.slice(-6) !== '.json5' || !filter(id)) return null;
 

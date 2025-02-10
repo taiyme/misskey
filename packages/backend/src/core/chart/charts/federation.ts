@@ -65,28 +65,28 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
 				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
+				.andWhere(`following.followeeHost NOT IN (${suspendedInstancesQuery.getQuery()})`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followerHost)')
 				.where('following.followerHost IS NOT NULL')
 				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followerHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followerHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
+				.andWhere(`following.followerHost NOT IN (${suspendedInstancesQuery.getQuery()})`)
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			this.followingsRepository.createQueryBuilder('following')
 				.select('COUNT(DISTINCT following.followeeHost)')
 				.where('following.followeeHost IS NOT NULL')
 				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'following.followeeHost NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
-				.andWhere(`following.followeeHost NOT IN (${ suspendedInstancesQuery.getQuery() })`)
-				.andWhere(`following.followeeHost IN (${ pubsubSubQuery.getQuery() })`)
+				.andWhere(`following.followeeHost NOT IN (${suspendedInstancesQuery.getQuery()})`)
+				.andWhere(`following.followeeHost IN (${pubsubSubQuery.getQuery()})`)
 				.setParameters(pubsubSubQuery.getParameters())
 				.getRawOne()
 				.then(x => parseInt(x.count, 10)),
 			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
-				.where(`instance.host IN (${ subInstancesQuery.getQuery() })`)
+				.where(`instance.host IN (${subInstancesQuery.getQuery()})`)
 				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
 				.andWhere('instance.suspensionState = \'none\'')
 				.andWhere('instance.isNotResponding = false')
@@ -94,7 +94,7 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 				.then(x => parseInt(x.count, 10)),
 			this.instancesRepository.createQueryBuilder('instance')
 				.select('COUNT(instance.id)')
-				.where(`instance.host IN (${ pubInstancesQuery.getQuery() })`)
+				.where(`instance.host IN (${pubInstancesQuery.getQuery()})`)
 				.andWhere(this.meta.blockedHosts.length === 0 ? '1=1' : 'instance.host NOT ILIKE ALL(ARRAY[:...blocked])', { blocked: this.meta.blockedHosts.flatMap(x => [x, `%.${x}`]) })
 				.andWhere('instance.suspensionState = \'none\'')
 				.andWhere('instance.isNotResponding = false')
@@ -103,27 +103,27 @@ export default class FederationChart extends Chart<typeof schema> { // eslint-di
 		]);
 
 		return {
-			'sub': sub,
-			'pub': pub,
-			'pubsub': pubsub,
-			'subActive': subActive,
-			'pubActive': pubActive,
+			sub: sub,
+			pub: pub,
+			pubsub: pubsub,
+			subActive: subActive,
+			pubActive: pubActive,
 		};
 	}
 
 	@bindThis
 	public async deliverd(host: string, succeeded: boolean): Promise<void> {
 		await this.commit(succeeded ? {
-			'deliveredInstances': [host],
+			deliveredInstances: [host],
 		} : {
-			'stalled': [host],
+			stalled: [host],
 		});
 	}
 
 	@bindThis
 	public async inbox(host: string): Promise<void> {
 		await this.commit({
-			'inboxInstances': [host],
+			inboxInstances: [host],
 		});
 	}
 }

@@ -21,13 +21,13 @@ await Promise.all([
 	fetchAdmin('b.test'),
 ]);
 
-type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true }, 'finished'>;
+type SigninResponse = Omit<Misskey.entities.SigninFlowResponse & { finished: true; }, 'finished'>;
 
 export type LoginUser = SigninResponse & {
 	client: Misskey.api.APIClient;
 	username: string;
 	password: string;
-}
+};
 
 /** used for avoiding overload and some endpoints */
 export type Request = <
@@ -188,7 +188,7 @@ export async function resolveRemoteNote(
 
 export async function uploadFile(
 	host: Host,
-	user: { i: string },
+	user: { i: string; },
 	path = '../../test/resources/192.jpg',
 ): Promise<Misskey.entities.DriveFile> {
 	const filename = path.split('/').pop() ?? 'untitled';
@@ -228,7 +228,7 @@ export function deepStrictEqualWithExcludedFields<T>(actual: T, expected: T, exc
 
 export async function isFired<C extends keyof Misskey.Channels, T extends keyof Misskey.Channels[C]['events']>(
 	host: Host,
-	user: { i: string },
+	user: { i: string; },
 	channel: C,
 	trigger: () => Promise<unknown>,
 	type: T,
@@ -260,11 +260,11 @@ export async function isFired<C extends keyof Misskey.Channels, T extends keyof 
 			reject(err);
 		});
 	});
-};
+}
 
 export async function isNoteUpdatedEventFired(
 	host: Host,
-	user: { i: string },
+	user: { i: string; },
 	noteId: string,
 	trigger: () => Promise<unknown>,
 	cond: (msg: Parameters<Misskey.StreamEvents['noteUpdated']>[0]) => boolean,
@@ -293,7 +293,7 @@ export async function isNoteUpdatedEventFired(
 			reject(err);
 		});
 	});
-};
+}
 
 export async function assertNotificationReceived(
 	receiverHost: Host,

@@ -253,10 +253,10 @@ export class ApNoteService {
 
 		if (note._misskey_quote ?? note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
-				| { status: 'ok'; res: MiNote }
-				| { status: 'permerror' | 'temperror' }
+				| { status: 'ok'; res: MiNote; }
+				| { status: 'permerror' | 'temperror'; }
 			> => {
-				if (!/^https?:/.test(uri)) return { status: 'permerror' };
+				if (!(/^https?:/).test(uri)) return { status: 'permerror' };
 				try {
 					const res = await this.resolveNote(uri);
 					if (res == null) return { status: 'permerror' };
@@ -271,7 +271,7 @@ export class ApNoteService {
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter(x => x != null));
 			const results = await Promise.all(uris.map(tryResolveNote));
 
-			quote = results.filter((x): x is { status: 'ok', res: MiNote } => x.status === 'ok').map(x => x.res).at(0);
+			quote = results.filter((x): x is { status: 'ok'; res: MiNote; } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
 					throw new Error('quote resolve failed');
@@ -347,7 +347,7 @@ export class ApNoteService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveNote(value: string | IObject, options: { sentFrom?: URL, resolver?: Resolver } = {}): Promise<MiNote | null> {
+	public async resolveNote(value: string | IObject, options: { sentFrom?: URL; resolver?: Resolver; } = {}): Promise<MiNote | null> {
 		const uri = getApId(value);
 
 		if (!this.utilityService.isFederationAllowedUri(uri)) {

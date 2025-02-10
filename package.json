@@ -65,6 +65,8 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.0.3",
+		"@stylistic/eslint-plugin-js": "2.13.0",
+		"@stylistic/eslint-plugin-ts": "2.13.0",
 		"@types/node": "22.9.0",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",

@@ -1,5 +1,4 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
 	"compilerOptions": {
 		"target": "ES2022",
 		"module": "nodenext",
@@ -16,18 +15,15 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"typeRoots": [
-			"./node_modules/@types"
+			"./node_modules/@types",
 		],
 		"lib": [
-			"esnext",
-			"dom"
-		]
+			"ESNext",
+			"DOM",
+		],
 	},
 	"include": [
-		"src/**/*"
+		"./src/**/*",
 	],
-	"exclude": [
-		"node_modules",
-		"test/**/*"
-	]
+	"exclude": [],
 }

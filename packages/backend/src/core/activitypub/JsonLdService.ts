@@ -109,7 +109,7 @@ class JsonLd {
 	@bindThis
 	private getLoader() {
 		return async (url: string): Promise<RemoteDocument> => {
-			if (!/^https?:\/\//.test(url)) throw new Error(`Invalid URL ${url}`);
+			if (!(/^https?:\/\//).test(url)) throw new Error(`Invalid URL ${url}`);
 
 			if (this.preLoad) {
 				if (url in PRELOADED_CONTEXTS) {

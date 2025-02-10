@@ -7,7 +7,7 @@ import { DefaultBodyType, HttpResponse, HttpResponseResolver, JsonBodyType, Path
 import seedrandom from 'seedrandom';
 import { action } from '@storybook/addon-actions';
 
-function getChartArray(seed: string, limit: number, option?: { accumulate?: boolean, mul?: number }): number[] {
+function getChartArray(seed: string, limit: number, option?: { accumulate?: boolean; mul?: number; }): number[] {
 	const rng = seedrandom(seed);
 	const max = Math.floor(option?.mul ?? 250 * rng());
 	let accumulation = 0;
@@ -24,7 +24,7 @@ function getChartArray(seed: string, limit: number, option?: { accumulate?: bool
 	return array;
 }
 
-export function getChartResolver(fields: string[], option?: { accumulate?: boolean, mulMap?: Record<string, number> }): HttpResponseResolver<PathParams, DefaultBodyType, JsonBodyType> {
+export function getChartResolver(fields: string[], option?: { accumulate?: boolean; mulMap?: Record<string, number>; }): HttpResponseResolver<PathParams, DefaultBodyType, JsonBodyType> {
 	return ({ request }) => {
 		action(`GET ${request.url}`)();
 		const limitParam = new URL(request.url).searchParams.get('limit');

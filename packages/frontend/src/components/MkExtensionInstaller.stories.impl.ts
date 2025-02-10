@@ -39,7 +39,7 @@ export const Plugin = {
 				description: 'a plugin that does nothing',
 				permissions: ['read:account'],
 				config: {
-					'doNothing': true,
+					doNothing: true,
 				},
 			},
 		},

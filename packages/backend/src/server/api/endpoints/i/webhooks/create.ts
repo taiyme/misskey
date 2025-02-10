@@ -63,9 +63,11 @@ export const paramDef = {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
 		secret: { type: 'string', maxLength: 1024, default: '' },
-		on: { type: 'array', items: {
-			type: 'string', enum: webhookEventTypes,
-		} },
+		on: {
+			type: 'array', items: {
+				type: 'string', enum: webhookEventTypes,
+			},
+		},
 	},
 	required: ['name', 'url', 'on'],
 } as const;

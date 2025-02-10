@@ -43,8 +43,8 @@ export const paramDef = {
 	required: ['listId'],
 } as const;
 
-@Injectable() // eslint-disable-next-line import/no-default-export
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListEntityService: UserListEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const additionalProperties: Partial<{ likedCount: number, isLiked: boolean }> = {};
+			const additionalProperties: Partial<{ likedCount: number; isLiked: boolean; }> = {};
 			// Fetch the list
 			const userList = await this.userListsRepository.findOneBy(!ps.forPublic && me !== null ? {
 				id: ps.listId,

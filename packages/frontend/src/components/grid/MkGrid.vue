@@ -272,7 +272,7 @@ function onKeyDown(ev: KeyboardEvent) {
 		console.log(`[grid][key] ctrl: ${ctrlKey}, shift: ${shiftKey}, code: ${code}`);
 	}
 
-	function updateSelectionRange(newBounds: { leftTop: CellAddress, rightBottom: CellAddress }) {
+	function updateSelectionRange(newBounds: { leftTop: CellAddress; rightBottom: CellAddress; }) {
 		unSelectionOutOfRange(newBounds.leftTop, newBounds.rightBottom);
 		expandCellRange(newBounds.leftTop, newBounds.rightBottom);
 	}
@@ -1031,7 +1031,7 @@ function expandRowRange(top: number, bottom: number) {
 function applyRowRules(targetCells: GridCell[]) {
 	const _rows = rows.value;
 	const targetRowIdxes = [...new Set(targetCells.map(it => it.address.row))];
-	const rowGroups = Array.of<{ row: GridRow, cells: GridCell[] }>();
+	const rowGroups = Array.of<{ row: GridRow; cells: GridCell[]; }>();
 	for (const rowIdx of targetRowIdxes) {
 		const rowGroup = targetCells.filter(it => it.address.row === rowIdx);
 		rowGroups.push({ row: _rows[rowIdx], cells: rowGroup });
@@ -1070,8 +1070,8 @@ function isRowNumberCellAddress(cellAddress: CellAddress): boolean {
 }
 
 function getSafeAddressBounds(
-	bounds: { leftTop: CellAddress, rightBottom: CellAddress },
-): { leftTop: CellAddress, rightBottom: CellAddress } {
+	bounds: { leftTop: CellAddress; rightBottom: CellAddress; },
+): { leftTop: CellAddress; rightBottom: CellAddress; } {
 	const available = availableBounds.value;
 
 	const safeLeftTop = {

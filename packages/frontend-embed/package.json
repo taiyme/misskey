@@ -6,7 +6,8 @@
 		"watch": "vite",
 		"build": "vite build",
 		"typecheck": "vue-tsc --noEmit",
-		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
+		"eslint": "eslint --quiet .",
+		"eslint:fix": "eslint --fix .",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {

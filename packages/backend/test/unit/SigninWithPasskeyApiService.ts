@@ -38,16 +38,19 @@ class FakeSigninService {
 
 class DummyFastifyReply {
 	public statusCode: number;
+
 	code(num: number): void {
 		this.statusCode = num;
 	}
+
 	header(_key: HttpHeader, _value: any): void {
 	}
 }
 class DummyFastifyRequest {
 	public ip: string;
-	public body: {credential: any, context: string};
-	public headers: IncomingHttpHeaders = { 'accept': 'application/json' };
+	public body: { credential: any; context: string; };
+	public headers: IncomingHttpHeaders = { accept: 'application/json' };
+
 	constructor(body?: any) {
 		this.ip = '0.0.0.0';
 		this.body = body;
@@ -68,7 +71,7 @@ describe('SigninWithPasskeyApiService', () => {
 	let userProfilesRepository: UserProfilesRepository;
 	let webAuthnService: WebAuthnService;
 	let idService: IdService;
-	let FakeWebauthnVerify: ()=>Promise<string>;
+	let FakeWebauthnVerify: () => Promise<string>;
 
 	async function createUser(data: Partial<MiUser> = {}) {
 		const user = await usersRepository
@@ -116,7 +119,7 @@ describe('SigninWithPasskeyApiService', () => {
 
 		const dummyUser = {
 			id: uid, username: uid, usernameLower: uid.toLocaleLowerCase(), uri: null, host: null,
-		 };
+		};
 		const dummyProfile = {
 			userId: uid,
 			password: 'qwerty',

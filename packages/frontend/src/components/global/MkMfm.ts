@@ -58,7 +58,7 @@ type MfmEvents = {
 };
 
 // eslint-disable-next-line import/no-default-export
-export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
+export default function(props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit']; }) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
@@ -320,12 +320,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						]);
 					}
 					case 'clickable': {
-						return h('span', { onClick(ev: MouseEvent): void {
-							ev.stopPropagation();
-							ev.preventDefault();
-							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
-							emit('clickEv', clickEv);
-						} }, genEl(token.children, scale));
+						return h('span', {
+							onClick(ev: MouseEvent): void {
+								ev.stopPropagation();
+								ev.preventDefault();
+								const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
+								emit('clickEv', clickEv);
+							},
+						}, genEl(token.children, scale));
 					}
 				}
 				if (style === undefined) {

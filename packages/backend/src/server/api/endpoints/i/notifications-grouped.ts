@@ -47,12 +47,16 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		markAsRead: { type: 'boolean', default: true },
 		// 後方互換のため、廃止された通知タイプも受け付ける
-		includeTypes: { type: 'array', items: {
-			type: 'string', enum: [...groupedNotificationTypes, ...obsoleteNotificationTypes],
-		} },
-		excludeTypes: { type: 'array', items: {
-			type: 'string', enum: [...groupedNotificationTypes, ...obsoleteNotificationTypes],
-		} },
+		includeTypes: {
+			type: 'array', items: {
+				type: 'string', enum: [...groupedNotificationTypes, ...obsoleteNotificationTypes],
+			},
+		},
+		excludeTypes: {
+			type: 'array', items: {
+				type: 'string', enum: [...groupedNotificationTypes, ...obsoleteNotificationTypes],
+			},
+		},
 	},
 	required: [],
 } as const;

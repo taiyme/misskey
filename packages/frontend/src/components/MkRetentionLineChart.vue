@@ -111,11 +111,11 @@ onMounted(async () => {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context[0].dataset.data[context[0].dataIndex] as unknown as { x: string; y: number; d: string; };
 							return `${v.x} days later`;
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context.dataset.data[context.dataIndex] as unknown as { x: string; y: number; d: string; };
 							const p = Math.round(v.y) + '%';
 							return `${v.d} ${p}`;
 						},

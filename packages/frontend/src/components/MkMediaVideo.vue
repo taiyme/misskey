@@ -249,7 +249,7 @@ const showVideoMenu = (ev: MouseEvent) => {
 };
 
 const keymap = {
-	'up': {
+	up: {
 		allowRepeat: true,
 		callback: () => {
 			if (hasFocus() && videoEl.value) {
@@ -257,7 +257,7 @@ const keymap = {
 			}
 		},
 	},
-	'down': {
+	down: {
 		allowRepeat: true,
 		callback: () => {
 			if (hasFocus() && videoEl.value) {
@@ -265,7 +265,7 @@ const keymap = {
 			}
 		},
 	},
-	'left': {
+	left: {
 		allowRepeat: true,
 		callback: () => {
 			if (hasFocus() && videoEl.value) {
@@ -273,7 +273,7 @@ const keymap = {
 			}
 		},
 	},
-	'right': {
+	right: {
 		allowRepeat: true,
 		callback: () => {
 			if (hasFocus() && videoEl.value) {
@@ -281,7 +281,7 @@ const keymap = {
 			}
 		},
 	},
-	'space': () => {
+	space: () => {
 		if (hasFocus()) {
 			togglePlayPause();
 		}

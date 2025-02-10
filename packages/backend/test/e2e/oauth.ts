@@ -53,8 +53,8 @@ interface GetTokenError {
 	data: {
 		payload: {
 			error: string;
-		}
-	}
+		};
+	};
 }
 
 const clientConfig: ModuleOptions<'client_id'> = {
@@ -72,7 +72,7 @@ const clientConfig: ModuleOptions<'client_id'> = {
 	},
 };
 
-function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined } {
+function getMeta(html: string): { transactionId: string | undefined; clientName: string | undefined; } {
 	const fragment = JSDOM.fragment(html);
 	return {
 		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
@@ -80,7 +80,7 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function fetchDecision(transactionId: string, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+function fetchDecision(transactionId: string, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean; } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
@@ -95,14 +95,14 @@ function fetchDecision(transactionId: string, user: Misskey.entities.SignupRespo
 	});
 }
 
-async function fetchDecisionFromResponse(response: Response, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+async function fetchDecisionFromResponse(response: Response, user: Misskey.entities.SignupResponse, { cancel }: { cancel?: boolean; } = {}): Promise<Response> {
 	const { transactionId } = getMeta(await response.text());
 	assert.ok(transactionId);
 
 	return await fetchDecision(transactionId, user, { cancel });
 }
 
-async function fetchAuthorizationCode(user: Misskey.entities.SignupResponse, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
+async function fetchAuthorizationCode(user: Misskey.entities.SignupResponse, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode; code: string; }> {
 	const client = new AuthorizationCode(clientConfig);
 
 	const response = await fetch(client.authorizeURL({

@@ -15,8 +15,6 @@ import type {
 	MiUser,
 	UsersRepository,
 } from '@/models/_.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
@@ -27,6 +25,8 @@ import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type { MockFunctionMetadata } from 'jest-mock';
+import type { TestingModule } from '@nestjs/testing';
 
 const moduleMocker = new ModuleMocker(global);
 
@@ -50,7 +50,7 @@ describe('AnnouncementService', () => {
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	function createAnnouncement(data: Partial<MiAnnouncement & { createdAt: Date }> = {}) {
+	function createAnnouncement(data: Partial<MiAnnouncement & { createdAt: Date; }> = {}) {
 		return announcementsRepository.insert({
 			id: genAidx(data.createdAt?.getTime() ?? Date.now()),
 			updatedAt: null,

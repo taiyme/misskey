@@ -20,8 +20,8 @@ import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	block: Misskey.entities.PageBlock,
-	page: Misskey.entities.Page,
+	block: Misskey.entities.PageBlock;
+	page: Misskey.entities.Page;
 }>();
 </script>
 

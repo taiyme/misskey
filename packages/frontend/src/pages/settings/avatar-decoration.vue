@@ -80,7 +80,7 @@ function openDecoration(avatarDecoration: AvatarDecoration, index?: number) {
 		decoration: avatarDecoration,
 		usingIndex: index ?? null,
 	}, {
-		'attach': async (payload: AvatarDecorationWithPosition) => {
+		attach: async (payload: AvatarDecorationWithPosition) => {
 			const decoration = {
 				...payload,
 				id: avatarDecoration.id,
@@ -92,7 +92,7 @@ function openDecoration(avatarDecoration: AvatarDecoration, index?: number) {
 			});
 			$i.avatarDecorations = update;
 		},
-		'update': async (payload: AvatarDecorationWithPosition) => {
+		update: async (payload: AvatarDecorationWithPosition) => {
 			if (index == null) return;
 			const decoration = {
 				...payload,
@@ -107,7 +107,7 @@ function openDecoration(avatarDecoration: AvatarDecoration, index?: number) {
 			});
 			$i.avatarDecorations = update;
 		},
-		'detach': async () => {
+		detach: async () => {
 			if (index == null) return;
 			const update = [...$i.avatarDecorations];
 			update.splice(index, 1);

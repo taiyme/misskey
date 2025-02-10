@@ -7,10 +7,10 @@ import { type SharedOptions, http, HttpResponse } from 'msw';
 
 export const onUnhandledRequest = ((req, print) => {
 	const url = new URL(req.url);
-	if (url.hostname !== 'localhost' || /^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|src\/|sb-|static-assets\/|vite\/)/.test(url.pathname)) {
-		return
+	if (url.hostname !== 'localhost' || (/^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|src\/|sb-|static-assets\/|vite\/)/).test(url.pathname)) {
+		return;
 	}
-	print.warning()
+	print.warning();
 }) satisfies SharedOptions['onUnhandledRequest'];
 
 export const commonHandlers = [

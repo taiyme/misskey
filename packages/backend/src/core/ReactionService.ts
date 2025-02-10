@@ -34,17 +34,17 @@ import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 const FALLBACK = '\u2764';
 
 const legacies: Record<string, string> = {
-	'like': '👍',
-	'love': '\u2764', // ハート、異体字セレクタを入れない
-	'laugh': '😆',
-	'hmm': '🤔',
-	'surprise': '😮',
-	'congrats': '🎉',
-	'angry': '💢',
-	'confused': '😥',
-	'rip': '😇',
-	'pudding': '🍮',
-	'star': '⭐',
+	like: '👍',
+	love: '\u2764', // ハート、異体字セレクタを入れない
+	laugh: '😆',
+	hmm: '🤔',
+	surprise: '😮',
+	congrats: '🎉',
+	angry: '💢',
+	confused: '😥',
+	rip: '😇',
+	pudding: '🍮',
+	star: '⭐',
 };
 
 type DecodedReaction = {
@@ -103,7 +103,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot'] }, note: MiNote, _reaction?: string | null) {
+	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, _reaction?: string | null) {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);

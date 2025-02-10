@@ -105,14 +105,14 @@ export class RegistryApiService {
 	}
 
 	@bindThis
-	public async getAllScopeAndDomains(userId: MiUser['id']): Promise<{ domain: string | null; scopes: string[][] }[]> {
+	public async getAllScopeAndDomains(userId: MiUser['id']): Promise<{ domain: string | null; scopes: string[][]; }[]> {
 		const query = this.registryItemsRepository.createQueryBuilder('item')
 			.select(['item.scope', 'item.domain'])
 			.where('item.userId = :userId', { userId: userId });
 
 		const items = await query.getMany();
 
-		const res = [] as { domain: string | null; scopes: string[][] }[];
+		const res = [] as { domain: string | null; scopes: string[][]; }[];
 
 		for (const item of items) {
 			const target = res.find(x => x.domain === item.domain);

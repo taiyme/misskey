@@ -8,7 +8,7 @@
 // あと、Vue RefをIndexedDBに保存しようとしてstructredCloneを使ったらエラーになった
 // https://github.com/misskey-dev/misskey/pull/8098#issuecomment-1114144045
 
-export type Cloneable = string | number | boolean | null | undefined | { [key: string]: Cloneable } | { [key: number]: Cloneable } | { [key: symbol]: Cloneable } | Cloneable[];
+export type Cloneable = string | number | boolean | null | undefined | { [key: string]: Cloneable; } | { [key: number]: Cloneable; } | { [key: symbol]: Cloneable; } | Cloneable[];
 
 export function deepClone<T extends Cloneable>(x: T): T {
 	if (typeof x === 'object') {

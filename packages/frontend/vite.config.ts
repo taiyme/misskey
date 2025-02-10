@@ -1,10 +1,10 @@
 import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { promises as fsp } from 'fs';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
-import { promises as fsp } from 'fs';
 
 import locales from '../../locales/index.js';
 import meta from '../../package.json';
@@ -45,8 +45,8 @@ const externalPackages = [
 ];
 
 const hash = (str: string, seed = 0): number => {
-	let h1 = 0xdeadbeef ^ seed,
-		h2 = 0x41c6ce57 ^ seed;
+	let h1 = 0xdeadbeef ^ seed;
+	let h2 = 0x41c6ce57 ^ seed;
 	for (let i = 0, ch; i < str.length; i++) {
 		ch = str.charCodeAt(i);
 		h1 = Math.imul(h1 ^ ch, 2654435761);
@@ -56,7 +56,7 @@ const hash = (str: string, seed = 0): number => {
 	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
 	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
 
-	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+	return (4294967296 * (2097151 & h2)) + (h1 >>> 0);
 };
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

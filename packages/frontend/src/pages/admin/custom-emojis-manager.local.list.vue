@@ -62,7 +62,7 @@ export type EmojiSearchQuery = {
 	updatedAtTo: string | null;
 	sensitive: string | null;
 	localOnly: string | null;
-	roles: { id: string, name: string }[];
+	roles: { id: string; name: string; }[];
 	sortOrders: SortOrder<GridSortOrderKey>[];
 	limit: number;
 };
@@ -102,13 +102,13 @@ type GridItem = {
 	license: string;
 	isSensitive: boolean;
 	localOnly: boolean;
-	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string, name: string }[];
+	roleIdsThatCanBeUsedThisEmojiAsReaction: { id: string; name: string; }[];
 	fileId?: string;
 	updatedAt: string | null;
 	publicUrl?: string | null;
 	originalUrl?: string | null;
 	type: string | null;
-}
+};
 
 function setupGrid(): GridSetting {
 	const $style = useCssModule();

@@ -77,11 +77,11 @@ export class FileServerService {
 				return reply.send(file);
 			});
 
-			fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
+			fastify.get<{ Params: { key: string; }; }>('/files/:key', async (request, reply) => {
 				return await this.sendDriveFile(request, reply)
 					.catch(err => this.errorHandler(request, reply, err));
 			});
-			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
+			fastify.get<{ Params: { key: string; }; }>('/files/:key/*', async (request, reply) => {
 				return await reply.redirect(`${this.config.url}/files/${request.params.key}`, 301);
 			});
 			done();
@@ -99,7 +99,7 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any }; Querystring?: { [x: string]: any }; }>, reply: FastifyReply, err?: any) {
+	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any; }; Querystring?: { [x: string]: any; }; }>, reply: FastifyReply, err?: any) {
 		this.logger.error(`${err}`);
 
 		reply.header('Cache-Control', 'max-age=300');
@@ -118,7 +118,7 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; } }>, reply: FastifyReply) {
+	private async sendDriveFile(request: FastifyRequest<{ Params: { key: string; }; }>, reply: FastifyReply) {
 		const key = request.params.key;
 		const file = await this.getFileFromKey(key).then();
 

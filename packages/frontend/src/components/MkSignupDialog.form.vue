@@ -131,12 +131,12 @@ const emailAbortController = ref<null | AbortController>(null);
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
-		instance.enableHcaptcha && !hCaptchaResponse.value ||
-		instance.enableMcaptcha && !mCaptchaResponse.value ||
-		instance.enableRecaptcha && !reCaptchaResponse.value ||
-		instance.enableTurnstile && !turnstileResponse.value ||
-		instance.enableTestcaptcha && !testcaptchaResponse.value ||
-		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
+		(instance.enableHcaptcha && !hCaptchaResponse.value) ||
+		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
+		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
+		(instance.enableTurnstile && !turnstileResponse.value) ||
+		(instance.enableTestcaptcha && !testcaptchaResponse.value) ||
+		(instance.emailRequiredForSignup && emailState.value !== 'ok') ||
 		usernameState.value !== 'ok' ||
 		passwordRetypeState.value !== 'match';
 });
@@ -146,17 +146,17 @@ function getPasswordStrength(source: string): number {
 	let power = 0.018;
 
 	// 英数字
-	if (/[a-zA-Z]/.test(source) && /[0-9]/.test(source)) {
+	if ((/[a-zA-Z]/).test(source) && (/[0-9]/).test(source)) {
 		power += 0.020;
 	}
 
 	// 大文字と小文字が混ざってたら
-	if (/[a-z]/.test(source) && /[A-Z]/.test(source)) {
+	if ((/[a-z]/).test(source) && (/[A-Z]/).test(source)) {
 		power += 0.015;
 	}
 
 	// 記号が混ざってたら
-	if (/[!\x22\#$%&@'()*+,-./_]/.test(source)) {
+	if ((/[!\x22\#$%&@'()*+,-./_]/).test(source)) {
 		power += 0.02;
 	}
 

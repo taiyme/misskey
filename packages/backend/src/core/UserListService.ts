@@ -130,7 +130,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 	}
 
 	@bindThis
-	public async updateMembership(target: MiUser, list: MiUserList, options: { withReplies?: boolean }) {
+	public async updateMembership(target: MiUser, list: MiUserList, options: { withReplies?: boolean; }) {
 		const membership = await this.userListMembershipsRepository.findOneBy({
 			userId: target.id,
 			userListId: list.id,

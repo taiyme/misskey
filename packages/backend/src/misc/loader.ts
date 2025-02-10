@@ -16,6 +16,7 @@ export class DebounceLoader<K, V> {
 	private resolverMap = new Map<K, ResolverPair<V>>();
 	private promiseMap = new Map<K, Promise<V>>();
 	private resolvedPromise = Promise.resolve();
+
 	constructor(private loadFn: FetchFunction<K, V>) {}
 
 	public load(key: K): Promise<V> {

@@ -84,7 +84,7 @@ export class SigninApiService {
 		const password = body['password'];
 		const token = body['token'];
 
-		function error(status: number, error: { id: string }) {
+		function error(status: number, error: { id: string; }) {
 			reply.code(status);
 			return { error };
 		}

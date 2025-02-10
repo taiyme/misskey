@@ -78,7 +78,7 @@ export function uploadFile(
 						resizedImage = resized;
 					}
 					if (_DEV_) {
-						const saved = ((1 - resized.size / file.size) * 100).toFixed(2);
+						const saved = ((1 - (resized.size / file.size)) * 100).toFixed(2);
 						console.log(`Image compression: before ${file.size} bytes, after ${resized.size} bytes, saved ${saved}%`);
 					}
 

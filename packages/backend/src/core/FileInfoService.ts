@@ -265,7 +265,7 @@ export class FileInfoService {
 		return [sensitive, porn];
 	}
 
-	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
+	private async * asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
 		const watcher = new FSWatcher({
 			cwd,
 			disableGlobbing: true,

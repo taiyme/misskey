@@ -319,21 +319,21 @@ const pleaseLoginContext = computed(() => ({
 } as const satisfies OpenOnRemoteOptions));
 
 const keymap = {
-	'r': () => reply(),
+	r: () => reply(),
 	'e|a|plus': () => react(),
-	'q': () => renote(),
-	'm': () => showMenu(),
-	'c': () => {
+	q: () => renote(),
+	m: () => showMenu(),
+	c: () => {
 		if (!defaultStore.state.showClipButtonInNoteFooter) return;
 		clip();
 	},
-	'o': () => galleryEl.value?.openGallery(),
+	o: () => galleryEl.value?.openGallery(),
 	'v|enter': () => {
 		if (appearNote.value.cw != null) {
 			showContent.value = !showContent.value;
 		}
 	},
-	'esc': {
+	esc: {
 		allowRepeat: true,
 		callback: () => blur(),
 	},

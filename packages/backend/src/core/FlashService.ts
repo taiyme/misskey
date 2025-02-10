@@ -21,7 +21,7 @@ export class FlashService {
 	/**
 	 * 人気のあるPlay一覧を取得する.
 	 */
-	public async featured(opts?: { offset?: number, limit: number }) {
+	public async featured(opts?: { offset?: number; limit: number; }) {
 		const builder = this.flashRepository.createQueryBuilder('flash')
 			.andWhere('flash.likedCount > 0')
 			.andWhere('flash.visibility = :visibility', { visibility: 'public' })

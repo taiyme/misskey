@@ -139,7 +139,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 	@bindThis
 	public async update(data: (
-		{ id: MiEmoji['id'], name?: string; } | { name: string; id?: MiEmoji['id'], }
+		{ id: MiEmoji['id']; name?: string; } | { name: string; id?: MiEmoji['id']; }
 		) & {
 		originalUrl?: string;
 		publicUrl?: string;
@@ -469,14 +469,14 @@ export class CustomEmojiService implements OnApplicationShutdown {
 				localOnly?: boolean;
 				hostType?: FetchEmojisHostTypes;
 				roleIds?: string[];
-			},
+			};
 			sinceId?: string;
 			untilId?: string;
 		},
 		opts?: {
 			limit?: number;
 			page?: number;
-			sortKeys?: FetchEmojisSortKeys[]
+			sortKeys?: FetchEmojisSortKeys[];
 		},
 	) {
 		function multipleWordsToQuery(words: string) {

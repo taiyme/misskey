@@ -25,16 +25,16 @@ export default function(app: App) {
 }
 
 export const directives = {
-	'userPreview': userPreview,
+	userPreview: userPreview,
 	'user-preview': userPreview,
 	'get-size': getSize,
-	'ripple': ripple,
-	'tooltip': tooltip,
-	'hotkey': hotkey,
-	'appear': appear,
-	'anim': anim,
+	ripple: ripple,
+	tooltip: tooltip,
+	hotkey: hotkey,
+	appear: appear,
+	anim: anim,
 	'click-anime': clickAnime,
-	'panel': panel,
+	panel: panel,
 	'adaptive-border': adaptiveBorder,
 	'adaptive-bg': adaptiveBg,
 };

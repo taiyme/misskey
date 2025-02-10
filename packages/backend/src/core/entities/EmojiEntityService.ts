@@ -78,7 +78,7 @@ export class EmojiEntityService {
 	public async packDetailedAdmin(
 		src: MiEmoji['id'] | MiEmoji,
 		hint?: {
-			roles?: Map<MiRole['id'], MiRole>
+			roles?: Map<MiRole['id'], MiRole>;
 		},
 	): Promise<Packed<'EmojiDetailedAdmin'>> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
@@ -129,7 +129,7 @@ export class EmojiEntityService {
 	public async packDetailedAdminMany(
 		emojis: MiEmoji['id'][] | MiEmoji[],
 		hint?: {
-			roles?: Map<MiRole['id'], MiRole>
+			roles?: Map<MiRole['id'], MiRole>;
 		},
 	): Promise<Packed<'EmojiDetailedAdmin'>[]> {
 		// IDのみの要素をピックアップし、DBからレコードを取り出して他の値を補完する

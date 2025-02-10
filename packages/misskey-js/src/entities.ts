@@ -210,7 +210,7 @@ export type ServerStats = {
 	fs: {
 		r: number;
 		w: number;
-	}
+	};
 };
 
 export type ServerStatsLog = ServerStats[];
@@ -233,15 +233,15 @@ export type QueueStats = {
 export type QueueStatsLog = QueueStats[];
 
 export type EmojiAdded = {
-	emoji: EmojiDetailed
+	emoji: EmojiDetailed;
 };
 
 export type EmojiUpdated = {
-	emojis: EmojiDetailed[]
+	emojis: EmojiDetailed[];
 };
 
 export type EmojiDeleted = {
-	emojis: EmojiDetailed[]
+	emojis: EmojiDetailed[];
 };
 
 export type AnnouncementCreated = {
@@ -258,19 +258,19 @@ export type SignupRequest = {
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
-}
+};
 
 export type SignupResponse = MeDetailed & {
 	token: string;
-}
+};
 
 export type SignupPendingRequest = {
 	code: string;
 };
 
 export type SignupPendingResponse = {
-	id: User['id'],
-	i: string,
+	id: User['id'];
+	i: string;
 };
 
 export type SigninFlowRequest = {
@@ -308,9 +308,9 @@ export type SigninWithPasskeyInitResponse = {
 };
 
 export type SigninWithPasskeyResponse = {
-	signinResponse: SigninFlowResponse & { finished: true };
+	signinResponse: SigninFlowResponse & { finished: true; };
 };
 
 type Values<T extends Record<PropertyKey, unknown>> = T[keyof T];
 
-export type PartialRolePolicyOverride = Partial<{[k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k] }}>;
+export type PartialRolePolicyOverride = Partial<{ [k in keyof RolePolicies]: Omit<Values<Role['policies']>, 'value'> & { value: RolePolicies[k]; } }>;

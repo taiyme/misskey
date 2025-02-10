@@ -1170,7 +1170,7 @@ export type Endpoints = Overwrite<Endpoints_2, {
             };
         };
     };
-    'signup': {
+    signup: {
         req: SignupRequest;
         res: SignupResponse;
     };

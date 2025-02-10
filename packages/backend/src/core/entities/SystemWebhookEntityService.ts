@@ -22,7 +22,7 @@ export class SystemWebhookEntityService {
 	public async pack(
 		src: MiSystemWebhook['id'] | MiSystemWebhook,
 		opts?: {
-			webhooks: Map<string, MiSystemWebhook>
+			webhooks: Map<string, MiSystemWebhook>;
 		},
 	): Promise<Packed<'SystemWebhook'>> {
 		const webhook = typeof src === 'object'

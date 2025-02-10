@@ -123,7 +123,7 @@ export type KeyEventHandler = {
 };
 
 export function handleKeyEvent(event: KeyboardEvent, handlers: KeyEventHandler[]) {
-	function checkModifier(ev: KeyboardEvent, modifiers? : KeyModifier[]) {
+	function checkModifier(ev: KeyboardEvent, modifiers?: KeyModifier[]) {
 		if (modifiers) {
 			return modifiers.every(modifier => ev.getModifierState(modifier));
 		}

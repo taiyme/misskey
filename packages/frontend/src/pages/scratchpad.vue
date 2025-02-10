@@ -84,7 +84,7 @@ const logs = ref<{
 const root = ref<AsUiRoot>();
 const components = ref<Ref<AsUiComponent>[]>([]);
 const uiKey = ref(0);
-const uiInspectorOpenedComponents = ref(new Map<string, boolean>);
+const uiInspectorOpenedComponents = ref(new Map<string, boolean>());
 
 const saved = miLocalStorage.getItem('scratchpad');
 if (saved) {
@@ -99,7 +99,7 @@ function stringifyUiProps(uiProps) {
 	return JSON.stringify(
 		{ ...uiProps, type: undefined, id: undefined },
 		(k, v) => typeof v === 'function' ? '<function>' : v,
-		2
+		2,
 	);
 }
 

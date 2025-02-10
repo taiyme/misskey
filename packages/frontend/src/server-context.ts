@@ -18,7 +18,7 @@ export const serverContext: ServerContext = (providedContextEl && providedContex
 
 export function getServerContext<
 	K extends keyof NonNullable<ServerContext>,
-	R = Required<NonNullable<ServerContext>>[K] | null
+	R = Required<NonNullable<ServerContext>>[K] | null,
 >(entity: K) {
 	// contextは非ログイン状態の情報しかないためログイン時は利用できない
 	if ($i) return null as R;

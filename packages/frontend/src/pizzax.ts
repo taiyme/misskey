@@ -50,6 +50,7 @@ export class Storage<T extends StateDef> {
 
 	// 簡易的にキューイングして占有ロックとする
 	private currentIdbJob: Promise<any> = Promise.resolve();
+
 	private addIdbSetJob<T>(job: () => Promise<T>) {
 		const promise = this.currentIdbJob.then(job, err => {
 			console.error('Pizzax failed to save data to idb!', err);
@@ -126,7 +127,7 @@ export class Storage<T extends StateDef> {
 			const connection = useStream().useChannel('main');
 
 			// streamingのuser storage updateイベントを監視して更新
-			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[]; key: keyof T; value: T[typeof key]['default']; }) => {
 				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
 				this.reactiveState[key].value = this.state[key] = value;

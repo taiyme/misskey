@@ -25,14 +25,14 @@ export class AnnouncementEntityService {
 
 	@bindThis
 	public async pack(
-		src: MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null },
-		me?: { id: MiUser['id'] } | null | undefined,
+		src: MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null; },
+		me?: { id: MiUser['id']; } | null | undefined,
 	): Promise<Packed<'Announcement'>> {
 		const announcement = typeof src === 'object'
 			? src
 			: await this.announcementsRepository.findOneByOrFail({
 				id: src,
-			}) as MiAnnouncement & { isRead?: boolean | null };
+			}) as MiAnnouncement & { isRead?: boolean | null; };
 
 		if (me && announcement.isRead === undefined) {
 			announcement.isRead = await this.announcementReadsRepository
@@ -61,9 +61,9 @@ export class AnnouncementEntityService {
 
 	@bindThis
 	public async packMany(
-		announcements: (MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null } | MiAnnouncement)[],
-		me?: { id: MiUser['id'] } | null | undefined,
-	) : Promise<Packed<'Announcement'>[]> {
+		announcements: (MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null; } | MiAnnouncement)[],
+		me?: { id: MiUser['id']; } | null | undefined,
+	): Promise<Packed<'Announcement'>[]> {
 		return (await Promise.allSettled(announcements.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<Packed<'Announcement'>>).value);

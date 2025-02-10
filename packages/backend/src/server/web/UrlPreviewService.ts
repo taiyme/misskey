@@ -48,7 +48,7 @@ export class UrlPreviewService {
 
 	@bindThis
 	public async handle(
-		request: FastifyRequest<{ Querystring: { url: string; lang?: string; } }>,
+		request: FastifyRequest<{ Querystring: { url: string; lang?: string; }; }>,
 		reply: FastifyReply,
 	): Promise<object | undefined> {
 		const url = request.query.url;

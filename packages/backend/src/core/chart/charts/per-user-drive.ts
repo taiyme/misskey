@@ -42,8 +42,8 @@ export default class PerUserDriveChart extends Chart<typeof schema> { // eslint-
 		]);
 
 		return {
-			'totalCount': count,
-			'totalSize': size,
+			totalCount: count,
+			totalSize: size,
 		};
 	}
 
@@ -55,12 +55,12 @@ export default class PerUserDriveChart extends Chart<typeof schema> { // eslint-
 	public async update(file: MiDriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit({
-			'totalCount': isAdditional ? 1 : -1,
-			'totalSize': isAdditional ? fileSizeKb : -fileSizeKb,
-			'incCount': isAdditional ? 1 : 0,
-			'incSize': isAdditional ? fileSizeKb : 0,
-			'decCount': isAdditional ? 0 : 1,
-			'decSize': isAdditional ? 0 : fileSizeKb,
+			totalCount: isAdditional ? 1 : -1,
+			totalSize: isAdditional ? fileSizeKb : -fileSizeKb,
+			incCount: isAdditional ? 1 : 0,
+			incSize: isAdditional ? fileSizeKb : 0,
+			decCount: isAdditional ? 0 : 1,
+			decSize: isAdditional ? 0 : fileSizeKb,
 		}, file.userId);
 	}
 }

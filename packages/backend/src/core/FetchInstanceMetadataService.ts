@@ -59,7 +59,7 @@ export class FetchInstanceMetadataService {
 		return await this.redisClient.set(
 			`fetchInstanceMetadata:mutex:v2:${host}`, '1',
 			'EX', 30, // 30秒したら自動でロック解除 https://github.com/misskey-dev/misskey/issues/13506#issuecomment-1975375395
-			'GET' // 古い値を返す（なかったらnull）
+			'GET', // 古い値を返す（なかったらnull）
 		);
 	}
 
@@ -154,7 +154,7 @@ export class FetchInstanceMetadataService {
 				throw new Error('No wellknown links');
 			}
 
-			const links = wellknown.links as ({ rel: string, href: string; })[];
+			const links = wellknown.links as ({ rel: string; href: string; })[];
 
 			const link1_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/1.0');
 			const link2_0 = links.find(link => link.rel === 'http://nodeinfo.diaspora.software/ns/schema/2.0');

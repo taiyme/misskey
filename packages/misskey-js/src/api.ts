@@ -27,7 +27,7 @@ export type FetchLike = (input: string, init?: {
 	body?: Blob | FormData | string;
 	credentials?: RequestCredentials;
 	cache?: RequestCache;
-	headers: { [key in string]: string }
+	headers: { [key in string]: string };
 }) => Promise<{
 	status: number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

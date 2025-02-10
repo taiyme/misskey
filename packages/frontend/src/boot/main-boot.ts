@@ -151,7 +151,7 @@ export async function mainBoot() {
 			});
 		}
 
-		function onAnnouncementCreated (ev: { announcement: Misskey.entities.Announcement }) {
+		function onAnnouncementCreated(ev: { announcement: Misskey.entities.Announcement; }) {
 			const announcement = ev.announcement;
 			if (announcement.display === 'dialog') {
 				const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
@@ -378,10 +378,10 @@ export async function mainBoot() {
 			if ($i == null) return;
 			post();
 		},
-		'd': () => {
+		d: () => {
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
 		},
-		's': () => {
+		s: () => {
 			mainRouter.push('/search');
 		},
 	} as const satisfies Keymap;

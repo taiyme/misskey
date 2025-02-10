@@ -16,6 +16,7 @@ class Mock {
 		}
 		return key * 2;
 	};
+
 	reset() {
 		this.loadCountByKey.clear();
 	}

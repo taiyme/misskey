@@ -9,8 +9,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository, DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { pageNameSchema } from '@/models/Page.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -57,12 +57,16 @@ export const paramDef = {
 		title: { type: 'string' },
 		name: { ...pageNameSchema, minLength: 1 },
 		summary: { type: 'string', nullable: true },
-		content: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
-		variables: { type: 'array', items: {
-			type: 'object', additionalProperties: true,
-		} },
+		content: {
+			type: 'array', items: {
+				type: 'object', additionalProperties: true,
+			},
+		},
+		variables: {
+			type: 'array', items: {
+				type: 'object', additionalProperties: true,
+			},
+		},
 		script: { type: 'string' },
 		eyeCatchingImageId: { type: 'string', format: 'misskey:id', nullable: true },
 		font: { type: 'string', enum: ['serif', 'sans-serif'] },

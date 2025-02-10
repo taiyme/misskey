@@ -44,23 +44,23 @@ export default class ActiveUsersChart extends Chart<typeof schema> { // eslint-d
 	}
 
 	@bindThis
-	public async read(user: { id: MiUser['id'], host: null }): Promise<void> {
+	public async read(user: { id: MiUser['id']; host: null; }): Promise<void> {
 		const createdAt = this.idService.parse(user.id).date;
 		await this.commit({
-			'read': [user.id],
-			'registeredWithinWeek': (Date.now() - createdAt.getTime() < week) ? [user.id] : [],
-			'registeredWithinMonth': (Date.now() - createdAt.getTime() < month) ? [user.id] : [],
-			'registeredWithinYear': (Date.now() - createdAt.getTime() < year) ? [user.id] : [],
-			'registeredOutsideWeek': (Date.now() - createdAt.getTime() > week) ? [user.id] : [],
-			'registeredOutsideMonth': (Date.now() - createdAt.getTime() > month) ? [user.id] : [],
-			'registeredOutsideYear': (Date.now() - createdAt.getTime() > year) ? [user.id] : [],
+			read: [user.id],
+			registeredWithinWeek: (Date.now() - createdAt.getTime() < week) ? [user.id] : [],
+			registeredWithinMonth: (Date.now() - createdAt.getTime() < month) ? [user.id] : [],
+			registeredWithinYear: (Date.now() - createdAt.getTime() < year) ? [user.id] : [],
+			registeredOutsideWeek: (Date.now() - createdAt.getTime() > week) ? [user.id] : [],
+			registeredOutsideMonth: (Date.now() - createdAt.getTime() > month) ? [user.id] : [],
+			registeredOutsideYear: (Date.now() - createdAt.getTime() > year) ? [user.id] : [],
 		});
 	}
 
 	@bindThis
-	public async write(user: { id: MiUser['id'], host: null }): Promise<void> {
+	public async write(user: { id: MiUser['id']; host: null; }): Promise<void> {
 		await this.commit({
-			'write': [user.id],
+			write: [user.id],
 		});
 	}
 }

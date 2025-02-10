@@ -44,11 +44,11 @@ export class AbuseReportService {
 	 */
 	@bindThis
 	public async report(params: {
-		targetUserId: MiAbuseUserReport['targetUserId'],
-		targetUserHost: MiAbuseUserReport['targetUserHost'],
-		reporterId: MiAbuseUserReport['reporterId'],
-		reporterHost: MiAbuseUserReport['reporterHost'],
-		comment: string,
+		targetUserId: MiAbuseUserReport['targetUserId'];
+		targetUserHost: MiAbuseUserReport['targetUserHost'];
+		reporterId: MiAbuseUserReport['reporterId'];
+		reporterHost: MiAbuseUserReport['reporterHost'];
+		comment: string;
 	}[]) {
 		const entities = params.map(param => {
 			return {

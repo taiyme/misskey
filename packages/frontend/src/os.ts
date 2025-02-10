@@ -159,12 +159,12 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 // InstanceType<typeof Component>['$emit'] だとインターセクション型が返ってきて
 // 使い物にならないので、代わりに ['$props'] から色々省くことで emit の型を生成する
 // FIXME: 何故か *.ts ファイルからだと型がうまく取れない？ことがあるのをなんとかしたい
-type ComponentEmit<T> = T extends new () => { $props: infer Props }
+type ComponentEmit<T> = T extends new () => { $props: infer Props; }
 	? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
 		? Record<string, unknown> // *.ts ファイルから型がうまく取れないとき用（これがないと {} になって型エラーがうるさい）
 		: EmitsExtractor<Props>
 	: T extends (...args: any) => any
-		? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; props: infer Props } }
+		? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; props: infer Props; }; }
 			? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
 				? Record<string, unknown>
 				: EmitsExtractor<Props>
@@ -602,10 +602,10 @@ export async function selectDriveFolder(multiple: boolean): Promise<Misskey.enti
 }
 
 export async function selectRole(params: {
-	initialRoleIds?: string[],
-	title?: string,
-	infoMessage?: string,
-	publicOnly?: boolean,
+	initialRoleIds?: string[];
+	title?: string;
+	infoMessage?: string;
+	publicOnly?: boolean;
 }): Promise<
 	{ canceled: true; result: undefined; } |
 	{ canceled: false; result: Misskey.entities.Role[]; }

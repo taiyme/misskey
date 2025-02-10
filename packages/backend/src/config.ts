@@ -35,7 +35,7 @@ type Source = {
 		user?: string;
 		pass?: string;
 		disableCache?: boolean;
-		extra?: { [x: string]: string };
+		extra?: { [x: string]: string; };
 	};
 	dbReplications?: boolean;
 	dbSlaves?: {
@@ -62,7 +62,7 @@ type Source = {
 		scope?: 'local' | 'global' | string[];
 	};
 	sentryForBackend?: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; };
-	sentryForFrontend?: { options: Partial<Sentry.NodeOptions> };
+	sentryForFrontend?: { options: Partial<Sentry.NodeOptions>; };
 
 	publishTarballInsteadOfProvideRepositoryUrl?: boolean;
 
@@ -105,10 +105,10 @@ type Source = {
 
 	logging?: {
 		sql?: {
-			disableQueryTruncation? : boolean,
-			enableQueryParamLogging? : boolean,
-		}
-	}
+			disableQueryTruncation?: boolean;
+			enableQueryParamLogging?: boolean;
+		};
+	};
 };
 
 export type Config = {
@@ -124,7 +124,7 @@ export type Config = {
 		user: string;
 		pass: string;
 		disableCache?: boolean;
-		extra?: { [x: string]: string };
+		extra?: { [x: string]: string; };
 	};
 	dbReplications: boolean | undefined;
 	dbSlaves: {
@@ -166,10 +166,10 @@ export type Config = {
 	signToActivityPubGet: boolean | undefined;
 	logging?: {
 		sql?: {
-			disableQueryTruncation? : boolean,
-			enableQueryParamLogging? : boolean,
-		}
-	}
+			disableQueryTruncation?: boolean;
+			enableQueryParamLogging?: boolean;
+		};
+	};
 
 	version: string;
 	publishTarballInsteadOfProvideRepositoryUrl: boolean;
@@ -196,7 +196,7 @@ export type Config = {
 	redisForTimelines: RedisOptions & RedisOptionsSource;
 	redisForReactions: RedisOptions & RedisOptionsSource;
 	sentryForBackend: { options: Partial<Sentry.NodeOptions>; enableNodeProfiling: boolean; } | undefined;
-	sentryForFrontend: { options: Partial<Sentry.NodeOptions> } | undefined;
+	sentryForFrontend: { options: Partial<Sentry.NodeOptions>; } | undefined;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
 	deactivateAntennaThreshold: number;

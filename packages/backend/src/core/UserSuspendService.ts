@@ -72,7 +72,7 @@ export class UserSuspendService {
 	}
 
 	@bindThis
-	private async postSuspend(user: { id: MiUser['id']; host: MiUser['host'] }): Promise<void> {
+	private async postSuspend(user: { id: MiUser['id']; host: MiUser['host']; }): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: true });
 
 		this.followRequestsRepository.delete({

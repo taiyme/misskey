@@ -7,15 +7,15 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'node:assert';
 import { inspect } from 'node:util';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as Misskey from 'misskey-js';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
 describe('ユーザー', () => {
 	// エンティティとしてのユーザーを主眼においたテストを記述する
 	// (Userを返すエンドポイントとUserエンティティを書き換えるエンドポイントをテストする)
 
-	const stripUndefined = <T extends { [key: string]: any }, >(orig: T): Partial<T> => {
+	const stripUndefined = <T extends { [key: string]: any; } >(orig: T): Partial<T> => {
 		return Object.entries({ ...orig })
 			.filter(([, value]) => value !== undefined)
 			.reduce((obj: Partial<T>, [key, value]) => {
@@ -680,7 +680,7 @@ describe('ユーザー', () => {
 		const expected: [] = [];
 		assert.deepStrictEqual(response, expected);
 	});
-	test('をID指定のリスト形式で取得することができる', async() => {
+	test('をID指定のリスト形式で取得することができる', async () => {
 		const parameters = { userIds: [bob.id, alice.id, carol.id] };
 		const response = await successfulApiCall({ endpoint: 'users/show', parameters, user: alice });
 		const expected = [

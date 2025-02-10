@@ -14,7 +14,7 @@ export type EmojiDef = {
 	aliasOf?: string;
 	isCustomEmoji?: true;
 };
-type EmojiScore = { emoji: EmojiDef, score: number };
+type EmojiScore = { emoji: EmojiDef; score: number; };
 
 export function searchEmoji(query: string | null, emojiDb: EmojiDef[], max = 30): EmojiDef[] {
 	if (!query) {

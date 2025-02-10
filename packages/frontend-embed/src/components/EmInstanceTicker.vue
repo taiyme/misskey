@@ -61,7 +61,7 @@ const hexToRgb = (hex: string) => {
 
 const validHex = (hex: unknown): hex is string => {
 	if (typeof hex !== 'string') return false;
-	return /^[0-9a-f]+$/i.test(hex);
+	return (/^[0-9a-f]+$/i).test(hex);
 };
 //#endregion
 
@@ -97,7 +97,7 @@ const tickerColorsRef = computed(() => {
 	const bgHex = tickerInfoRef.value.themeColor;
 
 	const { r, g, b } = hexToRgb(bgHex);
-	const yuv = 0.299 * r + 0.587 * g + 0.114 * b;
+	const yuv = (0.299 * r) + (0.587 * g) + (0.114 * b);
 	const fgHex = yuv > TICKER_YUV_THRESHOLD ? TICKER_FG_COLOR_DARK : TICKER_FG_COLOR_LIGHT;
 
 	return {

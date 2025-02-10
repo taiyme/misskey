@@ -5,7 +5,8 @@
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
 		"typecheck": "tsc --noEmit",
-		"eslint": "eslint --quiet src/**/*.ts",
+		"eslint": "eslint --quiet .",
+		"eslint:fix": "eslint --fix .",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {

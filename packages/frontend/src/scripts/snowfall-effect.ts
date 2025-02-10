@@ -155,6 +155,7 @@ export class SnowfallEffect {
 		max: 0.125,
 		easing: 0.0005,
 	};
+
 	/**
 	 * @throws {Error} - Thrown when it fails to get WebGL context for the canvas
 	 */
@@ -304,7 +305,7 @@ export class SnowfallEffect {
 		const { gl, uniforms } = this;
 		const uniform = uniforms[name];
 		const setter = this.UNIFORM_SETTERS[uniform.type];
-		const isMatrix = /^mat[2-4]$/i.test(uniform.type);
+		const isMatrix = (/^mat[2-4]$/i).test(uniform.type);
 
 		uniform.value = value ?? uniform.value;
 
@@ -370,8 +371,8 @@ export class SnowfallEffect {
 
 		for (let i = 0; i < length; ++i) {
 			position.push(
-				-width + Math.random() * width * 2,
-				-height + Math.random() * height * 2,
+				-width + (Math.random() * width * 2),
+				-height + (Math.random() * height * 2),
 				Math.random() * depth * 2,
 			);
 
@@ -383,7 +384,7 @@ export class SnowfallEffect {
 				Math.random() * 10,
 			);
 
-			color.push(...this.color, 0.1 + Math.random() * this.opacity);
+			color.push(...this.color, 0.1 + (Math.random() * this.opacity));
 			// size.push((this.size * Math.random() * this.size * vh * dpi) / 1000);
 			size.push((this.size * vh * dpi) / 1000);
 		}
@@ -403,14 +404,14 @@ export class SnowfallEffect {
 		camera.aspect = aspect;
 
 		const fovRad = (camera.fov * Math.PI) / 180;
-		const f = Math.tan(Math.PI * 0.5 - 0.5 * fovRad);
+		const f = Math.tan((Math.PI * 0.5) - (0.5 * fovRad));
 		const rangeInv = 1.0 / (camera.near - camera.far);
 
 		const m0 = f / camera.aspect;
 		const m5 = f;
 		const m10 = (camera.near + camera.far) * rangeInv;
 		const m11 = -1;
-		const m14 = camera.near * camera.far * rangeInv * 2 + camera.z;
+		const m14 = (camera.near * camera.far * rangeInv * 2) + camera.z;
 		const m15 = camera.z;
 
 		return [m0, 0, 0, 0, 0, m5, 0, 0, 0, 0, m10, m11, 0, 0, m14, m15];
@@ -473,7 +474,7 @@ export class SnowfallEffect {
 
 		if (Math.random() > 0.995) {
 			wind.target =
-				(wind.min + Math.random() * (wind.max - wind.min)) *
+				(wind.min + (Math.random() * (wind.max - wind.min))) *
 				(Math.random() > 0.5 ? -1 : 1);
 		}
 

@@ -62,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const records = await this.bubbleGameRecordsRepository.find({
 				where: {
 					gameMode: ps.gameMode,
-					seededAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)),
+					seededAt: MoreThan(new Date(Date.now() - (1000 * 60 * 60 * 24 * 7))),
 				},
 				order: {
 					score: 'DESC',

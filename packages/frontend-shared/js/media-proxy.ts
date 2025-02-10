@@ -29,7 +29,7 @@ export class MediaProxy {
 			: 'image.webp'
 		}?${query({
 			url: _imageUrl,
-			...(!noFallback ? { 'fallback': '1' } : {}),
+			...(!noFallback ? { fallback: '1' } : {}),
 			...(type ? { [type]: '1' } : {}),
 			...(mustOrigin ? { origin: '1' } : {}),
 		})}`;

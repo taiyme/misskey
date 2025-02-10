@@ -28,7 +28,7 @@ export function hms(ms: number, options?: {
 	let seconds = Math.floor(ms / 1000);
 
 	// 小数点以下の値（２位まで）
-	const mili = ms - seconds * 1000;
+	const mili = ms - (seconds * 1000);
 
 	// 時間を計算
 	const hours = Math.floor(seconds / 3600);

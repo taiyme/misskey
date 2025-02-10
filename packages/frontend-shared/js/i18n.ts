@@ -211,7 +211,7 @@ export class I18n<T extends ILocale> {
 	 * @deprecated なるべくこのメソッド使うよりも tsx 直接参照の方が vue のキャッシュ効いてパフォーマンスが良いかも
 	 */
 	public t<TKey extends FlattenKeys<T, ParameterizedString>>(key: TKey, args: { readonly [_ in ParametersOf<T, TKey>]: string | number }): string;
-	public t(key: string, args?: { readonly [_: string]: string | number }) {
+	public t(key: string, args?: { readonly [_: string]: string | number; }) {
 		let str: string | ParameterizedString | ILocale = this.locale;
 
 		for (const k of key.split('.')) {

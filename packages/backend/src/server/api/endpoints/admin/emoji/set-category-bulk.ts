@@ -18,9 +18,11 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		ids: { type: 'array', items: {
-			type: 'string', format: 'misskey:id',
-		} },
+		ids: {
+			type: 'array', items: {
+				type: 'string', format: 'misskey:id',
+			},
+		},
 		category: {
 			type: 'string',
 			nullable: true,

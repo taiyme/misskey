@@ -4,8 +4,8 @@
  */
 
 export const errors = {
-	'400': {
-		'INVALID_PARAM': {
+	400: {
+		INVALID_PARAM: {
 			value: {
 				error: {
 					message: 'Invalid param.',
@@ -15,8 +15,8 @@ export const errors = {
 			},
 		},
 	},
-	'401': {
-		'CREDENTIAL_REQUIRED': {
+	401: {
+		CREDENTIAL_REQUIRED: {
 			value: {
 				error: {
 					message: 'Credential required.',
@@ -26,8 +26,8 @@ export const errors = {
 			},
 		},
 	},
-	'403': {
-		'AUTHENTICATION_FAILED': {
+	403: {
+		AUTHENTICATION_FAILED: {
 			value: {
 				error: {
 					message: 'Authentication failed. Please ensure your token is correct.',
@@ -37,8 +37,8 @@ export const errors = {
 			},
 		},
 	},
-	'418': {
-		'I_AM_AI': {
+	418: {
+		I_AM_AI: {
 			value: {
 				error: {
 					message: 'You sent a request to Ai-chan, Misskey\'s showgirl, instead of the server.',
@@ -48,8 +48,8 @@ export const errors = {
 			},
 		},
 	},
-	'429': {
-		'RATE_LIMIT_EXCEEDED': {
+	429: {
+		RATE_LIMIT_EXCEEDED: {
 			value: {
 				error: {
 					message: 'Rate limit exceeded. Please try again later.',
@@ -59,8 +59,8 @@ export const errors = {
 			},
 		},
 	},
-	'500': {
-		'INTERNAL_ERROR': {
+	500: {
+		INTERNAL_ERROR: {
 			value: {
 				error: {
 					message: 'Internal error occurred. Please contact us if the error persists.',

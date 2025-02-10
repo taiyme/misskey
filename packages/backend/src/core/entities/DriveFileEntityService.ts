@@ -134,7 +134,7 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	public async calcDriveUsageOf(user: MiUser['id'] | { id: MiUser['id'] }): Promise<number> {
+	public async calcDriveUsageOf(user: MiUser['id'] | { id: MiUser['id']; }): Promise<number> {
 		const id = typeof user === 'object' ? user.id : user;
 
 		const { sum } = await this.driveFilesRepository
@@ -222,7 +222,7 @@ export class DriveFileEntityService {
 		src: MiDriveFile['id'] | MiDriveFile,
 		options?: PackOptions,
 		hint?: {
-			packedUser?: Packed<'UserLite'>
+			packedUser?: Packed<'UserLite'>;
 		},
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({

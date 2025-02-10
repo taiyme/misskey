@@ -27,7 +27,7 @@ export class NoteFavoriteEntityService {
 	@bindThis
 	public async pack(
 		src: MiNoteFavorite['id'] | MiNoteFavorite,
-		me?: { id: MiUser['id'] } | null | undefined,
+		me?: { id: MiUser['id']; } | null | undefined,
 	) {
 		const favorite = typeof src === 'object' ? src : await this.noteFavoritesRepository.findOneByOrFail({ id: src });
 
@@ -42,7 +42,7 @@ export class NoteFavoriteEntityService {
 	@bindThis
 	public packMany(
 		favorites: any[],
-		me: { id: MiUser['id'] },
+		me: { id: MiUser['id']; },
 	) {
 		return Promise.all(favorites.map(x => this.pack(x, me)));
 	}

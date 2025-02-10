@@ -55,7 +55,7 @@ export type SoundStore = {
 	fileUrl: string;
 
 	volume: number;
-}
+};
 
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
@@ -517,7 +517,7 @@ export type Plugin = {
 	id: string;
 	name: string;
 	active: boolean;
-	config?: Record<string, { default: any }>;
+	config?: Record<string, { default: any; }>;
 	configData: Record<string, any>;
 	token: string;
 	src: string | null;

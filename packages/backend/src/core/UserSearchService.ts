@@ -14,7 +14,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
 
 function defaultActiveThreshold() {
-	return new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
+	return new Date(Date.now() - (1000 * 60 * 60 * 24 * 30));
 }
 
 @Injectable()
@@ -60,13 +60,13 @@ export class UserSearchService {
 	@bindThis
 	public async search(
 		params: {
-			username?: string | null,
-			host?: string | null,
-			activeThreshold?: Date,
+			username?: string | null;
+			host?: string | null;
+			activeThreshold?: Date;
 		},
 		opts?: {
-			limit?: number,
-			detail?: boolean,
+			limit?: number;
+			detail?: boolean;
 		},
 		me?: MiUser | null,
 	): Promise<Packed<'User'>[]> {
@@ -79,7 +79,7 @@ export class UserSearchService {
 				.select('user.id')
 				.limit(limit - resultSet.size)
 				.orderBy('user.usernameLower', 'ASC')
-				.getRawMany<{ user_id: MiUser['id'] }>()
+				.getRawMany<{ user_id: MiUser['id']; }>()
 				.then(res => res.map(x => x.user_id));
 
 			resultSet = new Set([...resultSet, ...ids]);
@@ -105,9 +105,9 @@ export class UserSearchService {
 	private buildSearchUserQueries(
 		me: MiUser,
 		params: {
-			username?: string | null,
-			host?: string | null,
-			activeThreshold?: Date,
+			username?: string | null;
+			host?: string | null;
+			activeThreshold?: Date;
 		},
 	) {
 		// デフォルト30日以内に更新されたユーザーをアクティブユーザーとする
@@ -152,9 +152,9 @@ export class UserSearchService {
 	 */
 	@bindThis
 	private buildSearchUserNoLoginQueries(params: {
-		username?: string | null,
-		host?: string | null,
-		activeThreshold?: Date,
+		username?: string | null;
+		host?: string | null;
+		activeThreshold?: Date;
 	}) {
 		// デフォルト30日以内に更新されたユーザーをアクティブユーザーとする
 		const activeThreshold = params.activeThreshold ?? defaultActiveThreshold();
@@ -179,8 +179,8 @@ export class UserSearchService {
 	 */
 	@bindThis
 	private generateUserQueryBuilder(params: {
-		username?: string | null,
-		host?: string | null,
+		username?: string | null;
+		host?: string | null;
 	}): SelectQueryBuilder<MiUser> {
 		const userQuery = this.usersRepository.createQueryBuilder('user');
 

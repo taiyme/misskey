@@ -4,9 +4,9 @@
  */
 
 const dateTimeIntervals = {
-	'day': 86400000,
-	'hour': 3600000,
-	'ms': 1,
+	day: 86400000,
+	hour: 3600000,
+	ms: 1,
 };
 
 export function dateUTC(time: number[]): Date {

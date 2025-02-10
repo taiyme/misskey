@@ -9,8 +9,12 @@ import { createAccount, createModerator, resolveRemoteUser, sleep, type LoginUse
 
 describe('Abuse report', () => {
 	describe('Forwarding report', () => {
-		let alice: LoginUser, bob: LoginUser, aModerator: LoginUser, bModerator: LoginUser;
-		let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+		let alice: LoginUser;
+		let bob: LoginUser;
+		let aModerator: LoginUser;
+		let bModerator: LoginUser;
+		let bobInA: Misskey.entities.UserDetailedNotMe;
+		let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 		beforeAll(async () => {
 			[alice, bob] = await Promise.all([

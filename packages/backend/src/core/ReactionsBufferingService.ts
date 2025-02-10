@@ -123,7 +123,7 @@ export class ReactionsBufferingService implements OnApplicationShutdown {
 		for (let i = 0; i < noteIds.length; i++) {
 			const noteId = noteIds[i];
 			const resultDeltas = results![i * opsForEachNotes][1] as Record<string, string>;
-			const resultPairs = results![i * opsForEachNotes + 1][1] as string[];
+			const resultPairs = results![(i * opsForEachNotes) + 1][1] as string[];
 
 			const deltas = {} as Record<string, number>;
 			for (const [name, count] of Object.entries(resultDeltas)) {

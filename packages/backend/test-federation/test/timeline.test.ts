@@ -10,8 +10,10 @@ import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type Login
 const bAdmin = await fetchAdmin('b.test');
 
 describe('Timeline', () => {
-	let alice: LoginUser, bob: LoginUser;
-	let bobInA: Misskey.entities.UserDetailedNotMe, aliceInB: Misskey.entities.UserDetailedNotMe;
+	let alice: LoginUser;
+	let bob: LoginUser;
+	let bobInA: Misskey.entities.UserDetailedNotMe;
+	let aliceInB: Misskey.entities.UserDetailedNotMe;
 
 	beforeAll(async () => {
 		[alice, bob] = await Promise.all([

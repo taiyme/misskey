@@ -332,7 +332,7 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 }
 
 const keymap = {
-	'r': () => {
+	r: () => {
 		if (renoteCollapsed.value) return;
 		reply();
 	},
@@ -340,20 +340,20 @@ const keymap = {
 		if (renoteCollapsed.value) return;
 		react();
 	},
-	'q': () => {
+	q: () => {
 		if (renoteCollapsed.value) return;
 		renote();
 	},
-	'm': () => {
+	m: () => {
 		if (renoteCollapsed.value) return;
 		showMenu();
 	},
-	'c': () => {
+	c: () => {
 		if (renoteCollapsed.value) return;
 		if (!defaultStore.state.showClipButtonInNoteFooter) return;
 		clip();
 	},
-	'o': () => {
+	o: () => {
 		if (renoteCollapsed.value) return;
 		galleryEl.value?.openGallery();
 	},
@@ -366,7 +366,7 @@ const keymap = {
 			collapsed.value = !collapsed.value;
 		}
 	},
-	'esc': {
+	esc: {
 		allowRepeat: true,
 		callback: () => blur(),
 	},

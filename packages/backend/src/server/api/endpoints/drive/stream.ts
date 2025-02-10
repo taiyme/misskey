@@ -34,7 +34,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		type: { type: 'string', pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+		type: { type: 'string', pattern: (/^[a-zA-Z\/\-*]+$/).toString().slice(1, -1) },
 	},
 	required: [],
 } as const;

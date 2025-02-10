@@ -65,9 +65,11 @@ export const paramDef = {
 		name: { type: 'string', minLength: 1 },
 		description: { type: 'string' },
 		url: { type: 'string', minLength: 1 },
-		roleIdsThatCanBeUsedThisDecoration: { type: 'array', items: {
-			type: 'string',
-		} },
+		roleIdsThatCanBeUsedThisDecoration: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		},
 	},
 	required: ['name', 'description', 'url'],
 } as const;

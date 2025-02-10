@@ -12,7 +12,7 @@ export function confetti(options: { duration?: number; } = {}) {
 	const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: os.claimZIndex('high') };
 
 	function randomInRange(min, max) {
-		return Math.random() * (max - min) + min;
+		return (Math.random() * (max - min)) + min;
 	}
 
 	const interval = setInterval(() => {

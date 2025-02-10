@@ -110,7 +110,7 @@ const systemWebhookId = ref<string | null>(null);
 const isActive = ref<boolean>(true);
 
 const moderators = ref<Misskey.entities.User[]>([]);
-const systemWebhooks = ref<(Misskey.entities.SystemWebhook | { id: null, name: string })[]>([]);
+const systemWebhooks = ref<(Misskey.entities.SystemWebhook | { id: null; name: string; })[]>([]);
 
 const methodCaption = computed(() => {
 	switch (method.value) {

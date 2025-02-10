@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
 import { ref } from 'vue';
@@ -15,15 +14,15 @@ import { DataSource, GridSetting } from '@/components/grid/grid.js';
 import { GridColumnSetting } from '@/components/grid/column.js';
 
 function d(p: {
-	check?: boolean,
-	name?: string,
-	email?: string,
-	age?: number,
-	birthday?: string,
-	gender?: string,
-	country?: string,
-	reportCount?: number,
-	createdAt?: string,
+	check?: boolean;
+	name?: string;
+	email?: string;
+	age?: number;
+	birthday?: string;
+	gender?: string;
+	country?: string;
+	reportCount?: number;
+	createdAt?: string;
 }, seed: string) {
 	const prefix = text(10, seed);
 
@@ -52,7 +51,7 @@ const defaultCols: GridColumnSetting[] = [
 	{ bindTo: 'createdAt', title: 'CreatedAt', type: 'date', width: 'auto' },
 ];
 
-function createArgs(overrides?: { settings?: Partial<GridSetting>, data?: DataSource[] }) {
+function createArgs(overrides?: { settings?: Partial<GridSetting>; data?: DataSource[]; }) {
 	const refData = ref<ReturnType<typeof d>[]>([]);
 	for (let i = 0; i < 100; i++) {
 		refData.value.push(d({}, i.toString()));
@@ -71,7 +70,7 @@ function createArgs(overrides?: { settings?: Partial<GridSetting>, data?: DataSo
 	};
 }
 
-function createRender(params: { settings: GridSetting, data: DataSource[] }) {
+function createRender(params: { settings: GridSetting; data: DataSource[]; }) {
 	return {
 		render(args) {
 			return {

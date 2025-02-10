@@ -22,7 +22,7 @@ interface Stats {
 }
 
 await fs.readFile(
-	new URL('../storybook-static/preview-stats.json', import.meta.url)
+	new URL('../storybook-static/preview-stats.json', import.meta.url),
 ).then((buffer) => {
 	const stats: Stats = JSON.parse(buffer.toString());
 	const keys = new Set(stats.modules.map((stat) => stat.id));
@@ -33,9 +33,9 @@ await fs.readFile(
 				stats.modules
 					.filter((stat) => stat.id === key)
 					.flatMap((stat) => stat.reasons)
-					.map((reason) => reason.moduleName)
+					.map((reason) => reason.moduleName),
 			),
-		])
+		]),
 	);
 	const modules = new Set(
 		process.argv
@@ -43,10 +43,10 @@ await fs.readFile(
 			.map((arg) =>
 				path.relative(
 					path.resolve(__dirname, '..'),
-					path.resolve(__dirname, '../../..', arg)
-				)
+					path.resolve(__dirname, '../../..', arg),
+				),
 			)
-			.map((path) => path.replace(/(?:(?<=\.stories)\.(?:impl|meta)|\.msw)(?=\.ts$)/g, ''))
+			.map((path) => path.replace(/(?:(?<=\.stories)\.(?:impl|meta)|\.msw)(?=\.ts$)/g, '')),
 	);
 	if (
 		micromatch(Array.from(modules), [
@@ -75,13 +75,13 @@ await fs.readFile(
 	}
 	const stories = micromatch(
 		Array.from(modules),
-		main.stories.map((story) => `./${path.relative('..', story)}`)
+		main.stories.map((story) => `./${path.relative('..', story)}`),
 	);
 	if (stories.length) {
 		for (const story of stories) {
 			process.stdout.write(` --only-story-files ${story}`);
 		}
 	} else {
-		process.stdout.write(` --skip`);
+		process.stdout.write(' --skip');
 	}
 });

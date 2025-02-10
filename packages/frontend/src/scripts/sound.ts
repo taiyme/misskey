@@ -151,7 +151,7 @@ export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolea
 	// ユーザーアクティベーションが必要な場合はそれがない場合は再生しない
 	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return false;
 	// サウンドがない場合は再生しない
-	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return false;
+	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) return false;
 
 	canPlay = false;
 	return await playMisskeySfxFileInternal(soundStore).finally(() => {

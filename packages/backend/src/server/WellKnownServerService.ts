@@ -38,10 +38,10 @@ export class WellKnownServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		const XRD = (...x: { element: string, value?: string, attributes?: Record<string, string> }[]) =>
+		const XRD = (...x: { element: string; value?: string; attributes?: Record<string, string>; }[]) =>
 			`<?xml version="1.0" encoding="UTF-8"?><XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">${x.map(({ element, value, attributes }) =>
 				`<${
-					Object.entries(typeof attributes === 'object' && attributes || {}).reduce((a, [k, v]) => `${a} ${k}="${escapeAttribute(v)}"`, element)
+					Object.entries((typeof attributes === 'object' && attributes) || {}).reduce((a, [k, v]) => `${a} ${k}="${escapeAttribute(v)}"`, element)
 				}${
 					typeof value === 'string' ? `>${escapeValue(value)}</${element}` : '/'
 				}>`).reduce((a, c) => a + c, '')}</XRD>`;
@@ -67,11 +67,13 @@ export class WellKnownServerService {
 
 		fastify.get('/.well-known/host-meta', async (request, reply) => {
 			reply.header('Content-Type', xrd);
-			return XRD({ element: 'Link', attributes: {
-				rel: 'lrdd',
-				type: xrd,
-				template: `${this.config.url}${webFingerPath}?resource={uri}`,
-			} });
+			return XRD({
+				element: 'Link', attributes: {
+					rel: 'lrdd',
+					type: xrd,
+					template: `${this.config.url}${webFingerPath}?resource={uri}`,
+				},
+			});
 		});
 
 		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
@@ -98,7 +100,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 });
 */
 
-		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
+		fastify.get<{ Querystring: { resource: string; }; }>(webFingerPath, async (request, reply) => {
 			const fromId = (id: MiUser['id']): FindOptionsWhere<MiUser> => ({
 				id,
 				host: IsNull(),
