@@ -225,7 +225,7 @@ export class Game {
 	public get winner(): Color | null {
 		return this.isEnded ?
 			this.blackCount === this.whiteCount ? null :
-			this.opts.isLlotheo === this.blackCount > this.whiteCount ? WHITE : BLACK :
+			this.opts.isLlotheo === (this.blackCount > this.whiteCount) ? WHITE : BLACK :
 			undefined as never;
 	}
 }
