@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 		</button>
 	</div>
-	<!--<MisskeyLogo class="misskey"/>-->
+	<!--<img src="/client-assets/taiyme.svg" class="misskey"/>-->
 </div>
 </template>
 
@@ -61,7 +61,6 @@ import { openAccountMenu as openAccountMenu_, $i } from '@/account.js';
 import MkButton from '@/components/MkButton.vue';
 // import { StickySidebar } from '@/scripts/sticky-sidebar.js';
 // import { mainRouter } from '@/global/router/main.js';
-// import MisskeyLogo from '@assets/client/misskey.svg';
 import { defaultStore } from '@/store.js';
 import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
