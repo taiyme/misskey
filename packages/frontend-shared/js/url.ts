@@ -19,7 +19,7 @@ export function query(obj: Record<string, string | number | boolean>): string {
 }
 
 export function appendQuery(url: string, queryString: string): string {
-	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${queryString}`;
+	return `${url}${(/\?/).test(url) ? url.endsWith('?') ? '' : '&' : '?'}${queryString}`;
 }
 
 export function extractDomain(url: string) {
