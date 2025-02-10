@@ -35,8 +35,8 @@ type Log = {
 export class DropAndFusionGame extends EventEmitter<{
 	changeScore: (newScore: number) => void;
 	changeCombo: (newCombo: number) => void;
-	changeStock: (newStock: { id: string; mono: Mono }[]) => void;
-	changeHolding: (newHolding: { id: string; mono: Mono } | null) => void;
+	changeStock: (newStock: { id: string; mono: Mono; }[]) => void;
+	changeHolding: (newHolding: { id: string; mono: Mono; } | null) => void;
 	dropped: (x: number) => void;
 	fusioned: (x: number, y: number, nextMono: Mono | null, scoreDelta: number) => void;
 	collision: (energy: number, bodyA: Matter.Body, bodyB: Matter.Body) => void;
@@ -73,12 +73,12 @@ export class DropAndFusionGame extends EventEmitter<{
 	 * fusion予約アイテムのペア
 	 * TODO: これらのモノは光らせるなどの演出をすると視覚的に楽しそう
 	 */
-	private fusionReservedPairs: { bodyA: Matter.Body; bodyB: Matter.Body }[] = [];
+	private fusionReservedPairs: { bodyA: Matter.Body; bodyB: Matter.Body; }[] = [];
 
 	private latestDroppedAt = 0; // frame
 	private latestFusionedAt = 0; // frame
-	private stock: { id: string; mono: Mono }[] = [];
-	private holding: { id: string; mono: Mono } | null = null;
+	private stock: { id: string; mono: Mono; }[] = [];
+	private holding: { id: string; mono: Mono; } | null = null;
 
 	public get monoDefinitions() {
 		switch (this.gameMode) {
@@ -91,18 +91,22 @@ export class DropAndFusionGame extends EventEmitter<{
 	}
 
 	private _combo = 0;
+
 	private get combo() {
 		return this._combo;
 	}
+
 	private set combo(value: number) {
 		this._combo = value;
 		this.emit('changeCombo', value);
 	}
 
 	private _score = 0;
+
 	private get score() {
 		return this._score;
 	}
+
 	private set score(value: number) {
 		this._score = value;
 		this.emit('changeScore', value);
@@ -386,7 +390,7 @@ export class DropAndFusionGame extends EventEmitter<{
 
 		const inputX = Math.round(_x);
 		const x = Math.min(this.GAME_WIDTH - this.PLAYAREA_MARGIN - (head.mono.sizeX / 2), Math.max(this.PLAYAREA_MARGIN + (head.mono.sizeX / 2), inputX));
-		const body = this.createBody(head.mono, x, 50 + head.mono.sizeY / 2);
+		const body = this.createBody(head.mono, x, 50 + (head.mono.sizeY / 2));
 		this.logs.push({
 			frame: this.frame,
 			operation: 'drop',
