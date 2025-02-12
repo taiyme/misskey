@@ -43,12 +43,12 @@ jobs:
           submodules: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -75,7 +75,7 @@ jobs:
           pnpm run --filter misskey-js-type-generator generate
 
       - name: Upload generated_misskey_js
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: generated_misskey_js
           path: packages/misskey-js/generator/built/autogen
@@ -95,7 +95,7 @@ jobs:
           submodules: true
 
       - name: Upload actual_misskey_js
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: actual_misskey_js
           path: packages/misskey-js/src/autogen
@@ -138,7 +138,7 @@ jobs:
       - name: Comment on PR (update)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'true'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
@@ -156,7 +156,7 @@ jobs:
       - name: Comment on PR (delete)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'false'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@331f8f5b4215f0445d3c07b4967662a32a2d3e31 # v2.9.0
+        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
