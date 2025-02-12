@@ -62,7 +62,7 @@ jobs:
       new_version: ${{ steps.generate.outputs.new_version }}
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
           ref: ${{ github.sha }}
@@ -92,7 +92,7 @@ jobs:
       - parse-version
     steps:
       - name: Checkout ${{ github.sha }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
           ref: ${{ github.sha }}
@@ -116,7 +116,7 @@ jobs:
           sed -i "s|image: ${old_docker_image}|image: ${new_docker_image}|g" compose_example.yml
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.5.0
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: bump_version_files
           path: |
@@ -132,7 +132,7 @@ jobs:
       - bump-version-update
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@v1.11.1
+        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -147,7 +147,7 @@ jobs:
           echo "user-id=${user_id}" >> $GITHUB_OUTPUT
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -155,7 +155,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: bump_version_files
 
@@ -180,14 +180,14 @@ jobs:
       pr_number: ${{ steps.create-pr.outputs.pr_number }}
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@v1.11.1
+        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -216,14 +216,14 @@ jobs:
       - create-pr
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@v1.11.1
+        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.DEVELOP_BRANCH }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
@@ -246,14 +246,14 @@ jobs:
       - merge-pr
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@v1.11.1
+        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755 # v1.11.1
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
       - name: Checkout ${{ vars.RELEASE_BRANCH }}
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
