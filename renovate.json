@@ -1,6 +1,33 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"config:recommended"
+		"config:best-practices",
+		":approveMajorUpdates",
+		":assignAndReview(taiyme)",
+		":automergeDisabled",
+		":labels(renovate,dependencies)",
+		":prHourlyLimitNone",
+		":timezone(Asia/Tokyo)"
+	],
+	"enabledManagers": [
+		"github-actions"
+	],
+	"packageRules": [
+		{
+			"matchPackageNames": ["ubuntu", "node", "postgres", "redis"],
+			"enabled": false
+		},
+		{
+			"groupName": "ci dependencies (major)",
+			"groupSlug": "ci-deps-major",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["major"]
+		},
+		{
+			"groupName": "ci dependencies (non-major)",
+			"groupSlug": "ci-deps-non-major",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch"]
+		}
 	]
 }
