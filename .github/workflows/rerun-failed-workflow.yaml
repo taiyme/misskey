@@ -1,0 +1,48 @@
+name: Rerun failed workflow
+run-name: >-
+  ${{
+    (github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt <= 3)
+      && format('Rerun #{0}: {1}', github.event.workflow_run.run_attempt, github.event.workflow_run.name)
+      || format('Skipped: {0}', github.event.workflow_run.name)
+  }}
+
+on:
+  workflow_run:
+    types:
+      - completed
+    workflows:
+      - Test**
+
+permissions: {}
+
+jobs:
+  backoff:
+    name: Backoff
+    runs-on: ubuntu-22.04
+    if: github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.run_attempt <= 3
+    steps:
+      - name: Exponential backoff
+        run: |
+          ATTEMPT=${{ github.event.workflow_run.run_attempt }}
+          BASE_DELAY=60
+          BACKOFF_DELAY=$((BASE_DELAY * (2 ** (ATTEMPT - 1))))
+          sleep $BACKOFF_DELAY
+
+  rerun-workflow:
+    name: Rerun workflow
+    runs-on: ubuntu-22.04
+    needs:
+      - backoff
+    steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1.11.3
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - name: Rerun workflow
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh run rerun ${{ github.event.workflow_run.id }} --failed --repo ${{ github.repository }}
