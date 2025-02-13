@@ -9,12 +9,36 @@
 			"path": "./packages/backend",
 		},
 		{
+			"name": "frontend-shared",
+			"path": "./packages/frontend-shared",
+		},
+		{
 			"name": "frontend",
 			"path": "./packages/frontend",
 		},
 		{
 			"name": "frontend-embed",
 			"path": "./packages/frontend-embed",
+		},
+		{
+			"name": "sw",
+			"path": "./packages/sw",
+		},
+		{
+			"name": "misskey-js",
+			"path": "./packages/misskey-js",
+		},
+		{
+			"name": "misskey-js/generator",
+			"path": "./packages/misskey-js/generator",
+		},
+		{
+			"name": "misskey-reversi",
+			"path": "./packages/misskey-reversi",
+		},
+		{
+			"name": "misskey-bubble-game",
+			"path": "./packages/misskey-bubble-game",
 		},
   ],
   "settings": {
