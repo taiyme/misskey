@@ -27,21 +27,22 @@ const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../../built/meta.json
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
 
-const themeColor = chalk.hex('#86b300');
+const themeColor = chalk.hex('#336ecc');
 
 function greet() {
 	if (!envOption.quiet) {
-		//#region Misskey logo
+		//#region taiyme logo
 		const v = `v${meta.version}`;
-		console.log(themeColor('  _____ _         _           '));
-		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
-		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
-		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
+		console.log(themeColor('    _     _               '));
+		console.log(themeColor('  _| |,__|_|_ _ _____ ___ '));
+		console.log(themeColor(' |_  |__ | | | |     | | |'));
+		console.log(themeColor('   | | | | |_, | | | | __|'));
+		console.log(themeColor('   |_|__/|_|__/|_|_|_|___|'));
+		console.log(' '.repeat(30 - v.length) + chalk.gray(v));
 		//#endregion
 
 		console.log(' taiyme is an OSS forked from Misskey.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please donate to support development. https://www.patreon.com/taiy'));
+		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please donate to support development. https://u.taiy.me/donate'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
