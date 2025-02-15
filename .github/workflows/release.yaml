@@ -132,7 +132,7 @@ jobs:
       - bump-version-update
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1.11.3
+        uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -180,7 +180,7 @@ jobs:
       pr_number: ${{ steps.create-pr.outputs.pr_number }}
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1.11.3
+        uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -216,7 +216,7 @@ jobs:
       - create-pr
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1.11.3
+        uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
@@ -246,7 +246,7 @@ jobs:
       - merge-pr
     steps:
       - name: Create GitHub App Token
-        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 # v1.11.3
+        uses: actions/create-github-app-token@0d564482f06ca65fa9e77e2510873638c82206f2 # v1.11.5
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
