@@ -19,14 +19,13 @@ jobs:
     name: Pre checkout
     uses: ./.github/workflows/pre-checkout.yaml
 
-  files-changed:
-    name: Filter files
+  filter-lint-packages:
+    name: Filter Lint packages
     runs-on: ubuntu-22.04
     permissions:
-      pull-requests: write
+      pull-requests: read
     outputs:
-      lint-packages: ${{ steps.filter-lint-packages.outputs.changes }}
-      typecheck-packages: ${{ steps.filter-typecheck-packages.outputs.changes }}
+      packages: ${{ steps.filter.outputs.changes }}
     steps:
       - name: Checkout ${{ github.sha }}
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -35,8 +34,8 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 1
 
-      - name: Filter Lint packages
-        id: filter-lint-packages
+      - name: Filter (prepare)
+        id: prepare-filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           filters: |
@@ -45,31 +44,64 @@ jobs:
               - packages/shared/eslint.config.js
             misskey-reversi:
               - *__shared__
-              - packages/misskey-reversi/**
+              - packages/misskey-reversi/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/misskey-reversi/**/*.ts
             misskey-bubble-game:
               - *__shared__
-              - packages/misskey-bubble-game/**
+              - packages/misskey-bubble-game/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/misskey-bubble-game/**/*.ts
             misskey-js:
               - *__shared__
-              - packages/misskey-js/**
+              - packages/misskey-js/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/misskey-js/**/*.ts
             backend:
               - *__shared__
-              - packages/backend/**
+              - packages/backend/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/backend/**/*.ts
+              - packages/backend/scripts/*.{js,mjs}
+              - packages/backend/src/server/web/*.js
             sw:
               - *__shared__
-              - packages/sw/**
+              - packages/sw/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/sw/**/*.ts
             frontend-shared:
               - *__shared__
-              - packages/frontend-shared/**
+              - packages/frontend-shared/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/frontend-shared/**/*.{ts,tsx,vue}
             frontend:
               - *__shared__
-              - packages/frontend/**
+              - packages/frontend/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/frontend/**/*.{ts,tsx,vue}
             frontend-embed:
               - *__shared__
-              - packages/frontend-embed/**
+              - packages/frontend-embed/**/{package,tsconfig,tsconfig.eslint}.json
+              - packages/frontend-embed/**/*.{ts,tsx,vue}
 
-      - name: Filter Typecheck packages
-        id: filter-typecheck-packages
+      - name: Filter
+        id: filter
+        env:
+          prepare_changes: ${{ steps.prepare-filter.outputs.changes }}
+        run: |
+          filtered_changes="$(jq -c 'map(select((startswith("__") and endswith("__")) | not))' <<< "$prepare_changes")"
+          echo "changes=${filtered_changes:-'[]'}" >> $GITHUB_OUTPUT
+
+  filter-typecheck-packages:
+    name: Filter Typecheck packages
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: read
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Checkout ${{ github.sha }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Filter (prepare)
+        id: prepare-filter
         uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           filters: |
@@ -109,22 +141,30 @@ jobs:
             #   - *frontend-shared
             #   - packages/frontend-embed/**
 
+      - name: Filter
+        id: filter
+        env:
+          prepare_changes: ${{ steps.prepare-filter.outputs.changes }}
+        run: |
+          filtered_changes="$(jq -c 'map(select((startswith("__") and endswith("__")) | not))' <<< "$prepare_changes")"
+          echo "changes=${filtered_changes:-'[]'}" >> $GITHUB_OUTPUT
+
   lint:
     name: Lint
     runs-on: ubuntu-22.04
     needs:
       - pre-checkout
-      - files-changed
+      - filter-lint-packages
+    if: needs.filter-lint-packages.outputs.packages != '[]'
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJSON(needs.files-changed.outputs.lint-packages) }}
+        package: ${{ fromJSON(needs.filter-lint-packages.outputs.packages) }}
     env:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.package }}
     steps:
       - name: Checkout
-        if: matrix.package != '__shared__'
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
@@ -133,25 +173,21 @@ jobs:
           submodules: true
 
       - name: Setup pnpm
-        if: matrix.package != '__shared__'
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           run_install: false
 
       - name: Setup Node.js
-        if: matrix.package != '__shared__'
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version-file: .node-version
           cache: pnpm
 
       - name: Install dependencies
-        if: matrix.package != '__shared__'
         run: |
           pnpm i --frozen-lockfile
 
       - name: Restore eslint cache
-        if: matrix.package != '__shared__'
         uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ${{ env.eslint-cache-path }}
@@ -159,7 +195,6 @@ jobs:
           restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.package }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Run eslint
-        if: matrix.package != '__shared__'
         run: |
           pnpm --filter ${{ matrix.package }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
 
@@ -168,14 +203,14 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - pre-checkout
-      - files-changed
+      - filter-typecheck-packages
+    if: needs.filter-typecheck-packages.outputs.packages != '[]'
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJSON(needs.files-changed.outputs.typecheck-packages) }}
+        package: ${{ fromJSON(needs.filter-typecheck-packages.outputs.packages) }}
     steps:
       - name: Checkout
-        if: matrix.package != '__shared__'
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
@@ -184,29 +219,24 @@ jobs:
           submodules: true
 
       - name: Setup pnpm
-        if: matrix.package != '__shared__'
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
           run_install: false
 
       - name: Setup Node.js
-        if: matrix.package != '__shared__'
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version-file: .node-version
           cache: pnpm
 
       - name: Install dependencies
-        if: matrix.package != '__shared__'
         run: |
           pnpm i --frozen-lockfile
 
       - name: Build dependencies
-        if: matrix.package != '__shared__'
         run: |
           pnpm --filter '${{ matrix.package }}...' --filter '!${{ matrix.package }}' run build
 
       - name: Run typecheck
-        if: matrix.package != '__shared__'
         run: |
           pnpm --filter ${{ matrix.package }} run typecheck
