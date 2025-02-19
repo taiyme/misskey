@@ -19,7 +19,7 @@
 	],
 	"private": true,
 	"scripts": {
-		"build-pre": "node ./scripts/build-pre.js",
+		"build-pre": "node ./scripts/build-pre.mjs",
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
@@ -32,7 +32,7 @@
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
-		"dev": "node scripts/dev.mjs",
+		"dev": "node ./scripts/dev.mjs",
 		"lint": "pnpm -r lint",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
@@ -42,8 +42,8 @@
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
 		"test": "pnpm -r test",
 		"test-and-coverage": "pnpm -r test-and-coverage",
-		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js",
+		"clean": "node ./scripts/clean.mjs",
+		"clean-all": "node ./scripts/clean-all.mjs",
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
