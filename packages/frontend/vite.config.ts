@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { promises as fsp } from 'fs';
+import { promises as fsp } from 'node:fs';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';

@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { OpenAPIV3_1 } from 'openapi-types';
 import { toPascal } from 'ts-case-convert';
 import OpenAPIParser from '@readme/openapi-parser';
@@ -267,15 +267,15 @@ function toImportPath(fileName: string, fromPath = '/built/autogen', toPath = ''
 
 enum OperationsAliasType {
 	REQUEST = 'Request',
-	RESPONSE = 'Response'
+	RESPONSE = 'Response',
 }
 
 interface IOperationTypeAlias {
-	readonly type: OperationsAliasType
+	readonly type: OperationsAliasType;
 
-	generateName(): string
+	generateName(): string;
 
-	toLine(): string
+	toLine(): string;
 }
 
 class OperationTypeAlias implements IOperationTypeAlias {

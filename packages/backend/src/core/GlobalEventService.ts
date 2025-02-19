@@ -27,7 +27,7 @@ import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { Serialized } from '@/types.js';
 import type Emitter from 'strict-event-emitter-types';
-import type { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
 
 //#region Stream type-body definitions
 export interface BroadcastTypes {

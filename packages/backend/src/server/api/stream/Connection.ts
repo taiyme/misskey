@@ -17,7 +17,7 @@ import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type { ChannelsService } from './ChannelsService.js';
-import type { EventEmitter } from 'events';
+import type { EventEmitter } from 'node:events';
 import type Channel from './channel.js';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;
