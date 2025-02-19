@@ -42,6 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="dev" id="devTicker"><span style="animation: dev-ticker-blink 2s infinite;">DEV BUILD</span></div>
 
 <div v-if="$i && $i.isBot" id="botWarn"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts.loggedInAsBot }}</span></div>
+
+<div v-if="serverCustomCssPreviewing" id="customCssPreviewingTicker"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts._tms._customCss.serverCustomCssPreviewing }}</span></div>
+<div v-else-if="userCustomCssPreviewing" id="customCssPreviewingTicker"><span style="animation: dev-ticker-blink 2s infinite;">{{ i18n.ts._tms._customCss.userCustomCssPreviewing }}</span></div>
 </template>
 
 <script lang="ts" setup>
@@ -58,11 +61,15 @@ import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
 import { defaultStore } from '@/store.js';
 import { globalEvents } from '@/events.js';
+import { customCssPreviewData, customCssPreviewId } from '@/tms/custom-css.js';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
+
+const serverCustomCssPreviewing = customCssPreviewId?.startsWith('server.') && customCssPreviewData != null;
+const userCustomCssPreviewing = customCssPreviewId?.startsWith('user.') && customCssPreviewData != null;
 
 const notifications = ref<Misskey.entities.Notification[]>([]);
 
@@ -261,6 +268,19 @@ if ($i) {
 }
 
 #devTicker {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 2147483647;
+	color: #ff0;
+	background: rgba(0, 0, 0, 0.5);
+	padding: 4px 5px;
+	font-size: 14px;
+	pointer-events: none;
+	user-select: none;
+}
+
+#customCssPreviewingTicker {
 	position: fixed;
 	top: 0;
 	left: 0;

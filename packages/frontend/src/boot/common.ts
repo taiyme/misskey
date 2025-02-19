@@ -27,9 +27,12 @@ import { createMainRouter } from '@/router/definition.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
 import { preventLongPressContextMenu } from '@/scripts/tms/prevent-longpress-contextmenu.js';
+import { applyServerCustomCss, applyUserCustomCss, CUSTOM_CSS_PREVIEW_PARAM_KEY, previewServerCustomCss, previewUserCustomCss } from '@/tms/custom-css.js';
 
 export async function common(createVue: () => App<Element>) {
 	console.info(`taiyme v${version}`);
+
+	const params = new URLSearchParams(window.location.search);
 
 	if (_DEV_) {
 		console.warn('Development mode!!!');
@@ -63,6 +66,22 @@ export async function common(createVue: () => App<Element>) {
 			*/
 		}, { passive: true });
 	}
+
+	const availableCustomCss = ['true', 'yes', 'on', 't', '1'].includes(params.get('customcss')?.toLowerCase() ?? 'true');
+
+	//#region カスタムCSS
+	if (availableCustomCss) {
+		const previewId = params.get(CUSTOM_CSS_PREVIEW_PARAM_KEY);
+		if (previewId?.startsWith('server.')) {
+			previewServerCustomCss(previewId);
+		} else if (previewId?.startsWith('user.')) {
+			previewUserCustomCss(previewId);
+		} else {
+			applyServerCustomCss(instance.taiymeServerCustomCss ?? '');
+			applyUserCustomCss(miLocalStorage.getItem('customCss') ?? '');
+		}
+	}
+	//#endregion
 
 	let isClientUpdated = false;
 
@@ -140,8 +159,13 @@ export async function common(createVue: () => App<Element>) {
 		miLocalStorage.setItem('v', instance.version);
 	});
 
+	if (availableCustomCss) {
+		fetchInstanceMetaPromise.then(({ taiymeServerCustomCss: newServerCustomCss }) => {
+			applyServerCustomCss(newServerCustomCss ?? '');
+		});
+	}
+
 	//#region loginId
-	const params = new URLSearchParams(location.search);
 	const loginId = params.get('loginId');
 
 	if (loginId) {

@@ -6,7 +6,7 @@
 import { AsyncComponentLoader, defineAsyncComponent } from 'vue';
 import type { IRouter, RouteDef } from '@/nirax.js';
 import { Router } from '@/nirax.js';
-import { $i, iAmModerator } from '@/account.js';
+import { $i, iAmAdmin, iAmModerator } from '@/account.js';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
 
@@ -164,10 +164,6 @@ const routes: RouteDef[] = [{
 		path: '/migration',
 		name: 'migration',
 		component: page(() => import('@/pages/settings/migration.vue')),
-	}, {
-		path: '/custom-css',
-		name: 'general',
-		component: page(() => import('@/pages/settings/custom-css.vue')),
 	}, {
 		path: '/accounts',
 		name: 'profile',
@@ -585,6 +581,14 @@ const routes: RouteDef[] = [{
 	component: page(() => import('@/pages/tms/features.vue')),
 	loginRequired: true,
 }, {
+	path: '/tms/user-custom-css',
+	component: page(() => import('@/pages/tms/user-custom-css.vue')),
+	loginRequired: true,
+}, {
+	path: '/tms/server-custom-css',
+	component: iAmAdmin ? page(() => import('@/pages/tms/server-custom-css.vue')) : page(() => import('@/pages/not-found.vue')),
+	loginRequired: true,
+}, {
 	path: '/tms/settings',
 	redirect: '/tms/features',
 	loginRequired: true,
@@ -595,6 +599,10 @@ const routes: RouteDef[] = [{
 }, {
 	path: '/settings/taiyme-services',
 	redirect: '/tms/features',
+	loginRequired: true,
+}, {
+	path: '/settings/custom-css',
+	redirect: '/tms/user-custom-css',
 	loginRequired: true,
 }, {
 	name: 'index',

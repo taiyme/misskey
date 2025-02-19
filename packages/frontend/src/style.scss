@@ -12,6 +12,9 @@
 
 	--MI-margin: var(--MI-marginFull);
 
+	--TMS_THEME-fgOnAccent: #fff;
+	--TMS_THEME-accent: #336ecc;
+
 	--TMS-hsl-base-h: 1;
 	--TMS-hsl-base-s: 1;
 	--TMS-hsl-base-l: 1;
@@ -385,6 +388,18 @@ rt {
 	padding: 2px 3px;
 	color: var(--MI_THEME-warn);
 	border: solid 1px var(--MI_THEME-warn);
+	border-radius: 4px;
+	vertical-align: top;
+	display: inline-block;
+	line-height: 1;
+}
+
+._taiymeOnly {
+	margin-left: 0.7em;
+	font-size: 65%;
+	padding: 3px 4px;
+	color: var(--TMS_THEME-fgOnAccent);
+	background-color: var(--TMS_THEME-accent);
 	border-radius: 4px;
 	vertical-align: top;
 	display: inline-block;

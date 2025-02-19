@@ -409,6 +409,12 @@ export class MiMeta {
 	})
 	public defaultDarkTheme: string | null;
 
+	@Column('varchar', {
+		length: 8192,
+		nullable: true,
+	})
+	public taiymeServerCustomCss: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})

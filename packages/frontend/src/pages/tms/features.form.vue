@@ -72,14 +72,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</div>
 	</MkFolder>
+	<FormLink to="/tms/user-custom-css">
+		<template #icon><i class="ti ti-code"></i></template>
+		<template #default>{{ i18n.ts._tms._customCss.userCustomCss }}</template>
+	</FormLink>
+	<FormLink v-if="iAmAdmin" to="/tms/server-custom-css">
+		<template #icon><i class="ti ti-code"></i></template>
+		<template #default>{{ i18n.ts._tms._customCss.serverCustomCss }}</template>
+	</FormLink>
 </div>
 </template>
 
 <script lang="ts" setup>
+import { iAmAdmin } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { useForm } from '@/scripts/use-form.js';
 import { tmsFlaskStore } from '@/tms/flask-store.js';
 import { tmsStore } from '@/tms/store.js';
+import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkInfo from '@/components/MkInfo.vue';
