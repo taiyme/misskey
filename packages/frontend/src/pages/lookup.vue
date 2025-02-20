@@ -90,8 +90,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata({
+definePageMetadata(() => ({
 	title: i18n.ts.lookup,
 	icon: 'ti ti-world-search',
-});
+}));
 </script>

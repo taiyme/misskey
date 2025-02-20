@@ -193,7 +193,7 @@ async function onQueryRolesEditClicked() {
 }
 </script>
 
-<style module>
+<style lang="scss" module>
 .root {
 	position: relative;
 }
