@@ -22,8 +22,8 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.preview,
 	icon: 'ti ti-eye',
-})));
+}));
 </script>

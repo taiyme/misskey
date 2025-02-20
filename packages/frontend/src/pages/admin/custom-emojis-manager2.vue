@@ -36,14 +36,14 @@ const headerTabs = computed(() => [{
 	title: i18n.ts.remote,
 }]);
 
-definePageMetadata(computed(() => ({
+definePageMetadata(() => ({
 	title: i18n.ts.customEmojis,
 	icon: 'ti ti-icons',
 	needWideArea: true,
-})));
+}));
 </script>
 
-<style lang="css" module>
+<style lang="scss" module>
 .local {
 	height: calc(100dvh - var(--MI-stickyTop) - var(--MI-stickyBottom));
 	overflow: clip;
