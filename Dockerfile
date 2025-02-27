@@ -15,6 +15,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
 	apt-get update && apt-get install -yqq --no-install-recommends \
 	build-essential \
+	ca-certificates \
 	git
 
 RUN npm install -g pnpm@9.6.0
@@ -40,6 +41,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache && \
 	apt-get update && apt-get install -yqq --no-install-recommends \
 	build-essential \
+	ca-certificates \
 	git
 
 RUN npm install -g pnpm@9.6.0
@@ -150,21 +152,21 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
 
 RUN npm install -g pnpm@9.6.0
 
-COPY --chown=misskey:misskey --link ./packages/sw/package.json ./packages/sw/
-COPY --chown=misskey:misskey --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
-COPY --chown=misskey:misskey --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
-COPY --chown=misskey:misskey --link ./packages/misskey-js/package.json ./packages/misskey-js/
-COPY --chown=misskey:misskey --link ./packages/backend/package.json ./packages/backend/ormconfig.js ./packages/backend/
-COPY --chown=misskey:misskey --link ./packages/backend/assets/ ./packages/backend/assets/
-COPY --chown=misskey:misskey --link ./packages/backend/scripts/ ./packages/backend/scripts/
-COPY --chown=misskey:misskey --link ./packages/backend/nsfw-model/ ./packages/backend/nsfw-model/
-COPY --chown=misskey:misskey --link ./packages/backend/migration/ ./packages/backend/migration/
-COPY --chown=misskey:misskey --link ./packages/frontend/assets/ ./packages/frontend/assets/
-COPY --chown=misskey:misskey --link ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
-COPY --chown=misskey:misskey --link ./.npmrc ./.node-version ./
-COPY --chown=misskey:misskey --link ./pnpm-workspace.yaml ./package.json ./
-COPY --chown=misskey:misskey --link ./healthcheck.sh ./
-COPY --chown=misskey:misskey --link --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
+COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
+COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
+COPY --chown=misskey:misskey ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
+COPY --chown=misskey:misskey ./packages/misskey-js/package.json ./packages/misskey-js/
+COPY --chown=misskey:misskey ./packages/backend/package.json ./packages/backend/ormconfig.js ./packages/backend/
+COPY --chown=misskey:misskey ./packages/backend/assets/ ./packages/backend/assets/
+COPY --chown=misskey:misskey ./packages/backend/scripts/ ./packages/backend/scripts/
+COPY --chown=misskey:misskey ./packages/backend/nsfw-model/ ./packages/backend/nsfw-model/
+COPY --chown=misskey:misskey ./packages/backend/migration/ ./packages/backend/migration/
+COPY --chown=misskey:misskey ./packages/frontend/assets/ ./packages/frontend/assets/
+COPY --chown=misskey:misskey ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
+COPY --chown=misskey:misskey ./.npmrc ./.node-version ./
+COPY --chown=misskey:misskey ./pnpm-workspace.yaml ./package.json ./
+COPY --chown=misskey:misskey ./healthcheck.sh ./
+COPY --chown=misskey:misskey --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ ./packages/misskey-bubble-game/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built/ ./packages/misskey-reversi/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built/ ./packages/misskey-js/built/
