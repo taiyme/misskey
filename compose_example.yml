@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    image: ghcr.io/taiyme/misskey:2024.10.1-taiyme.3
+    image: ghcr.io/taiyme/misskey:2025.2.0-taiyme.0
     restart: always
     links:
       - db
