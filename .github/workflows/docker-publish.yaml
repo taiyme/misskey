@@ -1,13 +1,12 @@
 name: Publish Docker image
+run-name: Publish Docker image (${{ github.ref_type == 'tag' && github.ref_name || 'nightly' }})
 
 on:
-  release:
-    types:
-      - published
-
-concurrency:
-  group: publish-docker-image
-  cancel-in-progress: false
+  push:
+    branches:
+      - taiyme
+    tags:
+      - '*-taiyme.*'
 
 permissions:
   contents: read
@@ -15,9 +14,8 @@ permissions:
   id-token: write
 
 jobs:
-  # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
-  build:
-    name: Build
+  build-and-push:
+    name: Build and Push
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -27,37 +25,39 @@ jobs:
           - linux/arm64
     steps:
       - name: Prepare
+        env:
+          matrix_platform: ${{ matrix.platform }}
         run: |
-          platform=${{ matrix.platform }}
-          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+          echo "PLATFORM_PAIR=${matrix_platform//\//-}" >> $GITHUB_ENV
 
-      - name: Checkout
+      - name: Checkout ${{ github.sha }}
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
-        with:
-          images: ${{ vars.DOCKER_IMAGE_NAME }}
-          tags: |
-            ${{ github.event.release.tag_name }}
-            latest
-
-      - name: Login to Github Container Registry
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push to Registry
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
+        with:
+          images: ${{ vars.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.ref_name }},enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=nightly,enable=${{ github.ref_type != 'tag' }}
+
+      - name: Build and Push by digest
         id: build
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
@@ -65,60 +65,62 @@ jobs:
           push: true
           platforms: ${{ matrix.platform }}
           provenance: false
+          annotations: ${{ steps.meta.outputs.annotations }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=platform-${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=platform-${{ env.PLATFORM_PAIR }}
           outputs: type=image,name=${{ vars.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         env:
           digest: ${{ steps.build.outputs.digest }}
         run: |
-          mkdir -p /tmp/digests
-          touch "/tmp/digests/${digest#sha256:}"
+          mkdir -p ${{ runner.temp }}/digests
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: digests-${{ env.PLATFORM_PAIR }}
-          path: /tmp/digests/*
+          path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
 
-  merge:
-    name: Merge
+  merge-images:
+    name: Merge images
     runs-on: ubuntu-22.04
     needs:
-      - build
+      - build-and-push
     steps:
       - name: Download digests
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
-          path: /tmp/digests
           pattern: digests-*
+          path: ${{ runner.temp }}/digests
           merge-multiple: true
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
-        with:
-          images: ${{ vars.DOCKER_IMAGE_NAME }}
-          tags: |
-            ${{ github.event.release.tag_name }}
-            latest
-
-      - name: Login to Github Container Registry
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create manifest list and push
-        working-directory: /tmp/digests
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
+        with:
+          images: ${{ vars.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ github.ref_name }},enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            type=raw,value=nightly,enable=${{ github.ref_type != 'tag' }}
+
+      - name: Create and Push manifest list
+        working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ vars.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
