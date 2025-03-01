@@ -31,7 +31,7 @@ RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
 
 # [target-base]: setup pnpm, fetch dependencies
 
-FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS target-base
+FROM node:${NODE_VERSION}-slim AS target-base
 
 WORKDIR /misskey
 
@@ -133,7 +133,7 @@ RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
 
 # [runner]: build final image
 
-FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
+FROM node:${NODE_VERSION}-slim AS runner
 
 WORKDIR /misskey
 
