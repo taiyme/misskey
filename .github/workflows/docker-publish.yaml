@@ -48,6 +48,7 @@ jobs:
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         env:
           DOCKER_METADATA_SHORT_SHA_LENGTH: 9
+          DOCKER_METADATA_SET_OUTPUT_ENV: false
         with:
           images: ${{ vars.DOCKER_IMAGE_NAME }}
           tags: |
@@ -64,8 +65,8 @@ jobs:
           push: true
           platforms: ${{ matrix.value.platform }}
           provenance: false
-          annotations: ${{ steps.meta.outputs.annotations }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=gha,scope=platform-${{ runner.os }}-${{ runner.arch }}
           cache-to: type=gha,mode=max,scope=platform-${{ runner.os }}-${{ runner.arch }}
           outputs: type=image,name=${{ vars.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
@@ -113,6 +114,7 @@ jobs:
         uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
         env:
           DOCKER_METADATA_SHORT_SHA_LENGTH: 9
+          DOCKER_METADATA_SET_OUTPUT_ENV: false
         with:
           images: ${{ vars.DOCKER_IMAGE_NAME }}
           tags: |
@@ -123,10 +125,16 @@ jobs:
 
       - name: Create and Push manifest list
         working-directory: ${{ runner.temp }}/digests
+        env:
+          meta_tags_list: ${{ steps.meta.outputs.tags }}
+          meta_annotations_list: ${{ steps.meta.outputs.annotations }}
         run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create \
+            $((jq -R . | jq -scr 'map("\"" + . + "\"") | map("--annotation " + .) | join(" ")') <<< "$meta_annotations_list") \
+            $((jq -R . | jq -scr 'map("--tag " + .) | join(" ")') <<< "$meta_tags_list") \
             $(printf '${{ vars.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ vars.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect \
+            ${{ vars.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
