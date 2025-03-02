@@ -129,9 +129,11 @@ jobs:
           meta_tags_list: ${{ steps.meta.outputs.tags }}
           meta_annotations_list: ${{ steps.meta.outputs.annotations }}
         run: |
+          annotations="$((jq -R . | jq -scr 'map(select(startswith("manifest:")) | sub("manifest:"; ""))') <<< "$meta_annotations_list")"
+          tags="$((jq -R . | jq -scr) <<< "$meta_tags_list")"
           docker buildx imagetools create \
-            $((jq -R . | jq -scr 'map("\"" + . + "\"") | map("--annotation " + .) | join(" ")') <<< "$meta_annotations_list") \
-            $((jq -R . | jq -scr 'map("--tag " + .) | join(" ")') <<< "$meta_tags_list") \
+            $(jq -r 'map("--annotation \"" + . + "\"") | join(" ")' <<< $annotations) \
+            $(jq -r 'map("--tag " + .) | join(" ")' <<< $tags) \
             $(printf '${{ vars.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
 
       - name: Inspect image
