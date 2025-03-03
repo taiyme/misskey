@@ -14,9 +14,41 @@ permissions:
   id-token: write
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-22.04
+    outputs:
+      meta_version: ${{ steps.meta.outputs.version }}
+      meta_tags: ${{ steps.meta.outputs.tags }}
+      meta_labels: ${{ steps.meta.outputs.labels }}
+      meta_annotations: ${{ steps.meta.outputs.annotations }}
+    steps:
+      - name: Checkout ${{ github.sha }}
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
+        env:
+          DOCKER_METADATA_SHORT_SHA_LENGTH: 9
+          DOCKER_METADATA_SET_OUTPUT_ENV: false
+        with:
+          images: ${{ vars.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=raw,priority=1300,value=${{ github.ref_name }},prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
+            type=raw,priority=1200,value=latest,prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
+            type=raw,priority=1200,value=nightly,prefix=,suffix=,enable=${{ github.ref_type != 'tag' }}
+            type=sha,priority=1100,format=short,prefix=,suffix=,enable=true
+
   build-and-push:
     name: Build and Push
     runs-on: ${{ matrix.value.os }}
+    needs:
+      - prepare
     strategy:
       fail-fast: false
       matrix:
@@ -43,20 +75,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        env:
-          DOCKER_METADATA_SHORT_SHA_LENGTH: 9
-          DOCKER_METADATA_SET_OUTPUT_ENV: false
-        with:
-          images: ${{ vars.DOCKER_IMAGE_NAME }}
-          tags: |
-            type=raw,priority=1300,value=${{ github.ref_name }},prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
-            type=raw,priority=1200,value=latest,prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
-            type=raw,priority=1200,value=nightly,prefix=,suffix=,enable=${{ github.ref_type != 'tag' }}
-            type=sha,priority=1100,format=short,prefix=,suffix=,enable=true
-
       - name: Build and Push by digest
         id: build
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
@@ -65,8 +83,8 @@ jobs:
           push: true
           platforms: ${{ matrix.value.platform }}
           provenance: false
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
+          labels: ${{ needs.prepare.outputs.meta_labels }}
+          annotations: ${{ needs.prepare.outputs.meta_annotations }}
           cache-from: type=gha,scope=platform-${{ runner.os }}-${{ runner.arch }}
           cache-to: type=gha,mode=max,scope=platform-${{ runner.os }}-${{ runner.arch }}
           outputs: type=image,name=${{ vars.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
@@ -90,6 +108,7 @@ jobs:
     name: Merge images
     runs-on: ubuntu-22.04
     needs:
+      - prepare
       - build-and-push
     steps:
       - name: Download digests
@@ -109,34 +128,16 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        env:
-          DOCKER_METADATA_SHORT_SHA_LENGTH: 9
-          DOCKER_METADATA_SET_OUTPUT_ENV: false
-        with:
-          images: ${{ vars.DOCKER_IMAGE_NAME }}
-          tags: |
-            type=raw,priority=1300,value=${{ github.ref_name }},prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
-            type=raw,priority=1200,value=latest,prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
-            type=raw,priority=1200,value=nightly,prefix=,suffix=,enable=${{ github.ref_type != 'tag' }}
-            type=sha,priority=1100,format=short,prefix=,suffix=,enable=true
-
       - name: Create and Push manifest list
         working-directory: ${{ runner.temp }}/digests
         env:
-          meta_tags_list: ${{ steps.meta.outputs.tags }}
-          meta_annotations_list: ${{ steps.meta.outputs.annotations }}
+          meta_tags_list: ${{ needs.prepare.outputs.meta_tags }}
         run: |
-          annotations="$((jq -R . | jq -scr 'map(select(startswith("manifest:")) | sub("manifest:"; ""))') <<< "$meta_annotations_list")"
-          tags="$((jq -R . | jq -scr) <<< "$meta_tags_list")"
           docker buildx imagetools create \
-            $(jq -r 'map("--annotation \"" + . + "\"") | join(" ")' <<< $annotations) \
-            $(jq -r 'map("--tag " + .) | join(" ")' <<< $tags) \
+            $((jq -R . | jq -scr 'map("--tag " + .) | join(" ")') <<< "$meta_tags_list") \
             $(printf '${{ vars.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
           docker buildx imagetools inspect \
-            ${{ vars.DOCKER_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+            ${{ vars.DOCKER_IMAGE_NAME }}:${{ needs.prepare.outputs.meta_version }}
