@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Copy config
         run: |
@@ -67,16 +67,18 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       - name: Generate API JSON
         run: |
-          pnpm --filter backend generate-api-json
+          pnpm --filter=backend \
+            run generate-api-json
 
       - name: Build misskey-js
         run: |
           cp packages/backend/built/api.json packages/misskey-js/generator/api.json
-          pnpm run --filter misskey-js-type-generator generate
+          pnpm --filter=misskey-js-type-generator \
+            run generate
 
       - name: Upload generated_misskey_js
         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
@@ -137,7 +139,8 @@ jobs:
           fi
 
       - name: Print full diff
-        run: cat ./misskey-js.diff
+        run: |
+          cat ./misskey-js.diff
 
       - name: Comment on PR (update)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'true'
@@ -168,4 +171,5 @@ jobs:
 
       - name: Make failure if changes are detected
         if: steps.check-changes.outputs.changes == 'true'
-        run: exit 1
+        run: |
+          exit 1

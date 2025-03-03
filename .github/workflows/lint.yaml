@@ -185,7 +185,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Restore eslint cache
         uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
@@ -196,7 +196,11 @@ jobs:
 
       - name: Run eslint
         run: |
-          pnpm --filter ${{ matrix.package }} run eslint --cache --cache-location ${{ env.eslint-cache-path }} --cache-strategy content
+          pnpm --filter='${{ matrix.package }}' \
+            run eslint \
+            --cache \
+            --cache-location='${{ env.eslint-cache-path }}' \
+            --cache-strategy=content
 
   typecheck:
     name: Typecheck
@@ -231,12 +235,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Build dependencies
         run: |
-          pnpm --filter '${{ matrix.package }}...' --filter '!${{ matrix.package }}' run build
+          pnpm --filter='${{ matrix.package }}...' --filter='!${{ matrix.package }}' \
+            run build
 
       - name: Run typecheck
         run: |
-          pnpm --filter ${{ matrix.package }} run typecheck
+          pnpm --filter='${{ matrix.package }}' \
+            run typecheck

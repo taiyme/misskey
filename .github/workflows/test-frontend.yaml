@@ -69,7 +69,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Copy config
         run: |
@@ -77,11 +77,12 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       - name: Test
         run: |
-          pnpm --filter frontend test
+          pnpm --filter=frontend \
+            run test
 
       # TODO: カバレッジレポートはまた今度
 
@@ -140,7 +141,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Copy config
         run: |
@@ -148,7 +149,7 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
       - name: ALSA Env
@@ -166,7 +167,7 @@ jobs:
         timeout-minutes: 15
         with:
           install: false
-          start: pnpm start:test
+          start: pnpm run start:test
           wait-on: 'http://localhost:61812'
           headed: true
           browser: ${{ matrix.browser }}

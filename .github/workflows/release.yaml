@@ -24,11 +24,13 @@ jobs:
     steps:
       - name: Check actor
         if: github.actor != github.repository_owner
-        run: exit 1
+        run: |
+          exit 1
 
       - name: Check branch
         if: github.ref_name != vars.DEVELOP_BRANCH
-        run: exit 1
+        run: |
+          exit 1
 
       - name: Check base version
         env:

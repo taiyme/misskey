@@ -62,11 +62,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       - name: Setup
         working-directory: packages/backend/test-federation

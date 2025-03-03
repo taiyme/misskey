@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Check Verify
         working-directory: locales
@@ -89,7 +89,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Generate locale type
         run: |
@@ -134,4 +134,5 @@ jobs:
 
       - name: Make failure if changes are detected
         if: steps.check-changes.outputs.changes == 'true'
-        run: exit 1
+        run: |
+          exit 1

@@ -78,7 +78,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Copy config
         run: |
@@ -86,11 +86,12 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       - name: Test
         run: |
-          pnpm --filter backend test
+          pnpm --filter=backend \
+            run test
 
       # TODO: カバレッジレポートはまた今度
 
@@ -140,7 +141,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm i --frozen-lockfile
+          pnpm install --frozen-lockfile
 
       - name: Copy config
         run: |
@@ -148,10 +149,11 @@ jobs:
 
       - name: Build
         run: |
-          pnpm build
+          pnpm run build
 
       - name: Test
         run: |
-          pnpm --filter backend test:e2e
+          pnpm --filter=backend \
+            run test:e2e
 
       # TODO: カバレッジレポートはまた今度
