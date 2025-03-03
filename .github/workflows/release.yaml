@@ -1,11 +1,12 @@
 name: Release
+run-name: ${{ inputs.base_version && format('Release (based on {0})', inputs.base_version) || 'Release' }}
 
 on:
   workflow_dispatch:
     inputs:
       base_version:
         type: string
-        description: Enter base version. (e.g. 2024.8.0)
+        description: Enter base version. (e.g. 2025.2.0)
         required: true
         default: ""
 
