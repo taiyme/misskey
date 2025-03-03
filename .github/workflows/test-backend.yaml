@@ -20,6 +20,10 @@ on:
       - packages/backend/**/*
       - packages/misskey-js/**/*
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 

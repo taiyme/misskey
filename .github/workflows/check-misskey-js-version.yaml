@@ -18,6 +18,10 @@ on:
       - packages/misskey-js/package.json
       - package.json
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
