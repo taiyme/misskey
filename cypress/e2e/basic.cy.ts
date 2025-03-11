@@ -14,12 +14,12 @@ describe('Before setup instance', () => {
 		cy.wait(1000);
 	});
 
-  it('successfully loads', () => {
-    cy.visitHome();
-  });
+	it('successfully loads', () => {
+		cy.visitHome();
+	});
 
 	it('setup instance', () => {
-    cy.visitHome();
+		cy.visitHome();
 
 		cy.intercept('POST', '/api/admin/accounts/create').as('signup');
 
@@ -31,7 +31,7 @@ describe('Before setup instance', () => {
 		// なぜか動かない
 		//cy.wait('@signup').should('have.property', 'response.statusCode');
 		cy.wait('@signup');
-  });
+	});
 });
 
 describe('After setup instance', () => {
@@ -48,9 +48,9 @@ describe('After setup instance', () => {
 		cy.wait(1000);
 	});
 
-  it('successfully loads', () => {
-    cy.visitHome();
-  });
+	it('successfully loads', () => {
+		cy.visitHome();
+	});
 
 	it('signup', () => {
 		cy.visitHome();
@@ -74,9 +74,9 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup-submit]').click();
 
 		cy.wait('@signup');
-  });
+	});
 
-  it('signup with duplicated username', () => {
+	it('signup with duplicated username', () => {
 		cy.registerUser('alice', 'alice1234');
 
 		cy.visitHome();
@@ -93,7 +93,7 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup-password] input').type('alice1234');
 		cy.get('[data-cy-signup-password-retype] input').type('alice1234');
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
-  });
+	});
 });
 
 describe('After user signup', () => {
@@ -113,9 +113,9 @@ describe('After user signup', () => {
 		cy.wait(1000);
 	});
 
-  it('successfully loads', () => {
-    cy.visitHome();
-  });
+	it('successfully loads', () => {
+		cy.visitHome();
+	});
 
 	it('signin', () => {
 		cy.visitHome();
@@ -133,7 +133,7 @@ describe('After user signup', () => {
 		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		cy.wait('@signin');
-  });
+	});
 
 	it('suspend', function() {
 		cy.request('POST', '/api/admin/suspend-user', {
@@ -172,10 +172,10 @@ describe('After user signed in', () => {
 		cy.wait(1000);
 	});
 
-  it('successfully loads', () => {
+	it('successfully loads', () => {
 		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
 		cy.get('[data-cy-user-setup-continue]', { timeout: 30000 }).should('be.visible');
-  });
+	});
 
 	it('account setup wizard', () => {
 		// 表示に時間がかかるのでデフォルト秒数だとタイムアウトする
@@ -200,7 +200,7 @@ describe('After user signed in', () => {
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		cy.get('[data-cy-user-setup-continue]').click();
-  });
+	});
 });
 
 describe('After user setup', () => {
@@ -234,7 +234,7 @@ describe('After user setup', () => {
 		cy.get('[data-cy-open-post-form-submit]').click();
 
 		cy.contains('Hello, Misskey!');
-  });
+	});
 
 	it('open note form with hotkey', () => {
 		// Wait until the page loads
@@ -247,7 +247,7 @@ describe('After user setup', () => {
 		cy.focused().trigger("keydown", { eventConstructor: 'KeyboardEvent', key: "Escape", code: "Escape" });
 		// See if the form is closed
 		cy.get('[data-cy-post-form-text]').should('not.be.visible');
-  });
+	});
 });
 
 // TODO: 投稿フォームの公開範囲指定のテスト

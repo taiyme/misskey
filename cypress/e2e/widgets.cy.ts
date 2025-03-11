@@ -28,14 +28,14 @@ describe('After user signed in', () => {
 		cy.wait(1000);
 	});
 
-  it('widget edit toggle is visible', () => {
+	it('widget edit toggle is visible', () => {
 		cy.get('[data-cy-widget-edit]').should('be.visible');
-  });
+	});
 
 	it('widget select should be visible in edit mode', () => {
 		cy.get('[data-cy-widget-edit]').click();
 		cy.get('[data-cy-widget-select]').should('be.visible');
-  });
+	});
 
 	it('first widget should be removed', () => {
 		cy.get('[data-cy-widget-edit]').click();

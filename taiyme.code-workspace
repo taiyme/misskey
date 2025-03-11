@@ -40,8 +40,8 @@
 			"name": "misskey-bubble-game",
 			"path": "./packages/misskey-bubble-game",
 		},
-  ],
-  "settings": {
+	],
+	"settings": {
 		"search.exclude": {
 			"**/node_modules": true,
 		},
