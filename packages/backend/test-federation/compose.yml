@@ -9,7 +9,7 @@ services:
       service: misskey
     command: >
       bash -c "
-        npm install -g pnpm@9.6.0
+        npm install -g pnpm@10.6.2
         pnpm -F backend i
         pnpm -F misskey-js i
         pnpm -F misskey-reversi i
@@ -77,7 +77,7 @@ services:
     working_dir: /misskey
     entrypoint: >
       bash -c '
-        npm install -g pnpm@9.6.0
+        npm install -g pnpm@10.6.2
         pnpm -F misskey-js i --frozen-lockfile
         pnpm -F backend i --frozen-lockfile
         exec "$0" "$@"
@@ -121,7 +121,7 @@ services:
     working_dir: /misskey
     command: >
       bash -c "
-        npm install -g pnpm@9.6.0
+        npm install -g pnpm@10.6.2
         pnpm -F backend i --frozen-lockfile
         pnpm exec tsc -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js

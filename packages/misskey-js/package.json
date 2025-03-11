@@ -1,11 +1,15 @@
 {
-	"type": "module",
 	"name": "misskey-js",
 	"version": "2024.10.1-taiyme.3",
+	"private": true,
 	"description": "Misskey SDK for JavaScript",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/taiyme/misskey.git",
+		"directory": "packages/misskey-js"
+	},
 	"license": "MIT",
-	"main": "./built/index.js",
-	"types": "./built/index.d.ts",
+	"type": "module",
 	"exports": {
 		".": {
 			"import": "./built/index.js",
@@ -16,6 +20,11 @@
 			"types": "./built/*"
 		}
 	},
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"files": [
+		"built"
+	],
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
@@ -30,10 +39,10 @@
 		"test": "pnpm jest && pnpm tsd",
 		"update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/taiyme/misskey.git",
-		"directory": "packages/misskey-js"
+	"dependencies": {
+		"@simplewebauthn/types": "11.0.0",
+		"eventemitter3": "5.0.1",
+		"reconnecting-websocket": "4.4.0"
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.47.11",
@@ -42,24 +51,16 @@
 		"@types/node": "22.9.0",
 		"@typescript-eslint/eslint-plugin": "7.17.0",
 		"@typescript-eslint/parser": "7.17.0",
+		"esbuild": "0.24.0",
+		"execa": "8.0.1",
+		"glob": "11.0.0",
 		"jest": "29.7.0",
 		"jest-fetch-mock": "3.0.3",
 		"jest-websocket-mock": "2.5.0",
 		"mock-socket": "9.3.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.7",
-		"execa": "8.0.1",
 		"tsd": "0.31.2",
-		"typescript": "5.6.3",
-		"esbuild": "0.24.0",
-		"glob": "11.0.0"
-	},
-	"files": [
-		"built"
-	],
-	"dependencies": {
-		"@simplewebauthn/types": "11.0.0",
-		"eventemitter3": "5.0.1",
-		"reconnecting-websocket": "4.4.0"
+		"typescript": "5.6.3"
 	}
 }

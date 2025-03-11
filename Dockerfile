@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	ca-certificates \
 	git
 
-RUN npm install -g pnpm@9.6.0
+RUN npm install -g pnpm@10.6.2
 
 COPY --link ./patches/ ./patches/
 COPY --link ./.npmrc ./.node-version ./
@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	ca-certificates \
 	git
 
-RUN npm install -g pnpm@9.6.0
+RUN npm install -g pnpm@10.6.2
 
 COPY --link ./patches/ ./patches/
 COPY --link ./.npmrc ./.node-version ./
@@ -150,7 +150,7 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists
 
-RUN npm install -g pnpm@9.6.0
+RUN npm install -g pnpm@10.6.2
 
 COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
 COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/

@@ -1,6 +1,7 @@
 {
 	"name": "sw",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
@@ -20,6 +21,5 @@
 		"eslint-plugin-import": "2.30.0",
 		"nodemon": "3.1.7",
 		"typescript": "5.6.3"
-	},
-	"type": "module"
+	}
 }

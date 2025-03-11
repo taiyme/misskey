@@ -2,22 +2,11 @@
 	"name": "misskey",
 	"version": "2024.10.1-taiyme.3",
 	"codename": "nasubi",
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/taiyme/misskey.git"
 	},
-	"packageManager": "pnpm@9.6.0",
-	"workspaces": [
-		"packages/frontend-shared",
-		"packages/frontend",
-		"packages/frontend-embed",
-		"packages/backend",
-		"packages/sw",
-		"packages/misskey-js",
-		"packages/misskey-reversi",
-		"packages/misskey-bubble-game"
-	],
-	"private": true,
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.mjs",
 		"build-assets": "node ./scripts/build-assets.mjs",
@@ -46,22 +35,18 @@
 		"clean-all": "node ./scripts/clean-all.mjs",
 		"cleanall": "pnpm clean-all"
 	},
-	"resolutions": {
-		"chokidar": "3.5.3",
-		"lodash": "4.17.21"
-	},
 	"dependencies": {
 		"cssnano": "6.1.2",
+		"esbuild": "0.24.0",
 		"execa": "8.0.1",
 		"fast-glob": "3.3.2",
+		"glob": "11.0.0",
 		"ignore-walk": "6.0.5",
 		"js-yaml": "4.1.0",
 		"postcss": "8.4.49",
 		"tar": "6.2.1",
 		"terser": "5.36.0",
-		"typescript": "5.6.3",
-		"esbuild": "0.24.0",
-		"glob": "11.0.0"
+		"typescript": "5.6.3"
 	},
 	"devDependencies": {
 		"@misskey-dev/eslint-plugin": "2.0.3",
@@ -80,9 +65,9 @@
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.4.0"
 	},
-	"pnpm": {
-		"patchedDependencies": {
-			"mfm-js@0.24.0": "patches/mfm-js@0.24.0.patch"
-		}
+	"packageManager": "pnpm@10.6.2",
+	"engines": {
+		"node": ">=20.10.0 <21.0.0 || >=22.0.0 <23.0.0",
+		"pnpm": ">=10.6.0"
 	}
 }
