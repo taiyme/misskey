@@ -42,6 +42,7 @@
 		},
 	],
 	"settings": {
+		"terminal.integrated.cwd": "${workspaceFolder:root}",
 		"search.exclude": {
 			"**/node_modules": true,
 		},
