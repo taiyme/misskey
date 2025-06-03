@@ -52,7 +52,7 @@ jobs:
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -81,7 +81,7 @@ jobs:
             run generate
 
       - name: Upload generated_misskey_js
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: generated_misskey_js
           path: packages/misskey-js/generator/built/autogen
@@ -101,7 +101,7 @@ jobs:
           submodules: true
 
       - name: Upload actual_misskey_js
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: actual_misskey_js
           path: packages/misskey-js/src/autogen
@@ -116,13 +116,13 @@ jobs:
       pull-requests: write
     steps:
       - name: Download generated_misskey_js
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: generated_misskey_js
           path: misskey-js-generated
 
       - name: Download actual_misskey_js
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: actual_misskey_js
           path: misskey-js-actual
@@ -145,7 +145,7 @@ jobs:
       - name: Comment on PR (update)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'true'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
+        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db # v2.9.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
@@ -163,7 +163,7 @@ jobs:
       - name: Comment on PR (delete)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'false'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@52423e01640425a022ef5fd42c6fb5f633a02728 # v2.9.1
+        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db # v2.9.2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
