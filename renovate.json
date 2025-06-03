@@ -2,27 +2,22 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"config:best-practices",
-		":approveMajorUpdates",
-		":assignAndReview(taiyme)",
-		":automergeDisabled",
-		":labels(renovate,dependencies)",
-		":prHourlyLimitNone",
-		":timezone(Asia/Tokyo)"
+		"schedule:weekly",
+		":pinAllExceptPeerDependencies"
 	],
-	"enabledManagers": [
-		"github-actions"
-	],
+	"automerge": false,
+	"timezone": "Asia/Tokyo",
+	"assignees": ["taiyme"],
+	"reviewers": ["taiyme"],
+	"labels": ["renovate", "dependencies"],
+	"prConcurrentLimit": 0,
+	"prHourlyLimit": 0,
+	"separateMajorMinor": true,
+	"separateMultipleMajor": true,
+	"rebaseWhen": "never",
+	"ignoreDeps": ["ubuntu", "node", "postgres", "redis"],
+	"enabledManagers": ["github-actions"],
 	"packageRules": [
-		{
-			"matchPackageNames": ["ubuntu", "node", "postgres", "redis"],
-			"enabled": false
-		},
-		{
-			"groupName": "ci dependencies (major)",
-			"groupSlug": "ci-deps-major",
-			"matchManagers": ["github-actions"],
-			"matchUpdateTypes": ["major"]
-		},
 		{
 			"groupName": "ci dependencies (non-major)",
 			"groupSlug": "ci-deps-non-major",
