@@ -145,7 +145,7 @@ jobs:
       - name: Comment on PR (update)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'true'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db # v2.9.2
+        uses: marocchino/sticky-pull-request-comment@d2ad0de260ae8b0235ce059e63f2949ba9e05943 # v2.9.3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
@@ -163,7 +163,7 @@ jobs:
       - name: Comment on PR (delete)
         if: github.event_name == 'pull_request_target' && steps.check-changes.outputs.changes == 'false'
         continue-on-error: true
-        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db # v2.9.2
+        uses: marocchino/sticky-pull-request-comment@d2ad0de260ae8b0235ce059e63f2949ba9e05943 # v2.9.3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: check-misskey-js-autogen
