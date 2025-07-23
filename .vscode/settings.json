@@ -1,19 +1,47 @@
 {
 	"search.exclude": {
-		"**/node_modules": true
-	},
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"files.associations": {
-		"*.test.ts": "typescript"
+		"**/node_modules": true,
 	},
 	"jest.runMode": "on-demand",
 	"jest.virtualFolders": [
-		{ "name": "backend unit", "jestCommandLine": "pnpm -F backend run test" },
-		{ "name": "backend e2e", "jestCommandLine": "pnpm -F backend run test:e2e"},
-		{ "name": "misskey-js", "jestCommandLine": "pnpm -F misskey-js run jest" }
+		{
+			"name": "backend unit",
+			"jestCommandLine": "pnpm -F backend run test",
+		},
+		{
+			"name": "backend e2e",
+			"jestCommandLine": "pnpm -F backend run test:e2e",
+		},
+		{
+			"name": "misskey-js",
+			"jestCommandLine": "pnpm -F misskey-js run jest",
+		},
 	],
+	"editor.formatOnSave": false,
 	"editor.codeActionsOnSave": {
-		"source.fixAll": "explicit"
+		"source.fixAll.eslint": "explicit",
+		"source.organizeImports": "never",
+		"source.removeUnusedImports": "never",
+		"source.sortImports": "never",
 	},
-	"editor.formatOnSave": false
+	"eslint.useFlatConfig": true,
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact",
+		"vue",
+	],
+	"typescript.tsdk": "./node_modules/typescript/lib",
+	"yaml.schemas": {
+		"https://json.schemastore.org/github-action.json": [
+			".github/actions/**/action.{yml,yaml}",
+		],
+		"https://json.schemastore.org/github-issue-config.json": [
+			".github/ISSUE_TEMPLATE/config.{yml,yaml}",
+		],
+		"https://json.schemastore.org/pull-request-labeler-5.json": [
+			".github/labeler.{yml,yaml}",
+		],
+	},
 }

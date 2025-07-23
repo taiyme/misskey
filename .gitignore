@@ -1,7 +1,3 @@
-# Visual Studio Code
-/.vscode
-!/.vscode/extensions.json
-
 # Intelij-IDEA
 /.idea
 
@@ -36,10 +32,12 @@ coverage
 !/.config/docker_example.yml
 !/.config/docker_example.env
 !/.config/cypress-devcontainer.yml
-docker-compose.yml
-./compose.yml
-.devcontainer/compose.yml
-!/.devcontainer/compose.yml
+
+# docker
+/compose.yaml
+/compose.yml
+/docker-compose.yaml
+/docker-compose.yml
 
 # misskey
 /build
@@ -56,7 +54,6 @@ run.bat
 api-docs.json
 *.log
 /redis
-*.code-workspace
 .DS_Store
 /files
 ormconfig.json

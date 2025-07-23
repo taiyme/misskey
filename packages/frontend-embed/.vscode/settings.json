@@ -1,6 +1,6 @@
 {
 	// "path-intellisense.mappings": {
-	// 	"@": "${workspaceRoot}/packages/frontend/src/"
+	// 	"@": "${workspaceRoot}/packages/frontend-embed/src/"
 	// },
 	"prettier.enable": false,
 	"editor.formatOnSave": false,
