@@ -1,0 +1,25 @@
+name: ✨️ 機能リクエスト
+description: 機能のリクエストはこちらからお願いします
+title: "[Feature] "
+labels:
+  - "triage: feature"
+
+body:
+  - type: textarea
+    attributes:
+      label: 💡 概要
+      description: どのようなアイデアがありますか？ 簡潔に教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🎯 目的
+      description: なぜこの機能が必要なのか、どんな課題を解決するのか、具体的に教えてください。
+
+  - type: checkboxes
+    attributes:
+      label: 【開発者向け】自分でこのアイデアを実現しますか？
+      description: これが何かわからない場合は、チェックボックスを開けたままにして、そのままフォームを送信してください。
+      options:
+        - label: はい、私はこのアイデアを自分で実現して、このリポジトリにプルリクエストを送信する予定です。

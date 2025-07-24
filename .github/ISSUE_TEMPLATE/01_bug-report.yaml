@@ -1,0 +1,90 @@
+name: 🐛 バグ報告
+description: バグの報告はこちらからお願いします
+title: "[Bug] "
+labels:
+  - "needs triage"
+  - "triage: maybe bug"
+
+body:
+  - type: textarea
+    attributes:
+      label: 💡 概要
+      description: どのような問題が発生していますか？ 簡潔に教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🥰 期待される動作
+      description: 本当はどういうことがしたかったですか？ 詳しく教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 🤬 実際の動作
+      description: 実際には何が起きていますか？ 詳しく教えてください。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 📝 再現手順
+      description: 問題が発生するまでに、どのような操作をしていましたか？ 手順別に詳しく教えてください。
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 💻 動作環境 (ユーザー向け)
+      description: |
+        問題はどのような環境で発生していますか？ 詳細なバージョンも併せて教えてください。
+
+        例:
+          * Model and OS of the device(s): MacBook Pro (14inch, 2021), macOS Ventura 13.4
+          * Browser: Chrome 113.0.5672.126
+          * Server URL: misskey.example.com
+          * Misskey: 2025.x.x
+      value: |
+        * Model and OS of the device(s):
+        * Browser:
+        * Server URL:
+        * Misskey:
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: 🛰 サーバーの動作環境 (管理者向け)
+      description: |
+        問題が発生しているプラットフォームを詳しく教えてください。
+
+        例:
+          * Installation Method or Hosting Service: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment
+          * Misskey: 2025.x.x
+          * Node: 20.x.x
+          * PostgreSQL: 15.x.x
+          * Redis: 7.x.x
+          * OS and Architecture: Ubuntu 24.04.2 LTS aarch64
+      value: |
+        * Installation Method or Hosting Service:
+        * Misskey:
+        * Node:
+        * PostgreSQL:
+        * Redis:
+        * OS and Architecture:
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: 【開発者向け】自分でこのバグに対処しますか？
+      description: これが何かわからない場合は、チェックボックスを開けたままにして、そのままフォームを送信してください。
+      options:
+        - label: はい、私はこのバグに自分で対処して、このリポジトリにプルリクエストを送信する予定です。
