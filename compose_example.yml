@@ -1,12 +1,13 @@
 services:
   web:
-    build: .
+    # build: .
+    image: ghcr.io/taiyme/misskey:${TAIYME_VERSION}
     restart: always
     links:
       - db
       - redis
-#     - mcaptcha
-#     - meilisearch
+      # - mcaptcha
+      # - meilisearch
     depends_on:
       db:
         condition: service_healthy
@@ -17,8 +18,9 @@ services:
     networks:
       - internal_network
       - external_network
-    # env_file:
-    #   - .config/docker.env
+    env_file:
+      - taiyme.env
+      # - .config/docker.env
     volumes:
       - ./files:/misskey/files
       - ./.config:/misskey/.config:ro
