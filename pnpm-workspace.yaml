@@ -9,6 +9,7 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
+
 onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'
@@ -28,4 +29,13 @@ onlyBuiltDependencies:
   - utf-8-validate
   - v-code-diff
   - vue-demi
+
+overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
+  chokidar: 4.0.3
+  lodash: 4.17.21
+
+patchedDependencies:
+  typeorm: patches/typeorm.patch
+
 ignorePatchFailures: false

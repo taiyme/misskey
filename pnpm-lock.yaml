@@ -5,9 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 4.0.3
   lodash: 4.17.21
-  '@aiscript-dev/aiscript-languageserver': '-'
 
 patchedDependencies:
   typeorm:
