@@ -4,14 +4,7 @@
 		"github>taiyme/renovate-config",
 		":assignAndReview(taiyme)"
 	],
-	"packageRules": [
-		{
-			"matchPackageNames": ["*"],
-			"enabled": false
-		},
-		{
-			"matchManagers": ["github-actions"],
-			"enabled": true
-		}
+	"enabledManagers": [
+		"github-actions"
 	]
 }
