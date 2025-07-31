@@ -43,8 +43,8 @@
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
 		"test": "pnpm -r test",
 		"test-and-coverage": "pnpm -r test-and-coverage",
-		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js",
+		"clean": "node ./scripts/clean.mjs",
+		"clean-all": "node ./scripts/clean-all.mjs",
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
