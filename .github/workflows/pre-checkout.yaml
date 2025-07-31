@@ -1,0 +1,42 @@
+name: Pre checkout
+
+on:
+  workflow_call:
+    outputs:
+      sha:
+        value: ${{ jobs.checkout.outputs.sha }}
+        description: Commit SHA
+
+permissions:
+  contents: read
+
+jobs:
+  checkout:
+    name: Checkout
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.checkout.outputs.commit }}
+    steps:
+      - name: Prepare
+        id: prepare
+        env:
+          event_name: ${{ github.event_name }}
+          pr_number: ${{ github.event.pull_request.number }}
+          default_ref: ${{ github.ref }}
+        run: |
+          if [[ "$event_name" == 'pull_request_target' ]]; then
+            if [[ -z "$pr_number" ]]; then
+              exit 1
+            fi
+            specify_ref="refs/pull/${pr_number}/merge"
+          fi
+          echo "ref=${specify_ref:-$default_ref}" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ steps.prepare.outputs.ref }}
+          fetch-depth: 1
