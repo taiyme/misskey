@@ -1,0 +1,48 @@
+packages/backend:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/backend/**/*
+
+packages/backend:test:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/backend/test/**/*
+        - packages/backend/test-federation/**/*
+        - packages/backend/test-server/**/*
+
+packages/frontend:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/frontend-shared/**/*
+        - packages/frontend/**/*
+        - packages/frontend-embed/**/*
+        - packages/icons-subsetter/**/*
+
+packages/frontend:test:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - cypress/**/*
+        - packages/frontend/test/**/*
+
+packages/sw:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/sw/**/*
+
+packages/misskey-js:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/misskey-js/**/*
+
+packages/misskey-js:test:
+  - any:
+    - changed-files:
+      - any-glob-to-any-file:
+        - packages/misskey-js/test/**/*
+        - packages/misskey-js/test-d/**/*
