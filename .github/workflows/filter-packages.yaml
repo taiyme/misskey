@@ -10,15 +10,18 @@ on:
       packages:
         value: ${{ jobs.filter-packages.outputs.packages }}
 
-permissions:
-  contents: read
-  pull-requests: read
+permissions: {}
+  # contents: read
+  # pull-requests: read
 
 jobs:
   filter-packages:
     name: Filter packages
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       packages: ${{ steps.result.outputs.packages }}
     steps:

@@ -11,6 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 permissions: {}
+  # checks: read
+  # statuses: read
 
 jobs:
   status-check:

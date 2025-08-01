@@ -15,18 +15,22 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
+  # contents: read
+  # pull-requests: read
 
 jobs:
   pre-checkout:
     name: Pre checkout
     uses: ./.github/workflows/pre-checkout.yaml
+    permissions:
+      contents: read
 
   filter-packages-eslint:
     name: Filter packages (ESLint)
     uses: ./.github/workflows/filter-packages.yaml
     permissions:
+      contents: read
       pull-requests: read
     with:
       filters: .github/filter-packages/for-eslint.yaml
@@ -35,6 +39,7 @@ jobs:
     name: Filter packages (TypeCheck)
     uses: ./.github/workflows/filter-packages.yaml
     permissions:
+      contents: read
       pull-requests: read
     with:
       filters: .github/filter-packages/for-typecheck.yaml
@@ -43,6 +48,8 @@ jobs:
     name: ESLint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
     needs:
       - pre-checkout
       - filter-packages-eslint
@@ -97,6 +104,8 @@ jobs:
     name: TypeCheck
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: read
     needs:
       - pre-checkout
       - filter-packages-typecheck
