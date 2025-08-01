@@ -1,0 +1,52 @@
+__shared: &__shared
+  - .github/filter-packages/for-typecheck.yaml
+  - .github/workflows/lint.yaml
+  - .node-version
+  - pnpm-lock.yaml
+
+misskey-reversi: &__misskey-reversi
+  - *__shared
+  - packages/misskey-reversi/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+misskey-bubble-game: &__misskey-bubble-game
+  - *__shared
+  - packages/misskey-bubble-game/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+misskey-js: &__misskey-js
+  - *__shared
+  - packages/misskey-js/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+backend:
+  - *__shared
+  - *__misskey-js
+  - *__misskey-reversi
+  - packages/backend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+sw:
+  - *__shared
+  - *__misskey-js
+  - packages/sw/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+icons-subsetter: &__icons-subsetter
+  - *__shared
+  - packages/icons-subsetter/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+# frontend-shared: &__frontend-shared
+#   - *__shared
+#   - packages/frontend-shared/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+# frontend:
+#   - *__shared
+#   - *__misskey-js
+#   - *__misskey-reversi
+#   - *__misskey-bubble-game
+#   - *__icons-subsetter
+#   - *__frontend-shared
+#   - packages/frontend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
+# frontend-embed:
+#   - *__shared
+#   - *__misskey-js
+#   - *__icons-subsetter
+#   - *__frontend-shared
+#   - packages/frontend-embed/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}

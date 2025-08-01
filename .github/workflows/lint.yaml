@@ -1,0 +1,140 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+  pull_request_target:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pre-checkout:
+    name: Pre checkout
+    uses: ./.github/workflows/pre-checkout.yaml
+
+  filter-packages-eslint:
+    name: Filter packages (ESLint)
+    uses: ./.github/workflows/filter-packages.yaml
+    permissions:
+      pull-requests: read
+    with:
+      filters: .github/filter-packages/for-eslint.yaml
+
+  filter-packages-typecheck:
+    name: Filter packages (TypeCheck)
+    uses: ./.github/workflows/filter-packages.yaml
+    permissions:
+      pull-requests: read
+    with:
+      filters: .github/filter-packages/for-typecheck.yaml
+
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs:
+      - pre-checkout
+      - filter-packages-eslint
+    if: ${{ needs.filter-packages-eslint.outputs.packages != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.filter-packages-eslint.outputs.packages) }}
+    env:
+      eslint-cache-version: v1
+      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.package }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Restore eslint cache
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        with:
+          path: ${{ env.eslint-cache-path }}
+          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.package }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ needs.pre-checkout.outputs.sha }}
+          restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.package }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Run eslint
+        run: |
+          pnpm --filter='${{ matrix.package }}' \
+            run eslint \
+            --cache \
+            --cache-location='${{ env.eslint-cache-path }}' \
+            --cache-strategy=content
+
+  typecheck:
+    name: TypeCheck
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs:
+      - pre-checkout
+      - filter-packages-typecheck
+    if: ${{ needs.filter-packages-typecheck.outputs.packages != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.filter-packages-typecheck.outputs.packages) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ needs.pre-checkout.outputs.sha }}
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Build dependencies
+        run: |
+          pnpm --filter='${{ matrix.package }}...' --filter='!${{ matrix.package }}' \
+            run build
+
+      - name: Run typecheck
+        run: |
+          pnpm --filter='${{ matrix.package }}' \
+            run typecheck

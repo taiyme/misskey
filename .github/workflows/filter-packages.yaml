@@ -1,0 +1,63 @@
+name: Filter packages
+
+on:
+  workflow_call:
+    inputs:
+      filters:
+        type: string
+        required: true
+    outputs:
+      packages:
+        value: ${{ jobs.filter-packages.outputs.packages }}
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  filter-packages:
+    name: Filter packages
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      packages: ${{ steps.result.outputs.packages }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          run_install: false
+
+      - name: Filter
+        id: filter
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        with:
+          filters: ${{ inputs.filters }}
+
+      - name: Set actual_packages
+        env:
+          output_changes: ${{ steps.filter.outputs.changes }}
+        run: |
+          echo "actual_packages=${output_changes:-'[]'}" >> $GITHUB_ENV
+
+      - name: Set expected_packages
+        run: |
+          expected_packages="$(pnpm ls -r --depth=-1 --json | jq -c 'map(.name)')"
+          echo "expected_packages=${expected_packages:-'[]'}" >> $GITHUB_ENV
+
+      - name: Extract packages
+        id: result
+        run: |
+          packages="$( \
+            jq -c -n \
+            --argjson actual "${actual_packages}" \
+            --argjson expected "${expected_packages}" \
+            -- '$actual | map(select(. as $item | $expected | index($item)))' \
+          )"
+          echo "packages=${packages:-'[]'}" >> $GITHUB_OUTPUT
