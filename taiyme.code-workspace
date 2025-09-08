@@ -9,6 +9,10 @@
 			"path": "./packages/backend",
 		},
 		{
+			"name": "frontend-builder",
+			"path": "./packages/frontend-builder",
+		},
+		{
 			"name": "frontend-shared",
 			"path": "./packages/frontend-shared",
 		},

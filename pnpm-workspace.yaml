@@ -1,5 +1,6 @@
 packages:
   - packages/backend
+  - packages/frontend-builder
   - packages/frontend-shared
   - packages/frontend
   - packages/frontend-embed

@@ -33,6 +33,10 @@ frontend-shared:
   - *__shared
   - packages/frontend-shared/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
+frontend-builder:
+  - *__shared
+  - packages/frontend-builder/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
 frontend:
   - *__shared
   - packages/frontend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}

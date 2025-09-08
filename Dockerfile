@@ -79,6 +79,7 @@ COPY --link ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --link ./packages/backend/package.json ./packages/backend/
 COPY --link ./packages/icons-subsetter/package.json ./packages/icons-subsetter/
 COPY --link ./packages/frontend-shared/package.json ./packages/frontend-shared/
+COPY --link ./packages/frontend-builder/package.json ./packages/frontend-builder/
 COPY --link ./packages/frontend/package.json ./packages/frontend/
 COPY --link ./packages/frontend-embed/package.json ./packages/frontend-embed/
 COPY --link ./pnpm-workspace.yaml ./package.json ./
@@ -103,11 +104,12 @@ COPY --link ./packages/icons-subsetter/src/ ./packages/icons-subsetter/src/
 COPY --link ./packages/frontend-shared/build.js ./packages/frontend-shared/tsconfig.json ./packages/frontend-shared/
 COPY --link ./packages/frontend-shared/js/ ./packages/frontend-shared/js/
 COPY --link ./packages/frontend-shared/themes/ ./packages/frontend-shared/themes/
-COPY --link ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/tsconfig.json ./packages/frontend/
+COPY --link ./packages/frontend-builder/ ./packages/frontend-builder/
+COPY --link ./packages/frontend/build.ts ./packages/frontend/vite.config.ts ./packages/frontend/vite.json5.ts ./packages/frontend/tsconfig.json ./packages/frontend/
 COPY --link ./packages/frontend/assets/ ./packages/frontend/assets/
 COPY --link ./packages/frontend/lib/ ./packages/frontend/lib/
 COPY --link ./packages/frontend/src/ ./packages/frontend/src/
-COPY --link ./packages/frontend-embed/vite.config.ts ./packages/frontend-embed/vite.json5.ts ./packages/frontend-embed/tsconfig.json ./packages/frontend-embed/
+COPY --link ./packages/frontend-embed/build.ts ./packages/frontend-embed/vite.config.ts ./packages/frontend-embed/vite.json5.ts ./packages/frontend-embed/tsconfig.json ./packages/frontend-embed/
 COPY --link ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
 COPY --link ./packages/frontend-embed/src/ ./packages/frontend-embed/src/
 COPY --link ./packages/misskey-js/generator/.gitignore ./packages/misskey-js/generator/

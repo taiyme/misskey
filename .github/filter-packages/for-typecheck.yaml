@@ -35,6 +35,10 @@ icons-subsetter: &__icons-subsetter
 #   - *__shared
 #   - packages/frontend-shared/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
+# frontend-builder: &__frontend-builder
+#   - *__shared
+#   - packages/frontend-builder/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
 # frontend:
 #   - *__shared
 #   - *__misskey-js
@@ -42,6 +46,7 @@ icons-subsetter: &__icons-subsetter
 #   - *__misskey-bubble-game
 #   - *__icons-subsetter
 #   - *__frontend-shared
+#   - *__frontend-builder
 #   - packages/frontend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
 # frontend-embed:
@@ -49,4 +54,5 @@ icons-subsetter: &__icons-subsetter
 #   - *__misskey-js
 #   - *__icons-subsetter
 #   - *__frontend-shared
+#   - *__frontend-builder
 #   - packages/frontend-embed/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
