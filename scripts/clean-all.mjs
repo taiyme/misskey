@@ -27,6 +27,7 @@ async function main() {
 
 	const nodeModulesPaths = [
 		path.resolve(cwd, 'packages', 'backend', 'node_modules'),
+		path.resolve(cwd, 'packages', 'frontend-builder', 'node_modules'),
 		path.resolve(cwd, 'packages', 'frontend-shared', 'node_modules'),
 		path.resolve(cwd, 'packages', 'frontend', 'node_modules'),
 		path.resolve(cwd, 'packages', 'frontend-embed', 'node_modules'),
