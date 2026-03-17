@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
-      pull-requests: read
+      pull-requests: read # amannn/action-semantic-pull-request の実行に必要
     steps:
       - name: Semantic PR title
         uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1

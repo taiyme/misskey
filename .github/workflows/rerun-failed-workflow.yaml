@@ -7,11 +7,13 @@ run-name: >-
   }}
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers]
     types:
       - completed
     workflows:
       - Test**
+
+# zizmor: ignore[concurrency-limits]
 
 permissions: {}
 
@@ -28,8 +30,7 @@ jobs:
           base_delay: 60
           run_attempt: ${{ github.event.workflow_run.run_attempt }}
         run: |
-          backoff_delay=$((base_delay * (2 ** (run_attempt - 1))))
-          sleep "$backoff_delay"
+          sleep "$((base_delay * (2 ** (run_attempt - 1))))"
 
   rerun-workflow:
     name: Rerun workflow

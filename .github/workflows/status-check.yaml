@@ -26,9 +26,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
-      pull-requests: read
-      checks: read
-      statuses: read
+      pull-requests: read # gh pr checks の実行に必要
+      checks: read        # gh pr checks の実行に必要
+      statuses: read      # gh pr checks の実行に必要
     steps:
       - name: Watch PR checks
         env:

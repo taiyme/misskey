@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/filter-packages.yaml
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: read # dorny/paths-filter の実行に必要
     with:
       filters: .github/filter-packages/for-eslint.yaml
 
@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/filter-packages.yaml
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: read # dorny/paths-filter の実行に必要
     with:
       filters: .github/filter-packages/for-typecheck.yaml
 
@@ -82,9 +82,9 @@ jobs:
           lockfile_hash: ${{ hashFiles('**/pnpm-lock.yaml') }}
         run: |
           cache_name="eslint-${package}"
-          cache_platform="${RUNNER_OS}-${RUNNER_ARCH}-${lockfile_hash}"
-          cache_primary_key="${cache_name}-${cache_platform}-${GITHUB_SHA}"
-          cache_restore_key="${cache_name}-${cache_platform}-"
+          cache_platform="${RUNNER_OS}-${RUNNER_ARCH}"
+          cache_primary_key="${cache_name}-${cache_platform}-${lockfile_hash}-${GITHUB_SHA}"
+          cache_restore_key="${cache_name}-${cache_platform}-${lockfile_hash}-"
           echo "primary=${cache_primary_key}" >> "$GITHUB_OUTPUT"
           echo "restore=${cache_restore_key}" >> "$GITHUB_OUTPUT"
 
@@ -140,11 +140,11 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
-      - name: Build dependencies
+      - name: Build
         env:
           package: ${{ matrix.package }}
         run: |
-          pnpm --filter "${package}..." --filter "!${package}" \
+          pnpm --filter "${package}^..." \
             run build
 
       - name: Run TypeCheck

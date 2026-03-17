@@ -1,0 +1,63 @@
+name: Setup FFmpeg
+description: Setup FFmpeg
+
+runs:
+  using: composite
+  steps:
+    - name: Get current date
+      id: current-date
+      shell: bash
+      run: |
+        weekly="$(date +'%G-W%V')"
+        echo "weekly=${weekly}" >> "$GITHUB_OUTPUT"
+
+    - name: Create cache key
+      id: cache-keys
+      env:
+        suffix_weekly: ${{ steps.current-date.outputs.weekly }}
+      shell: bash
+      run: |
+        cache_name="ffmpeg"
+        cache_platform="${RUNNER_OS}-${RUNNER_ARCH}"
+        cache_primary_key="${cache_name}-${cache_platform}-${suffix_weekly}"
+        cache_restore_key="${cache_name}-${cache_platform}-${suffix_weekly}"
+        echo "primary=${cache_primary_key}" >> "$GITHUB_OUTPUT"
+        echo "restore=${cache_restore_key}" >> "$GITHUB_OUTPUT"
+
+    - name: Cache FFmpeg
+      id: cache-ffmpeg
+      uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+      with:
+        path: |
+          /usr/local/bin/ffmpeg
+          /usr/local/bin/ffprobe
+        key: ${{ steps.cache-keys.outputs.primary }}
+        restore-keys: ${{ steps.cache-keys.outputs.restore }}
+
+    - name: Install FFmpeg
+      if: ${{ steps.cache-ffmpeg.outputs.cache-hit != 'true' }}
+      env:
+        base_delay: 30
+        max_retries: 3
+      shell: bash
+      run: |
+        _install_ffmpeg() {
+          curl -fsSL -o ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+            tar -xf ffmpeg.tar.xz && \
+            mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
+            mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
+            rm -rf ffmpeg.tar.xz ffmpeg-*-static/
+        }
+        for ((i=1; i<=max_retries; i++)); do
+          echo "Attempt ${i}: Installing FFmpeg..."
+          _install_ffmpeg && break
+          if [[ "$i" -eq "$max_retries" ]]; then
+            exit 1
+          fi
+          sleep "$((base_delay * (2 ** (i - 1))))"
+        done
+
+    - name: FFmpeg version
+      shell: bash
+      run: |
+        ffmpeg -version
