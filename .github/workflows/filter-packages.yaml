@@ -11,8 +11,6 @@ on:
         value: ${{ jobs.filter-packages.outputs.packages }}
 
 permissions: {}
-  # contents: read
-  # pull-requests: read
 
 jobs:
   filter-packages:
@@ -26,20 +24,28 @@ jobs:
       packages: ${{ steps.result.outputs.packages }}
     steps:
       - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-          ref: ${{ github.sha }}
           fetch-depth: 1
+          submodules: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          run_install: false
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
 
       - name: Filter
         id: filter
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c # v4.0.0
         with:
           filters: ${{ inputs.filters }}
 
@@ -47,20 +53,20 @@ jobs:
         env:
           output_changes: ${{ steps.filter.outputs.changes }}
         run: |
-          echo "actual_packages=${output_changes:-'[]'}" >> $GITHUB_ENV
+          echo "actual_packages=${output_changes:-[]}" >> "$GITHUB_ENV"
 
       - name: Set expected_packages
         run: |
           expected_packages="$(pnpm ls -r --depth=-1 --json | jq -c 'map(.name)')"
-          echo "expected_packages=${expected_packages:-'[]'}" >> $GITHUB_ENV
+          echo "expected_packages=${expected_packages:-[]}" >> "$GITHUB_ENV"
 
       - name: Extract packages
         id: result
         run: |
           packages="$( \
             jq -c -n \
-            --argjson actual "${actual_packages}" \
-            --argjson expected "${expected_packages}" \
+            --argjson actual "$actual_packages" \
+            --argjson expected "$expected_packages" \
             -- '$actual | map(select(. as $item | $expected | index($item)))' \
           )"
-          echo "packages=${packages:-'[]'}" >> $GITHUB_OUTPUT
+          echo "packages=${packages:-[]}" >> "$GITHUB_OUTPUT"

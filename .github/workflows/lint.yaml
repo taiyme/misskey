@@ -6,26 +6,21 @@ on:
       - develop
       - main
 
-  pull_request_target:
+  pull_request:
     branches:
       - develop
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 permissions: {}
-  # contents: read
-  # pull-requests: read
 
 jobs:
-  pre-checkout:
-    name: Pre checkout
-    uses: ./.github/workflows/pre-checkout.yaml
-    permissions:
-      contents: read
-
   filter-packages-eslint:
     name: Filter packages (ESLint)
     uses: ./.github/workflows/filter-packages.yaml
@@ -51,7 +46,6 @@ jobs:
     permissions:
       contents: read
     needs:
-      - pre-checkout
       - filter-packages-eslint
     if: ${{ needs.filter-packages-eslint.outputs.packages != '[]' }}
     strategy:
@@ -59,24 +53,20 @@ jobs:
       matrix:
         package: ${{ fromJSON(needs.filter-packages-eslint.outputs.packages) }}
     env:
-      eslint-cache-version: v1
-      eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.package }}
+      cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.package }}
     steps:
       - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
-        with:
-          run_install: false
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -85,20 +75,36 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
-      - name: Restore eslint cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: ${{ env.eslint-cache-path }}
-          key: eslint-${{ env.eslint-cache-version }}-${{ matrix.package }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ needs.pre-checkout.outputs.sha }}
-          restore-keys: eslint-${{ env.eslint-cache-version }}-${{ matrix.package }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
-
-      - name: Run eslint
+      - name: Create cache key
+        id: cache-keys
+        env:
+          package: ${{ matrix.package }}
+          lockfile_hash: ${{ hashFiles('**/pnpm-lock.yaml') }}
         run: |
-          pnpm --filter='${{ matrix.package }}' \
+          cache_name="eslint-${package}"
+          cache_platform="${RUNNER_OS}-${RUNNER_ARCH}-${lockfile_hash}"
+          cache_primary_key="${cache_name}-${cache_platform}-${GITHUB_SHA}"
+          cache_restore_key="${cache_name}-${cache_platform}-"
+          echo "primary=${cache_primary_key}" >> "$GITHUB_OUTPUT"
+          echo "restore=${cache_restore_key}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache ESLint
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        with:
+          path: ${{ env.cache-path }}
+          key: ${{ steps.cache-keys.outputs.primary }}
+          restore-keys: ${{ steps.cache-keys.outputs.restore }}
+
+      - name: Run ESLint
+        env:
+          package: ${{ matrix.package }}
+          cache_location: ${{ env.cache-path }}
+        run: |
+          pnpm --filter "$package" \
             run eslint \
             --cache \
-            --cache-location='${{ env.eslint-cache-path }}' \
-            --cache-strategy=content
+            --cache-location "$cache_location" \
+            --cache-strategy content
 
   typecheck:
     name: TypeCheck
@@ -107,7 +113,6 @@ jobs:
     permissions:
       contents: read
     needs:
-      - pre-checkout
       - filter-packages-typecheck
     if: ${{ needs.filter-packages-typecheck.outputs.packages != '[]' }}
     strategy:
@@ -116,20 +121,17 @@ jobs:
         package: ${{ fromJSON(needs.filter-packages-typecheck.outputs.packages) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-          ref: ${{ needs.pre-checkout.outputs.sha }}
           fetch-depth: 1
           submodules: true
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
-        with:
-          run_install: false
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: .node-version
           cache: pnpm
@@ -139,11 +141,15 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: Build dependencies
+        env:
+          package: ${{ matrix.package }}
         run: |
-          pnpm --filter='${{ matrix.package }}...' --filter='!${{ matrix.package }}' \
+          pnpm --filter "${package}..." --filter "!${package}" \
             run build
 
-      - name: Run typecheck
+      - name: Run TypeCheck
+        env:
+          package: ${{ matrix.package }}
         run: |
-          pnpm --filter='${{ matrix.package }}' \
+          pnpm --filter "$package" \
             run typecheck

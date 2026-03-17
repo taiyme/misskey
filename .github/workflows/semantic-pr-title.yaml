@@ -1,0 +1,33 @@
+name: Semantic PR title
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
+    branches:
+      - develop
+      - main
+    types:
+      - opened
+      - synchronize
+      - edited
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  semantic-pr-title:
+    name: Semantic PR title
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Semantic PR title
+        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
