@@ -26,7 +26,7 @@ initChart();
 
 const chartEl = useTemplateRef('chartEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 7;
 const fetching = ref(true);
 
@@ -47,7 +47,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: v,

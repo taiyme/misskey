@@ -1,0 +1,62 @@
+name: Check misskey-js version
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/check-misskey-js-version.yaml
+      - packages/misskey-js/package.json
+      - package.json
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/check-misskey-js-version.yaml
+      - packages/misskey-js/package.json
+      - package.json
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  check-version:
+    name: Check version
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Check version
+        run: |
+          target_file="packages/misskey-js/package.json"
+          target_version="$(jq -r '.version' "$target_file")"
+
+          source_file="package.json"
+          source_version="$(jq -r '.version' "$source_file")"
+
+          if [[ "$source_version" != "$target_version" ]]; then
+            source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1 || true)"
+            echo "::error file=${source_file},line=${source_line:-0}::Version mismatch!"
+
+            target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1 || true)"
+            echo "::error file=${target_file},line=${target_line:-0}::Version mismatch!"
+
+            exit 1
+          fi

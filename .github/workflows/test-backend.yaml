@@ -1,0 +1,211 @@
+name: Test (backend)
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/test-backend.yaml
+      - .github/misskey/test.yml
+      - packages/backend/**/*
+      - packages/misskey-js/**/*
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/test-backend.yaml
+      - .github/misskey/test.yml
+      - packages/backend/**/*
+      - packages/misskey-js/**/*
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:18 # zizmor: ignore[unpinned-images]
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7 # zizmor: ignore[unpinned-images]
+        ports:
+          - 56312:6379
+      meilisearch:
+        image: getmeili/meilisearch:v1.36.0 # zizmor: ignore[unpinned-images]
+        ports:
+          - 57712:7700
+        env:
+          MEILI_NO_ANALYTICS: true
+          MEILI_ENV: development
+    env:
+      MISSKEY_CONFIG_YML: ci_config.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Copy config
+        run: |
+          cp .github/misskey/test.yml ".config/${MISSKEY_CONFIG_YML}"
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Test
+        run: |
+          pnpm --filter backend \
+            run test
+
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:18 # zizmor: ignore[unpinned-images]
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7 # zizmor: ignore[unpinned-images]
+        ports:
+          - 56312:6379
+    env:
+      MISSKEY_CONFIG_YML: ci_config.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Copy config
+        run: |
+          cp .github/misskey/test.yml ".config/${MISSKEY_CONFIG_YML}"
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Test
+        run: |
+          pnpm --filter backend \
+            run test:e2e
+
+  migration-tests:
+    name: Migration Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:18 # zizmor: ignore[unpinned-images]
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+    env:
+      MISSKEY_CONFIG_YML: ci_config.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Setup FFmpeg
+        uses: ./.github/actions/setup-ffmpeg
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Copy config
+        run: |
+          cp .github/misskey/test.yml ".config/${MISSKEY_CONFIG_YML}"
+
+      - name: Build
+        run: |
+          pnpm run build
+
+      - name: Run migrations
+        run: |
+          pnpm --filter backend \
+            run migrate
+
+      - name: Check migrations
+        run: |
+          pnpm --filter backend \
+            run check-migrations

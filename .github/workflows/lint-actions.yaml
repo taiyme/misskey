@@ -1,0 +1,82 @@
+name: Lint (actions)
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/*.ya?ml
+      - '**/action.ya?ml'
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/*.ya?ml
+      - '**/action.ya?ml'
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Lint with actionlint
+        uses: koki-develop/github-actions-lint/actionlint@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+
+  ghalint:
+    name: ghalint
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Lint with ghalint
+        uses: koki-develop/github-actions-lint/ghalint@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Lint with zizmor
+        uses: koki-develop/github-actions-lint/zizmor@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+        with:
+          github-token: ${{ github.token }}
+          persona: auditor

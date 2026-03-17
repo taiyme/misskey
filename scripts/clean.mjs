@@ -3,30 +3,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// @ts-check
+import * as fs from 'node:fs';
 
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+const __dirname = import.meta.dirname;
 
-async function main() {
-	const cwd = fileURLToPath(new URL('..', import.meta.url));
-
-	const builtPaths = [
-		path.resolve(cwd, 'packages', 'backend', 'built'),
-		path.resolve(cwd, 'packages', 'backend', 'built-test'),
-		path.resolve(cwd, 'packages', 'frontend-shared', 'js-built'),
-		path.resolve(cwd, 'packages', 'icons-subsetter', 'built'),
-		path.resolve(cwd, 'packages', 'misskey-js', 'built'),
-		path.resolve(cwd, 'packages', 'misskey-js', 'generator', 'built'),
-		path.resolve(cwd, 'packages', 'misskey-reversi', 'built'),
-		path.resolve(cwd, 'packages', 'misskey-bubble-game', 'built'),
-		path.resolve(cwd, 'built'),
-	];
-
-	await Promise.allSettled(
-		builtPaths.map((path) => fs.rm(path, { recursive: true, force: true })),
-	);
-}
-
-await main();
+(async () => {
+	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/backend/src-js', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend-shared/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend-embed/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/icons-subsetter/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/i18n/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/sw/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/misskey-js/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/misskey-reversi/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/misskey-bubble-game/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../built', { recursive: true, force: true });
+})();

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=22.15.0-bookworm
-ARG PNPM_VERSION=10.13.1
+ARG NODE_VERSION=22.21.1-bookworm
+ARG PNPM_VERSION=10.30.3
 
 
 # [native-base]: setup pnpm, fetch dependencies
@@ -72,6 +72,7 @@ RUN git submodule update --init --recursive
 
 FROM native-base AS native-builder
 
+COPY --link ./packages/i18n/package.json ./packages/i18n/
 COPY --link ./packages/sw/package.json ./packages/sw/
 COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
@@ -88,6 +89,9 @@ RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
 	pnpm rebuild --recursive --aggregate-output
 
 COPY --link ./scripts/ ./scripts/
+COPY --link ./packages/i18n/build.ts ./packages/i18n/tsconfig.json ./packages/i18n/
+COPY --link ./packages/i18n/scripts/ ./packages/i18n/scripts/
+COPY --link ./packages/i18n/src/ ./packages/i18n/src/
 COPY --link ./packages/sw/build.js ./packages/sw/tsconfig.json ./packages/sw/
 COPY --link ./packages/sw/src/ ./packages/sw/src/
 COPY --link ./packages/misskey-bubble-game/build.js ./packages/misskey-bubble-game/tsconfig.json ./packages/misskey-bubble-game/
@@ -121,7 +125,7 @@ COPY --link ./.gitignore ./
 COPY --link --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
 COPY --link ./.git/ ./.git/
 
-RUN NODE_ENV=production pnpm build
+RUN NODE_ENV=production pnpm run build
 
 
 # [target-builder]: install dependencies
@@ -161,6 +165,7 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
 RUN --mount=type=cache,target=/root/.npm \
 	npm install -g pnpm@${PNPM_VERSION}
 
+COPY --chown=misskey:misskey ./packages/i18n/package.json ./packages/i18n/
 COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
 COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --chown=misskey:misskey ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
@@ -176,10 +181,12 @@ COPY --chown=misskey:misskey ./.npmrc ./.node-version ./
 COPY --chown=misskey:misskey ./pnpm-workspace.yaml ./package.json ./
 COPY --chown=misskey:misskey ./healthcheck.sh ./
 COPY --chown=misskey:misskey --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built ./packages/i18n/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ ./packages/misskey-bubble-game/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built/ ./packages/misskey-reversi/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built/ ./packages/misskey-js/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built/ ./packages/backend/built/
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/src-js ./packages/backend/src-js
 COPY --chown=misskey:misskey --from=native-builder /misskey/built/ ./built/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-bubble-game/node_modules/ ./packages/misskey-bubble-game/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules/ ./packages/misskey-reversi/node_modules/

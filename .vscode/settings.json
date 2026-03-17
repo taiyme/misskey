@@ -33,6 +33,7 @@
 		"vue",
 	],
 	"typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"yaml.schemas": {
 		"https://json.schemastore.org/github-action.json": [
 			".github/actions/**/action.{yml,yaml}",
