@@ -89,7 +89,7 @@ jobs:
           echo "restore=${cache_restore_key}" >> "$GITHUB_OUTPUT"
 
       - name: Cache ESLint
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
         with:
           path: ${{ env.cache-path }}
           key: ${{ steps.cache-keys.outputs.primary }}
