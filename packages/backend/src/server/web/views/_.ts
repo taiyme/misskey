@@ -6,14 +6,14 @@
 import type { Config } from '@/config.js';
 
 export const comment = `<!--
-  _____ _         _
- |     |_|___ ___| |_ ___ _ _
- | | | | |_ -|_ -| '_| -_| | |
- |_|_|_|_|___|___|_,_|___|_  |
-                         |___|
- Thank you for using Misskey!
+    _     _
+  _| |,__|_|_ _ _____ ___
+ |_  |__ | | | |     | | |
+   | | | | |_, | | | | __|
+   |_|__/|_|__/|_|_|_|___|
+ Thank you for using taiyme!
  If you are reading this message... how about joining the development?
- https://github.com/misskey-dev/misskey
+ https://github.com/taiyme/misskey
 
 -->`;
 

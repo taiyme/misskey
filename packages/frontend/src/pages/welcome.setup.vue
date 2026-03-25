@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</g>
 			</svg>
 			<div :class="$style.title">
-				<div>Welcome to Misskey!</div>
+				<div>Welcome to taiyme!</div>
 				<div :class="$style.version">v{{ version }}</div>
 			</div>
 			<div style="padding: 16px 32px 32px 32px;">
@@ -106,11 +106,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description }}</div>
 						<div>{{ i18n.ts._serverSetupWizard.settingsCompleted_description2 }}</div>
 					</div>
-					<div class="_gaps_s" :class="$style.donation">
-						<div><b>{{ i18n.ts._serverSetupWizard.donationRequest }}</b></div>
-						<div>{{ i18n.ts._serverSetupWizard._donationRequest.text1 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text2 }}<br>{{ i18n.ts._serverSetupWizard._donationRequest.text3 }}</div>
-						<MkLink target="_blank" url="https://misskey-hub.net/docs/donate/" style="margin: 0 auto;">{{ i18n.ts.learnMore }}</MkLink>
-					</div>
 					<div class="_buttonsCenter">
 						<MkButton gradate large rounded data-cy-next style="margin: 0 auto;" @click="finish">
 							{{ i18n.ts.start }}
@@ -132,7 +127,6 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
-import MkLink from '@/components/MkLink.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
 
 const username = ref('');
@@ -231,12 +225,5 @@ function finish() {
 	font-size: 70%;
 	font-weight: normal;
 	opacity: 0.7;
-}
-
-.donation {
-	background: var(--MI_THEME-accentedBg);
-	border-radius: 12px;
-	padding: 16px;
-	text-align: center;
 }
 </style>

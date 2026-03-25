@@ -19,7 +19,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		externalDocs: {
 			description: 'Repository',
-			url: 'https://github.com/misskey-dev/misskey',
+			url: 'https://github.com/taiyme/misskey',
 		},
 
 		servers: [{

@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['repository', 'url']">
 								<MkInput v-model="infoForm.state.repositoryUrl" type="url">
 									<template #label><SearchLabel>{{ i18n.ts.repositoryUrl }}</SearchLabel><span v-if="infoForm.modifiedStates.repositoryUrl" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<template #caption><SearchText>{{ i18n.ts.repositoryUrlDescription }}</SearchText></template>
+									<template #caption><SearchText>{{ i18n.ts._taiyme._admin.repositoryUrlDescription }}</SearchText></template>
 									<template #prefix><i class="ti ti-link"></i></template>
 								</MkInput>
 							</SearchMarker>
