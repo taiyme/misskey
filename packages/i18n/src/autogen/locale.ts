@@ -7,6 +7,26 @@ export interface Locale extends ILocale {
      * 日本語
      */
     "_lang_": string;
+    "_taiyme": {
+        /**
+         * taiyを支援する
+         */
+        "supportTaiy": string;
+        /**
+         * {name}は、Misskeyの派生である<b>taiyme</b>を使用したサーバーのひとつです。
+         */
+        "poweredByTaiyme": ParameterizedString<"name">;
+        "_about": {
+            /**
+             * taiymeについて
+             */
+            "aboutTaiyme": string;
+            /**
+             * taiymeは、Misskeyから派生したオープンソースのソフトウェアです。
+             */
+            "descriptionOfTaiyme": string;
+        };
+    };
     /**
      * ノートでつながるネットワーク
      */
