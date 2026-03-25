@@ -9,7 +9,9 @@ export function FlushPage(props?: {}) {
 			{'<!DOCTYPE html>'}
 			<html>
 				<head>
-					<meta charset="UTF-8" />
+					<meta charset="utf-8" />
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no" />
 					<meta name="application-name" content="Misskey" />
 					<title>Clear preferences and cache</title>
 				</head>

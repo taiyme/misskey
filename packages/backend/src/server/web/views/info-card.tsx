@@ -18,9 +18,10 @@ export function InfoCardPage(props: CommonPropsMinimum<{
 			{comment}
 			<html>
 				<head>
-					<meta charset="UTF-8" />
+					<meta charset="utf-8" />
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no" />
 					<meta name="application-name" content="Misskey" />
-					<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 					<title safe>{props.meta.name ?? props.config.url}</title>
 					<link rel="stylesheet" href="/static-assets/misc/info-card.css" />
 				</head>
