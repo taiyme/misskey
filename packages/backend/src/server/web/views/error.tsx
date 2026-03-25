@@ -17,9 +17,10 @@ export function ErrorPage(props: {
 			{comment}
 			<html>
 				<head>
-					<meta charset="UTF-8" />
+					<meta charset="utf-8" />
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no" />
 					<meta name="application-name" content="Misskey" />
-					<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 					<meta name="referrer" content="origin" />
 					<title safe>{props.title ?? 'An error has occurred... | Misskey'}</title>
 					<link rel="stylesheet" href="/static-assets/misc/error.css" />
