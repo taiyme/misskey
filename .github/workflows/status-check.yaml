@@ -11,12 +11,7 @@ on:
       - reopened
       - edited
 
-concurrency:
-  group: >-
-    ${{ github.workflow }}-
-    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
-    ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+# zizmor: ignore[concurrency-limits]
 
 permissions: {}
 
@@ -26,9 +21,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
-      pull-requests: read # gh pr checks の実行に必要
-      checks: read        # gh pr checks の実行に必要
-      statuses: read      # gh pr checks の実行に必要
+      pull-requests: read # Required for 'Watch PR checks' step.
+      checks: read        # Required for 'Watch PR checks' step.
+      statuses: read      # Required for 'Watch PR checks' step.
     steps:
       - name: Watch PR checks
         env:
