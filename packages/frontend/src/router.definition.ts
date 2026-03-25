@@ -220,7 +220,7 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/contact.vue')),
 }, {
 	path: '/about-misskey',
-	component: page(() => import('@/pages/about-misskey.vue')),
+	redirect: '/taiyme/about',
 }, {
 	path: '/invite',
 	name: 'invite',
@@ -598,6 +598,18 @@ export const ROUTE_DEF = [{
 	path: '/debug',
 	component: page(() => import('@/pages/debug.vue')),
 	loginRequired: false,
+}, {
+	path: '/taiyme/about',
+	component: page(() => import('@/pages/taiyme/about.vue')),
+}, {
+	path: '/taiyme',
+	redirect: '/taiyme/about',
+}, {
+	path: '/tms/about',
+	redirect: '/taiyme/about',
+}, {
+	path: '/tms',
+	redirect: '/taiyme/about',
 }, {
 	// テスト用リダイレクト設定。ログイン中ユーザのプロフィールにリダイレクトする
 	path: '/redirect-test',

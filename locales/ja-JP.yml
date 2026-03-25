@@ -1,5 +1,12 @@
 _lang_: "日本語"
 
+_taiyme:
+  supportTaiy: "taiyを支援する"
+  poweredByTaiyme: "{name}は、Misskeyの派生である<b>taiyme</b>を使用したサーバーのひとつです。"
+  _about:
+    aboutTaiyme: "taiymeについて"
+    descriptionOfTaiyme: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
+
 headlineMisskey: "ノートでつながるネットワーク"
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"
 poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつです。"

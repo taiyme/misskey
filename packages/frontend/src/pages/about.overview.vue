@@ -22,22 +22,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<MkKeyValue :copy="version">
-				<template #key>Misskey</template>
+				<template #key>taiyme</template>
 				<template #value>{{ version }}</template>
 			</MkKeyValue>
-			<div v-html="i18n.tsx.poweredByMisskeyDescription({ name: instance.name ?? host })">
+			<div v-html="i18n.tsx._taiyme.poweredByTaiyme({ name: instance.name ?? host })">
 			</div>
-			<FormLink to="/about-misskey">
-				<template #icon><i class="ti ti-info-circle"></i></template>
-				{{ i18n.ts.aboutMisskey }}
-			</FormLink>
-			<FormLink v-if="instance.repositoryUrl || instance.providesTarball" :to="instance.repositoryUrl || `/tarball/misskey-${version}.tar.gz`" external>
-				<template #icon><i class="ti ti-code"></i></template>
-				{{ i18n.ts.sourceCode }}
-			</FormLink>
-			<MkInfo v-else warn>
-				{{ i18n.ts.sourceCodeIsNotYetProvided }}
-			</MkInfo>
+			<div class="_gaps_s">
+				<FormLink to="/taiyme/about">
+					<template #icon><i class="ti ti-info-circle"></i></template>
+					{{ i18n.ts._taiyme._about.aboutTaiyme }}
+				</FormLink>
+				<FormLink v-if="instance.repositoryUrl" :to="instance.repositoryUrl" external>
+					<template #icon><i class="ti ti-code"></i></template>
+					{{ i18n.ts.sourceCode }}
+				</FormLink>
+				<FormLink v-else-if="instance.providesTarball" :to="`/tarball/misskey-${version}.tar.gz`" external>
+					<template #icon><i class="ti ti-download"></i></template>
+					{{ i18n.ts.sourceCode }}
+				</FormLink>
+				<MkInfo v-else warn>
+					{{ i18n.ts.sourceCodeIsNotYetProvided }}
+				</MkInfo>
+			</div>
 		</div>
 	</FormSection>
 
