@@ -26,6 +26,12 @@ export interface Locale extends ILocale {
              */
             "descriptionOfTaiyme": string;
         };
+        "_admin": {
+            /**
+             * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。
+             */
+            "repositoryUrlDescription": string;
+        };
     };
     /**
      * ノートでつながるネットワーク

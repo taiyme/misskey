@@ -22,24 +22,26 @@ const themeColor = chalk.hex('#86b300');
 
 function greet(props: { version: string }) {
 	if (!envOption.quiet) {
-		//#region Misskey logo
+		//#region taiyme logo
 		const v = `v${props.version}`;
-		console.log(themeColor('  _____ _         _           '));
-		console.log(themeColor(' |     |_|___ ___| |_ ___ _ _ '));
-		console.log(themeColor(' | | | | |_ -|_ -| \'_| -_| | |'));
-		console.log(themeColor(' |_|_|_|_|___|___|_,_|___|_  |'));
-		console.log(' ' + chalk.gray(v) + themeColor('                        |___|\n'.substring(v.length)));
+		const v_spacer = ' '.repeat(Math.max(1, (26 - v.length)));
+		console.log(themeColor('    _     _               '));
+		console.log(themeColor('  _| |,__|_|_ _ _____ ___ '));
+		console.log(themeColor(' |_  |__ | | | |     | | |'));
+		console.log(themeColor('   | | | | |_, | | | | __|'));
+		console.log(themeColor('   |_|__/|_|__/|_|_|_|___|'));
+		console.log(v_spacer + chalk.gray(v));
 		//#endregion
 
-		console.log(' Misskey is an open-source decentralized microblogging platform.');
-		console.log(chalk.rgb(255, 136, 0)(' If you like Misskey, please consider donating to support dev. https://misskey-hub.net/docs/donate/'));
+		console.log(' taiyme is an open-source decentralized microblogging platform.');
+		console.log(chalk.rgb(255, 136, 0)(' If you like taiyme, please consider donating to support dev. https://taiy.me/to/donate'));
 
 		console.log('');
 		console.log(chalkTemplate`--- ${os.hostname()} {gray (PID: ${process.pid.toString()})} ---`);
 	}
 
-	bootLogger.info('Welcome to Misskey!');
-	bootLogger.info(`Misskey v${props.version}`, null, true);
+	bootLogger.info('Welcome to taiyme!');
+	bootLogger.info(`taiyme v${props.version}`, null, true);
 }
 
 /**
