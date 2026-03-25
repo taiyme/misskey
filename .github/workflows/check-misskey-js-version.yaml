@@ -35,6 +35,12 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        field:
+          - upstreamVersion
+          - version
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -43,20 +49,37 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      - name: Check version
+      - name: Check ${{ matrix.field }} field
+        env:
+          field: ${{ matrix.field }}
         run: |
-          target_file="packages/misskey-js/package.json"
-          target_version="$(jq -r '.version' "$target_file")"
+          files=(
+            "packages/misskey-js/package.json"
+            "package.json"
+          )
 
-          source_file="package.json"
-          source_version="$(jq -r '.version' "$source_file")"
+          versions=()
 
-          if [[ "$source_version" != "$target_version" ]]; then
-            source_line="$(grep -n '"version": ' "$source_file" | cut -d: -f1 || true)"
-            echo "::error file=${source_file},line=${source_line:-0}::Version mismatch!"
+          for f in "${files[@]}"; do
+            v="$(jq -r --arg field "$field" -- '.[$field] // empty' "$f")"
 
-            target_line="$(grep -n '"version": ' "$target_file" | cut -d: -f1 || true)"
-            echo "::error file=${target_file},line=${target_line:-0}::Version mismatch!"
+            if [[ -z "$v" ]]; then
+              echo "::error file=$f::Missing required field '$field'"
+              exit 1
+            fi
+
+            versions+=("$v")
+          done
+
+          mapfile -t versions < <(
+            printf '%s\n' "${versions[@]}" | sort -u
+          )
+
+          if [[ "${#versions[@]}" -ne 1 ]]; then
+            for f in "${files[@]}"; do
+              l="$(grep -n "\"$field\": " "$f" | cut -d: -f1 || true)"
+              echo "::error file=$f,line=${l:-0}::Field '$field' mismatch detected: ${versions[*]}"
+            done
 
             exit 1
           fi
