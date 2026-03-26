@@ -6,9 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkModal ref="modal" preferType="dialog" :zPriority="'middle'" @click="modal?.close()" @closed="emit('closed')">
 	<div :class="$style.root">
-		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
+		<div :class="$style.title"><MkSparkle>{{ taiymeUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
-		<div v-if="isBeta" :class="$style.beta">{{ i18n.ts.thankYouForTestingBeta }}</div>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
 		<MkButton :class="$style.gotIt" primary full @click="modal?.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
@@ -16,12 +15,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef } from 'vue';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import { version } from '@@/js/config.js';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import { confetti } from '@/utility/confetti.js';
 
 const modal = useTemplateRef('modal');
@@ -30,11 +30,18 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const isBeta = version.includes('-beta') || version.includes('-alpha') || version.includes('-rc');
+const taiymeUpdated = computed(() => {
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+	const serverName = instance.shortName || instance.name || null;
+	if (serverName != null) {
+		return i18n.tsx._taiyme.serverUpdated({ serverName });
+	}
+	return i18n.ts._taiyme.taiymeUpdated;
+});
 
 function whatIsNew() {
 	modal.value?.close();
-	window.open(`https://misskey-hub.net/docs/releases/#_${version.replace(/\./g, '')}`, '_blank');
+	window.open(`https://github.com/taiyme/misskey/releases/tag/${version}`, '_blank');
 }
 
 onMounted(() => {
@@ -62,10 +69,6 @@ onMounted(() => {
 }
 
 .version {
-	margin: 1em 0;
-}
-
-.beta {
 	margin: 1em 0;
 }
 
