@@ -3,6 +3,8 @@ _lang_: "日本語"
 _taiyme:
   supportTaiy: "taiyを支援する"
   poweredByTaiyme: "{name}は、Misskeyの派生である<b>taiyme</b>を使用したサーバーのひとつです。"
+  taiymeUpdated: "taiymeが更新されました！"
+  serverUpdated: "{serverName}が更新されました！"
   _about:
     aboutTaiyme: "taiymeについて"
     descriptionOfTaiyme: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"

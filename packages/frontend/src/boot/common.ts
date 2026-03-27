@@ -69,8 +69,11 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	if (lastVersion !== version) {
 		miLocalStorage.setItem('lastVersion', version);
 
+		const a = version.split('-').at(0);
+		const b = lastVersion?.split('-').at(0);
+
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
-			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
+			if (a != null && b != null && compareVersions(a, b) === 1) {
 				isClientUpdated = true;
 			}
 		} catch (err) { /* empty */ }

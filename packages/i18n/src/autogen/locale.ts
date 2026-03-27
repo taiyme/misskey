@@ -16,6 +16,14 @@ export interface Locale extends ILocale {
          * {name}は、Misskeyの派生である<b>taiyme</b>を使用したサーバーのひとつです。
          */
         "poweredByTaiyme": ParameterizedString<"name">;
+        /**
+         * taiymeが更新されました！
+         */
+        "taiymeUpdated": string;
+        /**
+         * {serverName}が更新されました！
+         */
+        "serverUpdated": ParameterizedString<"serverName">;
         "_about": {
             /**
              * taiymeについて
