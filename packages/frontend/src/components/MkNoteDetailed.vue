@@ -183,10 +183,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div>
 			<div v-if="tab === 'replies'">
-				<div v-if="!repliesLoaded" style="padding: 16px">
-					<MkButton style="margin: 0 auto;" primary rounded @click="loadReplies">{{ i18n.ts.loadReplies }}</MkButton>
-				</div>
-				<MkNoteSub v-for="note in replies" :key="note.id" :note="note" :class="$style.reply" :detail="true"/>
+				<MkPagination :paginator="repliesPaginator" :forceDisableInfiniteScroll="true">
+					<template #default="{ items }">
+						<MkNoteSub v-for="item in items" :key="item.id" :note="item" :class="$style.reply" :detail="true"/>
+					</template>
+				</MkPagination>
 			</div>
 			<div v-else-if="tab === 'renotes'" :class="$style.tab_renotes">
 				<MkPagination :paginator="renotesPaginator" :forceDisableInfiniteScroll="true">
@@ -333,7 +334,6 @@ const parsed = appearNote.text ? mfm.parse(appearNote.text) : null;
 const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null;
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
-const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id);
 
 useGlobalEvent('noteDeleted', (noteId) => {
@@ -385,6 +385,13 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
+
+const repliesPaginator = markRaw(new Paginator('notes/children', {
+	limit: 10,
+	params: {
+		noteId: appearNote.id,
+	},
+}));
 
 const renotesPaginator = markRaw(new Paginator('notes/renotes', {
 	limit: 10,
@@ -601,18 +608,6 @@ function focus() {
 
 function blur() {
 	rootEl.value?.blur();
-}
-
-const repliesLoaded = ref(false);
-
-function loadReplies() {
-	repliesLoaded.value = true;
-	misskeyApi('notes/children', {
-		noteId: appearNote.id,
-		limit: 30,
-	}).then(res => {
-		replies.value = res;
-	});
 }
 
 const conversationLoaded = ref(false);
