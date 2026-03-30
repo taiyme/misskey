@@ -93,7 +93,7 @@ jobs:
       - name: Test
         run: |
           pnpm --filter backend \
-            run test
+            run test-and-coverage
 
   e2e-tests:
     name: E2E Tests
@@ -150,7 +150,7 @@ jobs:
       - name: Test
         run: |
           pnpm --filter backend \
-            run test:e2e
+            run test-and-coverage:e2e
 
   migration-tests:
     name: Migration Tests

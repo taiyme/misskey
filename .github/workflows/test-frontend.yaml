@@ -77,7 +77,7 @@ jobs:
       - name: Test
         run: |
           pnpm --filter frontend \
-            run test
+            run test-and-coverage
 
   e2e-tests:
     name: E2E Tests
