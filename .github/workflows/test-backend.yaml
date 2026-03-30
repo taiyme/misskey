@@ -9,6 +9,7 @@ on:
       - .github/workflows/test-backend.yaml
       - .github/misskey/test.yml
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
   pull_request:
@@ -19,6 +20,7 @@ on:
       - .github/workflows/test-backend.yaml
       - .github/misskey/test.yml
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
 concurrency:

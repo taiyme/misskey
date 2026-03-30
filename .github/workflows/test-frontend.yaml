@@ -12,6 +12,7 @@ on:
       - packages/frontend-embed/**/*
       - packages/frontend-shared/**/*
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
   pull_request:
@@ -25,6 +26,7 @@ on:
       - packages/frontend-embed/**/*
       - packages/frontend-shared/**/*
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
 concurrency:

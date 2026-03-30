@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/test-federation.yaml
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
   pull_request:
@@ -17,6 +18,7 @@ on:
     paths:
       - .github/workflows/test-federation.yaml
       - packages/backend/**/*
+      - packages/mfm-js/**/*
       - packages/misskey-js/**/*
 
 concurrency:

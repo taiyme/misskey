@@ -1,0 +1,56 @@
+{
+  "type": "module",
+  "name": "mfm-js",
+  "version": "0.25.0",
+  "upstreamVersion": "0.25.0",
+  "description": "An MFM parser implementation with TypeScript",
+  "main": "./built/index.js",
+  "types": "./built/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./built/index.js",
+      "types": "./built/index.d.ts",
+      "default": "./built/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node ./build.js",
+    "watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+    "tsd": "tsd",
+    "parse": "node ./built/cli/parse.js",
+    "parse-simple": "node ./built/cli/parseSimple.js",
+    "api": "pnpm api-extractor run --local --verbose",
+    "api-prod": "pnpm api-extractor run --verbose",
+    "eslint": "eslint",
+    "typecheck": "tsgo --noEmit",
+    "lint": "pnpm typecheck && pnpm eslint",
+    "vitest": "vitest run --coverage",
+    "test": "pnpm vitest && pnpm tsd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taiyme/misskey.git",
+    "directory": "packages/mfm-js"
+  },
+  "author": "Marihachi",
+  "license": "MIT",
+  "devDependencies": {
+    "@microsoft/api-extractor": "7.57.6",
+    "@types/node": "24.11.0",
+    "@typescript-eslint/eslint-plugin": "8.56.1",
+    "@typescript-eslint/parser": "8.56.1",
+    "@vitest/coverage-v8": "4.0.18",
+    "esbuild": "0.27.3",
+    "execa": "9.6.1",
+    "nodemon": "3.1.14",
+    "tsd": "0.33.0",
+    "vitest": "4.0.18"
+  },
+  "dependencies": {
+    "@twemoji/parser": "16.0.0"
+  },
+  "files": [
+    "built",
+    "CHANGELOG.md"
+  ]
+}

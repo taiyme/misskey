@@ -16,10 +16,15 @@ misskey-js: &__misskey-js
   - *__shared
   - packages/misskey-js/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
+mfm-js: &__mfm-js
+  - *__shared
+  - packages/mfm-js/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
 backend:
   - *__shared
   - *__misskey-js
   - *__misskey-reversi
+  - *__mfm-js
   - packages/backend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
 sw:
@@ -42,6 +47,7 @@ icons-subsetter: &__icons-subsetter
 # frontend:
 #   - *__shared
 #   - *__misskey-js
+#   - *__mfm-js
 #   - *__misskey-reversi
 #   - *__misskey-bubble-game
 #   - *__icons-subsetter
@@ -52,6 +58,7 @@ icons-subsetter: &__icons-subsetter
 # frontend-embed:
 #   - *__shared
 #   - *__misskey-js
+#   - *__mfm-js
 #   - *__icons-subsetter
 #   - *__frontend-shared
 #   - *__frontend-builder

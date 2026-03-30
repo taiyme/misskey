@@ -17,6 +17,10 @@ misskey-js:
   - *__shared
   - packages/misskey-js/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
 
+mfm-js:
+  - *__shared
+  - packages/mfm-js/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}
+
 backend:
   - *__shared
   - packages/backend/**/*.{js,cjs,mjs,jsx,ts,tsx,vue,json}

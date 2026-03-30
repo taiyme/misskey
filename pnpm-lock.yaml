@@ -268,8 +268,8 @@ importers:
         specifier: 0.55.0
         version: 0.55.0
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: workspace:*
+        version: link:../mfm-js
       mime-types:
         specifier: 3.0.2
         version: 3.0.2
@@ -771,8 +771,8 @@ importers:
         specifier: 1.35.1
         version: 1.35.1
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: workspace:*
+        version: link:../mfm-js
       misskey-bubble-game:
         specifier: workspace:*
         version: link:../misskey-bubble-game
@@ -1100,8 +1100,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: workspace:*
+        version: link:../mfm-js
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -1313,6 +1313,43 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.56.1
         version: 8.56.1(eslint@9.39.3)(typescript@5.9.3)
+
+  packages/mfm-js:
+    dependencies:
+      '@twemoji/parser':
+        specifier: 16.0.0
+        version: 16.0.0
+    devDependencies:
+      '@microsoft/api-extractor':
+        specifier: 7.57.6
+        version: 7.57.6(@types/node@24.11.0)
+      '@types/node':
+        specifier: 24.11.0
+        version: 24.11.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.56.1
+        version: 8.56.1(@typescript-eslint/parser@8.56.1(eslint@9.39.3)(typescript@5.9.3))(eslint@9.39.3)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.56.1
+        version: 8.56.1(eslint@9.39.3)(typescript@5.9.3)
+      '@vitest/coverage-v8':
+        specifier: 4.0.18
+        version: 4.0.18(vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.11.0)(happy-dom@20.7.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(jsdom@27.2.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0))
+      esbuild:
+        specifier: 0.27.3
+        version: 0.27.3
+      execa:
+        specifier: 9.6.1
+        version: 9.6.1
+      nodemon:
+        specifier: 3.1.14
+        version: 3.1.14
+      tsd:
+        specifier: 0.33.0
+        version: 0.33.0
+      vitest:
+        specifier: 4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@24.11.0)(happy-dom@20.7.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(jsdom@27.2.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.12.10(@types/node@24.11.0)(typescript@5.9.3))(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0)
 
   packages/misskey-bubble-game:
     dependencies:
@@ -8056,9 +8093,6 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
 
-  mfm-js@0.25.0:
-    resolution: {integrity: sha512-JoK5TOtswXIvZSZ9hUEL+ZkcNV4onu/DtkaKeXK846+sJBBF8DvxYmPutt7nPaRDsUMmJGr64PNVMFpMGdk3hw==}
-
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
 
@@ -10750,6 +10784,9 @@ packages:
 
   vue-component-type-helpers@3.2.5:
     resolution: {integrity: sha512-tkvNr+bU8+xD/onAThIe7CHFvOJ/BO6XCOrxMzeytJq40nTfpGDJuVjyCM8ccGZKfAbGk2YfuZyDMXM56qheZQ==}
+
+  vue-component-type-helpers@3.2.6:
+    resolution: {integrity: sha512-O02tnvIfOQVmnvoWwuSydwRoHjZVt8UEBR+2p4rT35p8GAy5VTlWP8o5qXfJR/GWCN0nVZoYWsVUvx2jwgdBmQ==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -14352,7 +14389,7 @@ snapshots:
       storybook: 10.2.13(@testing-library/dom@10.4.0)(bufferutil@4.1.0)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(utf-8-validate@6.0.6)
       type-fest: 2.19.0
       vue: 3.5.29(typescript@5.9.3)
-      vue-component-type-helpers: 3.2.5
+      vue-component-type-helpers: 3.2.6
 
   '@stylistic/eslint-plugin@5.5.0(eslint@9.39.3)':
     dependencies:
@@ -19179,10 +19216,6 @@ snapshots:
 
   methods@1.1.2: {}
 
-  mfm-js@0.25.0:
-    dependencies:
-      '@twemoji/parser': 16.0.0
-
   micromark-core-commonmark@2.0.3:
     dependencies:
       decode-named-character-reference: 1.2.0
@@ -22077,6 +22110,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.2.5: {}
+
+  vue-component-type-helpers@3.2.6: {}
 
   vue-demi@0.14.10(vue@3.5.29(typescript@5.9.3)):
     dependencies:

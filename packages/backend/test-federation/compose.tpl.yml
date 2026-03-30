@@ -55,6 +55,14 @@ services:
         target: /misskey/packages/backend/scripts/compile_config.js
         read_only: true
       - type: bind
+        source: ../../mfm-js/built
+        target: /misskey/packages/mfm-js/built
+        read_only: true
+      - type: bind
+        source: ../../mfm-js/package.json
+        target: /misskey/packages/mfm-js/package.json
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true

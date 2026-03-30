@@ -30,6 +30,9 @@ const __dirname = import.meta.dirname;
 	fs.rmSync(__dirname + '/../packages/i18n/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/i18n/node_modules', { recursive: true, force: true });
 
+	fs.rmSync(__dirname + '/../packages/mfm-js/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/mfm-js/node_modules', { recursive: true, force: true });
+
 	fs.rmSync(__dirname + '/../packages/misskey-js/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/misskey-js/node_modules', { recursive: true, force: true });
 
