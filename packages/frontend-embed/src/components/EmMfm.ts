@@ -15,6 +15,7 @@ import EmMention from '@/components/EmMention.vue';
 import EmEmoji from '@/components/EmEmoji.vue';
 import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
 import EmA from '@/components/EmA.vue';
+import EmRjNumber from '@/components/EmRjNumber.vue';
 
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;
@@ -416,6 +417,14 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(EmEmoji, {
 					key: Math.random(),
 					emoji: token.props.emoji,
+				})];
+			}
+
+			case 'rjNumber': {
+				return [h(EmRjNumber, {
+					key: Math.random(),
+					rjNumber: token.props.rjNumber,
+					url: token.props.url,
 				})];
 			}
 

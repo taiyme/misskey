@@ -90,6 +90,8 @@ interface TypeTable {
 	url: M.NodeType<'url'> | string,
 	urlAlt: M.NodeType<'url'>,
 	search: M.NodeType<'search'>,
+	rjWorkNumber: M.NodeType<'rjNumber'>,
+	rgCircleNumber: M.NodeType<'rjNumber'>,
 	text: string,
 }
 
@@ -156,6 +158,10 @@ export const language = P.createLanguage<TypeTable>({
 			r.url,
 			// block
 			r.search,
+			// "RJ"
+			r.rjWorkNumber,
+			// "RG"
+			r.rgCircleNumber,
 			r.text,
 		]);
 	},
@@ -213,6 +219,10 @@ export const language = P.createLanguage<TypeTable>({
 			r.link,
 			// http
 			r.url,
+			// "RJ"
+			r.rjWorkNumber,
+			// "RG"
+			r.rgCircleNumber,
 			r.text,
 		]);
 	},
@@ -785,6 +795,28 @@ export const language = P.createLanguage<TypeTable>({
 		).map(result => {
 			const query = result[2].join('');
 			return M.SEARCH(query, `${query}${result[3]}${result[4]}`);
+		});
+	},
+
+	rjWorkNumber: () => {
+		const workNumberChar = P.regexp(/[RVB][JE]\d{6,}/);
+		return P.seq(
+			notLinkLabel,
+			workNumberChar,
+		).select(1).map(rjNumber => {
+			const url = `https://www.dlsite.com/home/work/=/product_id/${rjNumber}.html`;
+			return M.RJ_NUMBER(rjNumber, url);
+		});
+	},
+
+	rgCircleNumber: () => {
+		const circleNumberChar = P.regexp(/[RVB][G]\d{5,}/);
+		return P.seq(
+			notLinkLabel,
+			circleNumberChar,
+		).select(1).map(rgNumber => {
+			const url = `https://www.dlsite.com/home/circle/profile/=/maker_id/${rgNumber}.html`;
+			return M.RJ_NUMBER(rgNumber, url);
 		});
 	},
 
