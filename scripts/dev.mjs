@@ -45,6 +45,11 @@ await Promise.all([
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
+	execa('pnpm', ['--filter', 'mfm-js', 'build'], {
+		cwd: _dirname + '/../',
+		stdout: process.stdout,
+		stderr: process.stderr,
+	}),
 	execa('pnpm', ['--filter', 'misskey-js', 'build'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
@@ -89,6 +94,12 @@ execa('pnpm', ['--filter', 'frontend-embed', 'watch'], {
 });
 
 execa('pnpm', ['--filter', 'sw', 'watch'], {
+	cwd: _dirname + '/../',
+	stdout: process.stdout,
+	stderr: process.stderr,
+});
+
+execa('pnpm', ['--filter', 'mfm-js', 'watch', '--no-clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
