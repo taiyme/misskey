@@ -37,6 +37,7 @@ export type {
 	MfmLink,
 	MfmFn,
 	MfmPlain,
+	MfmRjNumber,
 	MfmText,
 } from './node.js';
 
@@ -63,5 +64,6 @@ export {
 	LINK,
 	FN,
 	PLAIN,
+	RJ_NUMBER,
 	TEXT,
 } from './node.js';

@@ -431,6 +431,15 @@ export class MfmService {
 			plain: (node) => {
 				return `<span>${toHtml(node.children)}</span>`;
 			},
+
+			rjNumber: (node) => {
+				try {
+					const url = new URL(node.props.url);
+					return `<a href="${escapeHtml(url.href)}">${escapeHtml(node.props.rjNumber)}</a>`;
+				} catch (_) {
+					return escapeHtml(node.props.rjNumber);
+				}
+			},
 		} satisfies { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => string } as { [K in mfm.MfmNode['type']]: (node: mfm.MfmNode) => string };
 
 		return `${toHtml(nodes)}${extraHtml ?? ''}`;

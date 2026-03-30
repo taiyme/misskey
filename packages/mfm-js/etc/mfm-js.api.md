@@ -105,7 +105,7 @@ export type MfmHashtag = {
 };
 
 // @public (undocumented)
-export type MfmInline = MfmUnicodeEmoji | MfmEmojiCode | MfmBold | MfmSmall | MfmItalic | MfmStrike | MfmInlineCode | MfmMathInline | MfmMention | MfmHashtag | MfmUrl | MfmLink | MfmFn | MfmPlain | MfmText;
+export type MfmInline = MfmUnicodeEmoji | MfmEmojiCode | MfmBold | MfmSmall | MfmItalic | MfmStrike | MfmInlineCode | MfmMathInline | MfmMention | MfmHashtag | MfmUrl | MfmLink | MfmFn | MfmPlain | MfmText | MfmRjNumber;
 
 // @public (undocumented)
 export type MfmInlineCode = {
@@ -180,6 +180,16 @@ export type MfmQuote = {
 };
 
 // @public (undocumented)
+export type MfmRjNumber = {
+    type: 'rjNumber';
+    props: {
+        rjNumber: string;
+        url: string;
+    };
+    children?: [];
+};
+
+// @public (undocumented)
 export type MfmSearch = {
     type: 'search';
     props: {
@@ -238,7 +248,7 @@ export type MfmUrl = {
 export const N_URL: (value: string, brackets?: boolean | undefined) => MfmUrl;
 
 // @public (undocumented)
-export type NodeType<T extends MfmNode['type']> = T extends 'quote' ? MfmQuote : T extends 'search' ? MfmSearch : T extends 'blockCode' ? MfmCodeBlock : T extends 'mathBlock' ? MfmMathBlock : T extends 'center' ? MfmCenter : T extends 'unicodeEmoji' ? MfmUnicodeEmoji : T extends 'emojiCode' ? MfmEmojiCode : T extends 'bold' ? MfmBold : T extends 'small' ? MfmSmall : T extends 'italic' ? MfmItalic : T extends 'strike' ? MfmStrike : T extends 'inlineCode' ? MfmInlineCode : T extends 'mathInline' ? MfmMathInline : T extends 'mention' ? MfmMention : T extends 'hashtag' ? MfmHashtag : T extends 'url' ? MfmUrl : T extends 'link' ? MfmLink : T extends 'fn' ? MfmFn : T extends 'plain' ? MfmPlain : T extends 'text' ? MfmText : never;
+export type NodeType<T extends MfmNode['type']> = T extends 'quote' ? MfmQuote : T extends 'search' ? MfmSearch : T extends 'blockCode' ? MfmCodeBlock : T extends 'mathBlock' ? MfmMathBlock : T extends 'center' ? MfmCenter : T extends 'unicodeEmoji' ? MfmUnicodeEmoji : T extends 'emojiCode' ? MfmEmojiCode : T extends 'bold' ? MfmBold : T extends 'small' ? MfmSmall : T extends 'italic' ? MfmItalic : T extends 'strike' ? MfmStrike : T extends 'inlineCode' ? MfmInlineCode : T extends 'mathInline' ? MfmMathInline : T extends 'mention' ? MfmMention : T extends 'hashtag' ? MfmHashtag : T extends 'url' ? MfmUrl : T extends 'link' ? MfmLink : T extends 'fn' ? MfmFn : T extends 'plain' ? MfmPlain : T extends 'rjNumber' ? MfmRjNumber : T extends 'text' ? MfmText : never;
 
 // @public (undocumented)
 export function parse(input: string, opts?: Partial<{
@@ -253,6 +263,9 @@ export const PLAIN: (text: string) => MfmPlain;
 
 // @public (undocumented)
 export const QUOTE: (children: MfmNode[]) => MfmQuote;
+
+// @public (undocumented)
+export const RJ_NUMBER: (rjNumber: string, url: string) => MfmRjNumber;
 
 // @public (undocumented)
 export const SEARCH: (query: string, content: string) => MfmSearch;
