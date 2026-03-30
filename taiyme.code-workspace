@@ -45,6 +45,10 @@
 			"path": "./packages/misskey-js/generator",
 		},
 		{
+			"name": "mfm-js",
+			"path": "./packages/mfm-js",
+		},
+		{
 			"name": "misskey-reversi",
 			"path": "./packages/misskey-reversi",
 		},

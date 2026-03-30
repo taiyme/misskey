@@ -9,6 +9,7 @@ packages:
   - packages/sw
   - packages/misskey-js
   - packages/misskey-js/generator
+  - packages/mfm-js
   - packages/misskey-reversi
   - packages/misskey-bubble-game
 onlyBuiltDependencies:

@@ -76,6 +76,7 @@ COPY --link ./packages/i18n/package.json ./packages/i18n/
 COPY --link ./packages/sw/package.json ./packages/sw/
 COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
+COPY --link ./packages/mfm-js/package.json ./packages/mfm-js/
 COPY --link ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --link ./packages/backend/package.json ./packages/backend/
 COPY --link ./packages/icons-subsetter/package.json ./packages/icons-subsetter/
@@ -98,6 +99,8 @@ COPY --link ./packages/misskey-bubble-game/build.js ./packages/misskey-bubble-ga
 COPY --link ./packages/misskey-bubble-game/src/ ./packages/misskey-bubble-game/src/
 COPY --link ./packages/misskey-reversi/build.js ./packages/misskey-reversi/tsconfig.json ./packages/misskey-reversi/
 COPY --link ./packages/misskey-reversi/src/ ./packages/misskey-reversi/src/
+COPY --link ./packages/mfm-js/build.js ./packages/mfm-js/tsconfig.json ./packages/mfm-js/
+COPY --link ./packages/mfm-js/src/ ./packages/mfm-js/src/
 COPY --link ./packages/misskey-js/build.js ./packages/misskey-js/tsconfig.json ./packages/misskey-js/
 COPY --link ./packages/misskey-js/src/ ./packages/misskey-js/src/
 COPY --link ./packages/backend/.swcrc ./packages/backend/
@@ -169,6 +172,7 @@ COPY --chown=misskey:misskey ./packages/i18n/package.json ./packages/i18n/
 COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
 COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
 COPY --chown=misskey:misskey ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
+COPY --chown=misskey:misskey ./packages/mfm-js/package.json ./packages/mfm-js/
 COPY --chown=misskey:misskey ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --chown=misskey:misskey ./packages/backend/package.json ./packages/backend/ormconfig.js ./packages/backend/
 COPY --chown=misskey:misskey ./packages/backend/assets/ ./packages/backend/assets/
@@ -184,12 +188,14 @@ COPY --chown=misskey:misskey --from=native-submodule /misskey/fluent-emojis/ ./f
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built ./packages/i18n/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ ./packages/misskey-bubble-game/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built/ ./packages/misskey-reversi/built/
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/mfm-js/built/ ./packages/mfm-js/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/built/ ./packages/misskey-js/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built/ ./packages/backend/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/src-js ./packages/backend/src-js
 COPY --chown=misskey:misskey --from=native-builder /misskey/built/ ./built/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-bubble-game/node_modules/ ./packages/misskey-bubble-game/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-reversi/node_modules/ ./packages/misskey-reversi/node_modules/
+COPY --chown=misskey:misskey --from=target-builder /misskey/packages/mfm-js/node_modules/ ./packages/mfm-js/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/misskey-js/node_modules/ ./packages/misskey-js/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/packages/backend/node_modules/ ./packages/backend/node_modules/
 COPY --chown=misskey:misskey --from=target-builder /misskey/node_modules/ ./node_modules/
