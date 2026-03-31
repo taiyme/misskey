@@ -90,8 +90,8 @@ describe('Timelines', () => {
 	// });
 
 	describe.each([
-		// { enableFanoutTimeline: true },
-		{ enableFanoutTimeline: false },
+		{ enableFanoutTimeline: true },
+		// { enableFanoutTimeline: false },
 	])('Timelines (enableFanoutTimeline: $enableFanoutTimeline)', ({ enableFanoutTimeline }) => {
 		function waitForPushToTl() {
 			return setTimeout(250);

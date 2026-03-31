@@ -39,6 +39,14 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - 1
+          - 2
+          - 3
+          - 4
     services:
       postgres:
         image: postgres:18@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
@@ -93,9 +101,11 @@ jobs:
           pnpm run build
 
       - name: Test
+        env:
+          shard: ${{ matrix.shard }}/${{ strategy.job-total }}
         run: |
           pnpm --filter backend \
-            run test-and-coverage
+            run test-and-coverage --shard "$shard"
 
   e2e-tests:
     name: E2E Tests
@@ -103,6 +113,18 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
     services:
       postgres:
         image: postgres:18@sha256:a9abf4275f9e99bff8e6aed712b3b7dfec9cac1341bba01c1ffdfce9ff9fc34a
@@ -150,9 +172,11 @@ jobs:
           pnpm run build
 
       - name: Test
+        env:
+          shard: ${{ matrix.shard }}/${{ strategy.job-total }}
         run: |
           pnpm --filter backend \
-            run test-and-coverage:e2e
+            run test-and-coverage:e2e --shard "$shard"
 
   migration-tests:
     name: Migration Tests

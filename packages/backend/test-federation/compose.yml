@@ -110,7 +110,7 @@ services:
         pnpm -F backend i --frozen-lockfile
         exec "$0" "$@"
       '
-    command: pnpm -F backend test:fed
+    command: pnpm -F backend test:fed --shard ${JEST_SHARD:-1/1}
 
   daemon:
     image: node:${NODE_VERSION}
