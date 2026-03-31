@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=22.21.1-bookworm
-ARG PNPM_VERSION=10.30.3
+ARG NODE_VERSION=22.22.0-bookworm
+ARG PNPM_VERSION=10.32.1
 
 
 # [native-base]: setup pnpm, fetch dependencies
