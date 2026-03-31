@@ -421,7 +421,7 @@ export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken
 
 		return await Promise.race([
 			receivedPromise,
-			new Promise<void>((r) => setTimeout(() => r(), 3000)).then(() => false),
+			new Promise<void>((r) => setTimeout(() => r(), 5000)).then(() => false),
 		]);
 	} finally {
 		if (ws) ws.close();

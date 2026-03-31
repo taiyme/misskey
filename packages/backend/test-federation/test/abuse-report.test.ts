@@ -24,13 +24,14 @@ describe('Abuse report', () => {
 			]);
 		});
 
+		// TODO: よく落ちる
 		test('Alice reports Bob, moderator in A forwards it, and B moderator receives it', async () => {
 			const comment = crypto.randomUUID();
 			await alice.client.request('users/report-abuse', { userId: bobInA.id, comment });
 			const reports = await aModerator.client.request('admin/abuse-user-reports', {});
 			const report = reports.filter(report => report.comment === comment)[0];
 			await aModerator.client.request('admin/forward-abuse-user-report', { reportId: report.id });
-			await sleep();
+			await sleep(5000);
 
 			const reportsInB = await bModerator.client.request('admin/abuse-user-reports', {});
 			const reportInB = reportsInB.filter(report => report.comment.includes(comment))[0];

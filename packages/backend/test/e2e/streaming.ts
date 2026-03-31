@@ -166,6 +166,7 @@ describe('Streaming', () => {
 				assert.strictEqual(fired, true);
 			});
 
+			// TODO: よく落ちる
 			test('フォローしているユーザーの visibility: followers な投稿への返信が流れる', async () => {
 				const note = await post(kyoko, { text: 'foo', visibility: 'followers' });
 
