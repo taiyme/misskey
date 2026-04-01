@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon :class="[$style.icon, { [$style.limitWidth]: prefer.s.limitWidthOfReaction }]" :reaction="reaction" :emojiUrl="reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -256,59 +256,73 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
+	box-sizing: content-box;
+	overflow: clip;
 	display: inline-flex;
-	height: 42px;
-	padding: 0 6px;
-	font-size: 1.5em;
+	height: 34px;
+	margin: 2px;
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid rgb(from var(--MI_THEME-fg) r g b / 0.2);
+	background-color: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+	transition: border-color 0.1s ease, background-color 0.1s ease;
 
 	&.canToggle {
-		background: var(--MI_THEME-buttonBg);
+		&:hover {
+			border-color: rgb(from var(--MI_THEME-fg) r g b / 0.4);
+			background-color: hsl(from var(--MI_THEME-panel) h s calc(l - 2));
+		}
+	}
+
+	&.reacted {
+		border-color: var(--MI_THEME-accent);
+		background-color: var(--MI_THEME-accent);
+		color: var(--MI_THEME-fgOnAccent);
 
 		&:hover {
-			background: rgba(0, 0, 0, 0.1);
+			border-color: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
+			background-color: hsl(from var(--MI_THEME-accent) h s calc(l + 5));
 		}
 	}
 
 	&:not(.canToggle) {
 		cursor: default;
+		border-style: dashed;
 	}
 
 	&.small {
-		height: 32px;
-		font-size: 1em;
+		height: 24px;
+		margin: 1px;
 		border-radius: 4px;
 
+		> .icon {
+			height: 24px;
+			font-size: 1em;
+		}
+
 		> .count {
+			padding: 0 3px;
 			font-size: 0.9em;
-			line-height: 32px;
+			line-height: 24px;
 		}
 	}
 
 	&.large {
-		height: 52px;
-		font-size: 2em;
+		height: 44px;
+		margin: 3px;
 		border-radius: 8px;
 
-		> .count {
-			font-size: 0.6em;
-			line-height: 52px;
-		}
-	}
-
-	&.reacted, &.reacted:hover {
-		background: var(--MI_THEME-accentedBg);
-		color: var(--MI_THEME-accent);
-		box-shadow: 0 0 0 1px var(--MI_THEME-accent) inset;
-
-		> .count {
-			color: var(--MI_THEME-accent);
-		}
-
 		> .icon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+			height: 44px;
+			font-size: 2em;
+		}
+
+		> .count {
+			padding: 0 6px;
+			font-size: 1.2em;
+			line-height: 44px;
 		}
 	}
 }
@@ -318,9 +332,19 @@ if (!mock) {
 	object-fit: contain;
 }
 
+.icon {
+	box-sizing: border-box;
+	padding: 4px;
+	height: 34px;
+	font-size: 1.5em;
+	background-color: #ffffff;
+	pointer-events: none;
+}
+
 .count {
-	font-size: 0.7em;
-	line-height: 42px;
-	margin: 0 0 0 4px;
+	box-sizing: border-box;
+	padding: 0 6px;
+	font-size: 0.9em;
+	line-height: 34px;
 }
 </style>
