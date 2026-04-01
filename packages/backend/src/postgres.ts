@@ -6,6 +6,7 @@
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
 import { DataSource, Logger, type QueryRunner } from 'typeorm';
+import ms from 'ms';
 import { entities as charts } from '@/core/chart/entities.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -268,7 +269,7 @@ export function createPostgresDataSource(config: Config) {
 		password: config.db.pass,
 		database: config.db.db,
 		extra: {
-			statement_timeout: 1000 * 10,
+			statement_timeout: ms('1 minute'),
 			...config.db.extra,
 		},
 		...(config.dbReplications ? {
