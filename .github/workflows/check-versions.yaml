@@ -1,0 +1,167 @@
+name: Check versions
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/check-versions.yaml
+      - .devcontainer/devcontainer.json
+      - Dockerfile
+      - packages/misskey-js/package.json
+      - package.json
+      - .node-version
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/check-versions.yaml
+      - .devcontainer/devcontainer.json
+      - Dockerfile
+      - packages/misskey-js/package.json
+      - package.json
+      - .node-version
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  check-node-versions:
+    name: Check Node versions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Detect version (.node-version)
+        run: |
+          EXPECTED_VERSION="$(cat .node-version)"
+          [[ -n "$EXPECTED_VERSION" ]] || exit 1
+          echo "EXPECTED_VERSION=${EXPECTED_VERSION}" >> "$GITHUB_ENV"
+          echo "::notice::Detected version: ${EXPECTED_VERSION}"
+
+      - name: Check version (Dockerfile)
+        run: |
+          grep -Eq "^ARG NODE_VERSION=${EXPECTED_VERSION}(-.*)?$" Dockerfile
+
+      - name: Check version (devcontainer.json)
+        run: |
+          ACTUAL_VERSION="$(jq -er '
+            .features
+            | to_entries
+            | map(select(.key | startswith("ghcr.io/devcontainers/features/node:")))
+            | first
+            | .value.version
+          ' .devcontainer/devcontainer.json)"
+          [[ "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
+
+  check-pnpm-versions:
+    name: Check pnpm versions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Detect version (packageManager)
+        run: |
+          EXPECTED_VERSION="$(jq -er '.packageManager | select(startswith("pnpm@")) | split("@")[1]' package.json)"
+          echo "EXPECTED_VERSION=${EXPECTED_VERSION}" >> "$GITHUB_ENV"
+          echo "::notice::Detected version: ${EXPECTED_VERSION}"
+
+      - name: Check version (devDependencies)
+        run: |
+          ACTUAL_VERSION="$(jq -er '.devDependencies.pnpm' package.json)"
+          [[ "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
+
+      - name: Check version (Dockerfile)
+        run: |
+          grep -qx "ARG PNPM_VERSION=${EXPECTED_VERSION}" Dockerfile
+
+      - name: Check version (devcontainer.json)
+        run: |
+          ACTUAL_VERSION="$(jq -er '
+            .features
+            | to_entries
+            | map(select(.key | startswith("ghcr.io/devcontainers-extra/features/pnpm:")))
+            | first
+            | .value.version
+          ' .devcontainer/devcontainer.json)"
+          [[ "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
+
+  check-misskey-js-version:
+    name: Check misskey-js version
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        field:
+          - upstreamVersion
+          - version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Check ${{ matrix.field }} field
+        env:
+          field: ${{ matrix.field }}
+        run: |
+          files=(
+            "packages/misskey-js/package.json"
+            "package.json"
+          )
+
+          versions=()
+
+          for f in "${files[@]}"; do
+            v="$(jq -r --arg field "$field" -- '.[$field] // empty' "$f")"
+
+            if [[ -z "$v" ]]; then
+              echo "::error file=$f::Missing required field '$field'"
+              exit 1
+            fi
+
+            versions+=("$v")
+          done
+
+          mapfile -t versions < <(
+            printf '%s\n' "${versions[@]}" | sort -u
+          )
+
+          if [[ "${#versions[@]}" -ne 1 ]]; then
+            for f in "${files[@]}"; do
+              l="$(grep -n "\"$field\": " "$f" | cut -d: -f1 || true)"
+              echo "::error file=$f,line=${l:-0}::Field '$field' mismatch detected: ${versions[*]}"
+            done
+
+            exit 1
+          fi
