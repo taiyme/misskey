@@ -9,6 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]"
 	src="/client-assets/dummy.png"
 	:title="alt"
+	draggable="false"
+	style="-webkit-user-drag: none;"
 />
 <span v-else-if="errored">:{{ customEmojiName }}:</span>
 <img
@@ -18,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:alt="alt"
 	:title="alt"
 	decoding="async"
+	draggable="false"
 	@error="errored = true"
 	@load="errored = false"
 />
@@ -74,26 +77,29 @@ const errored = ref(url.value == null);
 </script>
 
 <style lang="scss" module>
-.root {
+// NOTE: 簡単に上書きできるように :where() で囲っている
+
+:where(.root) {
 	height: 2em;
 	vertical-align: middle;
+	-webkit-user-drag: none;
 	transition: transform 0.2s ease;
 
-	&:hover {
+	&:where(:hover) {
 		transform: scale(1.2);
 	}
 }
 
-.normal {
+:where(.normal) {
 	height: 1.25em;
 	vertical-align: -0.25em;
 
-	&:hover {
+	&:where(:hover) {
 		transform: none;
 	}
 }
 
-.noStyle {
-	height: auto !important;
+:where(.noStyle) {
+	height: auto;
 }
 </style>

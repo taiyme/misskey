@@ -225,27 +225,29 @@ function unmute() {
 </script>
 
 <style lang="scss" module>
-.root {
+// NOTE: 簡単に上書きできるように :where() で囲っている
+
+:where(.root) {
 	height: 2em;
 	vertical-align: middle;
 	-webkit-user-drag: none;
 	transition: transform 0.2s ease;
 
-	&:hover {
+	&:where(:hover) {
 		transform: scale(1.2);
 	}
 }
 
-.normal {
+:where(.normal) {
 	height: 1.25em;
 	vertical-align: -0.25em;
 
-	&:hover {
+	&:where(:hover) {
 		transform: none;
 	}
 }
 
-.noStyle {
-	height: auto !important;
+:where(.noStyle) {
+	height: auto;
 }
 </style>

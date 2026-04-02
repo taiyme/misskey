@@ -114,7 +114,9 @@ function onClick(ev: PointerEvent) {
 </script>
 
 <style lang="scss" module>
-.root {
+// NOTE: 簡単に上書きできるように :where() で囲っている
+
+:where(.root) {
 	height: 1.25em;
 	vertical-align: -0.25em;
 }
