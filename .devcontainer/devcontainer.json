@@ -16,12 +16,16 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"editorconfig.editorconfig",
+				"aaron-bond.better-comments",
+				"blueglassblock.better-json5",
+				"usernamehw.errorlens",
 				"dbaeumer.vscode-eslint",
-				"Vue.volar",
-				"Orta.vscode-jest",
-				"dbaeumer.vscode-eslint",
-				"mrmlnc.vscode-json5"
+				"github.vscode-github-actions",
+				"bradgashler.htmltagwrap",
+				"orta.vscode-jest",
+				"vitest.explorer",
+				"vue.volar",
+				"redhat.vscode-yaml"
 			]
 		}
 	}
