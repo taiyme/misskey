@@ -545,6 +545,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['taiyme', 'swipe', 'pull', 'refresh', 'sensitivity']">
+								<MkPreferenceContainer k="taiyme.pullToRefreshSensitivity">
+									<MkRange v-model="taiymePullToRefreshSensitivity" :min="1" :max="5" :step="1" :continuousUpdate="true">
+										<template #label><SearchLabel>{{ i18n.ts._taiyme._settings.pullToRefreshSensitivity }}</SearchLabel><span class="_taiyme">{{ i18n.ts._taiyme.taiyme }}</span></template>
+									</MkRange>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['keep', 'screen', 'display', 'on']">
 								<MkPreferenceContainer k="keepScreenOn">
 									<MkSwitch v-model="keepScreenOn">
@@ -952,6 +960,7 @@ const keepScreenOn = prefer.model('keepScreenOn');
 const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
 const showPageTabBarBottom = prefer.model('showPageTabBarBottom');
 const enablePullToRefresh = prefer.model('enablePullToRefresh');
+const taiymePullToRefreshSensitivity = prefer.model('taiyme.pullToRefreshSensitivity');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
@@ -1011,6 +1020,7 @@ watch([
 	enableHorizontalSwipe,
 	showPageTabBarBottom,
 	enablePullToRefresh,
+	taiymePullToRefreshSensitivity,
 	reduceAnimation,
 	showAvailableReactionsFirstInNote,
 	animatedMfm,

@@ -7,6 +7,9 @@
  */
 
 :root {
+	--TMS_THEME-fgOnAccent: #fff;
+	--TMS_THEME-accent: #336ecc;
+
 	--MI-radius: 12px;
 	--MI-marginFull: 16px;
 	--MI-marginHalf: 10px;
@@ -450,6 +453,16 @@ rt {
 	padding: 2px 3px;
 	color: var(--MI_THEME-warn);
 	border: solid 1px var(--MI_THEME-warn);
+	border-radius: 4px;
+	vertical-align: top;
+}
+
+._taiyme {
+	margin-left: 0.7em;
+	font-size: 65%;
+	padding: 3px 4px;
+	color: var(--TMS_THEME-fgOnAccent);
+	background-color: var(--TMS_THEME-accent);
 	border-radius: 4px;
 	vertical-align: top;
 }

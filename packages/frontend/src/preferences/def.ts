@@ -545,4 +545,8 @@ export const PREF_DEF = definePreferences({
 	'experimental.enableWebTranslatorApi': {
 		default: false,
 	},
+
+	'taiyme.pullToRefreshSensitivity': {
+		default: 3 as 1 | 2 | 3 | 4 | 5,
+	},
 });
