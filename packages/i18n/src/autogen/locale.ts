@@ -9,6 +9,10 @@ export interface Locale extends ILocale {
     "_lang_": string;
     "_taiyme": {
         /**
+         * taiyme
+         */
+        "taiyme": string;
+        /**
          * taiyを支援する
          */
         "supportTaiy": string;
@@ -39,6 +43,12 @@ export interface Locale extends ILocale {
              * ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。
              */
             "repositoryUrlDescription": string;
+        };
+        "_settings": {
+            /**
+             * ひっぱって更新の感度
+             */
+            "pullToRefreshSensitivity": string;
         };
     };
     /**

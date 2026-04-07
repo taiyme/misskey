@@ -1,6 +1,7 @@
 _lang_: "日本語"
 
 _taiyme:
+  taiyme: "taiyme"
   supportTaiy: "taiyを支援する"
   poweredByTaiyme: "{name}は、Misskeyの派生である<b>taiyme</b>を使用したサーバーのひとつです。"
   taiymeUpdated: "taiymeが更新されました！"
@@ -10,6 +11,8 @@ _taiyme:
     descriptionOfTaiyme: "taiymeは、Misskeyから派生したオープンソースのソフトウェアです。"
   _admin:
     repositoryUrlDescription: "ソースコードが公開されているリポジトリがある場合、そのURLを記入します。taiymeを現状のまま（ソースコードにいかなる変更も加えずに）使用している場合は https://github.com/taiyme/misskey と記入します。"
+  _settings:
+    pullToRefreshSensitivity: "ひっぱって更新の感度"
 
 headlineMisskey: "ノートでつながるネットワーク"
 introMisskey: "ようこそ！Misskeyは、オープンソースの分散型マイクロブログサービスです。\n「ノート」を作成して、いま起こっていることを共有したり、あなたについて皆に発信しよう📡\n「リアクション」機能で、皆のノートに素早く反応を追加することもできます👍\n新しい世界を探検しよう🚀"

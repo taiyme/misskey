@@ -28,10 +28,12 @@ import { getScrollContainer } from '@@/js/scroll.js';
 import { i18n } from '@/i18n.js';
 import { isHorizontalSwipeSwiping } from '@/utility/touch.js';
 import { haptic } from '@/utility/haptic.js';
+import { prefer } from '@/preferences.js';
 
 const SCROLL_STOP = 10;
 const MAX_PULL_DISTANCE = Infinity;
-const FIRE_THRESHOLD = 200;
+const FIRE_THRESHOLD_BASE = 200;
+const FIRE_THRESHOLD = FIRE_THRESHOLD_BASE + (((prefer.s['taiyme.pullToRefreshSensitivity'] - 3) * 25) || 0);
 const RELEASE_TRANSITION_DURATION = 200;
 const PULL_BRAKE_BASE = 1.5;
 const PULL_BRAKE_FACTOR = 170;
