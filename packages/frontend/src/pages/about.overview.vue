@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<FormSection>
 		<div class="_gaps_m">
 			<MkKeyValue :copy="version">
-				<template #key>taiyme</template>
+				<template #key>{{ i18n.ts._taiyme.taiyme }}</template>
 				<template #value>{{ version }}</template>
 			</MkKeyValue>
 			<div v-html="i18n.tsx._taiyme.poweredByTaiyme({ name: instance.name ?? host })">
