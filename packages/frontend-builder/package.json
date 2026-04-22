@@ -1,5 +1,6 @@
 {
 	"name": "frontend-builder",
+	"private": true,
 	"type": "module",
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",

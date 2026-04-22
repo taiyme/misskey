@@ -9,7 +9,6 @@ on:
       - .github/workflows/check-versions.yaml
       - .devcontainer/devcontainer.json
       - Dockerfile
-      - packages/misskey-js/package.json
       - package.json
       - .node-version
 
@@ -21,7 +20,6 @@ on:
       - .github/workflows/check-versions.yaml
       - .devcontainer/devcontainer.json
       - Dockerfile
-      - packages/misskey-js/package.json
       - package.json
       - .node-version
 
@@ -110,58 +108,3 @@ jobs:
             | .value.version
           ' .devcontainer/devcontainer.json)"
           [[ "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
-
-  check-misskey-js-version:
-    name: Check misskey-js version
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        field:
-          - upstreamVersion
-          - version
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          fetch-depth: 1
-          submodules: true
-
-      - name: Check ${{ matrix.field }} field
-        env:
-          field: ${{ matrix.field }}
-        run: |
-          files=(
-            "packages/misskey-js/package.json"
-            "package.json"
-          )
-
-          versions=()
-
-          for f in "${files[@]}"; do
-            v="$(jq -r --arg field "$field" -- '.[$field] // empty' "$f")"
-
-            if [[ -z "$v" ]]; then
-              echo "::error file=$f::Missing required field '$field'"
-              exit 1
-            fi
-
-            versions+=("$v")
-          done
-
-          mapfile -t versions < <(
-            printf '%s\n' "${versions[@]}" | sort -u
-          )
-
-          if [[ "${#versions[@]}" -ne 1 ]]; then
-            for f in "${files[@]}"; do
-              l="$(grep -n "\"$field\": " "$f" | cut -d: -f1 || true)"
-              echo "::error file=$f,line=${l:-0}::Field '$field' mismatch detected: ${versions[*]}"
-            done
-
-            exit 1
-          fi

@@ -2,6 +2,7 @@
 	"type": "module",
 	"name": "misskey-reversi",
 	"version": "0.0.1",
+	"private": true,
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
 	"exports": {

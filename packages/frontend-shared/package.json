@@ -1,5 +1,6 @@
 {
 	"name": "frontend-shared",
+	"private": true,
 	"type": "module",
 	"main": "./js-built/index.js",
 	"types": "./js-built/index.d.ts",
