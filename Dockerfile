@@ -10,6 +10,9 @@ FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-slim AS native-base
 
 WORKDIR /misskey
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
 	rm -f /etc/apt/apt.conf.d/docker-clean && \
@@ -19,15 +22,16 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	ca-certificates \
 	git
 
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
 	npm install -g pnpm@${PNPM_VERSION}
 
-COPY --link ./patches/ ./patches/
-COPY --link ./.npmrc ./.node-version ./
+COPY --link ./.node-version ./
+COPY --link ./.npmrc ./
+COPY --link ./pnpm-workspace.yaml ./
 COPY --link ./pnpm-lock.yaml ./
+COPY --link ./patches/ ./patches/
 
-RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
-	pnpm config set -g store-dir /.pnpm-store && \
+RUN --mount=type=cache,target=${PNPM_HOME}/store,sharing=locked \
 	pnpm fetch --ignore-scripts
 
 
@@ -37,6 +41,9 @@ FROM node:${NODE_VERSION}-slim AS target-base
 
 WORKDIR /misskey
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt,sharing=locked \
 	rm -f /etc/apt/apt.conf.d/docker-clean && \
@@ -46,15 +53,16 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	ca-certificates \
 	git
 
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
 	npm install -g pnpm@${PNPM_VERSION}
 
-COPY --link ./patches/ ./patches/
-COPY --link ./.npmrc ./.node-version ./
+COPY --link ./.node-version ./
+COPY --link ./.npmrc ./
+COPY --link ./pnpm-workspace.yaml ./
 COPY --link ./pnpm-lock.yaml ./
+COPY --link ./patches/ ./patches/
 
-RUN --mount=type=cache,target=/.pnpm-store,sharing=locked \
-	pnpm config set -g store-dir /.pnpm-store && \
+RUN --mount=type=cache,target=${PNPM_HOME}/store,sharing=locked \
 	pnpm fetch --ignore-scripts
 
 
@@ -84,9 +92,9 @@ COPY --link ./packages/frontend-shared/package.json ./packages/frontend-shared/
 COPY --link ./packages/frontend-builder/package.json ./packages/frontend-builder/
 COPY --link ./packages/frontend/package.json ./packages/frontend/
 COPY --link ./packages/frontend-embed/package.json ./packages/frontend-embed/
-COPY --link ./pnpm-workspace.yaml ./package.json ./
+COPY --link ./package.json ./
 
-RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
+RUN pnpm install --frozen-lockfile --aggregate-output --prefer-offline && \
 	pnpm rebuild --recursive --aggregate-output
 
 COPY --link ./scripts/ ./scripts/
@@ -140,9 +148,9 @@ COPY --link ./packages/misskey-bubble-game/package.json ./packages/misskey-bubbl
 COPY --link ./packages/misskey-reversi/package.json ./packages/misskey-reversi/
 COPY --link ./packages/misskey-js/package.json ./packages/misskey-js/
 COPY --link ./packages/backend/package.json ./packages/backend/
-COPY --link ./pnpm-workspace.yaml ./package.json ./
+COPY --link ./package.json ./
 
-RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
+RUN pnpm install --frozen-lockfile --aggregate-output --prefer-offline && \
 	pnpm rebuild --recursive --aggregate-output
 
 
@@ -151,6 +159,9 @@ RUN pnpm install --frozen-lockfile --aggregate-output --offline && \
 FROM node:${NODE_VERSION}-slim AS runner
 
 WORKDIR /misskey
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 ARG UID="991"
 ARG GID="991"
@@ -165,9 +176,14 @@ RUN apt-get update && apt-get install -yqq --no-install-recommends \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists
 
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
 	npm install -g pnpm@${PNPM_VERSION}
 
+COPY --chown=misskey:misskey ./healthcheck.sh ./
+COPY --chown=misskey:misskey ./.node-version ./
+COPY --chown=misskey:misskey ./.npmrc ./
+COPY --chown=misskey:misskey ./pnpm-workspace.yaml ./
+COPY --chown=misskey:misskey ./package.json ./
 COPY --chown=misskey:misskey ./packages/i18n/package.json ./packages/i18n/
 COPY --chown=misskey:misskey ./packages/sw/package.json ./packages/sw/
 COPY --chown=misskey:misskey ./packages/misskey-bubble-game/package.json ./packages/misskey-bubble-game/
@@ -181,9 +197,6 @@ COPY --chown=misskey:misskey ./packages/backend/nsfw-model/ ./packages/backend/n
 COPY --chown=misskey:misskey ./packages/backend/migration/ ./packages/backend/migration/
 COPY --chown=misskey:misskey ./packages/frontend/assets/ ./packages/frontend/assets/
 COPY --chown=misskey:misskey ./packages/frontend-embed/assets/ ./packages/frontend-embed/assets/
-COPY --chown=misskey:misskey ./.npmrc ./.node-version ./
-COPY --chown=misskey:misskey ./pnpm-workspace.yaml ./package.json ./
-COPY --chown=misskey:misskey ./healthcheck.sh ./
 COPY --chown=misskey:misskey --from=native-submodule /misskey/fluent-emojis/ ./fluent-emojis/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built ./packages/i18n/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ ./packages/misskey-bubble-game/built/

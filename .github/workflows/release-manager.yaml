@@ -233,6 +233,10 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_REPO: ${{ github.repository }}
         run: |
+          gh label create \
+            "$release_manager_pending_label" \
+            --force
+
           gh pr create \
             --head "$release_manager_branch" \
             --base "$base_branch" \
@@ -330,6 +334,10 @@ jobs:
           GH_REPO: ${{ github.repository }}
           pr_number: ${{ needs.find-pr.outputs.pr-number }}
         run: |
+          gh label create \
+            "$release_manager_tagged_label" \
+            --force
+
           gh pr edit "$pr_number" \
             --remove-label "$release_manager_pending_label" \
             --add-label "$release_manager_tagged_label"
