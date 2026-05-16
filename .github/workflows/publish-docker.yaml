@@ -1,0 +1,239 @@
+name: Publish Docker Image
+run-name: Publish Docker Image (${{ github.ref_type == 'tag' && github.ref_name || 'nightly' }})
+
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - '*-taiyme.*'
+
+# zizmor: ignore[concurrency-limits]
+
+permissions: {}
+
+jobs:
+  meta:
+    name: Extract Metadata
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      registry: ${{ steps.vars.outputs.registry }}
+      image-name: ${{ steps.vars.outputs.image-name }}
+      version: ${{ steps.meta.outputs.version }}
+      tags: ${{ steps.meta.outputs.tags }}
+      labels: ${{ steps.meta.outputs.labels }}
+      annotations: ${{ steps.meta.outputs.annotations }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Set Variables
+        id: vars
+        env:
+          REGISTRY: ghcr.io
+        run: |
+          echo "registry=${REGISTRY}" >> "$GITHUB_OUTPUT"
+          echo "image-name=${REGISTRY}/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract Metadata
+        id: meta
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: index
+          DOCKER_METADATA_SHORT_SHA_LENGTH: 9
+          DOCKER_METADATA_SET_OUTPUT_ENV: false
+        with:
+          images: ${{ steps.vars.outputs.image-name }}
+          tags: |
+            type=raw,priority=1300,value=${{ github.ref_name }},prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
+            type=raw,priority=1200,value=latest,prefix=,suffix=,enable=${{ github.ref_type == 'tag' }}
+            type=raw,priority=1200,value=nightly,prefix=,suffix=,enable=${{ github.ref_type != 'tag' }}
+            type=sha,priority=1100,format=short,prefix=,suffix=,enable=true
+
+  build-and-push:
+    name: Build and Push
+    runs-on: ${{ matrix.value.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write # Required for publishing docker image.
+    needs:
+      - meta
+    strategy:
+      fail-fast: false
+      matrix:
+        value:
+          - os: ubuntu-24.04
+            platform: linux/amd64
+          - os: ubuntu-24.04-arm
+            platform: linux/arm64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ${{ needs.meta.outputs.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set Variables
+        id: vars
+        env:
+          PLATFORM: ${{ matrix.value.platform }}
+        run: |
+          PLATFORM_PAIR="${PLATFORM//\//-}"
+          echo "platform-pair=${PLATFORM_PAIR}" >> "$GITHUB_OUTPUT"
+
+          REPO_PAIR="${GITHUB_REPOSITORY//\//-}"
+          REPO_PAIR="${REPO_PAIR,,}"
+          CACHE_SCOPE="buildkit--${REPO_PAIR}--${PLATFORM_PAIR}"
+          echo "cache-scope=${CACHE_SCOPE}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Push by digest
+        id: build
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
+        with:
+          context: .
+          platforms: ${{ matrix.value.platform }}
+          labels: ${{ needs.meta.outputs.labels }}
+          cache-from: >-
+            type=gha,
+            scope=${{ steps.vars.outputs.cache-scope }}
+          cache-to: >-
+            type=gha,
+            mode=max,
+            scope=${{ steps.vars.outputs.cache-scope }}
+          outputs: >-
+            type=image,
+            name=${{ needs.meta.outputs.image-name }},
+            push-by-digest=true,
+            name-canonical=true,
+            oci-mediatypes=true,
+            compression=zstd,
+            compression-level=3,
+            force-compression=true,
+            push=true
+
+      - name: Export digest
+        env:
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${IMAGE_DIGEST#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: digests--${{ steps.vars.outputs.platform-pair }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: Merge
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write # Required for publishing docker image.
+    needs:
+      - meta
+      - build-and-push
+    outputs:
+      multiarch-digest: ${{ steps.push.outputs.multiarch-digest }}
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: digests--*
+          path: /tmp/digests
+          merge-multiple: true
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        with:
+          registry: ${{ needs.meta.outputs.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Multi-arch manifest
+        id: push
+        env:
+          IMAGE_NAME: ${{ needs.meta.outputs.image-name }}
+          META_ANNOTATIONS: ${{ needs.meta.outputs.annotations }}
+          META_TAGS: ${{ needs.meta.outputs.tags }}
+        working-directory: /tmp/digests
+        run: |
+          TAG_ARGS=()
+          while IFS= read -r tag; do
+            TAG_ARGS+=(--tag "$tag")
+          done <<< "$META_TAGS"
+
+          ANNOTATION_ARGS=()
+          while IFS= read -r annotation; do
+            ANNOTATION_ARGS+=(--annotation "$annotation")
+          done <<< "$META_ANNOTATIONS"
+
+          DIGEST_ARGS=()
+          for f in *; do
+            DIGEST=${f##*/}
+            DIGEST_ARGS+=("$IMAGE_NAME@sha256:$DIGEST")
+          done
+
+          MULTIARCH_DIGEST="$(
+            docker buildx imagetools create \
+              "${TAG_ARGS[@]}" \
+              "${ANNOTATION_ARGS[@]}" \
+              "${DIGEST_ARGS[@]}"
+          )"
+
+          echo "multiarch-digest=${MULTIARCH_DIGEST}" >> "$GITHUB_OUTPUT"
+
+  attest:
+    name: Attest Multi-arch image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write # Required to generate build attestations.
+      id-token: write # Required to generate build attestations.
+      attestations: write # Required to generate build attestations.
+      artifact-metadata: write # Required to generate build attestations.
+    needs:
+      - meta
+      - merge
+    steps:
+      - name: Attest
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        id: attest
+        with:
+          subject-name: ${{ needs.meta.outputs.image-name }}
+          subject-digest: ${{ needs.merge.outputs.multiarch-digest }}
+          push-to-registry: true
+
+      - name: Inspect
+        env:
+          IMAGE_NAME: ${{ needs.meta.outputs.image-name }}
+          META_VERSION: ${{ needs.meta.outputs.version }}
+        run: |
+          docker buildx imagetools inspect \
+            "$IMAGE_NAME:$META_VERSION"
