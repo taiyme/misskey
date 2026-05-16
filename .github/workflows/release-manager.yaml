@@ -1,0 +1,335 @@
+name: Release Manager
+
+on:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions: {}
+
+env:
+  base_branch: ${{ github.ref_name }}
+  release_manager_fork_id: taiyme
+  release_manager_branch: release-manager--branches--${{ github.ref_name }}
+  release_manager_pending_label: 'autorelease: pending'
+  release_manager_tagged_label: 'autorelease: tagged'
+
+jobs:
+  find-pr:
+    name: Find Release PR
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pull-requests: read # Required for 'Find Release PR' step.
+    outputs:
+      should-update-pr: ${{ steps.find-pr.outputs.should-update-pr }}
+      should-create-release: ${{ steps.find-pr.outputs.should-create-release }}
+      pr-number: ${{ steps.find-pr.outputs.pr-number }}
+      pr-state: ${{ steps.find-pr.outputs.pr-state }}
+      pr-body: ${{ steps.find-pr.outputs.pr-body }}
+      merge-commit-sha: ${{ steps.find-pr.outputs.merge-commit-sha }}
+    steps:
+      - name: Find Release PR
+        id: find-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          pr_json="$(
+            gh pr list \
+              --head "$release_manager_branch" \
+              --label "$release_manager_pending_label" \
+              --state all \
+              --limit 1 \
+              --json number,state,mergeCommit,body \
+              --jq '
+                .[0] |
+                {
+                  pr_number: .number // "",
+                  pr_state: .state // "" | ascii_downcase,
+                  pr_body: .body // "",
+                  merge_commit_sha: .mergeCommit.oid // "",
+                }
+              '
+          )"
+
+          pr_number="$(jq -cr '.pr_number' <<< "$pr_json")"
+          pr_state="$(jq -cr '.pr_state' <<< "$pr_json")"
+          pr_body="$(jq -cr '.pr_body' <<< "$pr_json")"
+          merge_commit_sha="$(jq -cr '.merge_commit_sha' <<< "$pr_json")"
+
+          case "$pr_state" in
+            merged)
+              should_create_release="true"
+              ;;
+            *)
+              should_update_pr="true"
+              ;;
+          esac
+
+          _pr_body_delimiter="$(openssl rand -hex 8)"
+          {
+            echo "should-update-pr=${should_update_pr:-false}"
+            echo "should-create-release=${should_create_release:-false}"
+            echo "pr-number=${pr_number}"
+            echo "pr-state=${pr_state}"
+            echo "merge-commit-sha=${merge_commit_sha}"
+            echo "pr-body<<${_pr_body_delimiter}"
+            printf "%s\n" "$pr_body"
+            echo "$_pr_body_delimiter"
+          } >> "$GITHUB_OUTPUT"
+
+  parse-version:
+    name: Parse version
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      next-version: ${{ steps.parse-version.outputs.next-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Parse version
+        id: parse-version
+        run: |
+          upstream_version="$(jq -er '.upstreamVersion' package.json)"
+          current_version="$(jq -er '.version' package.json)"
+
+          if [[ "$current_version" == *-"$release_manager_fork_id".* ]]; then
+            current_version_base="${current_version%-"$release_manager_fork_id".*}"
+            current_version_count="${current_version##*-"$release_manager_fork_id".}"
+          else
+            current_version_base="$current_version"
+            current_version_count=""
+          fi
+
+          if [[ -z "$current_version_count" || "$upstream_version" != "$current_version_base" ]]; then
+            next_version_base="$upstream_version"
+            next_version_count="0"
+          else
+            next_version_base="$current_version_base"
+            next_version_count="$((current_version_count + 1))"
+          fi
+
+          next_version="${next_version_base}-${release_manager_fork_id}.${next_version_count}"
+          echo "next-version=${next_version}" >> "$GITHUB_OUTPUT"
+
+  update-branch:
+    name: Update branch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs:
+      - find-pr
+      - parse-version
+    permissions: {}
+    environment: production
+    if: ${{ needs.find-pr.outputs.should-update-pr == 'true' }}
+    env:
+      desired_version: ${{ needs.parse-version.outputs.next-version }}
+    steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-metadata: read
+          permission-contents: write
+
+      - name: Setup Git
+        id: setup-git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          app_name: '${{ steps.app-token.outputs.app-slug }}[bot]'
+        run: |
+          app_user_id="$(gh api "/users/${app_name}" --jq '.id')"
+          app_email="${app_user_id}+${app_name}@users.noreply.github.com"
+          echo "name=${app_name}" >> "$GITHUB_OUTPUT"
+          echo "email=${app_email}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 0
+          submodules: true
+
+      - name: Configure Git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          app_name: ${{ steps.setup-git.outputs.name }}
+          app_email: ${{ steps.setup-git.outputs.email }}
+        run: |
+          git config --global user.name "$app_name"
+          git config --global user.email "$app_email"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}"
+
+      - name: Create branch
+        run: |
+          git switch --force-create "$release_manager_branch" HEAD
+
+      - name: Update package.json
+        run: |
+          jq --tab \
+            --arg desired_version "$desired_version" \
+            -- '.version = $desired_version' \
+            package.json \
+            > tmp.json
+          mv tmp.json package.json
+
+      - name: Update taiyme.env
+        run: |
+          cat << EOF > taiyme.env
+          # This file is generated by the release workflow.
+          # Do not edit this file directly.
+
+          TAIYME_VERSION=${desired_version}
+          EOF
+
+      - name: Commit and Push
+        run: |
+          git commit -am "chore(release): bump to v${desired_version}"
+          git push origin "$release_manager_branch" --force
+
+  update-pr:
+    name: Update PR
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs:
+      - find-pr
+      - parse-version
+      - update-branch
+    permissions: {}
+    environment: production
+    if: ${{ needs.find-pr.outputs.should-update-pr == 'true' }}
+    env:
+      desired_version: ${{ needs.parse-version.outputs.next-version }}
+    steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-metadata: read
+          permission-pull-requests: write
+          permission-issues: write # Required for PR labels
+
+      - name: Create PR
+        if: ${{ needs.find-pr.outputs.pr-number == '' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh pr create \
+            --head "$release_manager_branch" \
+            --base "$base_branch" \
+            --title "chore(release): bump to v${desired_version}" \
+            --body "" \
+            --label "$release_manager_pending_label"
+
+      - name: Update PR
+        if: ${{ needs.find-pr.outputs.pr-number != '' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          pr_number: ${{ needs.find-pr.outputs.pr-number }}
+        run: |
+          gh pr edit "$pr_number" \
+            --title "chore(release): bump to v${desired_version}"
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    needs:
+      - find-pr
+    permissions: {}
+    environment: production
+    if: ${{ needs.find-pr.outputs.should-create-release == 'true' }}
+    steps:
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          client-id: ${{ secrets.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          permission-metadata: read
+          permission-contents: write
+          permission-pull-requests: write
+          permission-issues: write # Required for PR labels
+
+      - name: Setup Git
+        id: setup-git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          app_name: '${{ steps.app-token.outputs.app-slug }}[bot]'
+        run: |
+          app_user_id="$(gh api "/users/${app_name}" --jq '.id')"
+          app_email="${app_user_id}+${app_name}@users.noreply.github.com"
+          echo "name=${app_name}" >> "$GITHUB_OUTPUT"
+          echo "email=${app_email}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 0
+          submodules: true
+          ref: ${{ needs.find-pr.outputs.merge-commit-sha }}
+
+      - name: Configure Git
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          app_name: ${{ steps.setup-git.outputs.name }}
+          app_email: ${{ steps.setup-git.outputs.email }}
+        run: |
+          git config --global user.name "$app_name"
+          git config --global user.email "$app_email"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}"
+
+      # NOTE: 'v' プレフィックスは付けない (misskey-dev/misskey と同じ形式にするため)
+      - name: Get desired tag
+        id: get-tag
+        run: |
+          desired_tag="$(jq -er '.version' package.json)"
+          echo "desired-tag=${desired_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          desired_tag: ${{ steps.get-tag.outputs.desired-tag }}
+          pr_body: ${{ needs.find-pr.outputs.pr-body }}
+          merge_commit_sha: ${{ needs.find-pr.outputs.merge-commit-sha }}
+        run: |
+          printf "%s" "$pr_body" \
+            | gh release create "$desired_tag" \
+              --title "$desired_tag" \
+              --notes-file - \
+              --target "$merge_commit_sha" \
+              --fail-on-no-commits
+
+      - name: Update label to tagged
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          pr_number: ${{ needs.find-pr.outputs.pr-number }}
+        run: |
+          gh pr edit "$pr_number" \
+            --remove-label "$release_manager_pending_label" \
+            --add-label "$release_manager_tagged_label"
