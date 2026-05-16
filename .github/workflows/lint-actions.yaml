@@ -8,6 +8,7 @@ on:
     paths:
       - .github/workflows/*.ya?ml
       - '**/action.ya?ml'
+      - .github/actionlint-matcher.json
 
   pull_request:
     branches:
@@ -16,6 +17,7 @@ on:
     paths:
       - .github/workflows/*.ya?ml
       - '**/action.ya?ml'
+      - .github/actionlint-matcher.json
 
 concurrency:
   group: >-
@@ -39,27 +41,15 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 1
-          submodules: true
 
-      - name: Lint with actionlint
-        uses: koki-develop/github-actions-lint/actionlint@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+      - name: Add actionlint problem matcher
+        run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
 
-  ghalint:
-    name: ghalint
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run actionlint
+        uses: docker://rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
         with:
-          persist-credentials: false
-          fetch-depth: 1
-          submodules: true
-
-      - name: Lint with ghalint
-        uses: koki-develop/github-actions-lint/ghalint@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+          args: -color
 
   zizmor:
     name: zizmor
@@ -67,16 +57,16 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      actions: read # Required for zizmor
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 1
-          submodules: true
 
-      - name: Lint with zizmor
-        uses: koki-develop/github-actions-lint/zizmor@5ecd42b59803f14bfaa7ed0bfb8de8c1dc1b4c6d # v1.6.0
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@b572f7b1a1c2d41efaab43d504f68d215c3cd727 # v0.5.4
         with:
-          github-token: ${{ github.token }}
+          advanced-security: false
           persona: auditor
