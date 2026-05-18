@@ -74,12 +74,11 @@ jobs:
         run: |
           pnpm run build
 
-      - name: Set JEST_SHARD
+      - name: Set VITEST_SHARD
         env:
-          shard: ${{ matrix.shard }}/${{ strategy.job-total }}
+          VITEST_SHARD: ${{ matrix.shard }}/${{ strategy.job-total }}
         run: |
-          JEST_SHARD="$shard"
-          echo "JEST_SHARD=${JEST_SHARD}" >> "$GITHUB_ENV"
+          echo "VITEST_SHARD=${VITEST_SHARD}" >> "$GITHUB_ENV"
 
       - name: Set NODE_VERSION
         env:

@@ -62,22 +62,6 @@
 		"search.exclude": {
 			"**/node_modules": true,
 		},
-		"jest.enable": false,
-		// "jest.runMode": "on-demand",
-		// "jest.virtualFolders": [
-		// 	{
-		// 		"name": "backend unit",
-		// 		"jestCommandLine": "pnpm -F backend run test",
-		// 	},
-		// 	{
-		// 		"name": "backend e2e",
-		// 		"jestCommandLine": "pnpm -F backend run test:e2e",
-		// 	},
-		// 	{
-		// 		"name": "misskey-js",
-		// 		"jestCommandLine": "pnpm -F misskey-js run jest",
-		// 	},
-		// ],
 		"editor.formatOnSave": false,
 		"editor.codeActionsOnSave": {
 			"source.fixAll.eslint": "explicit",
@@ -115,7 +99,6 @@
 			"dbaeumer.vscode-eslint",
 			"github.vscode-github-actions",
 			"bradgashler.htmltagwrap",
-			"orta.vscode-jest",
 			"vitest.explorer",
 			"vue.volar",
 			"redhat.vscode-yaml",

@@ -5,28 +5,28 @@
 ```ts
 
 // @public (undocumented)
-export const BOLD: (children: MfmInline[]) => MfmBold;
+export const BOLD: (children: MfmInline[]) => NodeType<'bold'>;
 
 // @public (undocumented)
-export const CENTER: (children: MfmInline[]) => MfmCenter;
+export const CENTER: (children: MfmInline[]) => NodeType<'center'>;
 
 // @public (undocumented)
-export const CODE_BLOCK: (code: string, lang: string | null) => MfmCodeBlock;
+export const CODE_BLOCK: (code: string, lang: string | null) => NodeType<'blockCode'>;
 
 // @public (undocumented)
-export const EMOJI_CODE: (name: string) => MfmEmojiCode;
+export const EMOJI_CODE: (name: string) => NodeType<'emojiCode'>;
 
 // @public (undocumented)
 export function extract(nodes: MfmNode[], predicate: (node: MfmNode) => boolean): MfmNode[];
 
 // @public (undocumented)
-export const FN: (name: string, args: Record<string, string | true>, children: MfmInline[]) => MfmFn;
+export const FN: (name: string, args: MfmFn['props']['args'], children: MfmFn['children']) => NodeType<'fn'>;
 
 // @public (undocumented)
-export const HASHTAG: (value: string) => MfmHashtag;
+export const HASHTAG: (value: string) => NodeType<'hashtag'>;
 
 // @public (undocumented)
-export const INLINE_CODE: (code: string) => MfmInlineCode;
+export const INLINE_CODE: (code: string) => NodeType<'inlineCode'>;
 
 // @public (undocumented)
 export function inspect(node: MfmNode, action: (node: MfmNode) => void): void;
@@ -35,19 +35,22 @@ export function inspect(node: MfmNode, action: (node: MfmNode) => void): void;
 export function inspect(nodes: MfmNode[], action: (node: MfmNode) => void): void;
 
 // @public (undocumented)
-export const ITALIC: (children: MfmInline[]) => MfmItalic;
+export function isMfmBlock(node: MfmNode): node is MfmBlock;
 
 // @public (undocumented)
-export const LINK: (silent: boolean, url: string, children: MfmInline[]) => MfmLink;
+export const ITALIC: (children: MfmInline[]) => NodeType<'italic'>;
 
 // @public (undocumented)
-export const MATH_BLOCK: (formula: string) => MfmMathBlock;
+export const LINK: (silent: boolean, url: string, children: MfmInline[]) => NodeType<'link'>;
 
 // @public (undocumented)
-export const MATH_INLINE: (formula: string) => MfmMathInline;
+export const MATH_BLOCK: (formula: string) => NodeType<'mathBlock'>;
 
 // @public (undocumented)
-export const MENTION: (username: string, host: string | null, acct: string) => MfmMention;
+export const MATH_INLINE: (formula: string) => NodeType<'mathInline'>;
+
+// @public (undocumented)
+export const MENTION: (username: string, host: string | null, acct: string) => NodeType<'mention'>;
 
 // @public (undocumented)
 export type MfmBlock = MfmQuote | MfmSearch | MfmCodeBlock | MfmMathBlock | MfmCenter;
@@ -245,7 +248,7 @@ export type MfmUrl = {
 };
 
 // @public (undocumented)
-export const N_URL: (value: string, brackets?: boolean | undefined) => MfmUrl;
+export const N_URL: (value: string, brackets?: boolean) => NodeType<'url'>;
 
 // @public (undocumented)
 export type NodeType<T extends MfmNode['type']> = T extends 'quote' ? MfmQuote : T extends 'search' ? MfmSearch : T extends 'blockCode' ? MfmCodeBlock : T extends 'mathBlock' ? MfmMathBlock : T extends 'center' ? MfmCenter : T extends 'unicodeEmoji' ? MfmUnicodeEmoji : T extends 'emojiCode' ? MfmEmojiCode : T extends 'bold' ? MfmBold : T extends 'small' ? MfmSmall : T extends 'italic' ? MfmItalic : T extends 'strike' ? MfmStrike : T extends 'inlineCode' ? MfmInlineCode : T extends 'mathInline' ? MfmMathInline : T extends 'mention' ? MfmMention : T extends 'hashtag' ? MfmHashtag : T extends 'url' ? MfmUrl : T extends 'link' ? MfmLink : T extends 'fn' ? MfmFn : T extends 'plain' ? MfmPlain : T extends 'rjNumber' ? MfmRjNumber : T extends 'text' ? MfmText : never;
@@ -259,25 +262,25 @@ export function parse(input: string, opts?: Partial<{
 export function parseSimple(input: string): MfmSimpleNode[];
 
 // @public (undocumented)
-export const PLAIN: (text: string) => MfmPlain;
+export const PLAIN: (text: string) => NodeType<'plain'>;
 
 // @public (undocumented)
-export const QUOTE: (children: MfmNode[]) => MfmQuote;
+export const QUOTE: (children: MfmNode[]) => NodeType<'quote'>;
 
 // @public (undocumented)
-export const RJ_NUMBER: (rjNumber: string, url: string) => MfmRjNumber;
+export const RJ_NUMBER: (rjNumber: string, url: string) => NodeType<'rjNumber'>;
 
 // @public (undocumented)
-export const SEARCH: (query: string, content: string) => MfmSearch;
+export const SEARCH: (query: string, content: string) => NodeType<'search'>;
 
 // @public (undocumented)
-export const SMALL: (children: MfmInline[]) => MfmSmall;
+export const SMALL: (children: MfmInline[]) => NodeType<'small'>;
 
 // @public (undocumented)
-export const STRIKE: (children: MfmInline[]) => MfmStrike;
+export const STRIKE: (children: MfmInline[]) => NodeType<'strike'>;
 
 // @public (undocumented)
-export const TEXT: (value: string) => MfmText;
+export const TEXT: (value: string) => NodeType<'text'>;
 
 // @public (undocumented)
 export function toString(tree: MfmNode[]): string;
@@ -286,7 +289,7 @@ export function toString(tree: MfmNode[]): string;
 export function toString(node: MfmNode): string;
 
 // @public (undocumented)
-export const UNI_EMOJI: (value: string) => MfmUnicodeEmoji;
+export const UNI_EMOJI: (value: string) => NodeType<'unicodeEmoji'>;
 
 // (No @packageDocumentation comment for this package)
 

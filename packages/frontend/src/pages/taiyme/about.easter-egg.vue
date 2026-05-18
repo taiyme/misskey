@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.version">v{{ version }}</div>
 		<span v-for="emoji in easterEggEmojis" :key="emoji.id" :class="[$style.emoji, { _physics_circle_: !emoji.emoji.startsWith(':') }]" :data-physics-x="emoji.left" :data-physics-y="emoji.top">
 			<MkCustomEmoji v-if="emoji.emoji[0] === ':'" :class="$style.emojiInner" :name="emoji.emoji" :normal="true" :noStyle="true" :fallbackToImage="true"/>
-			<MkEmoji v-else :class="$style.emojiInner" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
+			<MkEmoji v-else :class="[$style.emojiInner, $style.unicode]" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
 		</span>
 	</div>
 	<button v-if="thereIsTreasure" :class="$style.treasure" class="_button" @click="getTreasure">
@@ -158,6 +158,10 @@ onBeforeUnmount(() => {
 		pointer-events: none;
 		font-size: 24px;
 		width: 24px;
+
+		&.unicode {
+			height: 24px;
+		}
 	}
 }
 </style>
