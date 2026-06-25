@@ -102,10 +102,10 @@ jobs:
 
       - name: Test
         env:
-          shard: ${{ matrix.shard }}/${{ strategy.job-total }}
+          VITEST_SHARD: ${{ matrix.shard }}/${{ strategy.job-total }}
         run: |
           pnpm --filter backend \
-            run test-and-coverage --shard "$shard"
+            run test-and-coverage --shard "$VITEST_SHARD"
 
   e2e-tests:
     name: E2E Tests
@@ -121,10 +121,6 @@ jobs:
           - 2
           - 3
           - 4
-          - 5
-          - 6
-          - 7
-          - 8
     services:
       postgres:
         image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
@@ -173,10 +169,10 @@ jobs:
 
       - name: Test
         env:
-          shard: ${{ matrix.shard }}/${{ strategy.job-total }}
+          VITEST_SHARD: ${{ matrix.shard }}/${{ strategy.job-total }}
         run: |
           pnpm --filter backend \
-            run test-and-coverage:e2e --shard "$shard"
+            run test-and-coverage:e2e --shard "$VITEST_SHARD"
 
   migration-tests:
     name: Migration Tests

@@ -9,7 +9,6 @@ export default [
 			'**/node_modules',
 			'built',
 			'coverage',
-			'jest.config.ts',
 			'test',
 			'test-d',
 		],

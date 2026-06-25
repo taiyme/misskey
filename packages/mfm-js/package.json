@@ -1,8 +1,9 @@
 {
   "type": "module",
   "name": "mfm-js",
-	"private": true,
-  "upstreamVersion": "0.25.0",
+  "private": true,
+  "upstreamVersion": "0.26.0",
+  "upstreamCommit": "2192bb703247c16422876db391e52273dd1a7b74",
   "description": "An MFM parser implementation with TypeScript",
   "main": "./built/index.js",
   "types": "./built/index.d.ts",
@@ -35,19 +36,19 @@
   "author": "Marihachi",
   "license": "MIT",
   "devDependencies": {
-    "@microsoft/api-extractor": "7.57.7",
-    "@types/node": "24.12.0",
-    "@typescript-eslint/eslint-plugin": "8.57.0",
-    "@typescript-eslint/parser": "8.57.0",
-    "@vitest/coverage-v8": "4.1.0",
-    "esbuild": "0.27.4",
+    "@microsoft/api-extractor": "7.58.7",
+    "@types/node": "24.12.2",
+    "@typescript-eslint/eslint-plugin": "8.59.2",
+    "@typescript-eslint/parser": "8.59.2",
+    "@vitest/coverage-v8": "4.1.5",
+    "esbuild": "0.28.0",
     "execa": "9.6.1",
     "nodemon": "3.1.14",
     "tsd": "0.33.0",
-    "vitest": "4.1.0"
+    "vitest": "4.1.5"
   },
   "dependencies": {
-    "@twemoji/parser": "16.0.0"
+    "@misskey-dev/emoji-data": "17.0.0"
   },
   "files": [
     "built",
