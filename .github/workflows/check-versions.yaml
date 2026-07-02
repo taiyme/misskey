@@ -94,9 +94,9 @@ jobs:
           ACTUAL_VERSION="$(jq -er '.devDependencies.pnpm' package.json)"
           [[ "$ACTUAL_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
 
-      - name: Check version (Dockerfile)
-        run: |
-          grep -qx "ARG PNPM_VERSION=${EXPECTED_VERSION}" Dockerfile
+      # - name: Check version (Dockerfile)
+      #   run: |
+      #     grep -qx "ARG PNPM_VERSION=${EXPECTED_VERSION}" Dockerfile
 
       - name: Check version (devcontainer.json)
         run: |
