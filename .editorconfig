@@ -17,3 +17,9 @@ indent_style = space
 [packages/backend/migration/*.js]
 indent_style = space
 indent_size = 4
+
+[packages/mfm-js/**/*.json]
+indent_style = space
+
+[**/Dockerfile]
+indent_style = space
