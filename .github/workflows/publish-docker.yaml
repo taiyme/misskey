@@ -145,18 +145,19 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  merge:
-    name: Merge
+  merge-and-attest:
+    name: Merge and Attest
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 10
     permissions:
       contents: read
       packages: write # Required for publishing docker image.
+      id-token: write # Required to generate build attestations.
+      attestations: write # Required to generate build attestations.
+      artifact-metadata: write # Required to generate build attestations.
     needs:
       - meta
       - build-and-push
-    outputs:
-      multiarch-digest: ${{ steps.export.outputs.multiarch-digest }}
     steps:
       - name: Download digests
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -215,37 +216,25 @@ jobs:
               --format "{{json .Manifest}}" | \
               jq -cr '.digest'
           )"
-
-          echo "Multi-arch digest is '$MULTIARCH_DIGEST'"
-
           echo "multiarch-digest=${MULTIARCH_DIGEST}" >> "$GITHUB_OUTPUT"
 
-  attest:
-    name: Attest Multi-arch image
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write # Required to generate build attestations.
-      id-token: write # Required to generate build attestations.
-      attestations: write # Required to generate build attestations.
-      artifact-metadata: write # Required to generate build attestations.
-    needs:
-      - meta
-      - merge
-    steps:
       - name: Attest
         uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
-        id: attest
         with:
           subject-name: ${{ needs.meta.outputs.image-name }}
-          subject-digest: ${{ needs.merge.outputs.multiarch-digest }}
+          subject-digest: ${{ steps.export.outputs.multiarch-digest }}
           push-to-registry: true
 
       - name: Inspect
+        if: ${{ always() }}
         env:
           IMAGE_NAME: ${{ needs.meta.outputs.image-name }}
           META_VERSION: ${{ needs.meta.outputs.version }}
+          MULTIARCH_DIGEST: ${{ steps.export.outputs.multiarch-digest }}
         run: |
+          echo "IMAGE_NAME: $IMAGE_NAME"
+          echo "META_VERSION: $META_VERSION"
+          echo "MULTIARCH_DIGEST: $MULTIARCH_DIGEST"
+
           docker buildx imagetools inspect \
             "$IMAGE_NAME:$META_VERSION"
