@@ -60,7 +60,7 @@ jobs:
         ports:
           - 56312:6379
       meilisearch:
-        image: getmeili/meilisearch:v1.46.1@sha256:cbe0e500a5fc04397dfe0245cf143fee40658b26470daaf549f0a6927c5c08dc
+        image: getmeili/meilisearch:v1.48.3@sha256:c1a52f17c759c2cd6349eede3d5108b8dac07b97e10665b1d64a2d4961c2fd29
         ports:
           - 57712:7700
         env:
