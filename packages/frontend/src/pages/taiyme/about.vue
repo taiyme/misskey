@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: Copyright (c) 2026 taiy https://github.com/taiyme
+SPDX-FileCopyrightText: Copyright (c) 2026 taiy, <https://taiy.me/>
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
