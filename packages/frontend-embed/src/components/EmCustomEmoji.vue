@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, inject, ref } from 'vue';
+import { normalizeCustomEmojiName, isLocalCustomEmojiName, getCustomEmojiImagePath } from '@@/js/emoji-name.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 
 import { DI } from '@/di.js';
@@ -44,8 +45,8 @@ const props = defineProps<{
 	fallbackToImage?: boolean;
 }>();
 
-const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
-const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const customEmojiName = computed(() => normalizeCustomEmojiName(props.name));
+const isLocal = computed(() => isLocalCustomEmojiName(customEmojiName.value, props.host));
 
 const rawUrl = computed(() => {
 	if (props.url) {
@@ -54,7 +55,7 @@ const rawUrl = computed(() => {
 	if (isLocal.value) {
 		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
 	}
-	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
+	return getCustomEmojiImagePath(customEmojiName.value, props.host);
 });
 
 const url = computed(() => {

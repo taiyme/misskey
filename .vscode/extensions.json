@@ -2,6 +2,7 @@
 	"recommendations": [
 		"aaron-bond.better-comments",
 		"blueglassblock.better-json5",
+		"editorconfig.editorconfig",
 		"usernamehw.errorlens",
 		"dbaeumer.vscode-eslint",
 		"github.vscode-github-actions",

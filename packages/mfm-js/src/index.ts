@@ -66,4 +66,7 @@ export {
 	PLAIN,
 	RJ_NUMBER,
 	TEXT,
+
+	// util
+	isMfmBlock,
 } from './node.js';

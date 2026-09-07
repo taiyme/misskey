@@ -87,11 +87,6 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - chrome
     services:
       postgres:
         image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
@@ -114,15 +109,6 @@ jobs:
           fetch-depth: 1
           submodules: true
 
-      # https://github.com/cypress-io/cypress-docker-images/issues/150
-      # - name: Install mplayer for FireFox
-      #   if: ${{ matrix.browser == 'firefox' }}
-      #   run: |
-      #     sudo apt install mplayer -y
-
-      # - uses: browser-actions/setup-firefox@955a5d42b5f068a8917c6a4ff1656a2235c66dfb # v1.5.2
-      #   if: ${{ matrix.browser == 'firefox' }}
-
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
 
@@ -144,35 +130,18 @@ jobs:
         run: |
           pnpm run build
 
-      # https://github.com/cypress-io/cypress/issues/4351#issuecomment-559489091
-      - name: ALSA Env
+      - name: Playwright install
+        working-directory: packages/frontend
         run: |
-          echo -e 'pcm.!default {\n type hw\n card 0\n}\n\nctl.!default {\n type hw\n card 0\n}' > ~/.asoundrc
+          pnpm exec playwright install --with-deps chromium
 
-      # XXX: This tries reinstalling Cypress if the binary is not cached
-      # Remove this when the cache issue is fixed
-      - name: Cypress install
-        run: |
-          pnpm exec cypress install
-
-      - name: Cypress run
-        uses: cypress-io/github-action@fa4a118725a8f001170d49631ea89e5d66fee626 # v7.4.1
+      - name: Test
         timeout-minutes: 15
-        with:
-          install: false
-          start: pnpm run start:test
-          wait-on: 'http://localhost:61812'
-          headed: true
-          browser: ${{ matrix.browser }}
+        run: |
+          pnpm exec start-server-and-test start:test http://localhost:61812 "pnpm --filter frontend run test:e2e"
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: ${{ failure( )}}
+        if: ${{ failure() }}
         with:
-          name: ${{ matrix.browser }}-cypress-screenshots
-          path: cypress/screenshots
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: ${{ always() }}
-        with:
-          name: ${{ matrix.browser }}-cypress-videos
-          path: cypress/videos
+          name: playwright-e2e-artifacts
+          path: packages/frontend/test/e2e/artifacts

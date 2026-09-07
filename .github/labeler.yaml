@@ -25,7 +25,6 @@ packages/frontend:test:
   - any:
     - changed-files:
       - any-glob-to-any-file:
-        - cypress/**/*
         - packages/frontend/test/**/*
 
 packages/sw:

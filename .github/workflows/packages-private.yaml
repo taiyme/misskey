@@ -1,0 +1,84 @@
+name: Lint and Test (packages-private)
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/packages-private.yaml
+      - packages-private/**/*
+      - packages/shared/eslint.config.js
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
+      - package.json
+
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - .github/workflows/packages-private.yaml
+      - packages-private/**
+      - packages/shared/eslint.config.js
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
+      - package.json
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event.pull_request.head.repo.full_name || github.repository }}-
+    ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - lint
+          - test
+        package:
+          - diagnostics-shared
+          - diagnostics-backend
+          - diagnostics-frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        env:
+          package: ${{ matrix.package }}
+        run: |
+          pnpm --filter "${package}..." \
+            install --frozen-lockfile
+
+      - name: Check
+        env:
+          package: ${{ matrix.package }}
+          command: ${{ matrix.command }}
+        run: |
+          pnpm --filter "$package" \
+            run "$command"

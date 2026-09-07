@@ -25,7 +25,6 @@
 		"source.removeUnusedImports": "never",
 		"source.sortImports": "never",
 	},
-	"eslint.useFlatConfig": true,
 	"eslint.validate": [
 		"javascript",
 		"javascriptreact",
@@ -33,8 +32,8 @@
 		"typescriptreact",
 		"vue",
 	],
-	"typescript.tsdk": "./node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"js/ts.tsdk.path": "./node_modules/typescript/lib",
+	"js/ts.tsdk.promptToUseWorkspaceVersion": true,
 	"yaml.schemas": {
 		"https://json.schemastore.org/github-action.json": [
 			".github/actions/**/action.{yml,yaml}",

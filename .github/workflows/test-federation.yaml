@@ -63,8 +63,10 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
 
-      - name: Setup FFmpeg
-        uses: ./.github/actions/setup-ffmpeg
+      - name: Install FFmpeg
+        run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
 
       - name: Install dependencies
         run: |

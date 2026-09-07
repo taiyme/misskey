@@ -4,23 +4,24 @@
 	"type": "module",
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsc --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"exports": {
 		"./*": "./js/*"
 	},
 	"devDependencies": {
-		"@types/estree": "1.0.8",
-		"@types/node": "24.12.0",
-		"@typescript-eslint/eslint-plugin": "8.57.0",
-		"@typescript-eslint/parser": "8.57.0",
-		"rollup": "4.59.0"
+		"@types/estree": "1.0.9",
+		"@types/node": "26.4.0",
+		"@typescript-eslint/eslint-plugin": "8.68.0",
+		"@typescript-eslint/parser": "8.68.0",
+		"rollup": "4.63.1"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"estree-walker": "3.0.3",
-		"magic-string": "0.30.21",
-		"vite": "7.3.1"
+		"magic-string": "1.2.3",
+		"oxc-walker": "1.1.1",
+		"rolldown": "1.2.6",
+		"vite": "8.2.2"
 	}
 }

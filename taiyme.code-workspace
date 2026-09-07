@@ -56,6 +56,18 @@
 			"name": "misskey-bubble-game",
 			"path": "./packages/misskey-bubble-game",
 		},
+		{
+			"name": "diagnostics-shared",
+			"path": "./packages-private/diagnostics-shared",
+		},
+		{
+			"name": "diagnostics-backend",
+			"path": "./packages-private/diagnostics-backend",
+		},
+		{
+			"name": "diagnostics-frontend",
+			"path": "./packages-private/diagnostics-frontend",
+		},
 	],
 	"settings": {
 		"terminal.integrated.cwd": "${workspaceFolder:root}",
@@ -85,7 +97,6 @@
 			"source.removeUnusedImports": "never",
 			"source.sortImports": "never",
 		},
-		"eslint.useFlatConfig": true,
 		"eslint.validate": [
 			"javascript",
 			"javascriptreact",
@@ -93,8 +104,8 @@
 			"typescriptreact",
 			"vue",
 		],
-		"typescript.tsdk": "./node_modules/typescript/lib",
-		"typescript.enablePromptUseWorkspaceTsdk": true,
+		"js/ts.tsdk.path": "./node_modules/typescript/lib",
+		"js/ts.tsdk.promptToUseWorkspaceVersion": true,
 		"yaml.schemas": {
 			"https://json.schemastore.org/github-action.json": [
 				".github/actions/**/action.{yml,yaml}",
@@ -111,6 +122,7 @@
 		"recommendations": [
 			"aaron-bond.better-comments",
 			"blueglassblock.better-json5",
+			"editorconfig.editorconfig",
 			"usernamehw.errorlens",
 			"dbaeumer.vscode-eslint",
 			"github.vscode-github-actions",

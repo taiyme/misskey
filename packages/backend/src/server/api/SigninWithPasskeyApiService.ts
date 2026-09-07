@@ -23,7 +23,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
@@ -118,8 +118,9 @@ export class SigninWithPasskeyApiService {
 		}
 
 		const context = body.context;
-		if (!context || typeof context !== 'string') {
-			// If try Authentication without context
+		// context is always generated server-side by randomUUID(), so reject anything that is not a UUID
+		if (!context || typeof context !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(context)) {
+			// If try Authentication without valid context
 			return error(400, {
 				id: '1658cc2e-4495-461f-aee4-d403cdf073c1',
 			});

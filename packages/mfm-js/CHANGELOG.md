@@ -12,6 +12,17 @@
 -->
 ## 0.x.x (unreleased)
 
+## 0.26.0
+### Features
+- Supports Unicode 17.0 emoji
+
+### Improvements
+- Expose `isMfmBlock` utility.
+
+### Changes
+- Package now ships both ESM and CJS builds.
+- Package now exposes main entry point only. Other independent files are no longer importable.
+
 ## 0.25.0
 ### Features
 - Supports Unicode 15.1 and 16.0 emoji

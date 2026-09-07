@@ -2,7 +2,7 @@
   "type": "module",
   "name": "mfm-js",
   "private": true,
-  "upstreamVersion": "0.25.0",
+  "upstreamVersion": "0.26.0",
   "description": "An MFM parser implementation with TypeScript",
   "main": "./built/index.js",
   "types": "./built/index.d.ts",
@@ -22,7 +22,7 @@
     "api": "pnpm api-extractor run --local --verbose",
     "api-prod": "pnpm api-extractor run --verbose",
     "eslint": "eslint",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "lint": "pnpm typecheck && pnpm eslint",
     "vitest": "vitest run --coverage",
     "test": "pnpm vitest && pnpm tsd"
@@ -35,19 +35,19 @@
   "author": "Marihachi",
   "license": "MIT",
   "devDependencies": {
-    "@microsoft/api-extractor": "7.57.7",
-    "@types/node": "24.12.0",
-    "@typescript-eslint/eslint-plugin": "8.57.0",
-    "@typescript-eslint/parser": "8.57.0",
-    "@vitest/coverage-v8": "4.1.0",
-    "esbuild": "0.27.4",
-    "execa": "9.6.1",
+    "@microsoft/api-extractor": "7.59.0",
+    "@types/node": "26.4.0",
+    "@typescript-eslint/eslint-plugin": "8.68.0",
+    "@typescript-eslint/parser": "8.68.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "esbuild": "0.28.2",
+    "execa": "10.0.1",
     "nodemon": "3.1.14",
     "tsd": "0.33.0",
-    "vitest": "4.1.0"
+    "vitest": "4.1.11"
   },
   "dependencies": {
-    "@twemoji/parser": "16.0.0"
+    "@misskey-dev/emoji-data": "17.0.3"
   },
   "files": [
     "built",

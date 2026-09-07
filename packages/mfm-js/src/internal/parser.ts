@@ -1,5 +1,6 @@
+import { emojiRegex } from '@misskey-dev/emoji-data';
+
 import * as M from '../index.js';
-import { emojiRegex } from './emoji-regex.js';
 import * as P from './core/index.js';
 import { mergeText } from './util.js';
 import type { SeqParseResult } from './core/index.js';

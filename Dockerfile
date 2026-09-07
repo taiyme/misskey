@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=22.22.0-bookworm
+ARG NODE_VERSION=26.4.0-trixie
 
 # build assets & compile TypeScript
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 WORKDIR /misskey
 
-COPY --link pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
+COPY --link pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY --link scripts/ scripts/
 COPY --link patches/ patches/
 COPY --link packages/backend/package.json packages/backend/
@@ -41,8 +41,7 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 
 COPY --link . .
 
-RUN git submodule update --init \
-  && pnpm run build \
+RUN pnpm run build \
   && rm -rf .git/
 
 # build native dependencies for target platform
@@ -55,7 +54,7 @@ RUN apt-get update \
 
 WORKDIR /misskey
 
-COPY --link pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
+COPY --link pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY --link scripts/ scripts/
 COPY --link patches/ patches/
 COPY --link packages/backend/package.json packages/backend/
@@ -108,9 +107,7 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/mfm-js/buil
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built/ packages/misskey-reversi/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built/ packages/misskey-bubble-game/built/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built/ packages/backend/built/
-COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/src-js/ packages/backend/src-js/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built/ packages/i18n/built/
-COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis/ /misskey/fluent-emojis/
 COPY --chown=misskey:misskey . .
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
