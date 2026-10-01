@@ -94,7 +94,7 @@ jobs:
           - chrome
     services:
       postgres:
-        image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
+        image: postgres:18@sha256:5a5a84b19854a9ffaa54082c166ff4ec27473a361e496e5ea167f298f2da9722
         ports:
           - 54312:5432
         env:
