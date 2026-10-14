@@ -49,7 +49,7 @@ jobs:
           - 4
     services:
       postgres:
-        image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         ports:
           - 54312:5432
         env:
@@ -127,7 +127,7 @@ jobs:
           - 8
     services:
       postgres:
-        image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         ports:
           - 54312:5432
         env:
@@ -186,7 +186,7 @@ jobs:
       contents: read
     services:
       postgres:
-        image: postgres:18@sha256:52e6ffd11fddd081ae63880b635b2a61c14008c17fc98cdc7ce5472265516dd0
+        image: postgres:18@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
         ports:
           - 54312:5432
         env:
