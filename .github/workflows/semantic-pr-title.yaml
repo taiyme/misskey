@@ -17,7 +17,7 @@ permissions: {}
 jobs:
   semantic-pr-title:
     name: Semantic PR title
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       pull-requests: read # Required for 'Semantic PR title' step.

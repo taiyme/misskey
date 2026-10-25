@@ -35,7 +35,7 @@ permissions: {}
 jobs:
   check-node-versions:
     name: Check Node versions
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -71,7 +71,7 @@ jobs:
 
   check-pnpm-versions:
     name: Check pnpm versions
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read

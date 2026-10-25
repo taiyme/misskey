@@ -18,7 +18,7 @@ permissions: {}
 jobs:
   status-check:
     name: Status Check
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 60
     permissions:
       pull-requests: read # Required for 'Watch PR checks' step.
