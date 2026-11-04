@@ -56,7 +56,7 @@ jobs:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:7@sha256:24ea35ee039d7345bef2377611e3b1a615231746de4cfea74c1414575ee56167
+        image: redis:7@sha256:b6b6e3dc0c0952737748e55d5d885272840c7e42ba41ab1d5489f693419882f5
         ports:
           - 56312:6379
       meilisearch:
@@ -134,7 +134,7 @@ jobs:
           POSTGRES_DB: test-misskey
           POSTGRES_HOST_AUTH_METHOD: trust
       redis:
-        image: redis:7@sha256:24ea35ee039d7345bef2377611e3b1a615231746de4cfea74c1414575ee56167
+        image: redis:7@sha256:b6b6e3dc0c0952737748e55d5d885272840c7e42ba41ab1d5489f693419882f5
         ports:
           - 56312:6379
     env:
